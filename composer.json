@@ -1,0 +1,28 @@
+{
+    "name": "nhagemann/anycontent-client-php",
+    "description": "",
+    "type": "library",
+    "homepage": "http://www.nilshagemann.de",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nils Hagemann",
+            "email": "mail@nilshagemann.de",
+            "homepage": "http://www.nilshagemann.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.2",
+        "guzzle/guzzle": "3.7.*@dev",
+        "nhagemann/cmdl-parser-php": "dev-master"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "~3.7.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "AnyContent": "src/"
+        }
+    }
+}

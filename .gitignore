@@ -1,0 +1,6 @@
+# php storm files
+.idea/
+
+# mac os
+*.DS_Store
+._*

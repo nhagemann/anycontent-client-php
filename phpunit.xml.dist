@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="AnyContent Repository Test Suite">
+            <directory>tests/AnyContent</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/AnyContent</directory>
+        </whitelist>
+    </filter>
+</phpunit>
