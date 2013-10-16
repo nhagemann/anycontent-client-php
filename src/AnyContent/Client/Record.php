@@ -12,13 +12,13 @@ class Record
 
     public $id = null;
 
-    public $name;
+    protected $name;
 
     protected $contentTypeDefinition = null;
 
-    public $clipping = 'default';
-    public $workspace = 'default';
-    public $language = 'none';
+    protected $clipping = 'default';
+    protected $workspace = 'default';
+    protected $language = 'none';
 
     public $properties = array();
 
@@ -70,6 +70,10 @@ class Record
         return $this->id;
     }
 
+    public function setID($id)
+    {
+        $this->id = $id;
+    }
 
     public function getName()
     {
