@@ -76,16 +76,12 @@ class Client
 
         $request = $this->guzzle->post($url, null, array( 'record' => $json ));
 
-        $response = $request->send()->getBody();
+        $result = $request->send()->json();
 
-        echo $response;
-
-        //$result = $request->send()->json();
-    }
-
-
-    protected function record2JSON(Record $record)
-    {
+        return (int)$result;
 
     }
+
+
+
 }

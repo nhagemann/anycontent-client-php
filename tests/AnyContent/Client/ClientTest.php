@@ -10,22 +10,46 @@ use AnyContent\Client\Record;
 class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testSaveRecord()
+    public $client = null;
+
+
+    public function setUp()
+    {
+        // Execute admin call to delete all existing data of the test content types
+        $guzzle  = new \Guzzle\Http\Client('http://anycontent.dev');
+        $request = $guzzle->get('/admin/delete/example/example01');
+        $result  = $request->send()->getBody();
+
+        // Connect to repository
+        $client = new Client('http://anycontent.dev/1/example');
+        $client->setUserInfo('john@doe.com', 'John', 'Doe');
+        $this->client = $client;
+    }
+
+
+    public function testSaveRecords()
     {
 
-        $client = new Client('http://anycontent.dev/1/example', 'admin', 'admin');
-        $client->setUserInfo('mail@nilshagemann.de', 'Nils', 'Hagemann');
-
-        $cmdl = $client->getCMDL('example01');
+        $cmdl = $this->client->getCMDL('example01');
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
         $contentTypeDefinition->setName('example01');
 
-        $record = new Record($contentTypeDefinition, 'New Record');
-        $record->setID(12);
-        $record->setProperty('article','bla');
+        for ($i = 1; $i <= 5; $i++)
+        {
+            $record = new Record($contentTypeDefinition, 'New Record ' . $i);
+            $record->setProperty('article', 'Test ' . $i);
+            $id = $this->client->saveRecord($record);
+            $this->assertEquals($i,$id);
+        }
 
-        $client->saveRecord($record);
+        for ($i = 2; $i <= 5; $i++)
+        {
+            $record = new Record($contentTypeDefinition, 'New Record 1 - Revision ' . $i);
+            $record->setID(1);
+            $id = $this->client->saveRecord($record);
+            $this->assertEquals(1,$id);
+        }
 
     }
 }
