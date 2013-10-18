@@ -12,8 +12,6 @@ class Record
 
     public $id = null;
 
-    protected $name;
-
     protected $contentTypeDefinition = null;
 
     protected $clipping = 'default';
@@ -28,7 +26,7 @@ class Record
     public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $clipping = 'default', $workspace = 'default', $language = 'none')
     {
         $this->contentTypeDefinition = $contentTypeDefinition;
-        $this->name                  = $name;
+
         $this->setProperty('name', $name);
         $this->clipping  = $clipping;
         $this->workspace = $workspace;
@@ -70,14 +68,16 @@ class Record
         return $this->id;
     }
 
+
     public function setID($id)
     {
         $this->id = $id;
     }
 
+
     public function getName()
     {
-        return $this->name;
+        return $this->getProperty('name');
     }
 
 
@@ -85,6 +85,19 @@ class Record
     {
         return $this->contentTypeDefinition->getName();
     }
+
+
+    public function setRevision($revision)
+    {
+        $this->revision = $revision;
+    }
+
+
+    public function getRevision()
+    {
+        return $this->revision;
+    }
+
 
     /*
     public function hasSubtypes()

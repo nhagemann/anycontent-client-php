@@ -66,15 +66,15 @@ class Client
     }
 
 
-    public function saveRecord(Record $record, $clippingName = 'default', $workspace = 'default', $language = 'none')
+    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'none')
     {
         $contentTypeName = $record->getContentType();
 
-        $url = 'content/' . $contentTypeName . '/' . $clippingName . '/' . $workspace . '/' . $language;
+        $url = 'content/' . $contentTypeName . '/' . $workspace . '/' . $clippingName;
 
         $json = json_encode($record);
 
-        $request = $this->guzzle->post($url, null, array( 'record' => $json ));
+        $request = $this->guzzle->post($url, null, array( 'record' => $json, 'language' => $language ));
 
         $result = $request->send()->json();
 
@@ -83,5 +83,67 @@ class Client
     }
 
 
+    public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $clippingName = 'default', $language = 'none', $timeshift = 0)
+    {
+
+        $url = 'content/' . $contentTypeDefinition->getName() . '/' . $id . '/' . $workspace . '/' . $clippingName;
+
+        $request = $this->guzzle->get($url, null, array( 'language' => $language, 'timeshift' => $timeshift ));
+
+        $result = $request->send()->json();
+
+        $record = new Record($contentTypeDefinition, $result['properties']['name'], $clippingName, $workspace, $language);
+        $record->setID($result['id']);
+        $record->setRevision($result['info']['revision']);
+
+        foreach ($result['properties'] AS $property => $value)
+        {
+            $record->setProperty($property, $value);
+        }
+
+        return $record;
+    }
+
+
+    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, $timeshift = 0)
+    {
+        $url = 'content/' . $contentTypeDefinition->getName() . '/' . $workspace . '/' . $clippingName;
+
+        $queryParams              = array();
+        $queryParams['language']  = $language;
+        $queryParams['timeshift'] = $timeshift;
+        $queryParams['order']     = $order;
+        if ($order == 'property')
+        {
+            $queryParams['properties'] = join(',', $properties);
+        }
+        if ($limit)
+        {
+            $queryParams['limit'] = $limit;
+            $queryParams['page']  = $page;
+        }
+
+        $request = $this->guzzle->get($url, null, $queryParams);
+        $result  = $request->send()->json();
+
+        $records = array();
+
+        foreach ($result as $item)
+        {
+            $record = new Record($contentTypeDefinition, $item['properties']['name'], $clippingName, $workspace, $language);
+            $record->setID($item['id']);
+            $record->setRevision($item['info']['revision']);
+
+            foreach ($item['properties'] AS $property => $value)
+            {
+                $record->setProperty($property, $value);
+            }
+
+            $records[$record->getID()] = $record;
+        }
+
+        return $records;
+
+    }
 
 }

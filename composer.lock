@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "d5bf6d70565da39b408d970006dec25088923e3c"
+                "reference": "e62f205c834a23e3a8c5933b1748f3336721bcc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/d5bf6d70565da39b408d970006dec25088923e3c",
-                "reference": "d5bf6d70565da39b408d970006dec25088923e3c",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/e62f205c834a23e3a8c5933b1748f3336721bcc1",
+                "reference": "e62f205c834a23e3a8c5933b1748f3336721bcc1",
                 "shasum": ""
             },
             "require": {
@@ -95,7 +95,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2013-10-14 20:05:06"
+            "time": "2013-10-16 00:14:18"
         },
         {
             "name": "nhagemann/cmdl-parser-php",
@@ -103,12 +103,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nhagemann/cmdl-parser-php.git",
-                "reference": "34ed616328a7d428f77129934985504525a7ecfb"
+                "reference": "bfe7ba4d7146525d99083cb3907675c9e3cc91e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/34ed616328a7d428f77129934985504525a7ecfb",
-                "reference": "34ed616328a7d428f77129934985504525a7ecfb",
+                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/bfe7ba4d7146525d99083cb3907675c9e3cc91e8",
+                "reference": "bfe7ba4d7146525d99083cb3907675c9e3cc91e8",
                 "shasum": ""
             },
             "require": {
@@ -135,7 +135,7 @@
                 }
             ],
             "homepage": "http://www.nilshagemann.de",
-            "time": "2013-10-15 18:21:52"
+            "time": "2013-10-16 03:44:38"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -439,16 +439,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "3.7.27",
+            "version": "3.7.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "4b024e753e3421837afbcca962c8724c58b39376"
+                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4b024e753e3421837afbcca962c8724c58b39376",
-                "reference": "4b024e753e3421837afbcca962c8724c58b39376",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
+                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
                 "shasum": ""
             },
             "require": {
@@ -509,7 +509,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2013-09-16 03:09:52"
+            "time": "2013-10-17 07:27:40"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
