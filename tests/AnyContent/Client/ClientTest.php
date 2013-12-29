@@ -88,8 +88,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function xxxtestTimeShift()
+    public function testTimeShift()
     {
+        return;
         $cmdl = $this->client->getCMDL('example01');
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
@@ -99,18 +100,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $record    = new Record($contentTypeDefinition, 'Warp 7');
         $id        = $this->client->saveRecord($record);
         $record->setID($id);
-        sleep(5);
 
+        sleep(2);
         $this->assertEquals($id, $this->client->saveRecord($record));
 
+
+        $record    = $this->client->getRecord($contentTypeDefinition, $id, 'default', 'default', 'none', 1);
+        $this->assertEquals($id, $record->getID());
+        $this->assertEquals(1, $record->getRevision());
+
+        return;
         /** @var $record Record * */
         $record = $this->client->getRecord($contentTypeDefinition, $id);
         $this->assertEquals($id, $record->getID());
         $this->assertEquals(2, $record->getRevision());
 
-        $record    = $this->client->getRecord($contentTypeDefinition, $id, 'default', 'default', 'none', 3);
-        $this->assertEquals($id, $record->getID());
-        $this->assertEquals(1, $record->getRevision());
+
 
     }
 }

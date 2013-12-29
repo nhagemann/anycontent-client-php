@@ -7,14 +7,20 @@ use AnyContent\Client\AnyContentClientException;
 use CMDL\Util;
 use CMDL\ContentTypeDefinition;
 use AnyContent\Client\Record;
+use AnyContent\Client\Repository;
 
 class Client
 {
+
+    const RECORDS_ORDER_MODE_LIST = 1;
+    const RECORDS_ORDER_MODE_TREE = 2;
 
     /**
      * @var \Guzzle\Http\Client;
      */
     protected $guzzle;
+
+    protected $repositoryInfo = array();
 
     protected $contentTypeList = null;
 
@@ -39,7 +45,8 @@ class Client
 
         $result = $request->send()->json();
 
-        $this->contentTypeList = $result;
+        $this->repositoryInfo  = $result;
+        $this->contentTypeList = array_keys($result['content']);
     }
 
 
@@ -49,9 +56,22 @@ class Client
     }
 
 
+    public function getRepository()
+    {
+        return new Repository($this);
+    }
+
+
+    public function getContentTypeList()
+    {
+        return $this->contentTypeList;
+    }
+
+
+
     public function getCMDL($contentTypeName)
     {
-        if (array_key_exists($contentTypeName, $this->contentTypeList))
+        if (in_array($contentTypeName, $this->contentTypeList))
         {
             $request = $this->guzzle->get('cmdl/' . $contentTypeName);
             $result  = $request->send()->json();
@@ -60,7 +80,7 @@ class Client
         }
         else
         {
-            throw AnyContentClientException('', AnyContentClientException::ANYCONTENT_UNKNOW_CONTENT_TYPE);
+            throw new AnyContentClientException('', AnyContentClientException::ANYCONTENT_UNKNOW_CONTENT_TYPE);
         }
 
     }
@@ -88,10 +108,10 @@ class Client
 
         $url = 'content/' . $contentTypeDefinition->getName() . '/' . $id . '/' . $workspace . '/' . $clippingName;
 
-        $request = $this->guzzle->get($url, null, array( 'language' => $language, 'timeshift' => $timeshift ));
+        $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
+        $request = $this->guzzle->get($url, null, $options);
 
         $result = $request->send()->json();
-
         $record = new Record($contentTypeDefinition, $result['properties']['name'], $clippingName, $workspace, $language);
         $record->setID($result['id']);
         $record->setRevision($result['info']['revision']);
@@ -123,8 +143,11 @@ class Client
             $queryParams['page']  = $page;
         }
 
-        $request = $this->guzzle->get($url, null, $queryParams);
-        $result  = $request->send()->json();
+        $options = array( 'query' => $queryParams );
+
+        $request = $this->guzzle->get($url, null, $options);
+
+        $result = $request->send()->json();
 
         $records = array();
 
@@ -144,6 +167,31 @@ class Client
 
         return $records;
 
+    }
+
+
+    public function addContentQuery()
+    {
+
+    }
+
+
+    public function startContentQueries()
+    {
+
+    }
+
+
+    public function contentQueriesAreRunning()
+    {
+
+    }
+
+
+    public function saveRecordsOrder($order, $mode = self::RECORDS_ORDER_MODE_LIST)
+    {
+        array( 5, 6, 8, 2 );
+        array( 1 => 2, 2 => 0, 3 => 4 ); // parents
     }
 
 }
