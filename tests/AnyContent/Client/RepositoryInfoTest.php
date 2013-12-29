@@ -40,9 +40,9 @@ class RepositoryInfoTest extends \PHPUnit_Framework_TestCase
     public function testGetContentTypes()
     {
         /** @var Repository $repository */
-        $repository       = $this->client->getRepository();
-        $contentTypeNames = $repository->getContentTypes();
-        foreach ($contentTypeNames as $contentTypeName)
+        $repository   = $this->client->getRepository();
+        $contentTypes = $repository->getContentTypes();
+        foreach ($contentTypes as $contentTypeName => $contentTypeTitle)
         {
             $this->assertTrue($repository->hasContentType($contentTypeName));
             $this->assertInstanceOf('CMDL\ContentTypeDefinition', $repository->getContentTypeDefinition($contentTypeName));

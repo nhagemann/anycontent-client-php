@@ -46,7 +46,11 @@ class Client
         $result = $request->send()->json();
 
         $this->repositoryInfo  = $result;
-        $this->contentTypeList = array_keys($result['content']);
+        $this->contentTypeList = array();
+        foreach ($result['content'] as $name => $item)
+        {
+            $this->contentTypeList[$name] = $item['title'];
+        }
     }
 
 
@@ -68,10 +72,9 @@ class Client
     }
 
 
-
     public function getCMDL($contentTypeName)
     {
-        if (in_array($contentTypeName, $this->contentTypeList))
+        if (array_key_exists($contentTypeName, $this->contentTypeList))
         {
             $request = $this->guzzle->get('cmdl/' . $contentTypeName);
             $result  = $request->send()->json();
