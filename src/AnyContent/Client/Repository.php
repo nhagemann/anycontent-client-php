@@ -30,8 +30,13 @@ class Repository
     }
 
 
-    public function getContentTypeDefinition($contentTypeName)
+    public function getContentTypeDefinition($contentTypeName = null)
     {
+        if ($contentTypeName == null AND $this->contentTypeDefinition)
+        {
+            return $this->contentTypeDefinition;
+        }
+
         if ($this->hasContentType($contentTypeName))
         {
             $cmdl                  = $this->client->getCMDL($contentTypeName);
