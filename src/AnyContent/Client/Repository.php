@@ -90,4 +90,18 @@ class Repository
 
         return false;
     }
+
+
+    public function getRecordsCount($workspace = 'default', $language = 'none', $timeshift = 0)
+    {
+        if ($this->contentTypeDefinition)
+        {
+            $repositoryInfo = $this->client->getRepositoryInfo($workspace, $language, $timeshift);
+
+            return $repositoryInfo['content'][$this->contentTypeName]['count'];
+        }
+
+        return false;
+    }
+
 }

@@ -20,7 +20,7 @@ class Client
      */
     protected $guzzle;
 
-    protected $repositoryInfo = array();
+    protected $repositoryInfo = null;
 
     protected $contentTypeList = null;
 
@@ -66,6 +66,29 @@ class Client
     }
 
 
+    public function getRepositoryInfo($workspace = 'default', $language = 'none', $timeshift = 0)
+    {
+        if ($workspace == 'default' AND $language == 'none' AND $timeshift == 0 AND $this->repositoryInfo != null)
+        {
+            return $this->repositoryInfo;
+        }
+
+        $url = $workspace;
+
+        $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
+        $request = $this->guzzle->get($url, null, $options);
+
+        $result = $request->send()->json();
+
+        if ($workspace == 'default' AND $language == 'none' AND $timeshift == 0)
+        {
+            $this->repositoryInfo = $result;
+        }
+
+        return $result;
+    }
+
+
     public function getContentTypeList()
     {
         return $this->contentTypeList;
@@ -101,6 +124,8 @@ class Client
 
         $result = $request->send()->json();
 
+        $this->repositoryInfo = null;
+
         return (int)$result;
 
     }
@@ -127,6 +152,11 @@ class Client
         return $record;
     }
 
+
+    public function deleteRecord (ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'none')
+    {
+
+    }
 
     public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, $timeshift = 0)
     {
