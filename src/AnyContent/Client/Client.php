@@ -8,6 +8,7 @@ use CMDL\Util;
 use CMDL\ContentTypeDefinition;
 use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
+use AnyContent\Client\UserInfo;
 
 class Client
 {
@@ -54,9 +55,9 @@ class Client
     }
 
 
-    public function setUserInfo($username, $firstname, $lastname)
+    public function setUserInfo(UserInfo $userInfo)
     {
-        $this->guzzle->setDefaultOption('query', array( 'userinfo' => array( 'username' => $username, 'firstname' => $firstname, 'lastname' => $lastname ) ));
+        $this->guzzle->setDefaultOption('query', array( 'userinfo' => array( 'username' => $userInfo->getUsername(), 'firstname' => $userInfo->getFirstname(), 'lastname' => $userInfo->getLastname() ) ));
     }
 
 
@@ -140,23 +141,17 @@ class Client
         $request = $this->guzzle->get($url, null, $options);
 
         $result = $request->send()->json();
-        $record = new Record($contentTypeDefinition, $result['properties']['name'], $clippingName, $workspace, $language);
-        $record->setID($result['id']);
-        $record->setRevision($result['info']['revision']);
-
-        foreach ($result['properties'] AS $property => $value)
-        {
-            $record->setProperty($property, $value);
-        }
+        $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language);
 
         return $record;
     }
 
 
-    public function deleteRecord (ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'none')
+    public function deleteRecord(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'none')
     {
 
     }
+
 
     public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, $timeshift = 0)
     {
@@ -186,14 +181,7 @@ class Client
 
         foreach ($result as $item)
         {
-            $record = new Record($contentTypeDefinition, $item['properties']['name'], $clippingName, $workspace, $language);
-            $record->setID($item['id']);
-            $record->setRevision($item['info']['revision']);
-
-            foreach ($item['properties'] AS $property => $value)
-            {
-                $record->setProperty($property, $value);
-            }
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
 
             $records[$record->getID()] = $record;
         }
@@ -225,6 +213,24 @@ class Client
     {
         array( 5, 6, 8, 2 );
         array( 1 => 2, 2 => 0, 3 => 4 ); // parents
+    }
+
+
+    protected function createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language)
+    {
+        $record = new Record($contentTypeDefinition, $result['properties']['name'], $clippingName, $workspace, $language);
+        $record->setID($result['id']);
+        $record->setRevision($result['info']['revision']);
+
+        foreach ($result['properties'] AS $property => $value)
+        {
+            $record->setProperty($property, $value);
+        }
+
+        $record->setCreationUserInfo(new UserInfo($result['info']['creation']['username'], $result['info']['creation']['firstname'], $result['info']['creation']['lastname'], $result['info']['creation']['timestamp']));
+        $record->setLastChangeUserInfo(new UserInfo($result['info']['lastchange']['username'], $result['info']['lastchange']['firstname'], $result['info']['lastchange']['lastname'], $result['info']['lastchange']['timestamp']));
+
+        return $record;
     }
 
 }

@@ -7,6 +7,8 @@ use CMDL\Util;
 
 use CMDL\ContentTypeDefinition;
 
+use AnyContent\Client\UserInfo;
+
 class Record
 {
 
@@ -21,6 +23,9 @@ class Record
     public $properties = array();
 
     public $revision = 1;
+
+    public $creationUserInfo;
+    public $lastChangeUserInfo;
 
 
     public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $clipping = 'default', $workspace = 'default', $language = 'none')
@@ -99,90 +104,71 @@ class Record
     }
 
 
-    /*
-    public function hasSubtypes()
-    {
-        return AnyContent_Manager::hasSubtypes($this->content_type);
-
-    }  */
-
-    /*
-    public function getSubtype()
-    {
-        //var_dump($this->label);
-        $items = AnyContent_Manager::getPossibleSubtypes($this->content_type);
-        //var_dump($this->subtype);
-        if (array_key_exists($this->getProperty('subtype'), $items))
-        {
-            return $items[$this->getProperty('subtype')]['name'];
-        }
-
-        //var_dump($labels);
-        return false;
-    } */
-
-    /*
-    public function getSubtypeColor($default = false)
-    {
-        //var_dump($this->label);
-        $items = AnyContent_Manager::getPossibleSubtypes($this->content_type);
-        if (array_key_exists($this->getProperty('subtype'), $items))
-        {
-            return $items[$this->getProperty('subtype')]['color'];
-        }
-
-        //var_dump($labels);
-        return $default;
-    }
-
-
-    public function hasStatus()
-    {
-        return AnyContent_Manager::hasStatus($this->content_type);
-    }
-
-
     public function getStatus()
     {
-        //var_dump($this->label);
-        $items = AnyContent_Manager::getPossibleStates($this->content_type);
-        if (array_key_exists($this->getProperty('status'), $items))
-        {
-            return $items[$this->getProperty('status')]['name'];
-        }
-
-        //var_dump($labels);
-        return false;
+        return $this->getProperty('status');
     }
 
 
-    public function getStatusColor($default = false)
+    public function getStatusLabel()
     {
-        //var_dump($this->label);
-        $items = AnyContent_Manager::getPossibleStates($this->content_type);
-        if (array_key_exists($this->getProperty('status'), $items))
+        $statusList = $this->contentTypeDefinition->getStatusList();
+        if ($statusList)
         {
-            return $items[$this->getProperty('status')]['color'];
+            if (array_key_exists($this->getProperty('status'), $statusList))
+            {
+                return $statusList[$this->getProperty('status')];
+            }
+
         }
 
-        //var_dump($labels);
-        return $default;
+        return null;
     }
 
 
-
-
-    public function save()
+    public function getSubtype()
     {
-        return AnyContent_Manager::saveRecord($this);
+        return $this->getProperty('subtype');
     }
 
 
-    public function delete()
+    public function getSubtypeLabel()
     {
-        if ($this->id)
+        $subtypesList = $this->contentTypeDefinition->getSubtypes();
+        if ($subtypesList)
         {
-            return AnyContent_Manager::deleteRecord($this->content_type, $this->id);
+            if (array_key_exists($this->getProperty('subtype'), $subtypesList))
+            {
+                return $subtypesList[$this->getProperty('subtype')];
+            }
+
         }
-    } */
+
+        return null;
+    }
+
+
+    public function setLastChangeUserInfo($lastChangeUserInfo)
+    {
+        $this->lastChangeUserInfo = $lastChangeUserInfo;
+    }
+
+
+    public function getLastChangeUserInfo()
+    {
+        return $this->lastChangeUserInfo;
+    }
+
+
+    public function setCreationUserInfo($creationUserInfo)
+    {
+        $this->creationUserInfo = $creationUserInfo;
+    }
+
+
+    public function getCreationUserInfo()
+    {
+        return $this->creationUserInfo;
+    }
+
 }

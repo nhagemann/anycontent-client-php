@@ -80,6 +80,11 @@ class Repository
 
     }
 
+    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'none')
+    {
+        return $this->client->saveRecord($record, $workspace, $clippingName, $language);
+    }
+
 
     public function getRecords($workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, $timeshift = 0)
     {

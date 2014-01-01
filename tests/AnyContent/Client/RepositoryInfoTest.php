@@ -7,6 +7,7 @@ use CMDL\Parser;
 use AnyContent\Client\Client;
 use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
+use AnyContent\Client\UserInfo;
 
 class RepositoryInfoTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,7 +23,7 @@ class RepositoryInfoTest extends \PHPUnit_Framework_TestCase
 
         // Connect to repository
         $client = new Client('http://anycontent.dev/1/example');
-        $client->setUserInfo('john@doe.com', 'John', 'Doe');
+        $client->setUserInfo(new UserInfo('john@doe.com', 'John', 'Doe'));
         $this->client = $client;
     }
 
