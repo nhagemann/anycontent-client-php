@@ -86,6 +86,8 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
         $records = $this->client->getRecords($contentTypeDefinition);
 
         $this->assertCount(5,$records);
+
+        $this->assertEquals(5,$this->client->countRecords($contentTypeDefinition));
     }
 
 

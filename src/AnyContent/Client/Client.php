@@ -75,7 +75,7 @@ class Client
             return $this->repositoryInfo;
         }
 
-        $url = 'info/'.$workspace;
+        $url = 'info/' . $workspace;
 
         $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
         $request = $this->guzzle->get($url, null, $options);
@@ -151,16 +151,46 @@ class Client
 
     public function deleteRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $language = 'none')
     {
-        $url = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace;
-        $options = array( 'query' => array( 'language' => $language));
+        $url     = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace;
+        $options = array( 'query' => array( 'language' => $language ) );
         $request = $this->guzzle->delete($url, null, $options);
 
         $result = $request->send()->json();
+
         return $result;
     }
 
 
     public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    {
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
+
+        $records = array();
+
+        foreach ($result['records'] as $item)
+        {
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
+
+            $records[$record->getID()] = $record;
+        }
+
+        return $records;
+    }
+
+
+    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    {
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
+        if ($result)
+        {
+            return $result['info']['count'];
+        }
+
+        return false;
+    }
+
+
+    public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         $url = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace . '/' . $clippingName;
 
@@ -179,7 +209,7 @@ class Client
         }
         if ($filter)
         {
-            $queryParams['filter']=$filter->getConditionsArray();
+            $queryParams['filter'] = $filter->getConditionsArray();
         }
 
         $options = array( 'query' => $queryParams );
@@ -188,44 +218,34 @@ class Client
 
         $result = $request->send()->json();
 
-        $records = array();
-
-        foreach ($result['records'] as $item)
-        {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
-
-            $records[$record->getID()] = $record;
-        }
-
-        return $records;
+        return $result;
 
     }
 
 
-   /* public function addContentQuery()
-    {
+    /* public function addContentQuery()
+     {
 
-    }
-
-
-    public function startContentQueries()
-    {
-
-    }
+     }
 
 
-    public function contentQueriesAreRunning()
-    {
+     public function startContentQueries()
+     {
 
-    }
+     }
 
 
-    public function saveRecordsOrder($order, $mode = self::RECORDS_ORDER_MODE_LIST)
-    {
-        array( 5, 6, 8, 2 );
-        array( 1 => 2, 2 => 0, 3 => 4 ); // parents
-    }*/
+     public function contentQueriesAreRunning()
+     {
 
+     }
+
+
+     public function saveRecordsOrder($order, $mode = self::RECORDS_ORDER_MODE_LIST)
+     {
+         array( 5, 6, 8, 2 );
+         array( 1 => 2, 2 => 0, 3 => 4 ); // parents
+     }*/
 
     protected function createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language)
     {

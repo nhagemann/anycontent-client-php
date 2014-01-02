@@ -99,7 +99,17 @@ class Repository
         return false;
     }
 
+    public function countRecords($workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    {
+        if ($this->contentTypeDefinition)
+        {
+            return $this->client->countRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
+        }
 
+        return false;
+    }
+
+    /*
     public function getRecordsCount($workspace = 'default', $language = 'none', $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
@@ -110,7 +120,7 @@ class Repository
         }
 
         return false;
-    }
+    } */
 
 
     public function deleteRecord($id, $workspace = 'default', $language = 'none')
