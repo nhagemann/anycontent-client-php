@@ -9,6 +9,7 @@ use CMDL\ContentTypeDefinition;
 use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Client\UserInfo;
+use AnyContent\Client\ContentFilter;
 
 class Client
 {
@@ -158,7 +159,7 @@ class Client
     }
 
 
-    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, $timeshift = 0)
+    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         $url = 'content/' . $contentTypeDefinition->getName() . '/' . $workspace . '/' . $clippingName;
 
@@ -174,6 +175,10 @@ class Client
         {
             $queryParams['limit'] = $limit;
             $queryParams['page']  = $page;
+        }
+        if ($filter)
+        {
+            $queryParams['filter']=$filter->getConditionsArray();
         }
 
         $options = array( 'query' => $queryParams );

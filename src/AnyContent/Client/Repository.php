@@ -8,6 +8,8 @@ use CMDL\Util;
 
 use CMDL\ContentTypeDefinition;
 
+use AnyContent\Client\ContentFilter;
+
 class Repository
 {
 
@@ -87,11 +89,11 @@ class Repository
     }
 
 
-    public function getRecords($workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, $timeshift = 0)
+    public function getRecords($workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
-            return $this->client->getRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $timeshift);
+            return $this->client->getRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
         }
 
         return false;

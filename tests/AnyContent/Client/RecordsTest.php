@@ -8,7 +8,7 @@ use AnyContent\Client\Client;
 use AnyContent\Client\Record;
 use AnyContent\Client\UserInfo;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class RecordsTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
