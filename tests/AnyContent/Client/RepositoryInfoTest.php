@@ -72,7 +72,7 @@ class RepositoryInfoTest extends \PHPUnit_Framework_TestCase
         $record = new Record($contentTypeDefinition, 'New Record 6');
         $record->setProperty('article', 'Test 6');
         $id = $this->client->saveRecord($record);
-        $this->assertEquals(6, $id);
+
 
         $info = $this->client->getRepositoryInfo();
         $this->assertEquals(6, $info['content']['example01']['count']);

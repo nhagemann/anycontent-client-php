@@ -80,6 +80,7 @@ class Repository
 
     }
 
+
     public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'none')
     {
         return $this->client->saveRecord($record, $workspace, $clippingName, $language);
@@ -109,4 +110,15 @@ class Repository
         return false;
     }
 
+
+    public function deleteRecord($id, $workspace = 'default', $language = 'none')
+    {
+        if ($this->contentTypeDefinition)
+        {
+            return $this->client->deleteRecord($this->contentTypeDefinition, $id, $workspace, $language);
+        }
+
+        return false;
+
+    }
 }

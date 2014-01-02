@@ -147,9 +147,14 @@ class Client
     }
 
 
-    public function deleteRecord(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'none')
+    public function deleteRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $language = 'none')
     {
+        $url = 'content/' . $contentTypeDefinition->getName() . '/' . $id . '/' . $workspace;
+        $options = array( 'query' => array( 'language' => $language));
+        $request = $this->guzzle->delete($url, null, $options);
 
+        $result = $request->send()->json();
+        return $result;
     }
 
 

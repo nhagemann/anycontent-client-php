@@ -72,6 +72,18 @@ class UserInfo
     }
 
 
+    public function getName()
+    {
+        $name = trim($this->getFirstname() . ' ' . $this->getLastname());
+        if ($name == '')
+        {
+            $name = $this->getUsername();
+        }
+
+        return $name;
+    }
+
+
     public function setTimestamp($timestamp)
     {
         $this->timestamp = $timestamp;

@@ -89,6 +89,33 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testDeleteRecords()
+    {
+        $cmdl = $this->client->getCMDL('example01');
+
+        $contentTypeDefinition = Parser::parseCMDLString($cmdl);
+        $contentTypeDefinition->setName('example01');
+
+        $this->assertFalse($this->client->deleteRecord($contentTypeDefinition,99));
+        $this->assertTrue($this->client->deleteRecord($contentTypeDefinition,5));
+
+        /** @var $record Record * */
+        $records = $this->client->getRecords($contentTypeDefinition);
+
+        $this->assertCount(4,$records);
+
+        $record = new Record($contentTypeDefinition, 'New Record 5');
+        $record->setProperty('article', 'Test 5 ');
+        $record->setId(5);
+        $id = $this->client->saveRecord($record);
+        $this->assertEquals(5, $id);
+
+        /** @var $record Record * */
+        $records = $this->client->getRecords($contentTypeDefinition);
+
+        $this->assertCount(5,$records);
+    }
+
     public function testTimeShift()
     {
         return;
