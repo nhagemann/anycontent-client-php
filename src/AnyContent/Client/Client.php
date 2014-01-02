@@ -75,7 +75,7 @@ class Client
             return $this->repositoryInfo;
         }
 
-        $url = $workspace;
+        $url = 'info/'.$workspace;
 
         $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
         $request = $this->guzzle->get($url, null, $options);
@@ -118,7 +118,7 @@ class Client
     {
         $contentTypeName = $record->getContentType();
 
-        $url = 'content/' . $contentTypeName . '/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeName . '/records/' . $workspace . '/' . $clippingName;
 
         $json = json_encode($record);
 
@@ -136,13 +136,14 @@ class Client
     public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $clippingName = 'default', $language = 'none', $timeshift = 0)
     {
 
-        $url = 'content/' . $contentTypeDefinition->getName() . '/' . $id . '/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace . '/' . $clippingName;
 
         $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
         $request = $this->guzzle->get($url, null, $options);
 
         $result = $request->send()->json();
-        $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language);
+
+        $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $clippingName, $workspace, $language);
 
         return $record;
     }
@@ -150,7 +151,7 @@ class Client
 
     public function deleteRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $language = 'none')
     {
-        $url = 'content/' . $contentTypeDefinition->getName() . '/' . $id . '/' . $workspace;
+        $url = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace;
         $options = array( 'query' => array( 'language' => $language));
         $request = $this->guzzle->delete($url, null, $options);
 
@@ -161,7 +162,7 @@ class Client
 
     public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
-        $url = 'content/' . $contentTypeDefinition->getName() . '/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace . '/' . $clippingName;
 
         $queryParams              = array();
         $queryParams['language']  = $language;
@@ -189,7 +190,7 @@ class Client
 
         $records = array();
 
-        foreach ($result as $item)
+        foreach ($result['records'] as $item)
         {
             $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
 
@@ -201,7 +202,7 @@ class Client
     }
 
 
-    public function addContentQuery()
+   /* public function addContentQuery()
     {
 
     }
@@ -223,7 +224,7 @@ class Client
     {
         array( 5, 6, 8, 2 );
         array( 1 => 2, 2 => 0, 3 => 4 ); // parents
-    }
+    }*/
 
 
     protected function createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language)
