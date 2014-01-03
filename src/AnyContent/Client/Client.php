@@ -11,12 +11,16 @@ use AnyContent\Client\Repository;
 use AnyContent\Client\UserInfo;
 use AnyContent\Client\ContentFilter;
 
+use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\ArrayCache;
+
 class Client
 {
 
     const RECORDS_ORDER_MODE_LIST = 1;
     const RECORDS_ORDER_MODE_TREE = 2;
 
+    const MAX_TIMESHIFT = 315532800; // roundabout 10 years, equals to 1.1.1980
     /**
      * @var \Guzzle\Http\Client;
      */
@@ -26,6 +30,17 @@ class Client
 
     protected $contentTypeList = null;
 
+    /**
+     * @var Cache;
+     */
+    protected $cache;
+
+    protected $cachePrefix = '';
+
+    protected $cacheSecondsCMDL = 3600;
+    protected $cacheSecondsInfo = 15;
+    protected $cacheSecondsDefault = 600;
+
 
     /**
      * @param        $url
@@ -33,7 +48,7 @@ class Client
      * @param null   $password
      * @param string $authType "Basic" (default), "Digest", "NTLM", or "Any".
      */
-    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic')
+    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $secondsIgnoringEventuallyCMDLUpdates = 3600, $secondsIgnoringEventuallyConcurrentWriteRequests = 15, $secondsStoringRecordsInCache = 600)
     {
         // Create a client and provide a base URL
         $this->guzzle = new \Guzzle\Http\Client($url);
@@ -43,11 +58,35 @@ class Client
             $this->guzzle->setDefaultOption('auth', array( $apiUser, $apiPassword, $authType ));
         }
 
-        $request = $this->guzzle->get('');
+        if ($cache)
+        {
+            $this->cache = $cache;
+        }
+        else
+        {
+            //$this->cache = new ArrayCache();
+            //$this->cache = new \Doctrine\Common\Cache\ApcCache();
 
-        $result = $request->send()->json();
+            $memcache = new \Memcached();
+            $memcache->addServer('localhost', 11211);
 
-        $this->repositoryInfo  = $result;
+            $cacheDriver = new \Doctrine\Common\Cache\MemcachedCache();
+            $cacheDriver->setMemcached($memcache);
+
+            $this->cache = $cacheDriver;
+        }
+        $this->cacheSecondsCMDL    = $secondsIgnoringEventuallyCMDLUpdates;
+        $this->cacheSecondsInfo    = $secondsIgnoringEventuallyConcurrentWriteRequests;
+        $this->cacheSecondsDefault = $secondsStoringRecordsInCache;
+
+        $this->cachePrefix = 'client_' . md5($url . $apiUser . $apiPassword);
+
+        //$request = $this->guzzle->get('');
+
+        //$result = $request->send()->json();
+
+        //$this->repositoryInfo  = $result;
+        $result                = $this->getRepositoryInfo();
         $this->contentTypeList = array();
         foreach ($result['content'] as $name => $item)
         {
@@ -70,10 +109,22 @@ class Client
 
     public function getRepositoryInfo($workspace = 'default', $language = 'none', $timeshift = 0)
     {
+
+        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        {
+            $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_' . $timeshift;
+
+            if ($this->cache->contains($cacheToken))
+            {
+                return $this->cache->fetch($cacheToken);
+            }
+        }
+
+        /*
         if ($workspace == 'default' AND $language == 'none' AND $timeshift == 0 AND $this->repositoryInfo != null)
         {
             return $this->repositoryInfo;
-        }
+        }     */
 
         $url = 'info/' . $workspace;
 
@@ -82,12 +133,33 @@ class Client
 
         $result = $request->send()->json();
 
-        if ($workspace == 'default' AND $language == 'none' AND $timeshift == 0)
+        if ($this->cacheSecondsInfo != 0)
         {
-            $this->repositoryInfo = $result;
+            if ($timeshift == 0)
+            {
+                $this->cache->save($cacheToken, $result, $this->cacheSecondsInfo);
+            }
+            if ($timeshift > self::MAX_TIMESHIFT)
+            {
+                // timeshifted info result can get stored longer, since they won't change in the future, but they have to be absolute (>MAX_TIMESHIFT)
+                $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
+            }
         }
 
         return $result;
+    }
+
+
+    public function getLastChangeTimestamp(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'none', $timeshift = 0)
+    {
+        $info = $this->getRepositoryInfo($workspace, $language, $timeshift);
+
+        if (array_key_exists($contentTypeDefinition->getName(), $info['content']))
+        {
+            return ($info['content'][$contentTypeDefinition->getName()]['lastchange_content']);
+        }
+
+        return time();
     }
 
 
@@ -101,8 +173,20 @@ class Client
     {
         if (array_key_exists($contentTypeName, $this->contentTypeList))
         {
+            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName;
+
+            if ($this->cache->contains($cacheToken))
+            {
+                return $this->cache->fetch($cacheToken);
+            }
+
             $request = $this->guzzle->get('cmdl/' . $contentTypeName);
             $result  = $request->send()->json();
+
+            if ($this->cacheSecondsCMDL != 0)
+            {
+                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsCMDL);
+            }
 
             return $result['cmdl'];
         }
@@ -126,7 +210,9 @@ class Client
 
         $result = $request->send()->json();
 
-        $this->repositoryInfo = null;
+        // repository info has changed
+        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
+        $this->cache->delete($cacheToken);
 
         return (int)$result;
 
@@ -156,6 +242,10 @@ class Client
         $request = $this->guzzle->delete($url, null, $options);
 
         $result = $request->send()->json();
+
+        // repository info has changed
+        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
+        $this->cache->delete($cacheToken);
 
         return $result;
     }
@@ -192,6 +282,25 @@ class Client
 
     public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
+        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        {
+            $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
+
+            $filterToken ='';
+            $propertiesToken = json_encode($properties);
+            if ($filter)
+            {
+                $filterToken = md5(json_encode($filter->getConditionsArray()));
+            }
+
+            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName().'_'.$timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken);
+
+            if ($this->cache->contains($cacheToken))
+            {
+                return $this->cache->fetch($cacheToken);
+            }
+        }
+
         $url = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace . '/' . $clippingName;
 
         $queryParams              = array();
@@ -217,6 +326,11 @@ class Client
         $request = $this->guzzle->get($url, null, $options);
 
         $result = $request->send()->json();
+
+        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        {
+            $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
+        }
 
         return $result;
 

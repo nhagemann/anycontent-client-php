@@ -98,8 +98,19 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
         $contentTypeDefinition->setName('example01');
 
+        /** @var $record Record * */
+        $records = $this->client->getRecords($contentTypeDefinition);
+
+        $this->assertCount(5,$records);
+
+        $t1 = $this->client->getLastChangeTimestamp($contentTypeDefinition);
+
         $this->assertFalse($this->client->deleteRecord($contentTypeDefinition,99));
         $this->assertTrue($this->client->deleteRecord($contentTypeDefinition,5));
+
+        $t2 = $this->client->getLastChangeTimestamp($contentTypeDefinition);
+
+        $this->assertNotEquals($t1,$t2);
 
         /** @var $record Record * */
         $records = $this->client->getRecords($contentTypeDefinition);

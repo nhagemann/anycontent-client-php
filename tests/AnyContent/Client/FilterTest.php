@@ -49,10 +49,17 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $id = $this->client->saveRecord($record);
         $this->assertEquals(2, $id);
 
+
+        $t1 = $this->client->getLastChangeTimestamp($contentTypeDefinition);
+
         $record = new Record($contentTypeDefinition, 'Differing Name');
         $record->setProperty('source', 'c');
         $id = $this->client->saveRecord($record);
         $this->assertEquals(3, $id);
+
+        $t2 = $this->client->getLastChangeTimestamp($contentTypeDefinition);
+
+        $this->assertNotEquals($t1,$t2);
 
         $repository = $this->client->getRepository();
         $repository->selectContentType('example01');
