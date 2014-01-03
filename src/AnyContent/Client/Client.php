@@ -221,6 +221,17 @@ class Client
 
     public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $clippingName = 'default', $language = 'none', $timeshift = 0)
     {
+        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        {
+            $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
+
+            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language;
+
+            if ($this->cache->contains($cacheToken))
+            {
+                return $this->cache->fetch($cacheToken);
+            }
+        }
 
         $url = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace . '/' . $clippingName;
 
@@ -230,6 +241,11 @@ class Client
         $result = $request->send()->json();
 
         $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $clippingName, $workspace, $language);
+
+        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        {
+            $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
+        }
 
         return $record;
     }
@@ -286,14 +302,14 @@ class Client
         {
             $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
 
-            $filterToken ='';
+            $filterToken     = '';
             $propertiesToken = json_encode($properties);
             if ($filter)
             {
                 $filterToken = md5(json_encode($filter->getConditionsArray()));
             }
 
-            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName().'_'.$timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken);
+            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken);
 
             if ($this->cache->contains($cacheToken))
             {
@@ -327,9 +343,20 @@ class Client
 
         $result = $request->send()->json();
 
-        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        if ($result)
         {
-            $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
+            if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+            {
+                $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
+
+                foreach ($result['records'] AS $item)
+                {
+                    $record     = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
+                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $record->getId() . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language;
+
+                    $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
+                }
+            }
         }
 
         return $result;
