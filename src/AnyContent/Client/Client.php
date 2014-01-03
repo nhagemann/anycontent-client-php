@@ -64,17 +64,9 @@ class Client
         }
         else
         {
-            //$this->cache = new ArrayCache();
-            //$this->cache = new \Doctrine\Common\Cache\ApcCache();
-
-            $memcache = new \Memcached();
-            $memcache->addServer('localhost', 11211);
-
-            $cacheDriver = new \Doctrine\Common\Cache\MemcachedCache();
-            $cacheDriver->setMemcached($memcache);
-
-            $this->cache = $cacheDriver;
+            $this->cache = new ArrayCache();
         }
+
         $this->cacheSecondsCMDL    = $secondsIgnoringEventuallyCMDLUpdates;
         $this->cacheSecondsInfo    = $secondsIgnoringEventuallyConcurrentWriteRequests;
         $this->cacheSecondsDefault = $secondsStoringRecordsInCache;
