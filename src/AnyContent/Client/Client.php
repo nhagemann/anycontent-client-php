@@ -200,7 +200,14 @@ class Client
 
         $request = $this->guzzle->post($url, null, array( 'record' => $json, 'language' => $language ));
 
-        $result = $request->send()->json();
+        try
+        {
+            $result = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+            return false;
+        }
 
         // repository info has changed
         $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';

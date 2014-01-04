@@ -171,4 +171,41 @@ class Record
         return $this->creationUserInfo;
     }
 
+
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+    }
+
+
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+
+    public function setWorkspace($workspace)
+    {
+        $this->workspace = $workspace;
+    }
+
+
+    public function getWorkspace()
+    {
+        return $this->workspace;
+    }
+
+
+    public function setClippingName($clipping)
+    {
+        $this->clipping = $clipping;
+    }
+
+
+    public function getClippingName()
+    {
+        return $this->clipping;
+    }
+
+
 }
