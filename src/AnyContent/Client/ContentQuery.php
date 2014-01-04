@@ -24,7 +24,7 @@ class ContentQuery
     protected $page;
 
 
-    protected function __construct(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $timeshift = 0)
+    protected function __construct(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
     {
         $this->contentTypeDefinition = $contentTypeDefinition;
         $this->setWorkspace($workspace);

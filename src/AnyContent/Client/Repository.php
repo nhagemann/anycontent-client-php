@@ -71,7 +71,7 @@ class Repository
     }
 
 
-    public function getRecord($id, $workspace = 'default', $clippingName = 'default', $language = 'none', $timeshift = 0)
+    public function getRecord($id, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
@@ -83,13 +83,13 @@ class Repository
     }
 
 
-    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'none')
+    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'default')
     {
         return $this->client->saveRecord($record, $workspace, $clippingName, $language);
     }
 
 
-    public function getRecords($workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function getRecords($workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
@@ -99,7 +99,7 @@ class Repository
         return false;
     }
 
-    public function countRecords($workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function countRecords($workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
@@ -110,7 +110,7 @@ class Repository
     }
 
     /*
-    public function getRecordsCount($workspace = 'default', $language = 'none', $timeshift = 0)
+    public function getRecordsCount($workspace = 'default', $language = 'default', $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
@@ -123,7 +123,7 @@ class Repository
     } */
 
 
-    public function deleteRecord($id, $workspace = 'default', $language = 'none')
+    public function deleteRecord($id, $workspace = 'default', $language = 'default')
     {
         if ($this->contentTypeDefinition)
         {

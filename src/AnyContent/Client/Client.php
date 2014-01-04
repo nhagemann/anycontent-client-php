@@ -99,7 +99,7 @@ class Client
     }
 
 
-    public function getRepositoryInfo($workspace = 'default', $language = 'none', $timeshift = 0)
+    public function getRepositoryInfo($workspace = 'default', $language = 'default', $timeshift = 0)
     {
 
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
@@ -142,7 +142,7 @@ class Client
     }
 
 
-    public function getLastChangeTimestamp(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'none', $timeshift = 0)
+    public function getLastChangeTimestamp(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'default', $timeshift = 0)
     {
         $info = $this->getRepositoryInfo($workspace, $language, $timeshift);
 
@@ -190,7 +190,7 @@ class Client
     }
 
 
-    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'none')
+    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'default')
     {
         $contentTypeName = $record->getContentType();
 
@@ -218,7 +218,7 @@ class Client
     }
 
 
-    public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $clippingName = 'default', $language = 'none', $timeshift = 0)
+    public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
@@ -250,7 +250,7 @@ class Client
     }
 
 
-    public function deleteRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $language = 'none')
+    public function deleteRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $language = 'default')
     {
         $url     = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace;
         $options = array( 'query' => array( 'language' => $language ) );
@@ -266,7 +266,7 @@ class Client
     }
 
 
-    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
 
@@ -283,7 +283,7 @@ class Client
     }
 
 
-    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
         if ($result)
@@ -295,7 +295,7 @@ class Client
     }
 
 
-    public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'none', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {

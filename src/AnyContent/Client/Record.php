@@ -18,7 +18,7 @@ class Record
 
     protected $clipping = 'default';
     protected $workspace = 'default';
-    protected $language = 'none';
+    protected $language = 'default';
 
     public $properties = array();
 
@@ -28,7 +28,7 @@ class Record
     public $lastChangeUserInfo;
 
 
-    public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $clipping = 'default', $workspace = 'default', $language = 'none')
+    public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $clipping = 'default', $workspace = 'default', $language = 'default')
     {
         $this->contentTypeDefinition = $contentTypeDefinition;
 
