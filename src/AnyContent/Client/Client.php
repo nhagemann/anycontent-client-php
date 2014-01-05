@@ -237,16 +237,26 @@ class Client
         $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
         $request = $this->guzzle->get($url, null, $options);
 
-        $result = $request->send()->json();
-
-        $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $clippingName, $workspace, $language);
-
-        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        try
         {
-            $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
+
+            $result = $request->send()->json();
+
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $clippingName, $workspace, $language);
+
+            if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+            {
+                $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
+            }
+
+            return $record;
+        }
+        catch (\Exception $e)
+        {
+
         }
 
-        return $record;
+        return false;
     }
 
 
@@ -285,7 +295,7 @@ class Client
 
     public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
         if ($result)
         {
             return $result['info']['count'];
@@ -414,6 +424,11 @@ class Client
         $record = new Record($contentTypeDefinition, $result['properties']['name'], $clippingName, $workspace, $language);
         $record->setID($result['id']);
         $record->setRevision($result['info']['revision']);
+        $record->setRevisionTimestamp($result['info']['revision_timestamp']);
+        $record->setHash($result['info']['hash']);
+        $record->setPosition($result['info']['position']);
+        $record->setLevelWithinSortedTree($result['info']['level']);
+        $record->setParentRecordId($result['info']['parent_id']);
 
         foreach ($result['properties'] AS $property => $value)
         {

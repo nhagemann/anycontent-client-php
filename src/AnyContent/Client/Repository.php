@@ -109,18 +109,16 @@ class Repository
         return false;
     }
 
-    /*
-    public function getRecordsCount($workspace = 'default', $language = 'default', $timeshift = 0)
+    public function sortRecords($list, $workspace = 'default',  $language = 'default')
     {
         if ($this->contentTypeDefinition)
         {
-            $repositoryInfo = $this->client->getRepositoryInfo($workspace, $language, $timeshift);
-
-            return $repositoryInfo['content'][$this->contentTypeName]['count'];
+            return $this->client->sortRecords($this->contentTypeDefinition,$list,$workspace,$language);
         }
 
         return false;
-    } */
+
+    }
 
 
     public function deleteRecord($id, $workspace = 'default', $language = 'default')
