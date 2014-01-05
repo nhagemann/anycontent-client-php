@@ -23,6 +23,13 @@ class Record
     public $properties = array();
 
     public $revision = 1;
+    public $revisionTimestamp = null;
+
+    public $hash = null;
+
+    public $position = null;
+    public $parentRecordId = null;
+    public $levelWithinSortedTree = null;
 
     public $creationUserInfo;
     public $lastChangeUserInfo;
@@ -42,10 +49,13 @@ class Record
 
     public function setProperty($property, $value)
     {
+
         $property = Util::generateValidIdentifier($property);
         if ($this->contentTypeDefinition->hasProperty($property, $this->clipping))
         {
             $this->properties[$property] = $value;
+            $this->hash                  = null;
+            $this->revisionTimestamp     = null;
         }
         else
         {
@@ -86,6 +96,18 @@ class Record
     }
 
 
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+    }
+
+
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+
     public function getContentType()
     {
         return $this->contentTypeDefinition->getName();
@@ -101,6 +123,18 @@ class Record
     public function getRevision()
     {
         return $this->revision;
+    }
+
+
+    public function setRevisionTimestamp($revisionTimestamp)
+    {
+        $this->revisionTimestamp = $revisionTimestamp;
+    }
+
+
+    public function getRevisionTimestamp()
+    {
+        return $this->revisionTimestamp;
     }
 
 
@@ -207,5 +241,52 @@ class Record
         return $this->clipping;
     }
 
+
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+
+    public function setParentRecordId($parentRecordId)
+    {
+        $this->parentRecordId = $parentRecordId;
+    }
+
+
+    public function getParentRecordId()
+    {
+        return $this->parentRecordId;
+    }
+
+
+    public function setLevelWithinSortedTree($levelWithinSortedTree)
+    {
+        $this->levelWithinSortedTree = $levelWithinSortedTree;
+    }
+
+
+    public function getLevelWithinSortedTree()
+    {
+        return $this->levelWithinSortedTree;
+    }
+
+
+    public function setProperties($properties)
+    {
+        $this->properties = $properties;
+    }
+
+
+    public function getProperties()
+    {
+        return $this->properties;
+    }
 
 }

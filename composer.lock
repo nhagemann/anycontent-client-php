@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "f4c40805a0620eec16733e4aa64730e5",
+    "hash": "26d1bd461dc7102f0e5ae0ef6a972633",
     "packages": [
         {
             "name": "doctrine/cache",
-            "version": "dev-master",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "36c4eee5051629524389da376ba270f15765e49f"
+                "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/36c4eee5051629524389da376ba270f15765e49f",
-                "reference": "36c4eee5051629524389da376ba270f15765e49f",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/e16d7adf45664a50fa86f515b6d5e7f670130449",
+                "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449",
                 "shasum": ""
             },
             "require": {
@@ -32,7 +32,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4.x-dev"
+                    "dev-master": "1.0.x-dev"
                 }
             },
             "autoload": {
@@ -77,7 +77,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2013-12-18 17:21:03"
+            "time": "2013-10-25 19:04:14"
         },
         {
             "name": "guzzle/guzzle",
@@ -177,12 +177,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nhagemann/cmdl-parser-php.git",
-                "reference": "739853813b0758799714e45752592222bd268e9a"
+                "reference": "3dbbe44547c29c380d5288d3eb933b02e9f288a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/739853813b0758799714e45752592222bd268e9a",
-                "reference": "739853813b0758799714e45752592222bd268e9a",
+                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/3dbbe44547c29c380d5288d3eb933b02e9f288a6",
+                "reference": "3dbbe44547c29c380d5288d3eb933b02e9f288a6",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +209,7 @@
                 }
             ],
             "homepage": "http://www.nilshagemann.de",
-            "time": "2013-12-30 16:32:23"
+            "time": "2014-01-04 16:36:50"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -688,8 +688,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "guzzle/guzzle": 20,
-        "nhagemann/cmdl-parser-php": 20,
-        "doctrine/cache": 20
+        "nhagemann/cmdl-parser-php": 20
     },
     "platform": {
         "php": ">=5.2"
