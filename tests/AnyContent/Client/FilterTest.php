@@ -66,25 +66,25 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $filter = new ContentFilter($contentTypeDefinition);
         $filter->addCondition('name', '=', 'New Record');
-        $records = $repository->getRecords('default', 'default', 'none', 'id', array(), null, 1, $filter);
+        $records = $repository->getRecords('default', 'default', 'default', 'id', array(), null, 1, $filter);
         $this->assertCount(2, $records);
 
         $filter = new ContentFilter($contentTypeDefinition);
         $filter->addCondition('name', '=', 'New Record');
         $filter->addCondition('name', '=', 'Differing Name');
-        $records = $repository->getRecords('default', 'default', 'none', 'id', array(), null, 1, $filter);
+        $records = $repository->getRecords('default', 'default', 'default', 'id', array(), null, 1, $filter);
         $this->assertCount(3, $records);
 
         $filter = new ContentFilter($contentTypeDefinition);
         $filter->addCondition('source', '>', 'b');
-        $records = $repository->getRecords('default', 'default', 'none', 'id', array(), null, 1, $filter);
+        $records = $repository->getRecords('default', 'default', 'default', 'id', array(), null, 1, $filter);
         $this->assertCount(1, $records);
 
         $filter = new ContentFilter($contentTypeDefinition);
         $filter->addCondition('source', '>', 'a');
         $filter->nextConditionsBlock();
         $filter->addCondition('name', '=', 'Differing Name');
-        $records = $repository->getRecords('default', 'default', 'none', 'id', array(), null, 1, $filter);
+        $records = $repository->getRecords('default', 'default', 'default', 'id', array(), null, 1, $filter);
         $this->assertCount(1, $records);
     }
 

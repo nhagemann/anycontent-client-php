@@ -266,9 +266,9 @@ class Client
     }
 
 
-    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset= null, $timeshift = 0)
     {
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
 
         $records = array();
 
@@ -283,7 +283,7 @@ class Client
     }
 
 
-    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
         $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
         if ($result)
@@ -295,7 +295,7 @@ class Client
     }
 
 
-    public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset=null, $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
@@ -308,7 +308,7 @@ class Client
                 $filterToken = md5(json_encode($filter->getConditionsArray()));
             }
 
-            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken);
+            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset);
 
             if ($this->cache->contains($cacheToken))
             {
@@ -334,6 +334,10 @@ class Client
         if ($filter)
         {
             $queryParams['filter'] = $filter->getConditionsArray();
+        }
+        if ($subset)
+        {
+            $queryParams['subset'] = $subset;
         }
 
         $options = array( 'query' => $queryParams );
@@ -363,6 +367,31 @@ class Client
     }
 
 
+    /**
+     *
+     * list = array of arrays with keys id, parent_id
+     *
+     * @param ContentTypeDefinition $contentTypeDefinition
+     * @param array                 $list
+     * @param string                $workspace
+     * @param string                $language
+     */
+    public function sortRecords(ContentTypeDefinition $contentTypeDefinition, $list = array(), $workspace = 'default', $language = 'default')
+    {
+
+        $url     = 'content/' . $contentTypeDefinition->getName() . '/sort-records/' . $workspace;
+        $request = $this->guzzle->post($url, null, array( 'language' => $language, 'list' => json_encode($list)));
+
+        $result = $request->send()->json();
+
+        // repository info has changed
+        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
+        $this->cache->delete($cacheToken);
+
+        return $result;
+    }
+
+
     /* public function addContentQuery()
      {
 
@@ -378,13 +407,6 @@ class Client
      public function contentQueriesAreRunning()
      {
 
-     }
-
-
-     public function saveRecordsOrder($order, $mode = self::RECORDS_ORDER_MODE_LIST)
-     {
-         array( 5, 6, 8, 2 );
-         array( 1 => 2, 2 => 0, 3 => 4 ); // parents
      }*/
 
     protected function createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language)
