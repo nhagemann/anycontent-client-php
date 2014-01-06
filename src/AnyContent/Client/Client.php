@@ -10,6 +10,8 @@ use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Client\UserInfo;
 use AnyContent\Client\ContentFilter;
+use AnyContent\Client\Folder;
+use AnyContent\Client\File;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\ArrayCache;
@@ -111,12 +113,6 @@ class Client
                 return $this->cache->fetch($cacheToken);
             }
         }
-
-        /*
-        if ($workspace == 'default' AND $language == 'none' AND $timeshift == 0 AND $this->repositoryInfo != null)
-        {
-            return $this->repositoryInfo;
-        }     */
 
         $url = 'info/' . $workspace;
 
@@ -276,7 +272,7 @@ class Client
     }
 
 
-    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset= null, $timeshift = 0)
+    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
         $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
 
@@ -305,7 +301,7 @@ class Client
     }
 
 
-    public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset=null, $timeshift = 0)
+    public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
@@ -390,7 +386,7 @@ class Client
     {
 
         $url     = 'content/' . $contentTypeDefinition->getName() . '/sort-records/' . $workspace;
-        $request = $this->guzzle->post($url, null, array( 'language' => $language, 'list' => json_encode($list)));
+        $request = $this->guzzle->post($url, null, array( 'language' => $language, 'list' => json_encode($list) ));
 
         $result = $request->send()->json();
 
@@ -401,23 +397,6 @@ class Client
         return $result;
     }
 
-
-    /* public function addContentQuery()
-     {
-
-     }
-
-
-     public function startContentQueries()
-     {
-
-     }
-
-
-     public function contentQueriesAreRunning()
-     {
-
-     }*/
 
     protected function createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language)
     {
@@ -439,6 +418,37 @@ class Client
         $record->setLastChangeUserInfo(new UserInfo($result['info']['lastchange']['username'], $result['info']['lastchange']['firstname'], $result['info']['lastchange']['lastname'], $result['info']['lastchange']['timestamp']));
 
         return $record;
+    }
+
+
+    /**
+     * @param string $path
+     *
+     * @return Folder|bool
+     */
+    public function getFolder($path = '')
+    {
+        $url = 'files';
+
+        $path = trim($path, '/');
+
+        if ($path != '')
+        {
+            $url .= '/' . $path;
+        }
+
+        $request = $this->guzzle->get($url);
+
+        $result = $request->send()->json();
+
+        if ($result)
+        {
+            $folder = new Folder($path, $result);
+
+            return $folder;
+        }
+
+        return false;
     }
 
 }

@@ -1,0 +1,16 @@
+    /* public function addContentQuery()
+     {
+
+     }
+
+
+     public function startContentQueries()
+     {
+
+     }
+
+
+     public function contentQueriesAreRunning()
+     {
+
+     }*/

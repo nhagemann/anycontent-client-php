@@ -99,6 +99,7 @@ class Repository
         return false;
     }
 
+
     public function countRecords($workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
@@ -109,11 +110,12 @@ class Repository
         return false;
     }
 
-    public function sortRecords($list, $workspace = 'default',  $language = 'default')
+
+    public function sortRecords($list, $workspace = 'default', $language = 'default')
     {
         if ($this->contentTypeDefinition)
         {
-            return $this->client->sortRecords($this->contentTypeDefinition,$list,$workspace,$language);
+            return $this->client->sortRecords($this->contentTypeDefinition, $list, $workspace, $language);
         }
 
         return false;
@@ -130,5 +132,16 @@ class Repository
 
         return false;
 
+    }
+
+
+    /**
+     * @param string $path
+     *
+     * @return Folder|bool
+     */
+    public function getFolder($path = '')
+    {
+        return $this->client->getFolder($path);
     }
 }

@@ -22,7 +22,7 @@ class LanguagesTest extends \PHPUnit_Framework_TestCase
 
         // Connect to repository
         $client = new Client('http://anycontent.dev/1/example');
-        $client->setUserInfo(new UserInfo('john@doe.com', 'John', 'Doe'));
+        $client->setUserInfo(new UserInfo('john.doe@example.lorg', 'John', 'Doe'));
         $this->client = $client;
     }
 

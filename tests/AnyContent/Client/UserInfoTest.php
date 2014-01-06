@@ -22,7 +22,7 @@ class UserInfoTest extends \PHPUnit_Framework_TestCase
 
         // Connect to repository
         $client = new Client('http://anycontent.dev/1/example');
-        $client->setUserInfo(new UserInfo('john@doe.com', 'John', 'Doe'));
+        $client->setUserInfo(new UserInfo('john.doe@example.lorg', 'John', 'Doe'));
         $this->client = $client;
     }
 
@@ -42,7 +42,7 @@ class UserInfoTest extends \PHPUnit_Framework_TestCase
         /** @var UserInfo $userinfo */
         $userinfo = $record->getCreationUserInfo();
 
-        $this->assertEquals('john@doe.com', $userinfo->getUsername());
+        $this->assertEquals('john.doe@example.lorg', $userinfo->getUsername());
         $this->assertEquals('John', $userinfo->getFirstname());
         $this->assertEquals('Doe', $userinfo->getLastname());
         $this->assertTrue($userinfo->userNameIsAnEmailAddress());
