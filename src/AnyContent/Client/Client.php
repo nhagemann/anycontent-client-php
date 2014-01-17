@@ -452,6 +452,21 @@ class Client
     }
 
 
+    public function getFile($id)
+    {
+        $pathinfo = pathinfo($id);
+
+        $folder = $this->getFolder($pathinfo['dirname']);
+
+        if ($folder)
+        {
+            return $folder->getFile($id);
+
+        }
+
+        return false;
+    }
+
     public function getBinary(File $file, $forceRepositoryRequest = false)
     {
         $url = $file->getUrl('binary', true);
