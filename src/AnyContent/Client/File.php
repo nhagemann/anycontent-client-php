@@ -12,8 +12,6 @@ class File
     protected $id;
     protected $name;
     protected $type;
-    protected $urlGet;
-    protected $urlHref;
     protected $size;
     protected $timestampLastChange;
 
@@ -21,15 +19,14 @@ class File
     protected $height = null;
 
 
-    public function __construct($folder, $id, $name, $type = 'binary', $urlGet = null, $urlHref = null, $size = null, $timestampLastchange = null)
+    public function __construct($folder, $id, $name, $type = 'binary', $urls, $size = null, $timestampLastchange = null)
     {
 
         $this->folder              = $folder;
         $this->id                  = $id;
         $this->name                = $name;
         $this->type                = $type;
-        $this->urlGet              = $urlGet;
-        $this->urlHref             = $urlHref;
+        $this->urls                = $urls;
         $this->size                = $size;
         $this->timestampLastChange = $timestampLastchange;
 
@@ -72,17 +69,6 @@ class File
     }
 
 
-    public function getUrlGet()
-    {
-        return $this->urlGet;
-    }
-
-
-    public function getUrlHref()
-    {
-        return $this->urlHref;
-    }
-
 
     public function setHeight($height)
     {
@@ -107,12 +93,33 @@ class File
         return $this->width;
     }
 
+
     public function isImage()
     {
-        if ($this->type=='image' AND $this->width!=null)
+        if ($this->type == 'image' AND $this->width != null)
         {
             return true;
         }
+
         return false;
     }
-}
+
+    public function getUrl($type='default',$fallback=false)
+    {
+        if (array_key_exists($type,$this->urls))
+        {
+            return $this->urls['default'];
+        }
+        if ($type !='default' AND $fallback == true)
+        {
+            return $this->getUrl('default');
+        }
+        return false;
+    }
+
+    public function hasPublicUrl()
+    {
+        return (boolean)$this->getUrl('default');
+    }
+
+  }

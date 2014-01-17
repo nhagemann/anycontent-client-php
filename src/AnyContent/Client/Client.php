@@ -451,4 +451,25 @@ class Client
         return false;
     }
 
+
+    public function getBinary(File $file, $forceRepositoryRequest = false)
+    {
+        $url = $file->getUrl('binary', true);
+        if (!$url OR $forceRepositoryRequest)
+        {
+            $url = 'file/' . trim($file->getId(), '/');
+
+        }
+        $request = $this->guzzle->get($url);
+        $result  = $request->send();
+
+        if ($result)
+        {
+            return ((binary)$result->getBody());
+        }
+
+        return false;
+
+    }
+
 }

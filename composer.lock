@@ -177,12 +177,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nhagemann/cmdl-parser-php.git",
-                "reference": "e49de06f80d40aa76f794ecf3ada3adc52ef074c"
+                "reference": "b9ac65f4e5207c855dc50d2de3ad4d1d9052aa62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/e49de06f80d40aa76f794ecf3ada3adc52ef074c",
-                "reference": "e49de06f80d40aa76f794ecf3ada3adc52ef074c",
+                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/b9ac65f4e5207c855dc50d2de3ad4d1d9052aa62",
+                "reference": "b9ac65f4e5207c855dc50d2de3ad4d1d9052aa62",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +209,7 @@
                 }
             ],
             "homepage": "http://www.nilshagemann.de",
-            "time": "2014-01-05 19:05:33"
+            "time": "2014-01-14 08:15:38"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -513,16 +513,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "3.7.28",
+            "version": "3.7.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d"
+                "reference": "faeb2d9f15dc83830d2db5e4c67acf1d68c9b5ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
-                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/faeb2d9f15dc83830d2db5e4c67acf1d68c9b5ac",
+                "reference": "faeb2d9f15dc83830d2db5e4c67acf1d68c9b5ac",
                 "shasum": ""
             },
             "require": {
@@ -583,7 +583,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2013-10-17 07:27:40"
+            "time": "2014-01-15 06:46:38"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

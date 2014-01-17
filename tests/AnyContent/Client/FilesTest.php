@@ -77,5 +77,25 @@ class FilesTest extends \PHPUnit_Framework_TestCase
 
         $file = $folder->getFile('a.txt');
         $this->assertFalse($file->isImage());
+
+
+        $this->assertFalse($file->hasPublicUrl());
+
+
+    }
+
+    public function testBinaryFunctions()
+    {
+        $folder = $this->client->getFolder();
+        $file = $folder->getFile('a.txt');
+
+        $binary = $this->client->getBinary($file);
+
+        $this->assertEquals('a.txt',$binary);
+
+        $binary = $this->client->getRepository()->getBinary($file);
+
+        $this->assertEquals('a.txt',$binary);
+
     }
 }

@@ -144,4 +144,9 @@ class Repository
     {
         return $this->client->getFolder($path);
     }
+
+    public function getBinary($id)
+    {
+        return $this->client->getBinary($id);
+    }
 }

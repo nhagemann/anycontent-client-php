@@ -21,7 +21,7 @@ class Folder
         $this->path = $path;
         foreach ($result['files'] as $file)
         {
-            $this->files[$file['id']] = new File($this, $file['id'], $file['name'], $file['type'], $file['url_get'], $file['url_href'], $file['size'], $file['timestamp_lastchange']);
+            $this->files[$file['id']] = new File($this, $file['id'], $file['name'], $file['type'], $file['urls'], $file['size'], $file['timestamp_lastchange']);
             if ($file['type'] == 'image' AND array_key_exists('width', $file) AND array_key_exists('height', $file))
             {
 
