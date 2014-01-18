@@ -111,11 +111,11 @@ class Repository
     }
 
 
-    public function getSubset(ContentTypeDefinition $contentTypeDefinition, $parentId, $includeParent = true, $depth = null, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    public function getSubset($parentId, $includeParent = true, $depth = null, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
-            return $this->client->getSubset($contentTypeDefinition, $parentId, $includeParent, $depth, $workspace, $clippingName, $language, $timeshift);
+            return $this->client->getSubset($this->contentTypeDefinition, $parentId, $includeParent, $depth, $workspace, $clippingName, $language, $timeshift);
         }
 
         return false;
