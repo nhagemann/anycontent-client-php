@@ -84,4 +84,31 @@ class SortRecordsTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $records);
 
     }
+
+
+    public function testSubsetMethod()
+    {
+        $cmdl = $this->client->getCMDL('example01');
+
+        $contentTypeDefinition = Parser::parseCMDLString($cmdl);
+        $contentTypeDefinition->setName('example01');
+
+        $records = $this->client->getSubset($contentTypeDefinition, 0);
+        $this->assertCount(9, $records);
+
+        $records = $this->client->getSubset($contentTypeDefinition, 1);
+        $this->assertCount(3, $records);
+
+        $records = $this->client->getSubset($contentTypeDefinition, 4);
+        $this->assertCount(6, $records);
+
+        $records = $this->client->getSubset($contentTypeDefinition, 4, false);
+        $this->assertCount(5, $records);
+
+        $records = $this->client->getSubset($contentTypeDefinition, 4, false, 1);
+        $this->assertCount(2, $records);
+
+        $records = $this->client->getSubset($contentTypeDefinition, 5, false);
+        $this->assertCount(2, $records);
+    }
 }

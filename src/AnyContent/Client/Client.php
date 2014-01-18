@@ -301,7 +301,30 @@ class Client
     }
 
 
-    public function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function getSubset(ContentTypeDefinition $contentTypeDefinition, $parentId, $includeParent = true, $depth = null, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    {
+        $subset = (int)$parentId . ',' . (int)$includeParent;
+        if ($depth != null)
+        {
+            $subset .= ',' . $depth;
+        }
+
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, 'id', array(), null, 1, null, $subset, $timeshift);
+
+        $records = array();
+
+        foreach ($result['records'] as $item)
+        {
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
+
+            $records[$record->getID()] = $record;
+        }
+
+        return $records;
+    }
+
+
+    protected function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
@@ -466,6 +489,7 @@ class Client
 
         return false;
     }
+
 
     public function getBinary(File $file, $forceRepositoryRequest = false)
     {

@@ -89,11 +89,11 @@ class Repository
     }
 
 
-    public function getRecords($workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function getRecords($workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
-            return $this->client->getRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
+            return $this->client->getRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
         }
 
         return false;
@@ -105,6 +105,17 @@ class Repository
         if ($this->contentTypeDefinition)
         {
             return $this->client->countRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
+        }
+
+        return false;
+    }
+
+
+    public function getSubset(ContentTypeDefinition $contentTypeDefinition, $parentId, $includeParent = true, $depth = null, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    {
+        if ($this->contentTypeDefinition)
+        {
+            return $this->client->getSubset($contentTypeDefinition, $parentId, $includeParent, $depth, $workspace, $clippingName, $language, $timeshift);
         }
 
         return false;
@@ -144,6 +155,7 @@ class Repository
     {
         return $this->client->getFolder($path);
     }
+
 
     public function getBinary($id)
     {
