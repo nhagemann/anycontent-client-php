@@ -82,6 +82,19 @@ class Repository
 
     }
 
+    public function getFirstRecord(ContentFilter $filter,$workspace = 'default',$clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $timeshift = 0)
+    {
+        if ($this->contentTypeDefinition)
+        {
+            $records = $this->client->getRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, 1, 1, $filter, null, $timeshift);
+            if (count($records)==1)
+            {
+                return array_shift($records);
+            }
+        }
+
+        return false;
+    }
 
     public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'default')
     {

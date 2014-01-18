@@ -6,8 +6,7 @@ use CMDL\CMDLParserException;
 use CMDL\Util;
 
 use CMDL\ContentTypeDefinition;
-
-use AnyContent\Client\UserInfo;
+use AnyContent\Client\Sequence;
 
 class Record
 {
@@ -78,6 +77,19 @@ class Record
     }
 
 
+    public function getSequence($property)
+    {
+        $values = json_decode($this->getProperty($property), true);
+
+        if (!is_array($values))
+        {
+            $values = array();
+        }
+
+        return new Sequence($this->contentTypeDefinition, $values);
+    }
+
+
     public function getID()
     {
         return $this->id;
@@ -111,6 +123,12 @@ class Record
     public function getContentType()
     {
         return $this->contentTypeDefinition->getName();
+    }
+
+
+    public function getContentTypeDefinition()
+    {
+        return $this->contentTypeDefinition;
     }
 
 
