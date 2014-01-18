@@ -170,6 +170,11 @@ class Repository
     }
 
 
+    public function getFile($id)
+    {
+        return $this->client->getFile($id);
+    }
+
     public function getBinary($id)
     {
         return $this->client->getBinary($id);

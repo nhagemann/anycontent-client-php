@@ -63,7 +63,7 @@ class Sequence implements \Iterator
 
 
     /**
-     * @return $this Sequence
+     * @return Sequence
      */
     function current()
     {
