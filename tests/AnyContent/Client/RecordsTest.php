@@ -22,7 +22,7 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
 
         // Connect to repository
         $client = new Client('http://anycontent.dev/1/example');
-        $client->setUserInfo(new UserInfo('john.doe@example.lorg', 'John', 'Doe'));
+        $client->setUserInfo(new UserInfo('john.doe@example.org', 'John', 'Doe'));
         $this->client = $client;
     }
 
@@ -160,24 +160,4 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testHate()
-    {
-        // Connect to repository
-        $client = new Client('http://anycontent.dev/1/demo');
-        $client->setUserInfo(new UserInfo('john.doe@example.lorg', 'John', 'Doe'));
-        $this->client = $client;
-
-        $cmdl = $this->client->getCMDL('page');
-
-        $contentTypeDefinition = Parser::parseCMDLString($cmdl);
-        $contentTypeDefinition->setName('page');
-
-        /** @var $record Record * */
-        $record = $this->client->getRecord($contentTypeDefinition,27);
-
-        var_dump($record);
-        $this->client->saveRecord($record);
-
-
-    }
 }

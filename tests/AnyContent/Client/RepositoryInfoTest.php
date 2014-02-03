@@ -53,6 +53,26 @@ class RepositoryInfoTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testGetConfigTypes()
+    {
+        /** @var Repository $repository */
+        $repository   = $this->client->getRepository();
+        $configTypes = $repository->getConfigTypes();
+
+        foreach ($configTypes as $configTypeName => $configTypeTitle)
+        {
+            $this->assertTrue($repository->hasConfigType($configTypeName));
+            $this->assertInstanceOf('CMDL\ConfigTypeDefinition', $repository->getConfigTypeDefinition($configTypeName));
+            $this->assertEquals($repository->getConfigTypeDefinition($configTypeName)->getName(), $configTypeName);
+        }
+
+        $this->assertFalse($repository->hasConfigType('config3'));
+
+
+
+    }
+
+
     public function testContentCounts()
     {
         /*

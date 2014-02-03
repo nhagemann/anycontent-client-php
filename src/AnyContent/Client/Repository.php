@@ -18,6 +18,7 @@ class Repository
 
     protected $contentTypeName = '';
     protected $contentTypeDefinition = null;
+    protected $configTypeDefinitions = array();
 
 
     public function __construct($client)
@@ -29,6 +30,13 @@ class Repository
     public function getContentTypes()
     {
         return $this->client->getContentTypeList();
+    }
+
+
+    public function getConfigTypes()
+    {
+
+        return $this->client->getConfigTypesList();
     }
 
 
@@ -55,9 +63,38 @@ class Repository
     }
 
 
+    public function getConfigTypeDefinition($configTypeName = null)
+    {
+        if (array_key_exists($configTypeName, $this->configTypeDefinitions))
+        {
+            return $this->configTypeDefinitions[$configTypeName];
+        }
+
+        if ($this->hasConfigType($configTypeName))
+        {
+            $cmdl                 = $this->client->getConfigCMDL($configTypeName);
+            $configTypeDefinition = Parser::parseCMDLString($cmdl, $configTypeName, '', 'config');
+            if ($configTypeDefinition)
+            {
+                $configTypeDefinition->setName($configTypeName);
+
+                return $configTypeDefinition;
+            }
+        }
+
+        return false;
+    }
+
+
     public function hasContentType($contentTypeName)
     {
         return array_key_exists($contentTypeName, $this->client->getContentTypeList());
+    }
+
+
+    public function hasConfigType($configTypeName)
+    {
+        return array_key_exists($configTypeName, $this->client->getConfigTypesList());
     }
 
 
@@ -82,12 +119,13 @@ class Repository
 
     }
 
-    public function getFirstRecord(ContentFilter $filter,$workspace = 'default',$clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $timeshift = 0)
+
+    public function getFirstRecord(ContentFilter $filter, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
             $records = $this->client->getRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, 1, 1, $filter, null, $timeshift);
-            if (count($records)==1)
+            if (count($records) == 1)
             {
                 return array_shift($records);
             }
@@ -95,6 +133,7 @@ class Repository
 
         return false;
     }
+
 
     public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'default')
     {
@@ -159,6 +198,17 @@ class Repository
     }
 
 
+    public function getConfig($configTypeName)
+    {
+        return $this->client->getConfig($configTypeName);
+    }
+
+
+    public function saveConfig(Config $config, $workspace = 'default', $language = 'default')
+    {
+        return $this->client->saveConfig($config, $workspace, $language);
+    }
+
     /**
      * @param string $path
      *
@@ -174,6 +224,7 @@ class Repository
     {
         return $this->client->getFile($id);
     }
+
 
     public function getBinary($id)
     {

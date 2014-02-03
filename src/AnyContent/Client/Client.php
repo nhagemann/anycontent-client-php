@@ -4,9 +4,11 @@ namespace AnyContent\Client;
 
 use AnyContent\Client\AnyContentClientException;
 
+use CMDL\Parser;
 use CMDL\Util;
 use CMDL\ContentTypeDefinition;
 use AnyContent\Client\Record;
+use AnyContent\Client\Config;
 use AnyContent\Client\Repository;
 use AnyContent\Client\UserInfo;
 use AnyContent\Client\ContentFilter;
@@ -15,6 +17,7 @@ use AnyContent\Client\File;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\ArrayCache;
+use Guzzle\Parser\ParserRegistry;
 
 class Client
 {
@@ -32,6 +35,7 @@ class Client
 
     protected $contentTypeList = null;
 
+    protected $configTypesList = null;
     /**
      * @var Cache;
      */
@@ -85,6 +89,12 @@ class Client
         foreach ($result['content'] as $name => $item)
         {
             $this->contentTypeList[$name] = $item['title'];
+        }
+        $this->configTypesList = array();
+
+        foreach ($result['config'] as $name => $item)
+        {
+            $this->configTypesList[$name] = $item['title'];
         }
     }
 
@@ -157,6 +167,12 @@ class Client
     }
 
 
+    public function getConfigTypesList()
+    {
+        return $this->configTypesList;
+    }
+
+
     public function getCMDL($contentTypeName)
     {
         if (array_key_exists($contentTypeName, $this->contentTypeList))
@@ -186,6 +202,35 @@ class Client
     }
 
 
+    public function getConfigCMDL($configTypeName)
+    {
+        if (array_key_exists($configTypeName, $this->configTypesList))
+        {
+            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName;
+
+            if ($this->cache->contains($cacheToken))
+            {
+                return $this->cache->fetch($cacheToken);
+            }
+
+            $request = $this->guzzle->get('config/' . $configTypeName . '/cmdl');
+            $result  = $request->send()->json();
+
+            if ($this->cacheSecondsCMDL != 0)
+            {
+                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsCMDL);
+            }
+
+            return $result['cmdl'];
+        }
+        else
+        {
+            throw new AnyContentClientException('', AnyContentClientException::ANYCONTENT_UNKNOW_CONFIG_TYPE);
+        }
+
+    }
+
+
     public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'default')
     {
         $contentTypeName = $record->getContentType();
@@ -210,6 +255,31 @@ class Client
         $this->cache->delete($cacheToken);
 
         return (int)$result;
+
+    }
+
+
+    public function saveConfig(Config $config, $workspace = 'default', $language = 'default')
+    {
+        $configTypeName = $config->getConfigType();
+
+        $url = 'config/' . $configTypeName . '/record/' . $workspace;
+
+        $json = json_encode($config);
+
+        $request = $this->guzzle->post($url, null, array( 'record' => $json, 'language' => $language ));
+
+        try
+        {
+            $result = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+
+            return false;
+        }
+
+        return (boolean)$result;
 
     }
 
@@ -253,6 +323,52 @@ class Client
         }
 
         return false;
+    }
+
+
+    public function getConfig($configTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
+    {
+        //todo caching
+        if (array_key_exists($configTypeName, $this->configTypesList))
+        {
+
+            $cmdl                 = $this->getConfigCMDL($configTypeName);
+            $configTypeDefinition = Parser::parseCMDLString($cmdl, $configTypeName, '', 'config');
+            if ($configTypeDefinition)
+            {
+                $config = new Config($configTypeDefinition, $workspace, $language);
+
+                $url = 'config/' . $configTypeName . '/record/' . $workspace;
+
+                $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
+                $request = $this->guzzle->get($url, null, $options);
+
+                try
+                {
+                    $result = $request->send()->json();
+                    $config->setProperties($result['record']['properties']);
+                    $config->setHash($result['record']['info']['hash']);
+                    $config->setRevision($result['info']['revision']);
+                    $config->setRevisionTimestamp($result['info']['revision_timestamp']);
+                    $config->setLastChangeUserInfo(new UserInfo($result['info']['lastchange']['username'], $result['info']['lastchange']['firstname'], $result['info']['lastchange']['lastname'], $result['info']['lastchange']['timestamp']));
+
+                }
+                catch (\Exception $e)
+                {
+                    $config->setRevision(1);
+                }
+
+                return $config;
+            }
+
+        }
+        else
+        {
+            throw new AnyContentClientException('', AnyContentClientException::ANYCONTENT_UNKNOW_CONFIG_TYPE);
+        }
+
+        return false;
+
     }
 
 
