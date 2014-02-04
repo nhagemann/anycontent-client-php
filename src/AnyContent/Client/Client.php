@@ -348,9 +348,9 @@ class Client
                     $result = $request->send()->json();
                     $config->setProperties($result['record']['properties']);
                     $config->setHash($result['record']['info']['hash']);
-                    $config->setRevision($result['info']['revision']);
-                    $config->setRevisionTimestamp($result['info']['revision_timestamp']);
-                    $config->setLastChangeUserInfo(new UserInfo($result['info']['lastchange']['username'], $result['info']['lastchange']['firstname'], $result['info']['lastchange']['lastname'], $result['info']['lastchange']['timestamp']));
+                    $config->setRevision($result['record']['info']['revision']);
+                    $config->setRevisionTimestamp($result['record']['info']['revision_timestamp']);
+                    $config->setLastChangeUserInfo(new UserInfo($result['record']['info']['lastchange']['username'], $result['record']['info']['lastchange']['firstname'], $result['record']['info']['lastchange']['lastname'], $result['record']['info']['lastchange']['timestamp']));
 
                 }
                 catch (\Exception $e)
