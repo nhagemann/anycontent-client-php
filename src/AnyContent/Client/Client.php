@@ -184,7 +184,7 @@ class Client
                 return $this->cache->fetch($cacheToken);
             }
 
-            $request = $this->guzzle->get('cmdl/' . $contentTypeName);
+            $request = $this->guzzle->get('content/' . $contentTypeName.'/cmdl');
             $result  = $request->send()->json();
 
             if ($this->cacheSecondsCMDL != 0)
