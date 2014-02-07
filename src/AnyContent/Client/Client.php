@@ -615,12 +615,21 @@ class Client
             $url = 'file/' . trim($file->getId(), '/');
 
         }
-        $request = $this->guzzle->get($url);
-        $result  = $request->send();
 
-        if ($result)
+        try
         {
-            return ((binary)$result->getBody());
+
+            $request = $this->guzzle->get($url);
+            $result  = $request->send();
+
+            if ($result)
+            {
+                return ((binary)$result->getBody());
+            }
+        }
+        catch (\Exception $e)
+        {
+
         }
 
         return false;
