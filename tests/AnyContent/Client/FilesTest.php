@@ -8,6 +8,7 @@ use AnyContent\Client\Client;
 use AnyContent\Client\Record;
 use AnyContent\Client\Folder;
 use AnyContent\Client\Files;
+use AnyContent\Client\File;
 
 use AnyContent\Client\UserInfo;
 
@@ -22,7 +23,6 @@ class FilesTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-
         // Connect to repository
         $client = new Client('http://anycontent.dev/1/example');
         $client->setUserInfo(new UserInfo('john.doe@example.lorg', 'John', 'Doe'));
@@ -32,7 +32,6 @@ class FilesTest extends \PHPUnit_Framework_TestCase
 
     public function testListFiles()
     {
-
         $folder = $this->client->getFolder();
         $this->assertCount(3, $folder->getFiles());
         $this->assertArrayHasKey('a.txt', $folder->getFiles());
@@ -72,30 +71,104 @@ class FilesTest extends \PHPUnit_Framework_TestCase
         $file = $folder->getFile('len_std.jpg');
 
         $this->assertTrue($file->isImage());
-        $this->assertEquals(256,$file->getWidth());
-        $this->assertEquals(256,$file->getHeight());
+        $this->assertEquals(256, $file->getWidth());
+        $this->assertEquals(256, $file->getHeight());
 
         $file = $folder->getFile('a.txt');
         $this->assertFalse($file->isImage());
-
-
-        $this->assertFalse($file->hasPublicUrl());
-
-
     }
+
 
     public function testBinaryFunctions()
     {
         $folder = $this->client->getFolder();
-        $file = $folder->getFile('a.txt');
+        $file   = $folder->getFile('a.txt');
 
         $binary = $this->client->getBinary($file);
 
-        $this->assertEquals('a.txt',$binary);
+        $this->assertEquals('a.txt', $binary);
 
         $binary = $this->client->getRepository()->getBinary($file);
 
-        $this->assertEquals('a.txt',$binary);
+        $this->assertEquals('a.txt', $binary);
+    }
+
+
+    public function testNewFiles()
+    {
+        $repository = $this->client->getRepository();
+
+        $repository->deleteFolder('Test',true);
+
+        $repository->saveFile('Test/test.txt', 'test');
+
+        $folder = $repository->getFolder('Test');
+
+        $this->assertInstanceOf('AnyContent\Client\Folder', $folder);
+
+        $file = $folder->getFile('test.txt');
+
+        $this->assertInstanceOf('AnyContent\Client\File', $file);
+
+        $binary = $repository->getBinary($file);
+
+        $this->assertEquals('test', $binary);
+
+        $repository->deleteFile($file->getId(), false);
+
+        $folder = $repository->getFolder('Test');
+
+        $this->assertInstanceOf('AnyContent\Client\Folder', $folder);
+
+        $file = $folder->getFile('test.txt');
+
+        $this->assertFalse($file);
+
+        $repository->saveFile('Test/test.txt', 'test');
+
+        $repository->deleteFile('Test/test.txt', true);
+
+        $folder = $repository->getFolder('Test');
+
+        $this->assertFalse($folder);
+
 
     }
+
+
+    public function testFolderOperations()
+    {
+        $repository = $this->client->getRepository();
+
+        $repository->deleteFolder('Test',true);
+
+        $repository->createFolder('Test/A/B/C');
+
+        $folder = $repository->getFolder('Test/A/B/C');
+
+        $this->assertInstanceOf('AnyContent\Client\Folder', $folder);
+
+        $repository->saveFile('Test/A/B/test.txt', 'test');
+
+        $repository->deleteFile('Test/test.txt', true);
+
+        $folder = $repository->getFolder('Test/A/B/C');
+
+        $this->assertInstanceOf('AnyContent\Client\Folder', $folder);
+
+        $repository->deleteFolder('Test');
+
+        $folder = $repository->getFolder('Test/A/B/C');
+
+        $this->assertInstanceOf('AnyContent\Client\Folder', $folder);
+
+        $repository->deleteFolder('Test',true);
+
+        $folder = $repository->getFolder('Test/A/B/C');
+
+        $this->assertFalse($folder);
+
+
+    }
+
 }

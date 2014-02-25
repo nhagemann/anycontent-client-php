@@ -184,7 +184,7 @@ class Client
                 return $this->cache->fetch($cacheToken);
             }
 
-            $request = $this->guzzle->get('content/' . $contentTypeName.'/cmdl');
+            $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
             $result  = $request->send()->json();
 
             if ($this->cacheSecondsCMDL != 0)
@@ -634,6 +634,106 @@ class Client
 
         return false;
 
+    }
+
+
+    public function saveFile($id, $binary)
+    {
+        $url = 'file/' . trim($id, '/');
+
+        try
+        {
+            $request = $this->guzzle->post($url, null, array( 'binary' => $binary ));
+
+            $result = $request->send();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+
+        }
+
+        return false;
+    }
+
+
+    public function deleteFile($id, $deleteEmptyFolder = true)
+    {
+        $url = 'file/' . trim($id, '/');
+
+        try
+        {
+            $request = $this->guzzle->delete($url);
+
+            $request->send();
+
+            if ($deleteEmptyFolder)
+            {
+                $dirName = pathinfo($id, PATHINFO_DIRNAME);
+
+                return $this->deleteFolder($dirName);
+            }
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+
+        }
+
+        return false;
+    }
+
+
+    public function createFolder($path)
+    {
+        $url = 'files/' . trim($path, '/');
+
+        try
+        {
+            $request = $this->guzzle->post($url);
+
+            $request->send();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+
+        }
+
+        return false;
+    }
+
+
+    public function deleteFolder($path, $deleteIfNotEmpty = false)
+    {
+        $folder = $this->getFolder($path);
+
+        if ($folder)
+        {
+            if ($folder->isEmpty() || $deleteIfNotEmpty)
+            {
+
+                $url = 'files/' . trim($path, '/');
+
+                try
+                {
+                    $request = $this->guzzle->delete($url);
+
+                    $request->send();
+
+                    return true;
+                }
+                catch (\Exception $e)
+                {
+
+                }
+            }
+        }
+
+        return false;
     }
 
 }

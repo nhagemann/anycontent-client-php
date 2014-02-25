@@ -209,6 +209,7 @@ class Repository
         return $this->client->saveConfig($config, $workspace, $language);
     }
 
+
     /**
      * @param string $path
      *
@@ -226,8 +227,32 @@ class Repository
     }
 
 
-    public function getBinary($id)
+    public function getBinary(File $file)
     {
-        return $this->client->getBinary($id);
+        return $this->client->getBinary($file);
+    }
+
+
+    public function saveFile($id, $binary)
+    {
+        return $this->client->saveFile($id, $binary);
+    }
+
+
+    public function deleteFile($id, $deleteEmptyFolder = true)
+    {
+        return $this->client->deleteFile($id, $deleteEmptyFolder);
+    }
+
+
+    public function createFolder($path)
+    {
+        return $this->client->createFolder($path);
+    }
+
+
+    public function deleteFolder($path, $deleteIfNotEmpty = false)
+    {
+        return $this->client->deleteFolder($path, $deleteIfNotEmpty);
     }
 }

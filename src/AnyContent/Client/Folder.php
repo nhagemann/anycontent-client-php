@@ -25,7 +25,6 @@ class Folder
             if ($file['type'] == 'image' AND array_key_exists('width', $file) AND array_key_exists('height', $file))
             {
 
-
                 $this->files[$file['id']]->setWidth($file['width']);
                 $this->files[$file['id']]->setHeight($file['height']);
             }
@@ -46,23 +45,41 @@ class Folder
 
     public function getFile($identifier)
     {
-        if (array_key_exists($identifier,$this->files))
+        if (array_key_exists($identifier, $this->files))
         {
             return $this->files[$identifier];
         }
         /** @var File $file */
-        foreach($this->files as $file)
+        foreach ($this->files as $file)
         {
-            if ($file->getName()==$identifier)
+            if ($file->getName() == $identifier)
             {
                 return $file;
             }
         }
+
         return false;
     }
+
 
     public function listSubFolders()
     {
         return $this->subFolders;
+    }
+
+
+    public function isEmpty()
+    {
+        if (count($this->files) > 0)
+        {
+            return false;
+        }
+
+        if (count($this->subFolders) > 0)
+        {
+            return false;
+        }
+
+        return true;
     }
 }
