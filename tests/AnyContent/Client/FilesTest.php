@@ -98,7 +98,7 @@ class FilesTest extends \PHPUnit_Framework_TestCase
     {
         $repository = $this->client->getRepository();
 
-        $repository->deleteFolder('Test',true);
+        $repository->deleteFolder('Test', true);
 
         $repository->saveFile('Test/test.txt', 'test');
 
@@ -132,7 +132,21 @@ class FilesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($folder);
 
+    }
 
+
+    public function testBinaryCopy()
+    {
+        $repository = $this->client->getRepository();
+
+        $file   = $repository->getFile('len_std.jpg');
+        $binary = $repository->getBinary($file);
+
+        $repository->saveFile('Test/test.jpg', $binary);
+
+        $file = $repository->getFile('Test/test.jpg');
+
+        $this->assertEquals($binary, $repository->getBinary($file));
     }
 
 
@@ -140,7 +154,7 @@ class FilesTest extends \PHPUnit_Framework_TestCase
     {
         $repository = $this->client->getRepository();
 
-        $repository->deleteFolder('Test',true);
+        $repository->deleteFolder('Test', true);
 
         $repository->createFolder('Test/A/B/C');
 
@@ -162,13 +176,11 @@ class FilesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('AnyContent\Client\Folder', $folder);
 
-        $repository->deleteFolder('Test',true);
+        $repository->deleteFolder('Test', true);
 
         $folder = $repository->getFolder('Test/A/B/C');
 
         $this->assertFalse($folder);
 
-
     }
-
 }

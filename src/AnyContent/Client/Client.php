@@ -643,7 +643,8 @@ class Client
 
         try
         {
-            $request = $this->guzzle->post($url, null, array( 'binary' => $binary ));
+
+            $request = $this->guzzle->post($url, null, $binary);
 
             $result = $request->send();
 
@@ -652,6 +653,7 @@ class Client
         catch (\Exception $e)
         {
 
+            //var_dump($e->getMessage());
         }
 
         return false;
