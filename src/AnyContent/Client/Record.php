@@ -90,6 +90,16 @@ class Record
     }
 
 
+    public function getArrayProperty($property)
+    {
+        $value = $this->getProperty($property);
+        if ($value)
+        {
+            return explode(',',$value);
+        }
+        return array();
+    }
+
     public function getID()
     {
         return $this->id;
