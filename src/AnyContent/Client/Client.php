@@ -646,14 +646,13 @@ class Client
 
             $request = $this->guzzle->post($url, null, $binary);
 
-            $result = $request->send();
+            $request->send();
 
             return true;
         }
         catch (\Exception $e)
         {
 
-            //var_dump($e->getMessage());
         }
 
         return false;

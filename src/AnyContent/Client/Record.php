@@ -317,4 +317,8 @@ class Record
         return $this->properties;
     }
 
+    public function getAttributes()
+    {
+        return array('workspace'=>$this->getWorkspace(),'language'=>$this->getLanguage(),'position'=>$this->getPosition(),'parent_id'=>$this->getParentRecordId(),'level'=>$this->getLevelWithinSortedTree());
+    }
 }
