@@ -376,7 +376,7 @@ class Client
     {
         $url     = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace;
         $options = array( 'query' => array( 'language' => $language ) );
-        $request = $this->guzzle->delete($url, null, $options);
+        $request = $this->guzzle->delete($url, null, null, $options);
 
         $result = $request->send()->json();
 
