@@ -13,7 +13,7 @@ class ContentQuery
 
     protected $contentTypeDefinition;
     protected $workspace;
-    protected $clippingName;
+    protected $viewName;
     protected $language;
     protected $timeshift;
     protected $id;
@@ -24,20 +24,20 @@ class ContentQuery
     protected $page;
 
 
-    protected function __construct(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    protected function __construct(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
     {
         $this->contentTypeDefinition = $contentTypeDefinition;
         $this->setWorkspace($workspace);
-        $this->clippingName($clippingName);
+        $this->viewName($viewName);
         $this->setLanguage($language);
         $this->setTimeshift($timeshift);
 
     }
 
 
-    public function setClippingName($clippingName)
+    public function setViewName($viewName)
     {
-        $this->clippingName = $clippingName;
+        $this->viewName = $viewName;
     }
 
 

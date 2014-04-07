@@ -231,11 +231,11 @@ class Client
     }
 
 
-    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'default')
+    public function saveRecord(Record $record, $workspace = 'default', $viewName = 'default', $language = 'default')
     {
         $contentTypeName = $record->getContentType();
 
-        $url = 'content/' . $contentTypeName . '/records/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeName . '/records/' . $workspace . '/' . $viewName;
 
         $json = json_encode($record);
 
@@ -284,13 +284,13 @@ class Client
     }
 
 
-    public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
             $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
 
-            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language;
+            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language;
 
             if ($this->cache->contains($cacheToken))
             {
@@ -298,7 +298,7 @@ class Client
             }
         }
 
-        $url = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace . '/' . $viewName;
 
         $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
         $request = $this->guzzle->get($url, null, $options);
@@ -308,7 +308,7 @@ class Client
 
             $result = $request->send()->json();
 
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $clippingName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $viewName, $workspace, $language);
 
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
@@ -388,15 +388,15 @@ class Client
     }
 
 
-    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
 
         $records = array();
 
         foreach ($result['records'] as $item)
         {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
 
             $records[$record->getID()] = $record;
         }
@@ -405,9 +405,9 @@ class Client
     }
 
 
-    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
         if ($result)
         {
             return $result['info']['count'];
@@ -417,7 +417,7 @@ class Client
     }
 
 
-    public function getSubset(ContentTypeDefinition $contentTypeDefinition, $parentId, $includeParent = true, $depth = null, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    public function getSubset(ContentTypeDefinition $contentTypeDefinition, $parentId, $includeParent = true, $depth = null, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
     {
         $subset = (int)$parentId . ',' . (int)$includeParent;
         if ($depth != null)
@@ -425,13 +425,13 @@ class Client
             $subset .= ',' . $depth;
         }
 
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, 'id', array(), null, 1, null, $subset, $timeshift);
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, 'id', array(), null, 1, null, $subset, $timeshift);
 
         $records = array();
 
         foreach ($result['records'] as $item)
         {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
 
             $records[$record->getID()] = $record;
         }
@@ -440,7 +440,7 @@ class Client
     }
 
 
-    protected function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    protected function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
@@ -453,7 +453,7 @@ class Client
                 $filterToken = md5(json_encode($filter->getConditionsArray()));
             }
 
-            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset);
+            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset);
 
             if ($this->cache->contains($cacheToken))
             {
@@ -461,7 +461,7 @@ class Client
             }
         }
 
-        $url = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace . '/' . $viewName;
 
         $queryParams              = array();
         $queryParams['language']  = $language;
@@ -499,8 +499,8 @@ class Client
 
                 foreach ($result['records'] AS $item)
                 {
-                    $record     = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
-                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $record->getId() . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language;
+                    $record     = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
+                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $record->getId() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language;
 
                     $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
                 }
@@ -537,9 +537,9 @@ class Client
     }
 
 
-    protected function createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language)
+    protected function createRecordFromJSONResult($contentTypeDefinition, $result, $viewName, $workspace, $language)
     {
-        $record = new Record($contentTypeDefinition, $result['properties']['name'], $clippingName, $workspace, $language);
+        $record = new Record($contentTypeDefinition, $result['properties']['name'], $viewName, $workspace, $language);
         $record->setID($result['id']);
         $record->setRevision($result['info']['revision']);
         $record->setRevisionTimestamp($result['info']['revision_timestamp']);
