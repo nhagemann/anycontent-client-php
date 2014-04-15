@@ -593,6 +593,7 @@ class Client
 
     public function getFile($id)
     {
+        $id = trim($id,'/');
         $pathinfo = pathinfo($id);
 
         $folder = $this->getFolder($pathinfo['dirname']);
