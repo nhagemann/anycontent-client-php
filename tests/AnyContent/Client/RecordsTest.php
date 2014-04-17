@@ -34,6 +34,8 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
         $request = $guzzle->get('1/admin/delete/example/example01');
         $result  = $request->send()->getBody();
 
+
+
         $cmdl = $this->client->getCMDL('example01');
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
@@ -60,6 +62,7 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRecord()
     {
+
         $cmdl = $this->client->getCMDL('example01');
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
