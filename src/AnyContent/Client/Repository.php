@@ -104,7 +104,9 @@ class Repository
         {
             $this->contentTypeName       = $contentTypeName;
             $this->contentTypeDefinition = $this->getContentTypeDefinition($contentTypeName);
+            return false;
         }
+        return true;
     }
 
 
