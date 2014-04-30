@@ -108,7 +108,7 @@ class File
     {
         if (array_key_exists($type, $this->urls))
         {
-            return $this->urls['default'];
+            return $this->urls[$type];
         }
         if ($type != 'default' AND $fallback == true)
         {
