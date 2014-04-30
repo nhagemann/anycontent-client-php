@@ -609,7 +609,7 @@ class Client
 
     public function getBinary(File $file, $forceRepositoryRequest = false)
     {
-        $url = $file->getUrl('binary', true);
+        $url = $file->getUrl('binary', false);
         if (!$url OR $forceRepositoryRequest)
         {
             $url = 'file/' . trim($file->getId(), '/');
