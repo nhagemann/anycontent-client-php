@@ -15,9 +15,12 @@ use AnyContent\Client\ContentFilter;
 use AnyContent\Client\Folder;
 use AnyContent\Client\File;
 
+use Doctrine\Common\Cache\ApcCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\ArrayCache;
 use Guzzle\Parser\ParserRegistry;
+
+
 
 class Client
 {
