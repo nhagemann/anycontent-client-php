@@ -14,7 +14,7 @@
     "require": {
         "php": ">=5.2",
         "guzzle/guzzle": "3.7.*@dev",
-        "nhagemann/cmdl-parser-php": "0.2.*@dev",
+        "nhagemann/cmdl-parser-php": "0.3.*@dev",
         "doctrine/cache": "1.3.*"
     },
 
