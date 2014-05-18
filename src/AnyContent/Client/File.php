@@ -95,7 +95,7 @@ class File
 
     public function isImage()
     {
-        if ($this->type == 'image' AND $this->width != null)
+        if ($this->type == 'image')
         {
             return true;
         }
