@@ -42,6 +42,7 @@ class Repository
 
     public function getContentTypeDefinition($contentTypeName = null)
     {
+
         if ($contentTypeName == null AND $this->contentTypeDefinition)
         {
             return $this->contentTypeDefinition;

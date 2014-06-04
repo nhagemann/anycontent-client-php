@@ -20,8 +20,6 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\ArrayCache;
 use Guzzle\Parser\ParserRegistry;
 
-
-
 class Client
 {
 
@@ -82,11 +80,12 @@ class Client
 
         $this->cachePrefix = 'client_' . md5($url . $apiUser . $apiPassword);
 
-        //$request = $this->guzzle->get('');
+        $this->fetchRepositoryInfo();
 
-        //$result = $request->send()->json();
+    }
 
-        //$this->repositoryInfo  = $result;
+    protected function fetchRepositoryInfo()
+    {
         $result                = $this->getRepositoryInfo();
         $this->contentTypeList = array();
         foreach ($result['content'] as $name => $item)
@@ -123,7 +122,7 @@ class Client
 
             if ($this->cache->contains($cacheToken))
             {
-                return $this->cache->fetch($cacheToken);
+                  //return $this->cache->fetch($cacheToken);
             }
         }
 
@@ -146,6 +145,8 @@ class Client
                 $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
             }
         }
+
+
 
         return $result;
     }
@@ -184,7 +185,7 @@ class Client
 
             if ($this->cache->contains($cacheToken))
             {
-                return $this->cache->fetch($cacheToken);
+                //return $this->cache->fetch($cacheToken);
             }
 
             $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
@@ -213,7 +214,7 @@ class Client
 
             if ($this->cache->contains($cacheToken))
             {
-                return $this->cache->fetch($cacheToken);
+                //return $this->cache->fetch($cacheToken);
             }
 
             $request = $this->guzzle->get('config/' . $configTypeName . '/cmdl');
@@ -297,7 +298,7 @@ class Client
 
             if ($this->cache->contains($cacheToken))
             {
-                return $this->cache->fetch($cacheToken);
+                //return $this->cache->fetch($cacheToken);
             }
         }
 
@@ -596,7 +597,7 @@ class Client
 
     public function getFile($id)
     {
-        $id = trim($id,'/');
+        $id       = trim($id, '/');
         $pathinfo = pathinfo($id);
 
         $folder = $this->getFolder($pathinfo['dirname']);
@@ -736,6 +737,87 @@ class Client
 
                 }
             }
+        }
+
+        return false;
+    }
+
+
+    public function saveContentTypeCMDL($contentTypeName, $cmdl, $locale = null)
+    {
+
+        /*
+        $currentCmdl = null;
+        $contentTypeDefinition = null;
+        try
+        {
+            $currentCmdl           = $this->getCMDL($contentTypeName);
+            $contentTypeDefinition = Parser::parseCMDLString($cmdl);
+        }
+        catch (Exception $e)
+        {
+
+        } */
+
+        $url = 'content/' . $contentTypeName . '/cmdl';
+
+        try
+        {
+            $request = $this->guzzle->post($url, null, array( 'cmdl' => $cmdl, 'locale' => $locale ));
+
+            $request->send();
+
+
+            /*
+
+            if ($contentTypeDefinition)
+            {
+                $cacheToken = $this->cachePrefix . '_content_cmdl_' . $contentTypeName;
+                $this->cache->delete($cacheToken);
+
+                foreach ($contentTypeDefinition->getWorkspaces() as $k1 => $v1)
+                {
+                    foreach ($contentTypeDefinition->getLanguages() as $k2 => $v1)
+                    {
+
+
+                        $cacheToken = $this->cachePrefix . '_info_' . $k1 . '_' . $k2 . '_0';
+                        $this->cache->delete($cacheToken);
+                    }
+
+                }
+            } */
+            $this->fetchRepositoryInfo();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            echo $e->getMessage();
+            $this->fetchRepositoryInfo();
+        }
+
+        return false;
+    }
+
+
+    public function deleteContentType($contentTypeName)
+    {
+        $url = 'content/' . $contentTypeName;
+
+        try
+        {
+            $request = $this->guzzle->delete($url);
+
+            $request->send();
+
+            $this->fetchRepositoryInfo();
+            return true;
+        }
+        catch (\Exception $e)
+        {
+          echo $e->getMessage();
+            $this->fetchRepositoryInfo();
         }
 
         return false;
