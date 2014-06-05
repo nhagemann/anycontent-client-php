@@ -19,10 +19,21 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        global $testWithCaching;
+
+        if ($testWithCaching)
+        {
+            $memcached = new \Memcached();
+
+            $memcached->addServer('localhost', 11211);
+            $cache = new \Doctrine\Common\Cache\MemcachedCache();
+            $cache->setMemcached($memcached);
+
+        }
 
         // Connect to repository
-        $client = new Client('http://anycontent.dev/1/example');
-        $client->setUserInfo(new UserInfo('john.doe@example.lorg', 'John', 'Doe'));
+        $client = new Client('http://anycontent.dev/1/example', null, null, 'Basic', $cache);
+        $client->setUserInfo(new UserInfo('john.doe@example.org', 'John', 'Doe'));
         $this->client = $client;
     }
 

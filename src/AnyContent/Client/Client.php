@@ -84,6 +84,7 @@ class Client
 
     }
 
+
     protected function fetchRepositoryInfo()
     {
         $result                = $this->getRepositoryInfo();
@@ -118,11 +119,11 @@ class Client
 
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
-            $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_' . $timeshift;
+            $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_' . $timeshift . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
-                  //return $this->cache->fetch($cacheToken);
+                return $this->cache->fetch($cacheToken);
             }
         }
 
@@ -145,8 +146,6 @@ class Client
                 $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
             }
         }
-
-
 
         return $result;
     }
@@ -181,7 +180,7 @@ class Client
     {
         if (array_key_exists($contentTypeName, $this->contentTypeList))
         {
-            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName;
+            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -245,18 +244,26 @@ class Client
 
         $request = $this->guzzle->post($url, null, array( 'record' => $json, 'language' => $language ));
 
+        $result = false;
         try
         {
             $result = $request->send()->json();
+
         }
         catch (\Exception $e)
         {
-            return false;
+
         }
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
+        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
         $this->cache->delete($cacheToken);
+        $this->fetchRepositoryInfo();
+
+        if ($result===false)
+        {
+            return false;
+        }
 
         return (int)$result;
 
@@ -275,11 +282,13 @@ class Client
 
         try
         {
+            $this->fetchRepositoryInfo();
             $result = $request->send()->json();
         }
         catch (\Exception $e)
         {
 
+            $this->fetchRepositoryInfo();
             return false;
         }
 
@@ -385,8 +394,9 @@ class Client
         $result = $request->send()->json();
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
+        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
         $this->cache->delete($cacheToken);
+        $this->fetchRepositoryInfo();
 
         return $result;
     }
@@ -534,8 +544,10 @@ class Client
         $result = $request->send()->json();
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
+        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
         $this->cache->delete($cacheToken);
+        $this->fetchRepositoryInfo();
+
 
         return $result;
     }
@@ -746,19 +758,6 @@ class Client
     public function saveContentTypeCMDL($contentTypeName, $cmdl, $locale = null)
     {
 
-        /*
-        $currentCmdl = null;
-        $contentTypeDefinition = null;
-        try
-        {
-            $currentCmdl           = $this->getCMDL($contentTypeName);
-            $contentTypeDefinition = Parser::parseCMDLString($cmdl);
-        }
-        catch (Exception $e)
-        {
-
-        } */
-
         $url = 'content/' . $contentTypeName . '/cmdl';
 
         try
@@ -767,26 +766,7 @@ class Client
 
             $request->send();
 
-
-            /*
-
-            if ($contentTypeDefinition)
-            {
-                $cacheToken = $this->cachePrefix . '_content_cmdl_' . $contentTypeName;
-                $this->cache->delete($cacheToken);
-
-                foreach ($contentTypeDefinition->getWorkspaces() as $k1 => $v1)
-                {
-                    foreach ($contentTypeDefinition->getLanguages() as $k2 => $v1)
-                    {
-
-
-                        $cacheToken = $this->cachePrefix . '_info_' . $k1 . '_' . $k2 . '_0';
-                        $this->cache->delete($cacheToken);
-                    }
-
-                }
-            } */
+            $this->deleteHeartBeat();
             $this->fetchRepositoryInfo();
 
             return true;
@@ -811,16 +791,50 @@ class Client
 
             $request->send();
 
+            $this->deleteHeartBeat();
             $this->fetchRepositoryInfo();
+
             return true;
         }
         catch (\Exception $e)
         {
-          echo $e->getMessage();
+            echo $e->getMessage();
             $this->fetchRepositoryInfo();
         }
 
         return false;
+    }
+
+
+    /**
+     * Global token added to every cache token. If any client with the same cache prefix calls a cmdl changing method,
+     * the token gets deleted which feels like a full flush.
+     *
+     * @return bool|mixed|string
+     */
+    protected function getHeartBeat()
+    {
+        // maybe make content type config type sensitive
+
+        $cacheToken = $this->cachePrefix . '_heartbeat';
+
+        if ($this->cache->contains($cacheToken))
+        {
+            return $this->cache->fetch($cacheToken);
+        }
+        $heartbeat = md5(microtime());
+        $this->cache->save($cacheToken, $heartbeat, 100);
+
+        return $heartbeat;
+    }
+
+
+    protected function deleteHeartBeat()
+    {
+
+        $cacheToken = $this->cachePrefix . '_heartbeat';
+
+        $this->cache->delete($cacheToken);
     }
 
 }

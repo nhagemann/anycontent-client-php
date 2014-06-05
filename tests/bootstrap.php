@@ -5,10 +5,17 @@ $loader->add('AnyContent\tests', __DIR__);
 
 if(!function_exists('apc_exists'))
 {
-    function ap1c_exists($keys)
+    function apc_exists($keys)
     {
         $result = false;
         apc_fetch($keys, $result);
         return $result;
     }
 }
+
+global $testWithCaching;
+$testWithCaching = true;
+
+
+
+
