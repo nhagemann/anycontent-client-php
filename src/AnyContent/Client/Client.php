@@ -209,11 +209,11 @@ class Client
     {
         if (array_key_exists($configTypeName, $this->configTypesList))
         {
-            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName;
+            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName . '_' . $this->getHeartBeat();;
 
             if ($this->cache->contains($cacheToken))
             {
-                //return $this->cache->fetch($cacheToken);
+                return $this->cache->fetch($cacheToken);
             }
 
             $request = $this->guzzle->get('config/' . $configTypeName . '/cmdl');
@@ -260,7 +260,7 @@ class Client
         $this->cache->delete($cacheToken);
         $this->fetchRepositoryInfo();
 
-        if ($result===false)
+        if ($result === false)
         {
             return false;
         }
@@ -289,6 +289,7 @@ class Client
         {
 
             $this->fetchRepositoryInfo();
+
             return false;
         }
 
@@ -303,11 +304,11 @@ class Client
         {
             $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
 
-            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language;
+            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
-                //return $this->cache->fetch($cacheToken);
+                return $this->cache->fetch($cacheToken);
             }
         }
 
@@ -467,7 +468,7 @@ class Client
                 $filterToken = md5(json_encode($filter->getConditionsArray()));
             }
 
-            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset);
+            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -547,7 +548,6 @@ class Client
         $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
         $this->cache->delete($cacheToken);
         $this->fetchRepositoryInfo();
-
 
         return $result;
     }
@@ -784,6 +784,57 @@ class Client
     public function deleteContentType($contentTypeName)
     {
         $url = 'content/' . $contentTypeName;
+
+        try
+        {
+            $request = $this->guzzle->delete($url);
+
+            $request->send();
+
+            $this->deleteHeartBeat();
+            $this->fetchRepositoryInfo();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            echo $e->getMessage();
+            $this->fetchRepositoryInfo();
+        }
+
+        return false;
+    }
+
+
+    public function saveConfigTypeCMDL($configTypeName, $cmdl, $locale = null)
+    {
+
+        $url = 'config/' . $configTypeName . '/cmdl';
+
+        try
+        {
+            $request = $this->guzzle->post($url, null, array( 'cmdl' => $cmdl, 'locale' => $locale ));
+
+            $request->send();
+
+            $this->deleteHeartBeat();
+            $this->fetchRepositoryInfo();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            echo $e->getMessage();
+            $this->fetchRepositoryInfo();
+        }
+
+        return false;
+    }
+
+
+    public function deleteConfigType($configTypeName)
+    {
+        $url = 'config/' . $configTypeName;
 
         try
         {

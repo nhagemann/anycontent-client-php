@@ -21,6 +21,7 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
     {
         global $testWithCaching;
 
+        $cache = null;
         if ($testWithCaching)
         {
             $memcached = new \Memcached();
