@@ -49,7 +49,7 @@ class Client
     protected $cachePrefix = '';
 
     protected $cacheSecondsData = 3600;
-    protected $cacheSecondsIgnoreConcurrency = 15;
+    protected $cacheSecondsIgnoreDataConcurrency = 15;
 
 
     /**
@@ -59,10 +59,12 @@ class Client
      * @param string                       $authType "Basic" (default), "Digest", "NTLM", or "Any".
      * @param \Doctrine\Common\Cache\Cache $cache
      * @param int                          $cacheSecondsData
-     * @param int                          $cacheSecondsInfo
+     * @param int                          $cacheSecondsIgnoreDataConcurrency - raise, if your application is the only application, which makes content/config write requests on the connected repository
+     * @param int                          $cacheSecondsIgnoreFilesConcurrency - raise, if your application is the only application, which makes file changes and/or you do have a slow file storage adapter on the connected repository
      *
+     * @internal param int $cacheSecondsInfo
      */
-    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $cacheSecondsData = 3600, $cacheSecondsIgnoreConcurrency = 15)
+    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $cacheSecondsData = 3600, $cacheSecondsIgnoreDataConcurrency = 1, $cacheSecondsIgnoreFilesConcurrency = 60)
     {
         // Create a client and provide a base URL
         $this->guzzle = new \Guzzle\Http\Client($url);
@@ -81,8 +83,9 @@ class Client
             $this->cache = new ArrayCache();
         }
 
-        $this->cacheSecondsIgnoreConcurrency = $cacheSecondsIgnoreConcurrency;
-        $this->cacheSecondsData              = $cacheSecondsData;
+        $this->cacheSecondsData                  = $cacheSecondsData;
+        $this->cacheSecondsIgnoreDataConcurrency = $cacheSecondsIgnoreDataConcurrency;
+        $this->cacheSecondsIgnoreFilesConcurrency = $cacheSecondsIgnoreFilesConcurrency;
 
         $this->cachePrefix = 'client_' . md5($url . $apiUser . $apiPassword);
 
@@ -144,11 +147,11 @@ class Client
 
             $result = $request->send()->json();
 
-            if ($this->cacheSecondsIgnoreConcurrency != 0)
+            if ($this->cacheSecondsIgnoreDataConcurrency != 0)
             {
                 if ($timeshift == 0)
                 {
-                    $this->cache->save($cacheToken, $result, $this->cacheSecondsIgnoreConcurrency);
+                    $this->cache->save($cacheToken, $result, $this->cacheSecondsIgnoreDataConcurrency);
                 }
                 if ($timeshift > self::MAX_TIMESHIFT)
                 {
