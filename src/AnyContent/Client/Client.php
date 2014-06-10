@@ -124,33 +124,37 @@ class Client
     public function getRepositoryInfo($workspace = 'default', $language = 'default', $timeshift = 0)
     {
 
+        $result = false;
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
             $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_' . $timeshift . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
-                //return $this->cache->fetch($cacheToken);
+                $result = $this->cache->fetch($cacheToken);
             }
         }
 
-        $url = 'info/' . $workspace;
-
-        $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
-        $request = $this->guzzle->get($url, null, $options);
-
-        $result = $request->send()->json();
-
-        if ($this->cacheSecondsIgnoreConcurrency != 0)
+        if ($result == false)
         {
-            if ($timeshift == 0)
+            $url = 'info/' . $workspace;
+
+            $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
+            $request = $this->guzzle->get($url, null, $options);
+
+            $result = $request->send()->json();
+
+            if ($this->cacheSecondsIgnoreConcurrency != 0)
             {
-                $this->cache->save($cacheToken, $result, $this->cacheSecondsIgnoreConcurrency);
-            }
-            if ($timeshift > self::MAX_TIMESHIFT)
-            {
-                // timeshifted info result can get stored longer, since they won't change in the future, but they have to be absolute (>MAX_TIMESHIFT)
-                $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
+                if ($timeshift == 0)
+                {
+                    $this->cache->save($cacheToken, $result, $this->cacheSecondsIgnoreConcurrency);
+                }
+                if ($timeshift > self::MAX_TIMESHIFT)
+                {
+                    // timeshifted info result can get stored longer, since they won't change in the future, but they have to be absolute (>MAX_TIMESHIFT)
+                    $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
+                }
             }
         }
 
