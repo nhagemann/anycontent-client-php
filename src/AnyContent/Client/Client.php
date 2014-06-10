@@ -34,9 +34,13 @@ class Client
 
     protected $repositoryInfo = null;
 
-    protected $contentTypeList = null;
+    protected $contentTypesList = null;
 
     protected $configTypesList = null;
+
+    protected $contentTypeDefinition = array();
+    protected $configTypeDefinitions = array();
+
     /**
      * @var Cache;
      */
@@ -44,18 +48,21 @@ class Client
 
     protected $cachePrefix = '';
 
-    protected $cacheSecondsCMDL = 3600;
-    protected $cacheSecondsInfo = 15;
-    protected $cacheSecondsDefault = 600;
+    protected $cacheSecondsData = 3600;
+    protected $cacheSecondsIgnoreConcurrency = 15;
 
 
     /**
-     * @param        $url
-     * @param null   $user
-     * @param null   $password
-     * @param string $authType "Basic" (default), "Digest", "NTLM", or "Any".
+     * @param                              $url
+     * @param null                         $apiUser
+     * @param null                         $apiPassword
+     * @param string                       $authType "Basic" (default), "Digest", "NTLM", or "Any".
+     * @param \Doctrine\Common\Cache\Cache $cache
+     * @param int                          $cacheSecondsData
+     * @param int                          $cacheSecondsInfo
+     *
      */
-    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $secondsIgnoringEventuallyCMDLUpdates = 3600, $secondsIgnoringEventuallyConcurrentWriteRequests = 15, $secondsStoringRecordsInCache = 600)
+    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $cacheSecondsData = 3600, $cacheSecondsIgnoreConcurrency = 15)
     {
         // Create a client and provide a base URL
         $this->guzzle = new \Guzzle\Http\Client($url);
@@ -74,31 +81,31 @@ class Client
             $this->cache = new ArrayCache();
         }
 
-        $this->cacheSecondsCMDL    = $secondsIgnoringEventuallyCMDLUpdates;
-        $this->cacheSecondsInfo    = $secondsIgnoringEventuallyConcurrentWriteRequests;
-        $this->cacheSecondsDefault = $secondsStoringRecordsInCache;
+        $this->cacheSecondsIgnoreConcurrency = $cacheSecondsIgnoreConcurrency;
+        $this->cacheSecondsData              = $cacheSecondsData;
 
         $this->cachePrefix = 'client_' . md5($url . $apiUser . $apiPassword);
-
-        $this->fetchRepositoryInfo();
 
     }
 
 
-    protected function fetchRepositoryInfo()
+    /**
+     * deletes temporarily collected info about the current repository
+     *
+     * if language and workspace are given, related cache token gets deleted too
+     *
+     * @param null $workspace
+     * @param null $language
+     */
+    protected function deleteRepositoryInfo($workspace = null, $language = null)
     {
-        $result                = $this->getRepositoryInfo();
-        $this->contentTypeList = array();
-        foreach ($result['content'] as $name => $item)
+        if ($workspace != null and $language != null)
         {
-            $this->contentTypeList[$name] = $item['title'];
+            $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
+            $this->cache->delete($cacheToken);
         }
-        $this->configTypesList = array();
-
-        foreach ($result['config'] as $name => $item)
-        {
-            $this->configTypesList[$name] = $item['title'];
-        }
+        $this->contentTypesList = null;
+        $this->configTypesList  = null;
     }
 
 
@@ -123,7 +130,7 @@ class Client
 
             if ($this->cache->contains($cacheToken))
             {
-                return $this->cache->fetch($cacheToken);
+                //return $this->cache->fetch($cacheToken);
             }
         }
 
@@ -134,17 +141,29 @@ class Client
 
         $result = $request->send()->json();
 
-        if ($this->cacheSecondsInfo != 0)
+        if ($this->cacheSecondsIgnoreConcurrency != 0)
         {
             if ($timeshift == 0)
             {
-                $this->cache->save($cacheToken, $result, $this->cacheSecondsInfo);
+                $this->cache->save($cacheToken, $result, $this->cacheSecondsIgnoreConcurrency);
             }
             if ($timeshift > self::MAX_TIMESHIFT)
             {
                 // timeshifted info result can get stored longer, since they won't change in the future, but they have to be absolute (>MAX_TIMESHIFT)
-                $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
+                $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
             }
+        }
+
+        $this->contentTypesList = array();
+        foreach ($result['content'] as $name => $item)
+        {
+            $this->contentTypesList[$name] = $item['title'];
+        }
+        $this->configTypesList = array();
+
+        foreach ($result['config'] as $name => $item)
+        {
+            $this->configTypesList[$name] = $item['title'];
         }
 
         return $result;
@@ -157,28 +176,105 @@ class Client
 
         if (array_key_exists($contentTypeDefinition->getName(), $info['content']))
         {
-            return ($info['content'][$contentTypeDefinition->getName()]['lastchange_content']);
+            return ($info['content'][$contentTypeDefinition->getName()]['lastchange_content'] . $info['content'][$contentTypeDefinition->getName()]['lastchange_cmdl']);
         }
 
         return time();
     }
 
 
+    /**
+     * @deprecated
+     * @return null
+     */
     public function getContentTypeList()
     {
-        return $this->contentTypeList;
+        if ($this->contentTypesList === null)
+        {
+            $this->getRepositoryInfo();
+
+        }
+
+        return $this->contentTypesList;
+    }
+
+
+    public function getContentTypesList()
+    {
+        if ($this->contentTypesList === null)
+        {
+            $this->getRepositoryInfo();
+        }
+
+        return $this->contentTypesList;
     }
 
 
     public function getConfigTypesList()
     {
+        if ($this->configTypesList === null)
+        {
+            $this->getRepositoryInfo();
+        }
+
         return $this->configTypesList;
+    }
+
+
+    public function getContentTypeDefinition($contentTypeName)
+    {
+
+        if ($this->hasContentType($contentTypeName))
+        {
+            $cmdl = $this->getCMDL($contentTypeName);
+
+            $configTypeDefinition = Parser::parseCMDLString($cmdl, $contentTypeName, '', 'content');
+            if ($configTypeDefinition)
+            {
+                $configTypeDefinition->setName($contentTypeName);
+
+                return $configTypeDefinition;
+            }
+        }
+
+        return false;
+    }
+
+
+    public function getConfigTypeDefinition($configTypeName)
+    {
+        if ($this->hasConfigType($configTypeName))
+        {
+            $cmdl = $this->getConfigCMDL($configTypeName);
+
+            $configTypeDefinition = Parser::parseCMDLString($cmdl, $configTypeName, '', 'config');
+            if ($configTypeDefinition)
+            {
+                $configTypeDefinition->setName($configTypeName);
+
+                return $configTypeDefinition;
+            }
+        }
+
+        return false;
+    }
+
+
+    public function hasContentType($contentTypeName)
+    {
+        return array_key_exists($contentTypeName, $this->getContentTypesList());
+    }
+
+
+    public function hasConfigType($configTypeName)
+    {
+        return array_key_exists($configTypeName, $this->getConfigTypesList());
     }
 
 
     public function getCMDL($contentTypeName)
     {
-        if (array_key_exists($contentTypeName, $this->contentTypeList))
+        if (array_key_exists($contentTypeName, $this->getContentTypeList()))
         {
             $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName . '_' . $this->getHeartBeat();
 
@@ -190,9 +286,9 @@ class Client
             $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
             $result  = $request->send()->json();
 
-            if ($this->cacheSecondsCMDL != 0)
+            if ($this->cacheSecondsData != 0)
             {
-                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsCMDL);
+                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsData);
             }
 
             return $result['cmdl'];
@@ -207,7 +303,7 @@ class Client
 
     public function getConfigCMDL($configTypeName)
     {
-        if (array_key_exists($configTypeName, $this->configTypesList))
+        if (array_key_exists($configTypeName, $this->getConfigTypesList()))
         {
             $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName . '_' . $this->getHeartBeat();;
 
@@ -219,9 +315,9 @@ class Client
             $request = $this->guzzle->get('config/' . $configTypeName . '/cmdl');
             $result  = $request->send()->json();
 
-            if ($this->cacheSecondsCMDL != 0)
+            if ($this->cacheSecondsData != 0)
             {
-                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsCMDL);
+                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsData);
             }
 
             return $result['cmdl'];
@@ -256,9 +352,7 @@ class Client
         }
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
-        $this->cache->delete($cacheToken);
-        $this->fetchRepositoryInfo();
+        $this->deleteRepositoryInfo($workspace, $language);
 
         if ($result === false)
         {
@@ -280,16 +374,22 @@ class Client
 
         $request = $this->guzzle->post($url, null, array( 'record' => $json, 'language' => $language ));
 
+        $result = false;
         try
         {
-            $this->fetchRepositoryInfo();
             $result = $request->send()->json();
+
         }
         catch (\Exception $e)
         {
 
-            $this->fetchRepositoryInfo();
+        }
 
+        // repository info has changed
+        $this->deleteRepositoryInfo($workspace, $language);
+
+        if ($result === false)
+        {
             return false;
         }
 
@@ -326,7 +426,7 @@ class Client
 
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
-                $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
+                $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
             }
 
             return $record;
@@ -343,7 +443,7 @@ class Client
     public function getConfig($configTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
     {
         //todo caching
-        if (array_key_exists($configTypeName, $this->configTypesList))
+        if (array_key_exists($configTypeName, $this->getConfigTypesList()))
         {
 
             $cmdl                 = $this->getConfigCMDL($configTypeName);
@@ -395,9 +495,7 @@ class Client
         $result = $request->send()->json();
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
-        $this->cache->delete($cacheToken);
-        $this->fetchRepositoryInfo();
+        $this->deleteRepositoryInfo($workspace, $language);
 
         return $result;
     }
@@ -510,14 +608,14 @@ class Client
         {
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
-                $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
+                $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
 
                 foreach ($result['records'] AS $item)
                 {
                     $record     = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
-                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $record->getId() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language;
+                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $record->getId() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
 
-                    $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
+                    $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
                 }
             }
         }
@@ -545,9 +643,7 @@ class Client
         $result = $request->send()->json();
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
-        $this->cache->delete($cacheToken);
-        $this->fetchRepositoryInfo();
+        $this->deleteRepositoryInfo($workspace, $language);
 
         return $result;
     }
@@ -767,14 +863,13 @@ class Client
             $request->send();
 
             $this->deleteHeartBeat();
-            $this->fetchRepositoryInfo();
+            $this->deleteRepositoryInfo();
 
             return true;
         }
         catch (\Exception $e)
         {
             echo $e->getMessage();
-            $this->fetchRepositoryInfo();
         }
 
         return false;
@@ -792,14 +887,13 @@ class Client
             $request->send();
 
             $this->deleteHeartBeat();
-            $this->fetchRepositoryInfo();
+            $this->deleteRepositoryInfo();
 
             return true;
         }
         catch (\Exception $e)
         {
             echo $e->getMessage();
-            $this->fetchRepositoryInfo();
         }
 
         return false;
@@ -818,14 +912,13 @@ class Client
             $request->send();
 
             $this->deleteHeartBeat();
-            $this->fetchRepositoryInfo();
+            $this->deleteRepositoryInfo();
 
             return true;
         }
         catch (\Exception $e)
         {
             echo $e->getMessage();
-            $this->fetchRepositoryInfo();
         }
 
         return false;
@@ -843,14 +936,13 @@ class Client
             $request->send();
 
             $this->deleteHeartBeat();
-            $this->fetchRepositoryInfo();
+            $this->deleteRepositoryInfo();
 
             return true;
         }
         catch (\Exception $e)
         {
             echo $e->getMessage();
-            $this->fetchRepositoryInfo();
         }
 
         return false;

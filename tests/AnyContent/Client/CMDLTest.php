@@ -43,6 +43,7 @@ class CMDLTest extends \PHPUnit_Framework_TestCase
     public function testCreateAndDeleteContentTypes()
     {
         $repository = $this->client->getRepository();
+
         $this->client->deleteContentType('example101');
         $this->assertFalse($repository->getContentTypeDefinition('example101'));
         $this->client->saveContentTypeCMDL('example101', 'test');
@@ -58,7 +59,7 @@ class CMDLTest extends \PHPUnit_Framework_TestCase
 
         $cmdl = $this->client->getCMDL('example101');
 
-        $this->assertEquals('property_a',$cmdl);
+        $this->assertEquals('property_a', $cmdl);
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
         $contentTypeDefinition->setName('example101');
@@ -70,13 +71,12 @@ class CMDLTest extends \PHPUnit_Framework_TestCase
         /** @var $record Record * */
         $record = $this->client->getRecord($contentTypeDefinition, $id);
 
-        $this->assertEquals('test',$record->getProperty('property_a'));
-
+        $this->assertEquals('test', $record->getProperty('property_a'));
 
         $this->client->saveContentTypeCMDL('example101', 'property_b');
         $cmdl = $this->client->getCMDL('example101');
 
-        $this->assertEquals('property_b',$cmdl);
+        $this->assertEquals('property_b', $cmdl);
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
         $contentTypeDefinition->setName('example101');
@@ -89,11 +89,10 @@ class CMDLTest extends \PHPUnit_Framework_TestCase
         /** @var $record Record * */
         $record = $this->client->getRecord($contentTypeDefinition, $id);
 
-        $this->assertEquals('next',$record->getProperty('property_b'));
-        $this->assertEquals(null,$record->getProperty('property_a'));
+        $this->assertEquals('next', $record->getProperty('property_b'));
+        $this->assertEquals(null, $record->getProperty('property_a'));
 
         $this->client->saveContentTypeCMDL('example101', 'property_a');
-
 
         $contentTypeDefinition = Parser::parseCMDLString('property_a');
         $contentTypeDefinition->setName('example101');
@@ -101,11 +100,11 @@ class CMDLTest extends \PHPUnit_Framework_TestCase
         /** @var $record Record * */
         $record = $this->client->getRecord($contentTypeDefinition, $id);
 
-
-        $this->assertEquals('test',$record->getProperty('property_a'));
+        $this->assertEquals('test', $record->getProperty('property_a'));
 
         $this->client->deleteContentType('example101');
     }
+
 
     public function testCreateAndDeleteConfigTypes()
     {

@@ -17,9 +17,8 @@ class Repository
     protected $client;
 
     protected $contentTypeName = '';
-    protected $contentTypeDefinition = null;
-    protected $configTypeDefinitions = array();
 
+    protected $contentTypeDefinition = null;
 
     public function __construct($client)
     {
@@ -29,7 +28,7 @@ class Repository
 
     public function getContentTypes()
     {
-        return $this->client->getContentTypeList();
+        return $this->client->getContentTypesList();
     }
 
 
@@ -42,54 +41,19 @@ class Repository
 
     public function getContentTypeDefinition($contentTypeName = null)
     {
-
-        if ($contentTypeName == null AND $this->contentTypeDefinition)
-        {
-            return $this->contentTypeDefinition;
-        }
-
-        if ($this->hasContentType($contentTypeName))
-        {
-            $cmdl                  = $this->client->getCMDL($contentTypeName);
-            $contentTypeDefinition = Parser::parseCMDLString($cmdl);
-            if ($contentTypeDefinition)
-            {
-                $contentTypeDefinition->setName($contentTypeName);
-
-                return $contentTypeDefinition;
-            }
-        }
-
-        return false;
+        return $this->client->getContentTypeDefinition($contentTypeName);
     }
 
 
     public function getConfigTypeDefinition($configTypeName = null)
     {
-        if (array_key_exists($configTypeName, $this->configTypeDefinitions))
-        {
-            return $this->configTypeDefinitions[$configTypeName];
-        }
-
-        if ($this->hasConfigType($configTypeName))
-        {
-            $cmdl                 = $this->client->getConfigCMDL($configTypeName);
-            $configTypeDefinition = Parser::parseCMDLString($cmdl, $configTypeName, '', 'config');
-            if ($configTypeDefinition)
-            {
-                $configTypeDefinition->setName($configTypeName);
-
-                return $configTypeDefinition;
-            }
-        }
-
-        return false;
+        return $this->client->getConfigTypeDefinition($configTypeName);
     }
 
 
     public function hasContentType($contentTypeName)
     {
-        return array_key_exists($contentTypeName, $this->client->getContentTypeList());
+        return array_key_exists($contentTypeName, $this->client->getContentTypesList());
     }
 
 
@@ -105,8 +69,10 @@ class Repository
         {
             $this->contentTypeName       = $contentTypeName;
             $this->contentTypeDefinition = $this->getContentTypeDefinition($contentTypeName);
+
             return true;
         }
+
         return false;
     }
 
