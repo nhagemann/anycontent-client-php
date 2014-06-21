@@ -41,12 +41,17 @@ class Repository
 
     public function getContentTypeDefinition($contentTypeName = null)
     {
+        if ($contentTypeName==null)
+        {
+            $contentTypeName=$this->contentTypeName;
+        }
         return $this->client->getContentTypeDefinition($contentTypeName);
     }
 
 
     public function getConfigTypeDefinition($configTypeName = null)
     {
+
         return $this->client->getConfigTypeDefinition($configTypeName);
     }
 
