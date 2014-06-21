@@ -287,7 +287,7 @@ class Client
 
             if ($this->cache->contains($cacheToken))
             {
-                //return $this->cache->fetch($cacheToken);
+               return $this->cache->fetch($cacheToken);
             }
 
             $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
