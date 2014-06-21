@@ -43,7 +43,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     {
         // Execute admin call to delete all existing data of the test content types
         $guzzle  = new \Guzzle\Http\Client('http://anycontent.dev');
-        $request = $guzzle->get('1/admin/delete/example/example01');
+        $request = $guzzle->delete('1/example/content/example01/records',null,null,array('global'=>1));
         $result  = $request->send()->getBody();
 
         $cmdl = $this->client->getCMDL('example01');

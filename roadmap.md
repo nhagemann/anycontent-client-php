@@ -1,4 +1,6 @@
-##0.4
+## 0.7
+* realignment of version numbers between repository, parser and client - too many version dependencies
+## 0.4
 * Refactoring cache
 ## 0.3
 * Added methods to create and delete repositories - reflecting anycontent-repository-mysql-php 0.6
