@@ -177,13 +177,26 @@ class Client
     }
 
 
-    public function getLastChangeTimestamp(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'default', $timeshift = 0)
+
+    public function getLastContentTypeChangeTimestamp($contentTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
     {
         $info = $this->getRepositoryInfo($workspace, $language, $timeshift);
 
-        if (array_key_exists($contentTypeDefinition->getName(), $info['content']))
+        if (array_key_exists($contentTypeName, $info['content']))
         {
-            return ($info['content'][$contentTypeDefinition->getName()]['lastchange_content'] . $info['content'][$contentTypeDefinition->getName()]['lastchange_cmdl']);
+            return ($info['content'][$contentTypeName]['lastchange_content'] . $info['content'][$contentTypeName]['lastchange_cmdl']);
+        }
+
+        return time();
+    }
+
+    public function getLastConfigTypeChangeTimestamp($configTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
+    {
+        $info = $this->getRepositoryInfo($workspace, $language, $timeshift);
+
+        if (array_key_exists($configTypeName, $info['config']))
+        {
+            return ($info['config'][$configTypeName]['lastchange_config'] . $info['config'][$configTypeName]['lastchange_cmdl']);
         }
 
         return time();
@@ -235,12 +248,12 @@ class Client
         {
             $cmdl = $this->getCMDL($contentTypeName);
 
-            $configTypeDefinition = Parser::parseCMDLString($cmdl, $contentTypeName, '', 'content');
-            if ($configTypeDefinition)
+            $contentTypeDefinition = Parser::parseCMDLString($cmdl, $contentTypeName, '', 'content');
+            if ($contentTypeDefinition)
             {
-                $configTypeDefinition->setName($contentTypeName);
+                $contentTypeDefinition->setName($contentTypeName);
 
-                return $configTypeDefinition;
+                return $contentTypeDefinition;
             }
         }
 
@@ -281,9 +294,11 @@ class Client
 
     public function getCMDL($contentTypeName)
     {
-        if (array_key_exists($contentTypeName, $this->getContentTypeList()))
+        if (array_key_exists($contentTypeName, $this->getContentTypesList()))
         {
-            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName . '_' . $this->getHeartBeat();
+            $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeName);
+
+            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName . '_' .$timestamp.'_'.$this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -312,7 +327,11 @@ class Client
     {
         if (array_key_exists($configTypeName, $this->getConfigTypesList()))
         {
-            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName . '_' . $this->getHeartBeat();;
+
+            $timestamp = $this->getLastConfigTypeChangeTimestamp($configTypeName);
+
+            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName . '_' .  $timestamp.'_'.$this->getHeartBeat();
+            $this->getHeartBeat();;
 
             if ($this->cache->contains($cacheToken))
             {
@@ -409,7 +428,7 @@ class Client
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
-            $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
+            $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName(), $workspace, $language, $timeshift);
 
             $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
 
@@ -564,7 +583,7 @@ class Client
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
-            $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
+            $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName(), $workspace, $language, $timeshift);
 
             $filterToken     = '';
             $propertiesToken = json_encode($properties);

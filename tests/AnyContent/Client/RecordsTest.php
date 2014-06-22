@@ -118,12 +118,12 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(5,$records);
 
-        $t1 = $this->client->getLastChangeTimestamp($contentTypeDefinition);
+        $t1 = $this->client->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName());
 
         $this->assertFalse($this->client->deleteRecord($contentTypeDefinition,99));
         $this->assertTrue($this->client->deleteRecord($contentTypeDefinition,5));
 
-        $t2 = $this->client->getLastChangeTimestamp($contentTypeDefinition);
+        $t2 = $this->client->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName());
 
         $this->assertNotEquals($t1,$t2);
 
