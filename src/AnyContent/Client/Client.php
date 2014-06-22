@@ -992,7 +992,7 @@ class Client
             return $this->cache->fetch($cacheToken);
         }
         $heartbeat = md5(microtime());
-        $this->cache->save($cacheToken, $heartbeat, 100);
+        $this->cache->save($cacheToken, $heartbeat);
 
         return $heartbeat;
     }
