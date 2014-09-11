@@ -87,6 +87,10 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('New Record 1 - Revision 5', $record->getName());
         $this->assertEquals('Test 1', $record->getProperty('article'));
         $this->assertEquals(5, $record->getRevision());
+
+
+        $record = $this->client->getRecord($contentTypeDefinition, 99);
+        $this->assertFalse($record);
     }
 
 

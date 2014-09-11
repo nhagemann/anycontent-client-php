@@ -56,10 +56,10 @@ class Client
      * @param                              $url
      * @param null                         $apiUser
      * @param null                         $apiPassword
-     * @param string                       $authType "Basic" (default), "Digest", "NTLM", or "Any".
+     * @param string                       $authType                           "Basic" (default), "Digest", "NTLM", or "Any".
      * @param \Doctrine\Common\Cache\Cache $cache
      * @param int                          $cacheSecondsData
-     * @param int                          $cacheSecondsIgnoreDataConcurrency - raise, if your application is the only application, which makes content/config write requests on the connected repository
+     * @param int                          $cacheSecondsIgnoreDataConcurrency  - raise, if your application is the only application, which makes content/config write requests on the connected repository
      * @param int                          $cacheSecondsIgnoreFilesConcurrency - raise, if your application is the only application, which makes file changes and/or you do have a slow file storage adapter on the connected repository
      *
      * @internal param int $cacheSecondsInfo
@@ -83,12 +83,24 @@ class Client
             $this->cache = new ArrayCache();
         }
 
-        $this->cacheSecondsData                  = $cacheSecondsData;
-        $this->cacheSecondsIgnoreDataConcurrency = $cacheSecondsIgnoreDataConcurrency;
+        $this->cacheSecondsData                   = $cacheSecondsData;
+        $this->cacheSecondsIgnoreDataConcurrency  = $cacheSecondsIgnoreDataConcurrency;
         $this->cacheSecondsIgnoreFilesConcurrency = $cacheSecondsIgnoreFilesConcurrency;
 
         $this->cachePrefix = 'client_' . md5($url . $apiUser . $apiPassword);
 
+    }
+
+
+    public function setTimeout($seconds)
+    {
+        $this->guzzle->setDefaultOption('timeout', $seconds);
+    }
+
+
+    public function clearTimeout()
+    {
+        $this->guzzle->setDefaultOption('timeout', null);
     }
 
 
@@ -143,9 +155,27 @@ class Client
             $url = 'info/' . $workspace;
 
             $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
-            $request = $this->guzzle->get($url, null, $options);
 
-            $result = $request->send()->json();
+            try
+            {
+
+                $request = $this->guzzle->get($url, null, $options);
+
+                $result = $request->send()->json();
+
+            }
+            catch (\Exception $e)
+            {
+                $response = $request->getResponse();
+                if ($response && $response->getStatusCode() == 404)
+                {
+                    throw new AnyContentClientException($e->getMessage(), AnyContentClientException::ANYCONTENT_UNKNOW_REPOSITORY);
+                }
+                else
+                {
+                    throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+                }
+            }
 
             if ($this->cacheSecondsIgnoreDataConcurrency != 0)
             {
@@ -177,7 +207,6 @@ class Client
     }
 
 
-
     public function getLastContentTypeChangeTimestamp($contentTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
     {
         $info = $this->getRepositoryInfo($workspace, $language, $timeshift);
@@ -189,6 +218,7 @@ class Client
 
         return time();
     }
+
 
     public function getLastConfigTypeChangeTimestamp($configTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
     {
@@ -298,15 +328,23 @@ class Client
         {
             $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeName);
 
-            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName . '_' .$timestamp.'_'.$this->getHeartBeat();
+            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName . '_' . $timestamp . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
-               return $this->cache->fetch($cacheToken);
+                return $this->cache->fetch($cacheToken);
             }
 
-            $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
-            $result  = $request->send()->json();
+            try
+            {
+
+                $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
+                $result  = $request->send()->json();
+            }
+            catch (\Exception $e)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
 
             if ($this->cacheSecondsData != 0)
             {
@@ -317,7 +355,7 @@ class Client
         }
         else
         {
-            throw new AnyContentClientException('', AnyContentClientException::ANYCONTENT_UNKNOW_CONTENT_TYPE);
+            throw new AnyContentClientException('', AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
     }
@@ -330,7 +368,7 @@ class Client
 
             $timestamp = $this->getLastConfigTypeChangeTimestamp($configTypeName);
 
-            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName . '_' .  $timestamp.'_'.$this->getHeartBeat();
+            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName . '_' . $timestamp . '_' . $this->getHeartBeat();
             $this->getHeartBeat();;
 
             if ($this->cache->contains($cacheToken))
@@ -338,8 +376,15 @@ class Client
                 return $this->cache->fetch($cacheToken);
             }
 
-            $request = $this->guzzle->get('config/' . $configTypeName . '/cmdl');
-            $result  = $request->send()->json();
+            try
+            {
+                $request = $this->guzzle->get('config/' . $configTypeName . '/cmdl');
+                $result  = $request->send()->json();
+            }
+            catch (\Exception $e)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
 
             if ($this->cacheSecondsData != 0)
             {
@@ -374,7 +419,7 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         // repository info has changed
@@ -408,7 +453,7 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         // repository info has changed
@@ -459,7 +504,11 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
         }
 
         return false;
@@ -518,7 +567,18 @@ class Client
         $options = array( 'query' => array( 'language' => $language ) );
         $request = $this->guzzle->delete($url, null, null, $options);
 
-        $result = $request->send()->json();
+        try
+        {
+            $result = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
+        }
 
         // repository info has changed
         $this->deleteRepositoryInfo($workspace, $language);
@@ -626,9 +686,16 @@ class Client
 
         $options = array( 'query' => $queryParams );
 
-        $request = $this->guzzle->get($url, null, $options);
+        try
+        {
+            $request = $this->guzzle->get($url, null, $options);
 
-        $result = $request->send()->json();
+            $result = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
 
         if ($result)
         {
@@ -663,10 +730,17 @@ class Client
     public function sortRecords(ContentTypeDefinition $contentTypeDefinition, $list = array(), $workspace = 'default', $language = 'default')
     {
 
-        $url     = 'content/' . $contentTypeDefinition->getName() . '/sort-records/' . $workspace;
-        $request = $this->guzzle->post($url, null, array( 'language' => $language, 'list' => json_encode($list) ));
+        $url = 'content/' . $contentTypeDefinition->getName() . '/sort-records/' . $workspace;
 
-        $result = $request->send()->json();
+        try
+        {
+            $request = $this->guzzle->post($url, null, array( 'language' => $language, 'list' => json_encode($list) ));
+            $result  = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
 
         // repository info has changed
         $this->deleteRepositoryInfo($workspace, $language);
@@ -714,9 +788,22 @@ class Client
             $url .= '/' . $path;
         }
 
-        $request = $this->guzzle->get($url);
+        try
+        {
 
-        $result = $request->send()->json();
+            $request = $this->guzzle->get($url);
+
+            $result = $request->send()->json();
+
+        }
+        catch (\Exception $e)
+        {
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
+        }
 
         if ($result)
         {
@@ -768,7 +855,11 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
         }
 
         return false;
@@ -791,7 +882,11 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
         }
 
         return false;
@@ -819,7 +914,11 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
         }
 
         return false;
@@ -840,7 +939,7 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         return false;
@@ -868,7 +967,11 @@ class Client
                 }
                 catch (\Exception $e)
                 {
-
+                    $response = $request->getResponse();
+                    if ($response && $response->getStatusCode() != 404)
+                    {
+                        throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+                    }
                 }
             }
         }
@@ -895,7 +998,7 @@ class Client
         }
         catch (\Exception $e)
         {
-            echo $e->getMessage();
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         return false;
@@ -919,7 +1022,7 @@ class Client
         }
         catch (\Exception $e)
         {
-            echo $e->getMessage();
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         return false;
@@ -944,7 +1047,7 @@ class Client
         }
         catch (\Exception $e)
         {
-            echo $e->getMessage();
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         return false;
@@ -968,7 +1071,7 @@ class Client
         }
         catch (\Exception $e)
         {
-            echo $e->getMessage();
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         return false;

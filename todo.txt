@@ -17,3 +17,5 @@
 
 
      check for subset parameter within getRecords, seems to be mixed up. Attention it's used from cmck
+
+     deleteFile, deleteFolder, deleteContentType, deleteConfigType should return false, if no file,folder, content type, config type of the given name was present.
