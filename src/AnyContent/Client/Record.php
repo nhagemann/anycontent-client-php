@@ -89,6 +89,28 @@ class Record
         return new Sequence($this->contentTypeDefinition, $values);
     }
 
+    public function getTable($property)
+    {
+        $values = json_decode($this->getProperty($property), true);
+
+        if (!is_array($values))
+        {
+            $values = array();
+        }
+
+        $formElementDefinition = $this->contentTypeDefinition->getViewDefinition($this->view)->getFormElementDefinition($property);
+
+        $columns = count($formElementDefinition->getList(1));
+
+        $table = new Table($columns);
+
+        foreach ($values as $row)
+        {
+            $table->addRow($row);
+        }
+
+        return $table;
+    }
 
     public function getArrayProperty($property)
     {
