@@ -15,6 +15,7 @@ use AnyContent\Client\ContentFilter;
 use AnyContent\Client\Folder;
 use AnyContent\Client\File;
 
+use Doctrine\Common\Cache\ApcCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\ArrayCache;
 use Guzzle\Parser\ParserRegistry;
@@ -33,9 +34,13 @@ class Client
 
     protected $repositoryInfo = null;
 
-    protected $contentTypeList = null;
+    protected $contentTypesList = null;
 
     protected $configTypesList = null;
+
+    protected $contentTypeDefinition = array();
+    protected $configTypeDefinitions = array();
+
     /**
      * @var Cache;
      */
@@ -43,18 +48,23 @@ class Client
 
     protected $cachePrefix = '';
 
-    protected $cacheSecondsCMDL = 3600;
-    protected $cacheSecondsInfo = 15;
-    protected $cacheSecondsDefault = 600;
+    protected $cacheSecondsData = 3600;
+    protected $cacheSecondsIgnoreDataConcurrency = 15;
 
 
     /**
-     * @param        $url
-     * @param null   $user
-     * @param null   $password
-     * @param string $authType "Basic" (default), "Digest", "NTLM", or "Any".
+     * @param                              $url
+     * @param null                         $apiUser
+     * @param null                         $apiPassword
+     * @param string                       $authType                           "Basic" (default), "Digest", "NTLM", or "Any".
+     * @param \Doctrine\Common\Cache\Cache $cache
+     * @param int                          $cacheSecondsData
+     * @param int                          $cacheSecondsIgnoreDataConcurrency  - raise, if your application is the only application, which makes content/config write requests on the connected repository
+     * @param int                          $cacheSecondsIgnoreFilesConcurrency - raise, if your application is the only application, which makes file changes and/or you do have a slow file storage adapter on the connected repository
+     *
+     * @internal param int $cacheSecondsInfo
      */
-    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $secondsIgnoringEventuallyCMDLUpdates = 3600, $secondsIgnoringEventuallyConcurrentWriteRequests = 15, $secondsStoringRecordsInCache = 600)
+    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $cacheSecondsData = 3600, $cacheSecondsIgnoreDataConcurrency = 1, $cacheSecondsIgnoreFilesConcurrency = 60)
     {
         // Create a client and provide a base URL
         $this->guzzle = new \Guzzle\Http\Client($url);
@@ -73,29 +83,44 @@ class Client
             $this->cache = new ArrayCache();
         }
 
-        $this->cacheSecondsCMDL    = $secondsIgnoringEventuallyCMDLUpdates;
-        $this->cacheSecondsInfo    = $secondsIgnoringEventuallyConcurrentWriteRequests;
-        $this->cacheSecondsDefault = $secondsStoringRecordsInCache;
+        $this->cacheSecondsData                   = $cacheSecondsData;
+        $this->cacheSecondsIgnoreDataConcurrency  = $cacheSecondsIgnoreDataConcurrency;
+        $this->cacheSecondsIgnoreFilesConcurrency = $cacheSecondsIgnoreFilesConcurrency;
 
         $this->cachePrefix = 'client_' . md5($url . $apiUser . $apiPassword);
 
-        //$request = $this->guzzle->get('');
+    }
 
-        //$result = $request->send()->json();
 
-        //$this->repositoryInfo  = $result;
-        $result                = $this->getRepositoryInfo();
-        $this->contentTypeList = array();
-        foreach ($result['content'] as $name => $item)
+    public function setTimeout($seconds)
+    {
+        $this->guzzle->setDefaultOption('timeout', $seconds);
+    }
+
+
+    public function clearTimeout()
+    {
+        $this->guzzle->setDefaultOption('timeout', null);
+    }
+
+
+    /**
+     * deletes temporarily collected info about the current repository
+     *
+     * if language and workspace are given, related cache token gets deleted too
+     *
+     * @param null $workspace
+     * @param null $language
+     */
+    protected function deleteRepositoryInfo($workspace = null, $language = null)
+    {
+        if ($workspace != null and $language != null)
         {
-            $this->contentTypeList[$name] = $item['title'];
+            $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0_' . $this->getHeartBeat();
+            $this->cache->delete($cacheToken);
         }
-        $this->configTypesList = array();
-
-        foreach ($result['config'] as $name => $item)
-        {
-            $this->configTypesList[$name] = $item['title'];
-        }
+        $this->contentTypesList = null;
+        $this->configTypesList  = null;
     }
 
 
@@ -114,89 +139,223 @@ class Client
     public function getRepositoryInfo($workspace = 'default', $language = 'default', $timeshift = 0)
     {
 
+        $result = false;
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
-            $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_' . $timeshift;
+            $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_' . $timeshift . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
-                return $this->cache->fetch($cacheToken);
+                $result = $this->cache->fetch($cacheToken);
             }
         }
 
-        $url = 'info/' . $workspace;
-
-        $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
-        $request = $this->guzzle->get($url, null, $options);
-
-        $result = $request->send()->json();
-
-        if ($this->cacheSecondsInfo != 0)
+        if ($result == false)
         {
-            if ($timeshift == 0)
+            $url = 'info/' . $workspace;
+
+            $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
+
+            try
             {
-                $this->cache->save($cacheToken, $result, $this->cacheSecondsInfo);
+
+                $request = $this->guzzle->get($url, null, $options);
+
+                $result = $request->send()->json();
+
             }
-            if ($timeshift > self::MAX_TIMESHIFT)
+            catch (\Exception $e)
             {
-                // timeshifted info result can get stored longer, since they won't change in the future, but they have to be absolute (>MAX_TIMESHIFT)
-                $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
+                $response = $request->getResponse();
+                if ($response && $response->getStatusCode() == 404)
+                {
+                    throw new AnyContentClientException($e->getMessage(), AnyContentClientException::ANYCONTENT_UNKNOW_REPOSITORY);
+                }
+                else
+                {
+                    throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+                }
             }
+
+            if ($this->cacheSecondsIgnoreDataConcurrency != 0)
+            {
+                if ($timeshift == 0)
+                {
+                    $this->cache->save($cacheToken, $result, $this->cacheSecondsIgnoreDataConcurrency);
+                }
+                if ($timeshift > self::MAX_TIMESHIFT)
+                {
+                    // timeshifted info result can get stored longer, since they won't change in the future, but they have to be absolute (>MAX_TIMESHIFT)
+                    $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
+                }
+            }
+        }
+
+        $this->contentTypesList = array();
+        foreach ($result['content'] as $name => $item)
+        {
+            $this->contentTypesList[$name] = $item['title'];
+        }
+        $this->configTypesList = array();
+
+        foreach ($result['config'] as $name => $item)
+        {
+            $this->configTypesList[$name] = $item['title'];
         }
 
         return $result;
     }
 
 
-    public function getLastChangeTimestamp(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'default', $timeshift = 0)
+    public function getLastContentTypeChangeTimestamp($contentTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
     {
         $info = $this->getRepositoryInfo($workspace, $language, $timeshift);
 
-        if (array_key_exists($contentTypeDefinition->getName(), $info['content']))
+        if (array_key_exists($contentTypeName, $info['content']))
         {
-            return ($info['content'][$contentTypeDefinition->getName()]['lastchange_content']);
+            return ($info['content'][$contentTypeName]['lastchange_content'] . $info['content'][$contentTypeName]['lastchange_cmdl']);
         }
 
         return time();
     }
 
 
+    public function getLastConfigTypeChangeTimestamp($configTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
+    {
+        $info = $this->getRepositoryInfo($workspace, $language, $timeshift);
+
+        if (array_key_exists($configTypeName, $info['config']))
+        {
+            return ($info['config'][$configTypeName]['lastchange_config'] . $info['config'][$configTypeName]['lastchange_cmdl']);
+        }
+
+        return time();
+    }
+
+
+    /**
+     * @deprecated
+     * @return null
+     */
     public function getContentTypeList()
     {
-        return $this->contentTypeList;
+        if ($this->contentTypesList === null)
+        {
+            $this->getRepositoryInfo();
+
+        }
+
+        return $this->contentTypesList;
+    }
+
+
+    public function getContentTypesList()
+    {
+        if ($this->contentTypesList === null)
+        {
+            $this->getRepositoryInfo();
+        }
+
+        return $this->contentTypesList;
     }
 
 
     public function getConfigTypesList()
     {
+        if ($this->configTypesList === null)
+        {
+            $this->getRepositoryInfo();
+        }
+
         return $this->configTypesList;
+    }
+
+
+    public function getContentTypeDefinition($contentTypeName)
+    {
+
+        if ($this->hasContentType($contentTypeName))
+        {
+            $cmdl = $this->getCMDL($contentTypeName);
+
+            $contentTypeDefinition = Parser::parseCMDLString($cmdl, $contentTypeName, '', 'content');
+            if ($contentTypeDefinition)
+            {
+                $contentTypeDefinition->setName($contentTypeName);
+
+                return $contentTypeDefinition;
+            }
+        }
+
+        return false;
+    }
+
+
+    public function getConfigTypeDefinition($configTypeName)
+    {
+        if ($this->hasConfigType($configTypeName))
+        {
+            $cmdl = $this->getConfigCMDL($configTypeName);
+
+            $configTypeDefinition = Parser::parseCMDLString($cmdl, $configTypeName, '', 'config');
+            if ($configTypeDefinition)
+            {
+                $configTypeDefinition->setName($configTypeName);
+
+                return $configTypeDefinition;
+            }
+        }
+
+        return false;
+    }
+
+
+    public function hasContentType($contentTypeName)
+    {
+        return array_key_exists($contentTypeName, $this->getContentTypesList());
+    }
+
+
+    public function hasConfigType($configTypeName)
+    {
+        return array_key_exists($configTypeName, $this->getConfigTypesList());
     }
 
 
     public function getCMDL($contentTypeName)
     {
-        if (array_key_exists($contentTypeName, $this->contentTypeList))
+        if (array_key_exists($contentTypeName, $this->getContentTypesList()))
         {
-            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName;
+            $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeName);
+
+            $cacheToken = $this->cachePrefix . '_cmdl_' . $contentTypeName . '_' . $timestamp . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
                 return $this->cache->fetch($cacheToken);
             }
 
-            $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
-            $result  = $request->send()->json();
-
-            if ($this->cacheSecondsCMDL != 0)
+            try
             {
-                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsCMDL);
+
+                $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
+                $result  = $request->send()->json();
+            }
+            catch (\Exception $e)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
+
+            if ($this->cacheSecondsData != 0)
+            {
+                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsData);
             }
 
             return $result['cmdl'];
         }
         else
         {
-            throw new AnyContentClientException('', AnyContentClientException::ANYCONTENT_UNKNOW_CONTENT_TYPE);
+            throw new AnyContentClientException('', AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
     }
@@ -204,21 +363,32 @@ class Client
 
     public function getConfigCMDL($configTypeName)
     {
-        if (array_key_exists($configTypeName, $this->configTypesList))
+        if (array_key_exists($configTypeName, $this->getConfigTypesList()))
         {
-            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName;
+
+            $timestamp = $this->getLastConfigTypeChangeTimestamp($configTypeName);
+
+            $cacheToken = $this->cachePrefix . '_config_cmdl_' . $configTypeName . '_' . $timestamp . '_' . $this->getHeartBeat();
+            $this->getHeartBeat();;
 
             if ($this->cache->contains($cacheToken))
             {
                 return $this->cache->fetch($cacheToken);
             }
 
-            $request = $this->guzzle->get('config/' . $configTypeName . '/cmdl');
-            $result  = $request->send()->json();
-
-            if ($this->cacheSecondsCMDL != 0)
+            try
             {
-                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsCMDL);
+                $request = $this->guzzle->get('config/' . $configTypeName . '/cmdl');
+                $result  = $request->send()->json();
+            }
+            catch (\Exception $e)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
+
+            if ($this->cacheSecondsData != 0)
+            {
+                $this->cache->save($cacheToken, $result['cmdl'], $this->cacheSecondsData);
             }
 
             return $result['cmdl'];
@@ -231,28 +401,34 @@ class Client
     }
 
 
-    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'default')
+    public function saveRecord(Record $record, $workspace = 'default', $viewName = 'default', $language = 'default')
     {
         $contentTypeName = $record->getContentType();
 
-        $url = 'content/' . $contentTypeName . '/records/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeName . '/records/' . $workspace . '/' . $viewName;
 
         $json = json_encode($record);
 
         $request = $this->guzzle->post($url, null, array( 'record' => $json, 'language' => $language ));
 
+        $result = false;
         try
         {
             $result = $request->send()->json();
+
         }
         catch (\Exception $e)
         {
-            return false;
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
-        $this->cache->delete($cacheToken);
+        $this->deleteRepositoryInfo($workspace, $language);
+
+        if ($result === false)
+        {
+            return false;
+        }
 
         return (int)$result;
 
@@ -269,13 +445,22 @@ class Client
 
         $request = $this->guzzle->post($url, null, array( 'record' => $json, 'language' => $language ));
 
+        $result = false;
         try
         {
             $result = $request->send()->json();
+
         }
         catch (\Exception $e)
         {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
 
+        // repository info has changed
+        $this->deleteRepositoryInfo($workspace, $language);
+
+        if ($result === false)
+        {
             return false;
         }
 
@@ -284,13 +469,13 @@ class Client
     }
 
 
-    public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    public function getRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
-            $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
+            $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName(), $workspace, $language, $timeshift);
 
-            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language;
+            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -298,7 +483,7 @@ class Client
             }
         }
 
-        $url = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace . '/' . $viewName;
 
         $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
         $request = $this->guzzle->get($url, null, $options);
@@ -308,18 +493,22 @@ class Client
 
             $result = $request->send()->json();
 
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $clippingName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $viewName, $workspace, $language);
 
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
-                $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
+                $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
             }
 
             return $record;
         }
         catch (\Exception $e)
         {
-
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
         }
 
         return false;
@@ -329,7 +518,7 @@ class Client
     public function getConfig($configTypeName, $workspace = 'default', $language = 'default', $timeshift = 0)
     {
         //todo caching
-        if (array_key_exists($configTypeName, $this->configTypesList))
+        if (array_key_exists($configTypeName, $this->getConfigTypesList()))
         {
 
             $cmdl                 = $this->getConfigCMDL($configTypeName);
@@ -378,25 +567,35 @@ class Client
         $options = array( 'query' => array( 'language' => $language ) );
         $request = $this->guzzle->delete($url, null, null, $options);
 
-        $result = $request->send()->json();
+        try
+        {
+            $result = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
+        }
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
-        $this->cache->delete($cacheToken);
+        $this->deleteRepositoryInfo($workspace, $language);
 
         return $result;
     }
 
 
-    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
 
         $records = array();
 
         foreach ($result['records'] as $item)
         {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
 
             $records[$record->getID()] = $record;
         }
@@ -405,9 +604,9 @@ class Client
     }
 
 
-    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
         if ($result)
         {
             return $result['info']['count'];
@@ -417,7 +616,7 @@ class Client
     }
 
 
-    public function getSubset(ContentTypeDefinition $contentTypeDefinition, $parentId, $includeParent = true, $depth = null, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    public function getSubset(ContentTypeDefinition $contentTypeDefinition, $parentId, $includeParent = true, $depth = null, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
     {
         $subset = (int)$parentId . ',' . (int)$includeParent;
         if ($depth != null)
@@ -425,13 +624,13 @@ class Client
             $subset .= ',' . $depth;
         }
 
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $clippingName, $language, 'id', array(), null, 1, null, $subset, $timeshift);
+        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, 'id', array(), null, 1, null, $subset, $timeshift);
 
         $records = array();
 
         foreach ($result['records'] as $item)
         {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
 
             $records[$record->getID()] = $record;
         }
@@ -440,11 +639,11 @@ class Client
     }
 
 
-    protected function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    protected function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
-            $timestamp = $this->getLastChangeTimestamp($contentTypeDefinition, $workspace, $language, $timeshift);
+            $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName(), $workspace, $language, $timeshift);
 
             $filterToken     = '';
             $propertiesToken = json_encode($properties);
@@ -453,7 +652,7 @@ class Client
                 $filterToken = md5(json_encode($filter->getConditionsArray()));
             }
 
-            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset);
+            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -461,7 +660,7 @@ class Client
             }
         }
 
-        $url = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace . '/' . $clippingName;
+        $url = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace . '/' . $viewName;
 
         $queryParams              = array();
         $queryParams['language']  = $language;
@@ -487,22 +686,29 @@ class Client
 
         $options = array( 'query' => $queryParams );
 
-        $request = $this->guzzle->get($url, null, $options);
+        try
+        {
+            $request = $this->guzzle->get($url, null, $options);
 
-        $result = $request->send()->json();
+            $result = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
 
         if ($result)
         {
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
-                $this->cache->save($cacheToken, $result, $this->cacheSecondsDefault);
+                $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
 
                 foreach ($result['records'] AS $item)
                 {
-                    $record     = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $clippingName, $workspace, $language);
-                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $record->getId() . '_' . $timestamp . '_' . $workspace . '_' . $clippingName . '_' . $language;
+                    $record     = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
+                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $record->getId() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
 
-                    $this->cache->save($cacheToken, $record, $this->cacheSecondsDefault);
+                    $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
                 }
             }
         }
@@ -524,22 +730,28 @@ class Client
     public function sortRecords(ContentTypeDefinition $contentTypeDefinition, $list = array(), $workspace = 'default', $language = 'default')
     {
 
-        $url     = 'content/' . $contentTypeDefinition->getName() . '/sort-records/' . $workspace;
-        $request = $this->guzzle->post($url, null, array( 'language' => $language, 'list' => json_encode($list) ));
+        $url = 'content/' . $contentTypeDefinition->getName() . '/sort-records/' . $workspace;
 
-        $result = $request->send()->json();
+        try
+        {
+            $request = $this->guzzle->post($url, null, array( 'language' => $language, 'list' => json_encode($list) ));
+            $result  = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
 
         // repository info has changed
-        $cacheToken = $this->cachePrefix . '_info_' . $workspace . '_' . $language . '_0';
-        $this->cache->delete($cacheToken);
+        $this->deleteRepositoryInfo($workspace, $language);
 
         return $result;
     }
 
 
-    protected function createRecordFromJSONResult($contentTypeDefinition, $result, $clippingName, $workspace, $language)
+    protected function createRecordFromJSONResult($contentTypeDefinition, $result, $viewName, $workspace, $language)
     {
-        $record = new Record($contentTypeDefinition, $result['properties']['name'], $clippingName, $workspace, $language);
+        $record = new Record($contentTypeDefinition, $result['properties']['name'], $viewName, $workspace, $language);
         $record->setID($result['id']);
         $record->setRevision($result['info']['revision']);
         $record->setRevisionTimestamp($result['info']['revision_timestamp']);
@@ -576,9 +788,22 @@ class Client
             $url .= '/' . $path;
         }
 
-        $request = $this->guzzle->get($url);
+        try
+        {
 
-        $result = $request->send()->json();
+            $request = $this->guzzle->get($url);
+
+            $result = $request->send()->json();
+
+        }
+        catch (\Exception $e)
+        {
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
+        }
 
         if ($result)
         {
@@ -593,7 +818,7 @@ class Client
 
     public function getFile($id)
     {
-        $id = trim($id,'/');
+        $id       = trim($id, '/');
         $pathinfo = pathinfo($id);
 
         $folder = $this->getFolder($pathinfo['dirname']);
@@ -610,7 +835,7 @@ class Client
 
     public function getBinary(File $file, $forceRepositoryRequest = false)
     {
-        $url = $file->getUrl('binary', true);
+        $url = $file->getUrl('binary', false);
         if (!$url OR $forceRepositoryRequest)
         {
             $url = 'file/' . trim($file->getId(), '/');
@@ -630,7 +855,11 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
         }
 
         return false;
@@ -653,7 +882,11 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
         }
 
         return false;
@@ -681,7 +914,11 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
         }
 
         return false;
@@ -702,7 +939,7 @@ class Client
         }
         catch (\Exception $e)
         {
-
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
         }
 
         return false;
@@ -730,12 +967,146 @@ class Client
                 }
                 catch (\Exception $e)
                 {
-
+                    $response = $request->getResponse();
+                    if ($response && $response->getStatusCode() != 404)
+                    {
+                        throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+                    }
                 }
             }
         }
 
         return false;
+    }
+
+
+    public function saveContentTypeCMDL($contentTypeName, $cmdl, $locale = null)
+    {
+
+        $url = 'content/' . $contentTypeName . '/cmdl';
+
+        try
+        {
+            $request = $this->guzzle->post($url, null, array( 'cmdl' => $cmdl, 'locale' => $locale ));
+
+            $request->send();
+
+            $this->deleteHeartBeat();
+            $this->deleteRepositoryInfo();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
+
+        return false;
+    }
+
+
+    public function deleteContentType($contentTypeName)
+    {
+        $url = 'content/' . $contentTypeName;
+
+        try
+        {
+            $request = $this->guzzle->delete($url);
+
+            $request->send();
+
+            $this->deleteHeartBeat();
+            $this->deleteRepositoryInfo();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
+
+        return false;
+    }
+
+
+    public function saveConfigTypeCMDL($configTypeName, $cmdl, $locale = null)
+    {
+
+        $url = 'config/' . $configTypeName . '/cmdl';
+
+        try
+        {
+            $request = $this->guzzle->post($url, null, array( 'cmdl' => $cmdl, 'locale' => $locale ));
+
+            $request->send();
+
+            $this->deleteHeartBeat();
+            $this->deleteRepositoryInfo();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
+
+        return false;
+    }
+
+
+    public function deleteConfigType($configTypeName)
+    {
+        $url = 'config/' . $configTypeName;
+
+        try
+        {
+            $request = $this->guzzle->delete($url);
+
+            $request->send();
+
+            $this->deleteHeartBeat();
+            $this->deleteRepositoryInfo();
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Global token added to every cache token. If any client with the same cache prefix calls a cmdl changing method,
+     * the token gets deleted which feels like a full flush.
+     *
+     * @return bool|mixed|string
+     */
+    protected function getHeartBeat()
+    {
+        // maybe make content type config type sensitive
+
+        $cacheToken = $this->cachePrefix . '_heartbeat';
+
+        if ($this->cache->contains($cacheToken))
+        {
+            return $this->cache->fetch($cacheToken);
+        }
+        $heartbeat = md5(microtime());
+        $this->cache->save($cacheToken, $heartbeat);
+
+        return $heartbeat;
+    }
+
+
+    protected function deleteHeartBeat()
+    {
+
+        $cacheToken = $this->cachePrefix . '_heartbeat';
+
+        $this->cache->delete($cacheToken);
     }
 
 }

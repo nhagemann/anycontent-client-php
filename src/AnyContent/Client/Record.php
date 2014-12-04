@@ -15,7 +15,7 @@ class Record
 
     protected $contentTypeDefinition = null;
 
-    protected $clipping = 'default';
+    protected $view = 'default';
     protected $workspace = 'default';
     protected $language = 'default';
 
@@ -34,12 +34,12 @@ class Record
     public $lastChangeUserInfo;
 
 
-    public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $clipping = 'default', $workspace = 'default', $language = 'default')
+    public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $view = 'default', $workspace = 'default', $language = 'default')
     {
         $this->contentTypeDefinition = $contentTypeDefinition;
 
         $this->setProperty('name', $name);
-        $this->clipping  = $clipping;
+        $this->view  = $view;
         $this->workspace = $workspace;
         $this->language  = $language;
 
@@ -50,7 +50,7 @@ class Record
     {
 
         $property = Util::generateValidIdentifier($property);
-        if ($this->contentTypeDefinition->hasProperty($property, $this->clipping))
+        if ($this->contentTypeDefinition->hasProperty($property, $this->view))
         {
             $this->properties[$property] = $value;
             $this->hash                  = null;
@@ -89,6 +89,28 @@ class Record
         return new Sequence($this->contentTypeDefinition, $values);
     }
 
+    public function getTable($property)
+    {
+        $values = json_decode($this->getProperty($property), true);
+
+        if (!is_array($values))
+        {
+            $values = array();
+        }
+
+        $formElementDefinition = $this->contentTypeDefinition->getViewDefinition($this->view)->getFormElementDefinition($property);
+
+        $columns = count($formElementDefinition->getList(1));
+
+        $table = new Table($columns);
+
+        foreach ($values as $row)
+        {
+            $table->addRow($row);
+        }
+
+        return $table;
+    }
 
     public function getArrayProperty($property)
     {
@@ -258,15 +280,15 @@ class Record
     }
 
 
-    public function setClippingName($clipping)
+    public function setViewName($view)
     {
-        $this->clipping = $clipping;
+        $this->view = $view;
     }
 
 
-    public function getClippingName()
+    public function getViewName()
     {
-        return $this->clipping;
+        return $this->view;
     }
 
 

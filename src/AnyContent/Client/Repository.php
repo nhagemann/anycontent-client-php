@@ -17,9 +17,8 @@ class Repository
     protected $client;
 
     protected $contentTypeName = '';
-    protected $contentTypeDefinition = null;
-    protected $configTypeDefinitions = array();
 
+    protected $contentTypeDefinition = null;
 
     public function __construct($client)
     {
@@ -29,7 +28,7 @@ class Repository
 
     public function getContentTypes()
     {
-        return $this->client->getContentTypeList();
+        return $this->client->getContentTypesList();
     }
 
 
@@ -42,53 +41,24 @@ class Repository
 
     public function getContentTypeDefinition($contentTypeName = null)
     {
-        if ($contentTypeName == null AND $this->contentTypeDefinition)
+        if ($contentTypeName==null)
         {
-            return $this->contentTypeDefinition;
+            $contentTypeName=$this->contentTypeName;
         }
-
-        if ($this->hasContentType($contentTypeName))
-        {
-            $cmdl                  = $this->client->getCMDL($contentTypeName);
-            $contentTypeDefinition = Parser::parseCMDLString($cmdl);
-            if ($contentTypeDefinition)
-            {
-                $contentTypeDefinition->setName($contentTypeName);
-
-                return $contentTypeDefinition;
-            }
-        }
-
-        return false;
+        return $this->client->getContentTypeDefinition($contentTypeName);
     }
 
 
     public function getConfigTypeDefinition($configTypeName = null)
     {
-        if (array_key_exists($configTypeName, $this->configTypeDefinitions))
-        {
-            return $this->configTypeDefinitions[$configTypeName];
-        }
 
-        if ($this->hasConfigType($configTypeName))
-        {
-            $cmdl                 = $this->client->getConfigCMDL($configTypeName);
-            $configTypeDefinition = Parser::parseCMDLString($cmdl, $configTypeName, '', 'config');
-            if ($configTypeDefinition)
-            {
-                $configTypeDefinition->setName($configTypeName);
-
-                return $configTypeDefinition;
-            }
-        }
-
-        return false;
+        return $this->client->getConfigTypeDefinition($configTypeName);
     }
 
 
     public function hasContentType($contentTypeName)
     {
-        return array_key_exists($contentTypeName, $this->client->getContentTypeList());
+        return array_key_exists($contentTypeName, $this->client->getContentTypesList());
     }
 
 
@@ -104,17 +74,19 @@ class Repository
         {
             $this->contentTypeName       = $contentTypeName;
             $this->contentTypeDefinition = $this->getContentTypeDefinition($contentTypeName);
-            return false;
+
+            return true;
         }
-        return true;
+
+        return false;
     }
 
 
-    public function getRecord($id, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    public function getRecord($id, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
-            return $this->client->getRecord($this->contentTypeDefinition, $id, $workspace, $clippingName, $language, $timeshift);
+            return $this->client->getRecord($this->contentTypeDefinition, $id, $workspace, $viewName, $language, $timeshift);
         }
 
         return false;
@@ -122,11 +94,11 @@ class Repository
     }
 
 
-    public function getFirstRecord(ContentFilter $filter, $workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $timeshift = 0)
+    public function getFirstRecord(ContentFilter $filter, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
-            $records = $this->client->getRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, 1, 1, $filter, null, $timeshift);
+            $records = $this->client->getRecords($this->contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, 1, 1, $filter, null, $timeshift);
             if (count($records) == 1)
             {
                 return array_shift($records);
@@ -137,39 +109,39 @@ class Repository
     }
 
 
-    public function saveRecord(Record $record, $workspace = 'default', $clippingName = 'default', $language = 'default')
+    public function saveRecord(Record $record, $workspace = 'default', $viewName = 'default', $language = 'default')
     {
-        return $this->client->saveRecord($record, $workspace, $clippingName, $language);
+        return $this->client->saveRecord($record, $workspace, $viewName, $language);
     }
 
 
-    public function getRecords($workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function getRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
-            return $this->client->getRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
+            return $this->client->getRecords($this->contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
         }
 
         return false;
     }
 
 
-    public function countRecords($workspace = 'default', $clippingName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function countRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
-            return $this->client->countRecords($this->contentTypeDefinition, $workspace, $clippingName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
+            return $this->client->countRecords($this->contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
         }
 
         return false;
     }
 
 
-    public function getSubset($parentId, $includeParent = true, $depth = null, $workspace = 'default', $clippingName = 'default', $language = 'default', $timeshift = 0)
+    public function getSubset($parentId, $includeParent = true, $depth = null, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
-            return $this->client->getSubset($this->contentTypeDefinition, $parentId, $includeParent, $depth, $workspace, $clippingName, $language, $timeshift);
+            return $this->client->getSubset($this->contentTypeDefinition, $parentId, $includeParent, $depth, $workspace, $viewName, $language, $timeshift);
         }
 
         return false;

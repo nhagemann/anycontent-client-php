@@ -18,12 +18,19 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        global $testWithCaching;
+
+        $cache = null;
+        if ($testWithCaching)
+        {
+            $cache = new \Doctrine\Common\Cache\ApcCache();
+        }
+
         // Connect to repository
-        $client = new Client('http://anycontent.dev/1/example');
+        $client = new Client('http://acrs.github.dev/1/example', null, null, 'Basic', $cache);
         $client->setUserInfo(new UserInfo('john.doe@example.org', 'John', 'Doe'));
         $this->client = $client;
 
-        // todo: delete config table
     }
 
 

@@ -19,9 +19,16 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        global $testWithCaching;
+
+        $cache = null;
+        if ($testWithCaching)
+        {
+            $cache = new \Doctrine\Common\Cache\ApcCache();
+        }
 
         // Connect to repository
-        $client = new Client('http://anycontent.dev/1/example');
+        $client = new Client('http://acrs.github.dev/1/example', null, null, 'Basic', $cache);
         $client->setUserInfo(new UserInfo('john.doe@example.org', 'John', 'Doe'));
         $this->client = $client;
     }
@@ -30,9 +37,11 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
     public function testSaveRecords()
     {
         // Execute admin call to delete all existing data of the test content types
-        $guzzle  = new \Guzzle\Http\Client('http://anycontent.dev');
-        $request = $guzzle->get('1/admin/delete/example/example01');
+        $guzzle  = new \Guzzle\Http\Client('http://acrs.github.dev');
+        $request = $guzzle->delete('1/example/content/example01/records',null,null,array('global'=>1));
         $result  = $request->send()->getBody();
+
+
 
         $cmdl = $this->client->getCMDL('example01');
 
@@ -60,6 +69,7 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRecord()
     {
+
         $cmdl = $this->client->getCMDL('example01');
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
@@ -72,6 +82,10 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('New Record 1 - Revision 5', $record->getName());
         $this->assertEquals('Test 1', $record->getProperty('article'));
         $this->assertEquals(5, $record->getRevision());
+
+
+        $record = $this->client->getRecord($contentTypeDefinition, 99);
+        $this->assertFalse($record);
     }
 
 
@@ -103,12 +117,12 @@ class RecordsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(5,$records);
 
-        $t1 = $this->client->getLastChangeTimestamp($contentTypeDefinition);
+        $t1 = $this->client->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName());
 
         $this->assertFalse($this->client->deleteRecord($contentTypeDefinition,99));
         $this->assertTrue($this->client->deleteRecord($contentTypeDefinition,5));
 
-        $t2 = $this->client->getLastChangeTimestamp($contentTypeDefinition);
+        $t2 = $this->client->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName());
 
         $this->assertNotEquals($t1,$t2);
 
