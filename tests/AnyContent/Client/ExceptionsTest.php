@@ -24,12 +24,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
         $cache = null;
         if ($testWithCaching)
         {
-            $memcached = new \Memcached();
-
-            $memcached->addServer('localhost', 11211);
-            $cache = new \Doctrine\Common\Cache\MemcachedCache();
-            $cache->setMemcached($memcached);
-
+            $cache = new \Doctrine\Common\Cache\ApcCache();
         }
 
 
@@ -52,7 +47,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
     {
 
         $this->setExpectedException('AnyContent\Client\AnyContentClientException','',AnyContentClientException::ANYCONTENT_UNKNOW_REPOSITORY);
-        $client = new Client('http://anycontent.dev/1/unknown', null, null, 'Basic', null);
+        $client = new Client('http://acrs.github.dev/1/unknown', null, null, 'Basic', null);
 
         $client->getRepositoryInfo();
 
@@ -61,7 +56,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
     public function testWrongUrlWith404()
     {
         $this->setExpectedException('AnyContent\Client\AnyContentClientException','',AnyContentClientException::ANYCONTENT_UNKNOW_REPOSITORY);
-        $client = new Client('http://anycontent.dev/unknown', null, null, 'Basic', null);
+        $client = new Client('http://acrs.github.dev/unknown', null, null, 'Basic', null);
 
         $client->getRepositoryInfo();
     }
