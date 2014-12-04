@@ -18,6 +18,8 @@ class Repository
 
     protected $contentTypeName = '';
 
+    protected $configTypeName = '';
+
     protected $contentTypeDefinition = null;
 
     public function __construct($client)
@@ -51,7 +53,10 @@ class Repository
 
     public function getConfigTypeDefinition($configTypeName = null)
     {
-
+        if ($configTypeName==null)
+        {
+            $configTypeName=$this->configTypeName;
+        }
         return $this->client->getConfigTypeDefinition($configTypeName);
     }
 
@@ -74,6 +79,19 @@ class Repository
         {
             $this->contentTypeName       = $contentTypeName;
             $this->contentTypeDefinition = $this->getContentTypeDefinition($contentTypeName);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function selectConfigType($configTypeName)
+    {
+
+        if ($this->configTypeName != $configTypeName)
+        {
+            $this->configTypeName       = $configTypeName;
 
             return true;
         }
@@ -172,8 +190,12 @@ class Repository
     }
 
 
-    public function getConfig($configTypeName)
+    public function getConfig($configTypeName=null)
     {
+        if ($configTypeName==null)
+        {
+            $configTypeName = $this->configTypeName;
+        }
         return $this->client->getConfig($configTypeName);
     }
 
