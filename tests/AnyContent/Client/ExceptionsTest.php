@@ -36,7 +36,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('AnyContent\Client\AnyContentClientException','',AnyContentClientException::CLIENT_CONNECTION_ERROR);
 
-        $client = new Client('http://unknown.dev/1/example', null, null, 'Basic', null);
+        $client = new Client('http://unknown/1/example', null, null, 'Basic', null);
 
         $client->getRepositoryInfo();
 

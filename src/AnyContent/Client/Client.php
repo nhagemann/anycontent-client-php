@@ -166,7 +166,9 @@ class Client
             }
             catch (\Exception $e)
             {
+
                 $response = $request->getResponse();
+
                 if ($response && $response->getStatusCode() == 404)
                 {
                     throw new AnyContentClientException($e->getMessage(), AnyContentClientException::ANYCONTENT_UNKNOW_REPOSITORY);

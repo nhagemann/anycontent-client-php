@@ -12,9 +12,9 @@
         }
     ],
     "require": {
-        "php": ">=5.2",
-        "guzzle/guzzle": "3.7.*@dev",
-        "nhagemann/cmdl-parser-php": "0.8.*",
+        "php": ">=5.4",
+        "guzzle/guzzle": "3.9.*",
+        "nhagemann/cmdl-parser-php": "0.9.*",
         "doctrine/cache": "1.3.*"
     },
 
