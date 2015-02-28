@@ -28,6 +28,15 @@ class Repository
     }
 
 
+    /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+
     public function getContentTypes()
     {
         return $this->client->getContentTypesList();
