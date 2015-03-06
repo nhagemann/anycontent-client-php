@@ -89,6 +89,11 @@ class Client
 
         $this->cachePrefix = 'client_' . md5($url . $apiUser . $apiPassword);
 
+        if (array_key_exists('XDEBUG_SESSION', $_COOKIE) && $_COOKIE['XDEBUG_SESSION'] != "")
+        {
+            $this->guzzle->setDefaultOption('cookies', array( 'XDEBUG_SESSION' => $_COOKIE['XDEBUG_SESSION'] ));
+        }
+
     }
 
 
