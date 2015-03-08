@@ -38,6 +38,15 @@ class Repository
     }
 
 
+    public function getRepositoryName()
+    {
+        $url   = trim($this->getClient()->getUrl(), '/');
+        $parts = explode('/', $url);
+
+        return array_pop($parts);
+    }
+
+
     public function getContentTypes()
     {
         return $this->client->getContentTypesList();

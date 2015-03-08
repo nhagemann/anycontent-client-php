@@ -32,6 +32,12 @@ class Client
      */
     protected $guzzle;
 
+    protected $url;
+
+    protected $apiUser;
+
+    protected $apiPassword;
+
     protected $repositoryInfo = null;
 
     protected $contentTypesList = null;
@@ -62,10 +68,13 @@ class Client
      * @param int                          $cacheSecondsIgnoreDataConcurrency  - raise, if your application is the only application, which makes content/config write requests on the connected repository
      * @param int                          $cacheSecondsIgnoreFilesConcurrency - raise, if your application is the only application, which makes file changes and/or you do have a slow file storage adapter on the connected repository
      *
-     * @internal param int $cacheSecondsInfo
      */
     public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $cacheSecondsData = 3600, $cacheSecondsIgnoreDataConcurrency = 1, $cacheSecondsIgnoreFilesConcurrency = 60)
     {
+        $this->url         = $url;
+        $this->apiUser     = $apiUser;
+        $this->apiPassword = $apiPassword;
+
         // Create a client and provide a base URL
         $this->guzzle = new \Guzzle\Http\Client($url);
 
@@ -1114,6 +1123,33 @@ class Client
         $cacheToken = $this->cachePrefix . '_heartbeat';
 
         $this->cache->delete($cacheToken);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getApiUser()
+    {
+        return $this->apiUser;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getApiPassword()
+    {
+        return $this->apiPassword;
     }
 
 }
