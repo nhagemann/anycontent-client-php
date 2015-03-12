@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c537ff454b5521b4b950eaadfd3d995a",
+    "hash": "d7231587d916ea04e0edde1645e4adbb",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -169,20 +169,20 @@
         },
         {
             "name": "nhagemann/cmdl-parser-php",
-            "version": "0.9.1",
+            "version": "0.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nhagemann/cmdl-parser-php.git",
-                "reference": "aa5052f74d801db788f02ec194d7f68629882533"
+                "reference": "c71f6002b51a884e2efb48d7d9bce69cbdb6c525"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/aa5052f74d801db788f02ec194d7f68629882533",
-                "reference": "aa5052f74d801db788f02ec194d7f68629882533",
+                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/c71f6002b51a884e2efb48d7d9bce69cbdb6c525",
+                "reference": "c71f6002b51a884e2efb48d7d9bce69cbdb6c525",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4"
+                "php": ">=5.3"
             },
             "require-dev": {
                 "phpunit/phpunit": "~3.7.0"
@@ -206,7 +206,7 @@
             ],
             "description": "Library to parse CMDL files into an object representation",
             "homepage": "http://www.nilshagemann.de",
-            "time": "2015-03-06 19:05:56"
+            "time": "2015-03-12 15:04:59"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -685,7 +685,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.3"
