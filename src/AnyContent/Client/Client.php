@@ -834,15 +834,16 @@ class Client
 
     public function getFile($id)
     {
-        $id       = trim($id, '/');
-        $pathinfo = pathinfo($id);
+        $id       = trim(trim($id, '/'));
 
-        $folder = $this->getFolder($pathinfo['dirname']);
+        if ($id!='') {
+            $pathinfo = pathinfo($id);
 
-        if ($folder)
-        {
-            return $folder->getFile($id);
+            $folder = $this->getFolder($pathinfo['dirname']);
 
+            if ($folder) {
+                return $folder->getFile($id);
+            }
         }
 
         return false;
