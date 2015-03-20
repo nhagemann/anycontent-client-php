@@ -834,14 +834,16 @@ class Client
 
     public function getFile($id)
     {
-        $id       = trim(trim($id, '/'));
+        $id = trim(trim($id, '/'));
 
-        if ($id!='') {
+        if ($id != '')
+        {
             $pathinfo = pathinfo($id);
 
             $folder = $this->getFolder($pathinfo['dirname']);
 
-            if ($folder) {
+            if ($folder)
+            {
                 return $folder->getFile($id);
             }
         }
@@ -1151,6 +1153,15 @@ class Client
     public function getApiPassword()
     {
         return $this->apiPassword;
+    }
+
+
+    /**
+     * @return \Guzzle\Http\Client
+     */
+    public function getGuzzle()
+    {
+        return $this->guzzle;
     }
 
 }
