@@ -210,13 +210,23 @@ class Client
         $this->contentTypesList = array();
         foreach ($result['content'] as $name => $item)
         {
-            $this->contentTypesList[$name] = $item['title'];
+            $title = $item['title'];
+            if ($title=='')
+            {
+                $title = $name;
+            }
+            $this->contentTypesList[$name] = $title;
         }
         $this->configTypesList = array();
 
         foreach ($result['config'] as $name => $item)
         {
-            $this->configTypesList[$name] = $item['title'];
+            $title = $item['title'];
+            if ($title=='')
+            {
+                $title = $name;
+            }
+            $this->configTypesList[$name] = $title;
         }
 
         return $result;
