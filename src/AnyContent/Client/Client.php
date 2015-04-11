@@ -211,7 +211,7 @@ class Client
         foreach ($result['content'] as $name => $item)
         {
             $title = $item['title'];
-            if ($title=='')
+            if ($title == '')
             {
                 $title = $name;
             }
@@ -222,7 +222,7 @@ class Client
         foreach ($result['config'] as $name => $item)
         {
             $title = $item['title'];
-            if ($title=='')
+            if ($title == '')
             {
                 $title = $name;
             }
@@ -613,7 +613,7 @@ class Client
     }
 
 
-    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
         $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
 
@@ -630,7 +630,7 @@ class Client
     }
 
 
-    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
         $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
         if ($result)
@@ -665,7 +665,7 @@ class Client
     }
 
 
-    protected function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    protected function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
@@ -675,7 +675,18 @@ class Client
             $propertiesToken = json_encode($properties);
             if ($filter)
             {
-                $filterToken = md5(json_encode($filter->getConditionsArray()));
+                if (is_object($filter))
+                {
+                    if (get_class($filter) == 'AnyContent\Client\ContentFilter')
+                    {
+                        $filterToken = md5(json_encode($filter->getConditionsArray()));
+                    }
+                }
+                else
+                {
+                    $filterToken = md5($filter);
+                }
+
             }
 
             $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
@@ -703,7 +714,18 @@ class Client
         }
         if ($filter)
         {
-            $queryParams['filter'] = $filter->getConditionsArray();
+            if (is_object($filter))
+            {
+                if (get_class($filter) == 'AnyContent\Client\ContentFilter')
+                {
+                    $queryParams['filter'] = $filter->getConditionsArray();
+                }
+            }
+            else
+            {
+                $queryParams['filter'] = $filter;
+            }
+
         }
         if ($subset)
         {

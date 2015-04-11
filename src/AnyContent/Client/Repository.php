@@ -162,7 +162,7 @@ class Repository
     }
 
 
-    public function getRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $subset = null, $timeshift = 0)
+    public function getRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {
@@ -173,7 +173,7 @@ class Repository
     }
 
 
-    public function countRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, ContentFilter $filter = null, $timeshift = 0)
+    public function countRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $timeshift = 0)
     {
         if ($this->contentTypeDefinition)
         {

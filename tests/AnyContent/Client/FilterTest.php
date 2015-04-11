@@ -38,7 +38,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     {
         // Execute admin call to delete all existing data of the test content types
         $guzzle  = new \Guzzle\Http\Client('http://acrs.github.dev');
-        $request = $guzzle->delete('1/example/content/example01/records',null,null,array('global'=>1));
+        $request = $guzzle->delete('1/example/content/example01/records', null, null, array( 'global' => 1 ));
         $result  = $request->send()->getBody();
 
         $cmdl = $this->client->getCMDL('example01');
@@ -56,7 +56,6 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $id = $this->client->saveRecord($record);
         $this->assertEquals(2, $id);
 
-
         $t1 = $this->client->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName());
 
         $record = new Record($contentTypeDefinition, 'Differing Name');
@@ -66,7 +65,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $t2 = $this->client->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName());
 
-        $this->assertNotEquals($t1,$t2);
+        $this->assertNotEquals($t1, $t2);
 
         $repository = $this->client->getRepository();
         $repository->selectContentType('example01');
@@ -96,6 +95,27 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testSimpleFilter()
+    {
 
+        $repository = $this->client->getRepository();
+        $repository->selectContentType('example01');
+
+        $filter  = 'name = New Record';
+        $records = $repository->getRecords('default', 'default', 'default', 'id', array(), null, 1, $filter);
+        $this->assertCount(2, $records);
+
+        $filter  = 'name = New Record, name = Differing Name';
+        $records = $repository->getRecords('default', 'default', 'default', 'id', array(), null, 1, $filter);
+        $this->assertCount(3, $records);
+
+        $filter  = 'source > b';
+        $records = $repository->getRecords('default', 'default', 'default', 'id', array(), null, 1, $filter);
+        $this->assertCount(1, $records);
+
+        $filter  = 'source > a + name = Differing Name';
+        $records = $repository->getRecords('default', 'default', 'default', 'id', array(), null, 1, $filter);
+        $this->assertCount(1, $records);
+    }
 
 }
