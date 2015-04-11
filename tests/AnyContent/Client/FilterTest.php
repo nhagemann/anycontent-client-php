@@ -118,4 +118,35 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $records);
     }
 
+
+    public function testFilterToStringConversion()
+    {
+        $cmdl = $this->client->getCMDL('example01');
+
+        $contentTypeDefinition = Parser::parseCMDLString($cmdl);
+
+        $filter = new ContentFilter($contentTypeDefinition);
+        $filter->addCondition('name', '=', 'New Record');
+
+        $this->assertEquals('name = New Record', $filter->getSimpleQuery());
+
+        $filter = new ContentFilter($contentTypeDefinition);
+        $filter->addCondition('name', '=', 'New Record');
+        $filter->addCondition('name', '=', 'Differing Name');
+
+        $this->assertEquals('name = New Record , name = Differing Name', $filter->getSimpleQuery());
+
+        $filter = new ContentFilter($contentTypeDefinition);
+        $filter->addCondition('source', '>', 'b');
+
+        $this->assertEquals('source > b', $filter->getSimpleQuery());
+
+        $filter = new ContentFilter($contentTypeDefinition);
+        $filter->addCondition('source', '>', 'a');
+        $filter->nextConditionsBlock();
+        $filter->addCondition('name', '=', 'Differing Name');
+
+        $this->assertEquals('source > a + name = Differing Name', $filter->getSimpleQuery());
+    }
+
 }

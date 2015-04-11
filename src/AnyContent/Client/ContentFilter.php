@@ -7,16 +7,19 @@ use CMDL\ContentTypeDefinition;
 
 class ContentFilter
 {
+
     protected $contentTypeDefinition = null;
 
     protected $conditionsArray = null;
 
     protected $block = 0;
 
+
     public function __construct(ContentTypeDefinition $contentTypeDefinition)
     {
         $this->contentTypeDefinition = $contentTypeDefinition;
     }
+
 
     public function addCondition($property, $operator, $comparison)
     {
@@ -67,5 +70,35 @@ class ContentFilter
         return $this->conditionsArray;
     }
 
+
+    public function getSimpleQuery()
+    {
+        foreach ($this->getConditionsArray() AS $block)
+        {
+            $expressions = array();
+            foreach ($block as $condition)
+            {
+                $expression = join(' ', $condition);
+
+                if ($expression)
+                {
+
+                    $expressions[] = $expression;
+                }
+
+            }
+            if (count($expressions) > 0)
+            {
+                $blocks[] = join(' , ', $expressions);
+            }
+        }
+
+        if (count($blocks) > 0)
+        {
+            return join(' + ', $blocks);
+        }
+
+        return '';
+    }
 }
 
