@@ -18,7 +18,9 @@ use AnyContent\Client\File;
 use Doctrine\Common\Cache\ApcCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\ArrayCache;
+use Guzzle\Log\MessageFormatter;
 use Guzzle\Parser\ParserRegistry;
+use Guzzle\Plugin\Log\LogPlugin;
 
 class Client
 {
@@ -56,6 +58,8 @@ class Client
 
     protected $cacheSecondsData = 3600;
     protected $cacheSecondsIgnoreDataConcurrency = 15;
+
+    protected $log = array();
 
 
     /**
@@ -102,6 +106,10 @@ class Client
         {
             $this->guzzle->setDefaultOption('cookies', array( 'XDEBUG_SESSION' => $_COOKIE['XDEBUG_SESSION'] ));
         }
+
+        $adapter   = new Logger($this);
+        $logPlugin = new LogPlugin($adapter, '{url}|{code}|{total_time}');
+        $this->guzzle->addSubscriber($logPlugin);
 
     }
 
@@ -1194,6 +1202,18 @@ class Client
     public function getGuzzle()
     {
         return $this->guzzle;
+    }
+
+
+    public function log($url, $cache, $code, $time, $size)
+    {
+        $this->log[] = array( 'url' => $url, 'cache' => $cache, 'code' => $code, 'time' => $time, 'size' => $size );
+    }
+
+
+    public function getLog()
+    {
+        return $this->log;
     }
 
 }
