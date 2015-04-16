@@ -161,6 +161,10 @@ class Repository
         return $this->client->saveRecord($record, $workspace, $viewName, $language);
     }
 
+    public function saveRecords(Array $records, $workspace = 'default', $viewName = 'default', $language = 'default')
+    {
+        return $this->client->saveRecords($records, $workspace, $viewName, $language);
+    }
 
     public function getRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
@@ -212,6 +216,17 @@ class Repository
         if ($this->contentTypeDefinition)
         {
             return $this->client->deleteRecord($this->contentTypeDefinition, $id, $workspace, $language);
+        }
+
+        return false;
+
+    }
+
+    public function deleteRecords($workspace = 'default', $language = 'default')
+    {
+        if ($this->contentTypeDefinition)
+        {
+            return $this->client->deleteRecords($this->contentTypeDefinition, $workspace, $language);
         }
 
         return false;

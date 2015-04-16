@@ -465,6 +465,45 @@ class Client
         }
 
         return (int)$result;
+    }
+
+
+    public function saveRecords($records, $workspace = 'default', $viewName = 'default', $language = 'default')
+    {
+        if (count($records)==0)
+        {
+            return false;
+        }
+        $record = $records[0];
+        $contentTypeName = $record->getContentType();
+
+        $url = 'content/' . $contentTypeName . '/records/' . $workspace . '/' . $viewName;
+
+        $json = json_encode($records);
+
+        $request = $this->guzzle->post($url, null, array( 'records' => $json, 'language' => $language ));
+
+        $result = false;
+        try
+        {
+            $result = $request->send()->json();
+
+        }
+        catch (\Exception $e)
+        {
+            throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+        }
+
+        // repository info has changed
+        $this->deleteRepositoryInfo($workspace, $language);
+
+        if ($result === false)
+        {
+            return false;
+        }
+
+
+        return $result;
 
     }
 
@@ -598,6 +637,31 @@ class Client
     public function deleteRecord(ContentTypeDefinition $contentTypeDefinition, $id, $workspace = 'default', $language = 'default')
     {
         $url     = 'content/' . $contentTypeDefinition->getName() . '/record/' . $id . '/' . $workspace;
+        $options = array( 'query' => array( 'language' => $language ) );
+        $request = $this->guzzle->delete($url, null, null, $options);
+
+        try
+        {
+            $result = $request->send()->json();
+        }
+        catch (\Exception $e)
+        {
+            $response = $request->getResponse();
+            if ($response && $response->getStatusCode() != 404)
+            {
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+            }
+        }
+
+        // repository info has changed
+        $this->deleteRepositoryInfo($workspace, $language);
+
+        return $result;
+    }
+
+    public function deleteRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'default')
+    {
+        $url     = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace;
         $options = array( 'query' => array( 'language' => $language ) );
         $request = $this->guzzle->delete($url, null, null, $options);
 
