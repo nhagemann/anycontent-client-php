@@ -689,7 +689,42 @@ class Client
     {
         $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
 
+
+        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        {
+            $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName(), $workspace, $language, $timeshift);
+
+            $filterToken     = '';
+            $propertiesToken = json_encode($properties);
+            if ($filter)
+            {
+                if (is_object($filter))
+                {
+                    if (get_class($filter) == 'AnyContent\Client\ContentFilter')
+                    {
+                        $filterToken = md5(json_encode($filter->getConditionsArray()));
+                    }
+                }
+                else
+                {
+                    $filterToken = md5($filter);
+                }
+
+            }
+
+            $cacheToken = $this->cachePrefix . '_records-objects_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
+
+            if ($this->cache->contains($cacheToken))
+            {
+                return $this->cache->fetch($cacheToken);
+            }
+        }
+
+
+        // The following operation is slow even on cached requests, therefore the retrieved objects are cached too
+
         $records = array();
+
 
         foreach ($result['records'] as $item)
         {
@@ -697,6 +732,9 @@ class Client
 
             $records[$record->getID()] = $record;
         }
+
+        $this->cache->save($cacheToken, $records, $this->cacheSecondsData);
+
 
         return $records;
     }
@@ -761,7 +799,7 @@ class Client
 
             }
 
-            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
+            $cacheToken = $this->cachePrefix . '_records-json_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
