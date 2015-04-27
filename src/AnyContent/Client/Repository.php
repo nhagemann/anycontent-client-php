@@ -22,6 +22,14 @@ class Repository
 
     protected $contentTypeDefinition = null;
 
+    protected $workspace = 'default';
+
+    protected $viewName = 'default';
+
+    protected $language = 'default';
+
+    protected $timeshift = 0;
+
 
     public function __construct($client)
     {
@@ -129,8 +137,107 @@ class Repository
     }
 
 
-    public function getRecord($id, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
+    /**
+     * @return string
+     */
+    public function getLanguage()
     {
+        return $this->language;
+    }
+
+
+    /**
+     * @param string $language
+     */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getTimeshift()
+    {
+        return $this->timeshift;
+
+        return $this;
+    }
+
+
+    /**
+     * @param int $timeshift
+     */
+    public function setTimeshift($timeshift)
+    {
+        $this->timeshift = $timeshift;
+
+        return $this;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getViewName()
+    {
+        return $this->viewName;
+
+        return $this;
+    }
+
+
+    /**
+     * @param string $viewName
+     */
+    public function setViewName($viewName)
+    {
+        $this->viewName = $viewName;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getWorkspace()
+    {
+        return $this->workspace;
+    }
+
+
+    /**
+     * @param string $workspace
+     */
+    public function setWorkspace($workspace)
+    {
+        $this->workspace = $workspace;
+
+        return $this;
+    }
+
+
+    public function getRecord($id, $workspace = null, $viewName = null, $language = null, $timeshift = null)
+    {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($viewName === null)
+        {
+            $viewName = $this->getViewName();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+        if ($timeshift === null)
+        {
+            $timeshift = $this->getTimeshift();
+        }
+
         if ($this->contentTypeDefinition)
         {
             return $this->client->getRecord($this->contentTypeDefinition, $id, $workspace, $viewName, $language, $timeshift);
@@ -161,10 +268,12 @@ class Repository
         return $this->client->saveRecord($record, $workspace, $viewName, $language);
     }
 
+
     public function saveRecords(Array $records, $workspace = 'default', $viewName = 'default', $language = 'default')
     {
         return $this->client->saveRecords($records, $workspace, $viewName, $language);
     }
+
 
     public function getRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
@@ -221,6 +330,7 @@ class Repository
         return false;
 
     }
+
 
     public function deleteRecords($workspace = 'default', $language = 'default')
     {

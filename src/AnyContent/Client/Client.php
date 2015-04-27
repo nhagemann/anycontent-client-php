@@ -75,7 +75,7 @@ class Client
      * @param int                          $cacheSecondsIgnoreFilesConcurrency - raise, if your application is the only application, which makes file changes and/or you do have a slow file storage adapter on the connected repository
      *
      */
-    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $cacheSecondsData = 3600, $cacheSecondsIgnoreDataConcurrency = 1, $cacheSecondsIgnoreFilesConcurrency = 60)
+    public function __construct($url, $apiUser = null, $apiPassword = null, $authType = 'Basic', Cache $cache = null, $cacheSecondsData = 3600, $cacheSecondsIgnoreDataConcurrency = 1, $cacheSecondsIgnoreFilesConcurrency = 60, $msDelayBetweenRequests = 0)
     {
         $this->url         = $url;
         $this->apiUser     = $apiUser;
@@ -109,10 +109,16 @@ class Client
             $this->guzzle->setDefaultOption('cookies', array( 'XDEBUG_SESSION' => $_COOKIE['XDEBUG_SESSION'] ));
         }
 
+        if ($msDelayBetweenRequests!=0)
+        {
+            $adapter   = new Decelerator($msDelayBetweenRequests);
+            $logPlugin = new LogPlugin($adapter);
+            $this->guzzle->addSubscriber($logPlugin);
+        }
+
         $adapter   = new Logger($this);
         $logPlugin = new LogPlugin($adapter, '{url}|{code}|{total_time}');
         $this->guzzle->addSubscriber($logPlugin);
-
     }
 
 
