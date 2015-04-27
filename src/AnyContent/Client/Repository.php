@@ -32,10 +32,6 @@ class Repository
 
     protected $order = 'id';
 
-    protected $limit = null;
-
-    protected $page = 1;
-
 
     public function __construct($client)
     {
@@ -245,41 +241,13 @@ class Repository
     }
 
 
-    /**
-     * @return null
-     */
-    public function getLimit()
+    public function resetDimensions()
     {
-        return $this->limit;
-    }
-
-
-    /**
-     * @param null $limit
-     */
-    public function setLimit($limit)
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-
-    /**
-     * @return int
-     */
-    public function getPage()
-    {
-        return $this->page;
-    }
-
-
-    /**
-     * @param int $page
-     */
-    public function setPage($page)
-    {
-        $this->page = $page;
+        $this->workspace = 'default';
+        $this->language  = 'default';
+        $this->timeshift = 0;
+        $this->viewName  = 'default';
+        $this->order     = 'id';
 
         return $this;
     }
@@ -287,6 +255,11 @@ class Repository
 
     public function getRecord($id, $workspace = null, $viewName = null, $language = null, $timeshift = null)
     {
+        if ($this->contentTypeDefinition == null)
+        {
+            throw new AnyContentClientException('You must first select a content type (->selectContentType($contentTypeName))');
+        }
+
         if ($workspace === null)
         {
             $workspace = $this->getWorkspace();
@@ -316,6 +289,11 @@ class Repository
 
     public function getFirstRecord(ContentFilter $filter, $workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $timeshift = null)
     {
+        if ($this->contentTypeDefinition == null)
+        {
+            throw new AnyContentClientException('You must first select a content type (->selectContentType($contentTypeName))');
+        }
+
         if ($workspace === null)
         {
             $workspace = $this->getWorkspace();
@@ -388,8 +366,84 @@ class Repository
     }
 
 
-    public function getRecords($workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $limit = null, $page = null, $filter = null, $subset = null, $timeshift = null)
+    public function getRecordsAsRecordObjects($filter = null, $limit = null, $page = 1, $classname = null)
     {
+
+        return $this->getRecords(null, null, null, null, array(), $limit, $page, $filter);
+    }
+
+
+    public function getRecordsAsIDNameList($filter = null, $limit = null, $page = 1)
+    {
+        if ($this->contentTypeDefinition == null)
+        {
+            throw new AnyContentClientException('You must first select a content type (->selectContentType($contentTypeName))');
+        }
+
+        $result = $this->client->rawFetchRecords($this->contentTypeDefinition, $this->getWorkspace(), $this->getViewName(), $this->getLanguage(), $this->getOrder(), array(), $limit, $page, $filter, null, $this->getTimeshift());
+
+        if ($result && array_key_exists('records', $result))
+        {
+            $items = array();
+            foreach ($result['records'] as $id => $record)
+            {
+                $items[$id] = @$record['properties']['name'];
+            }
+
+            return $items;
+
+        }
+
+        return false;
+    }
+
+
+    public function getRecordsAsPropertiesArray($filter = null, $limit = null, $page = 1)
+    {
+        if ($this->contentTypeDefinition == null)
+        {
+            throw new AnyContentClientException('You must first select a content type (->selectContentType($contentTypeName))');
+        }
+
+        $result = $this->client->rawFetchRecords($this->contentTypeDefinition, $this->getWorkspace(), $this->getViewName(), $this->getLanguage(), $this->getOrder(), array(), $limit, $page, $filter, null, $this->getTimeshift());
+
+        if ($result && array_key_exists('records', $result))
+        {
+            $items = array();
+            foreach ($result['records'] as $id => $record)
+            {
+                $items[$id] = $record['properties'];
+            }
+
+            return $items;
+
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @param null  $workspace
+     * @param null  $viewName
+     * @param null  $language
+     * @param null  $order
+     * @param array $properties
+     * @param null  $limit
+     * @param null  $page
+     * @param null  $filter
+     * @param null  $subset
+     * @param null  $timeshift
+     *
+     * @return array|bool
+     */
+    public function getRecords($workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = null)
+    {
+        if ($this->contentTypeDefinition == null)
+        {
+            throw new AnyContentClientException('You must first select a content type (->selectContentType($contentTypeName))');
+        }
+
         if ($workspace === null)
         {
             $workspace = $this->getWorkspace();
@@ -410,15 +464,6 @@ class Repository
         {
             $order = $this->getOrder();
         }
-        if ($limit === null)
-        {
-            $limit = $this->getLimit();
-        }
-        if ($page === null)
-        {
-            $page = $this->getPage();
-        }
-
         if ($this->contentTypeDefinition)
         {
             return $this->client->getRecords($this->contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
@@ -428,7 +473,7 @@ class Repository
     }
 
 
-    public function countRecords($workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $limit = null, $page = null, $filter = null, $timeshift = null)
+    public function countRecords($workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $limit = null, $page = 1, $filter = null, $timeshift = null)
     {
         if ($workspace === null)
         {
@@ -449,14 +494,6 @@ class Repository
         if ($order === null)
         {
             $order = $this->getOrder();
-        }
-        if ($limit === null)
-        {
-            $limit = $this->getLimit();
-        }
-        if ($page === null)
-        {
-            $page = $this->getPage();
         }
 
         if ($this->contentTypeDefinition)
@@ -496,7 +533,7 @@ class Repository
     }
 
 
-    public function sortRecords($list, $workspace = null, $language =  null)
+    public function sortRecords($list, $workspace = null, $language = null)
     {
         if ($workspace === null)
         {

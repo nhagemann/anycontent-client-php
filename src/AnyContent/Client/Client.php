@@ -713,7 +713,7 @@ class Client
 
     public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
+        $result = $this->rawFetchRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
 
 
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
@@ -768,7 +768,7 @@ class Client
 
     public function countRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
+        $result = $this->rawFetchRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
         if ($result)
         {
             return $result['info']['count'];
@@ -786,7 +786,7 @@ class Client
             $subset .= ',' . $depth;
         }
 
-        $result = $this->requestRecords($contentTypeDefinition, $workspace, $viewName, $language, 'id', array(), null, 1, null, $subset, $timeshift);
+        $result = $this->rawFetchRecords($contentTypeDefinition, $workspace, $viewName, $language, 'id', array(), null, 1, null, $subset, $timeshift);
 
         $records = array();
 
@@ -801,7 +801,8 @@ class Client
     }
 
 
-    protected function requestRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
+
+    public function rawFetchRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
