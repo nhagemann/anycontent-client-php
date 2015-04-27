@@ -200,6 +200,8 @@ class Repository
     public function setViewName($viewName)
     {
         $this->viewName = $viewName;
+
+        return $this;
     }
 
 
