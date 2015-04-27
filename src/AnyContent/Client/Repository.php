@@ -30,6 +30,12 @@ class Repository
 
     protected $timeshift = 0;
 
+    protected $order = 'id';
+
+    protected $limit = null;
+
+    protected $page = 1;
+
 
     public function __construct($client)
     {
@@ -219,6 +225,66 @@ class Repository
     }
 
 
+    /**
+     * @return string
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+
+    /**
+     * @param string $order
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+
+    /**
+     * @return null
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+
+    /**
+     * @param null $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+
+        return $this;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+
+    /**
+     * @param int $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+
+        return $this;
+    }
+
+
     public function getRecord($id, $workspace = null, $viewName = null, $language = null, $timeshift = null)
     {
         if ($workspace === null)
@@ -248,8 +314,29 @@ class Repository
     }
 
 
-    public function getFirstRecord(ContentFilter $filter, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $timeshift = 0)
+    public function getFirstRecord(ContentFilter $filter, $workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $timeshift = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($viewName === null)
+        {
+            $viewName = $this->getViewName();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+        if ($timeshift === null)
+        {
+            $timeshift = $this->getTimeshift();
+        }
+        if ($order === null)
+        {
+            $order = $this->getOrder();
+        }
+
         if ($this->contentTypeDefinition)
         {
             $records = $this->client->getRecords($this->contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, 1, 1, $filter, null, $timeshift);
@@ -263,20 +350,75 @@ class Repository
     }
 
 
-    public function saveRecord(Record $record, $workspace = 'default', $viewName = 'default', $language = 'default')
+    public function saveRecord(Record $record, $workspace = null, $viewName = null, $language = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($viewName === null)
+        {
+            $viewName = $this->getViewName();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+
         return $this->client->saveRecord($record, $workspace, $viewName, $language);
     }
 
 
-    public function saveRecords(Array $records, $workspace = 'default', $viewName = 'default', $language = 'default')
+    public function saveRecords(Array $records, $workspace = null, $viewName = null, $language = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($viewName === null)
+        {
+            $viewName = $this->getViewName();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+
         return $this->client->saveRecords($records, $workspace, $viewName, $language);
     }
 
 
-    public function getRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
+    public function getRecords($workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $limit = null, $page = null, $filter = null, $subset = null, $timeshift = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($viewName === null)
+        {
+            $viewName = $this->getViewName();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+        if ($timeshift === null)
+        {
+            $timeshift = $this->getTimeshift();
+        }
+        if ($order === null)
+        {
+            $order = $this->getOrder();
+        }
+        if ($limit === null)
+        {
+            $limit = $this->getLimit();
+        }
+        if ($page === null)
+        {
+            $page = $this->getPage();
+        }
+
         if ($this->contentTypeDefinition)
         {
             return $this->client->getRecords($this->contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
@@ -286,8 +428,37 @@ class Repository
     }
 
 
-    public function countRecords($workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $timeshift = 0)
+    public function countRecords($workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $limit = null, $page = null, $filter = null, $timeshift = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($viewName === null)
+        {
+            $viewName = $this->getViewName();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+        if ($timeshift === null)
+        {
+            $timeshift = $this->getTimeshift();
+        }
+        if ($order === null)
+        {
+            $order = $this->getOrder();
+        }
+        if ($limit === null)
+        {
+            $limit = $this->getLimit();
+        }
+        if ($page === null)
+        {
+            $page = $this->getPage();
+        }
+
         if ($this->contentTypeDefinition)
         {
             return $this->client->countRecords($this->contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $timeshift);
@@ -297,8 +468,25 @@ class Repository
     }
 
 
-    public function getSubset($parentId, $includeParent = true, $depth = null, $workspace = 'default', $viewName = 'default', $language = 'default', $timeshift = 0)
+    public function getSubset($parentId, $includeParent = true, $depth = null, $workspace = null, $viewName = null, $language = null, $timeshift = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($viewName === null)
+        {
+            $viewName = $this->getViewName();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+        if ($timeshift === null)
+        {
+            $timeshift = $this->getTimeshift();
+        }
+
         if ($this->contentTypeDefinition)
         {
             return $this->client->getSubset($this->contentTypeDefinition, $parentId, $includeParent, $depth, $workspace, $viewName, $language, $timeshift);
@@ -308,8 +496,17 @@ class Repository
     }
 
 
-    public function sortRecords($list, $workspace = 'default', $language = 'default')
+    public function sortRecords($list, $workspace = null, $language =  null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+
         if ($this->contentTypeDefinition)
         {
             return $this->client->sortRecords($this->contentTypeDefinition, $list, $workspace, $language);
@@ -320,8 +517,17 @@ class Repository
     }
 
 
-    public function deleteRecord($id, $workspace = 'default', $language = 'default')
+    public function deleteRecord($id, $workspace = null, $language = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+
         if ($this->contentTypeDefinition)
         {
             return $this->client->deleteRecord($this->contentTypeDefinition, $id, $workspace, $language);
@@ -332,8 +538,17 @@ class Repository
     }
 
 
-    public function deleteRecords($workspace = 'default', $language = 'default')
+    public function deleteRecords($workspace = null, $language = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+
         if ($this->contentTypeDefinition)
         {
             return $this->client->deleteRecords($this->contentTypeDefinition, $workspace, $language);
@@ -355,8 +570,17 @@ class Repository
     }
 
 
-    public function saveConfig(Config $config, $workspace = 'default', $language = 'default')
+    public function saveConfig(Config $config, $workspace = null, $language = null)
     {
+        if ($workspace === null)
+        {
+            $workspace = $this->getWorkspace();
+        }
+        if ($language === null)
+        {
+            $language = $this->getLanguage();
+        }
+
         return $this->client->saveConfig($config, $workspace, $language);
     }
 
