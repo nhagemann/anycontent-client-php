@@ -39,7 +39,7 @@ class SortRecordsTest extends \PHPUnit_Framework_TestCase
 
         // Execute admin call to delete all existing data of the test content types
         $guzzle  = new \Guzzle\Http\Client('http://acrs.github.dev');
-        $request = $guzzle->delete('1/example/content/example01/records',null,null,array('global'=>1));
+        $request = $guzzle->delete('1/example/content/example01/records',null,null,array('query'=>array('global' => 1 )));
         $result  = $request->send()->getBody();
 
         $cmdl = $this->client->getCMDL('example01');

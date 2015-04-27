@@ -49,6 +49,8 @@ class Client
     protected $contentTypeDefinition = array();
     protected $configTypeDefinitions = array();
 
+    protected $contentRecordClassMap=array();
+
     /**
      * @var Cache;
      */
@@ -125,6 +127,24 @@ class Client
         $this->guzzle->setDefaultOption('timeout', null);
     }
 
+
+    public function registerRecordClassForContentType($contentTypeName,$classname)
+    {
+        if ($this->hasContentType($contentTypeName)) {
+            $this->contentRecordClassMap[$contentTypeName] = $classname;
+            return true;
+        }
+        return false;
+    }
+
+    public function getClassForContentType($contentTypeName)
+    {
+        if (array_key_exists($contentTypeName,$this->contentRecordClassMap))
+        {
+            return $this->contentRecordClassMap[$contentTypeName];
+        }
+        return 'AnyContent\Client\Record';
+    }
 
     /**
      * deletes temporarily collected info about the current repository
@@ -909,7 +929,9 @@ class Client
 
     protected function createRecordFromJSONResult($contentTypeDefinition, $result, $viewName, $workspace, $language)
     {
-        $record = new Record($contentTypeDefinition, $result['properties']['name'], $viewName, $workspace, $language);
+        $classname = $this->getClassForContentType($contentTypeDefinition->getName());
+
+        $record = new $classname($contentTypeDefinition, $result['properties']['name'], $viewName, $workspace, $language);
         $record->setID($result['id']);
         $record->setRevision($result['info']['revision']);
         $record->setRevisionTimestamp($result['info']['revision_timestamp']);
