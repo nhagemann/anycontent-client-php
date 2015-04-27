@@ -886,14 +886,26 @@ class Client
         {
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
+
                 $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
 
+
+                // Put up to 10 record objects of this result into cache, as retrieval will be very likely
+                $i=0;
                 foreach ($result['records'] AS $item)
                 {
-                    $record     = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
-                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $record->getId() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
+                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $item['id'] . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
 
-                    $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
+                    if (!$this->cache->contains($cacheToken))
+                    {
+                        $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
+                        $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
+                        $i++;
+                    }
+                    if ($i>10)
+                    {
+                        break;
+                    }
                 }
             }
         }
