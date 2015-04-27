@@ -32,6 +32,8 @@ class Repository
 
     protected $order = 'id';
 
+    protected $stash = array( 'workspace' => 'default', 'viewName' => 'default', 'language' => 'default', 'timeshift' => 0, 'order' => 'id' );
+
 
     public function __construct($client)
     {
@@ -248,6 +250,26 @@ class Repository
         $this->timeshift = 0;
         $this->viewName  = 'default';
         $this->order     = 'id';
+
+        return $this;
+    }
+
+
+    public function stashDimensions()
+    {
+        $this->stash = array( 'workspace' => $this->workspace, 'viewName' => $this->viewName, 'language' => $this->language, 'timeshift' => $this->timeshift, 'order' => $this->order );
+
+        return $this;
+    }
+
+
+    public function unStashDimensions()
+    {
+        $this->workspace = $this->stash['workspace'];
+        $this->language  = $this->stash['language'];
+        $this->timeshift = $this->stash['timeshift'];
+        $this->viewName  = $this->stash['viewName'];
+        $this->order     = $this->stash['order'];
 
         return $this;
     }
