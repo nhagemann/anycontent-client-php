@@ -93,6 +93,25 @@ class AlternateGetRecordsTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($i,$id);
             $this->assertEquals('New Record '.$i,$name);
         }
+
+        $result = $repository->getRecordsAsRecordObjects(null,null,1,'AnyContent\Client\AlternateGetRecordsTestRecordClass');
+        $i=0;
+        foreach ($result as $id => $record)
+        {
+            $i++;
+            $this->assertEquals($i,$id);
+            $this->assertEquals('New Record '.$i,$record->getName());
+            $this->assertEquals('Test '.$i,$record->getArticle());
+        }
     }
 
+}
+
+class AlternateGetRecordsTestRecordClass extends Record
+{
+
+    public function getArticle()
+    {
+        return $this->getProperty('article');
+    }
 }

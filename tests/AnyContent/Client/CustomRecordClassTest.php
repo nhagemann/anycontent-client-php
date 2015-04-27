@@ -56,7 +56,7 @@ class CustomRecordClassTest extends \PHPUnit_Framework_TestCase
         $id = $this->client->saveRecord($record);
         $this->assertEquals(2, $id);
 
-        $this->client->registerRecordClassForContentType('example01', 'AnyContent\Client\TestRecordClass');
+        $this->client->registerRecordClassForContentType('example01', 'AnyContent\Client\CustomRecordClassTestRecordClass');
 
         $records = $this->client->getRecords($contentTypeDefinition);
 
@@ -64,7 +64,7 @@ class CustomRecordClassTest extends \PHPUnit_Framework_TestCase
 
         $record = array_shift($records);
 
-        $this->assertInstanceOf('AnyContent\Client\TestRecordClass', $record);
+        $this->assertInstanceOf('AnyContent\Client\CustomRecordClassTestRecordClass', $record);
 
         $this->assertEquals('a', $record->getSource());
 
@@ -73,7 +73,7 @@ class CustomRecordClassTest extends \PHPUnit_Framework_TestCase
 }
 
 
-class TestRecordClass extends Record
+class CustomRecordClassTestRecordClass extends Record
 {
 
     public function getSource()

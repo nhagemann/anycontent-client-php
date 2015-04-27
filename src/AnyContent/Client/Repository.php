@@ -253,6 +253,16 @@ class Repository
     }
 
 
+    /**
+     * @param      $id
+     * @param null $workspace
+     * @param null $viewName
+     * @param null $language
+     * @param null $timeshift
+     *
+     * @return bool|Record
+     * @throws AnyContentClientException
+     */
     public function getRecord($id, $workspace = null, $viewName = null, $language = null, $timeshift = null)
     {
         if ($this->contentTypeDefinition == null)
@@ -287,6 +297,18 @@ class Repository
     }
 
 
+    /**
+     * @param ContentFilter $filter
+     * @param null          $workspace
+     * @param null          $viewName
+     * @param null          $language
+     * @param null          $order
+     * @param array         $properties
+     * @param null          $timeshift
+     *
+     * @return bool|Record
+     * @throws AnyContentClientException
+     */
     public function getFirstRecord(ContentFilter $filter, $workspace = null, $viewName = null, $language = null, $order = null, $properties = array(), $timeshift = null)
     {
         if ($this->contentTypeDefinition == null)
@@ -366,13 +388,43 @@ class Repository
     }
 
 
-    public function getRecordsAsRecordObjects($filter = null, $limit = null, $page = 1, $classname = null)
+    /**
+     * @param null $filter
+     * @param null $limit
+     * @param int  $page
+     * @param null $className
+     *
+     * @return Record[]|bool
+     * @throws AnyContentClientException
+     */
+    public function getRecordsAsRecordObjects($filter = null, $limit = null, $page = 1, $className = null)
     {
+        $currentClassName = $this->getClient()->getClassForContentType($this->contentTypeName);
 
-        return $this->getRecords(null, null, null, null, array(), $limit, $page, $filter);
+        if ($currentClassName != $className)
+        {
+            $this->getClient()->registerRecordClassForContentType($this->contentTypeName, $className);
+        }
+
+        $result = $this->getRecords(null, null, null, null, array(), $limit, $page, $filter);
+
+        if ($currentClassName != $className)
+        {
+            $this->getClient()->registerRecordClassForContentType($this->contentTypeName, $currentClassName);
+        }
+
+        return $result;
     }
 
 
+    /**
+     * @param null $filter
+     * @param null $limit
+     * @param int  $page
+     *
+     * @return array|bool
+     * @throws AnyContentClientException
+     */
     public function getRecordsAsIDNameList($filter = null, $limit = null, $page = 1)
     {
         if ($this->contentTypeDefinition == null)
@@ -398,6 +450,14 @@ class Repository
     }
 
 
+    /**
+     * @param null $filter
+     * @param null $limit
+     * @param int  $page
+     *
+     * @return array|bool
+     * @throws AnyContentClientException
+     */
     public function getRecordsAsPropertiesArray($filter = null, $limit = null, $page = 1)
     {
         if ($this->contentTypeDefinition == null)
