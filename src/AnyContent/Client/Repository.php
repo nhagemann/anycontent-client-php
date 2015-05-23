@@ -425,14 +425,14 @@ class Repository
     {
         $currentClassName = $this->getClient()->getClassForContentType($this->contentTypeName);
 
-        if ($currentClassName != $className)
+        if ($className != null && $currentClassName != $className)
         {
             $this->getClient()->registerRecordClassForContentType($this->contentTypeName, $className);
         }
 
         $result = $this->getRecords(null, null, null, null, array(), $limit, $page, $filter);
 
-        if ($currentClassName != $className)
+        if ($className != null && $currentClassName != $className)
         {
             $this->getClient()->registerRecordClassForContentType($this->contentTypeName, $currentClassName);
         }

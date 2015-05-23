@@ -21,6 +21,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Guzzle\Log\MessageFormatter;
 use Guzzle\Parser\ParserRegistry;
 use Guzzle\Plugin\Log\LogPlugin;
+use Psr\Log\LoggerInterface;
 
 class Client
 {
@@ -49,7 +50,7 @@ class Client
     protected $contentTypeDefinition = array();
     protected $configTypeDefinitions = array();
 
-    protected $contentRecordClassMap=array();
+    protected $contentRecordClassMap = array();
 
     /**
      * @var Cache;
@@ -62,6 +63,9 @@ class Client
     protected $cacheSecondsIgnoreDataConcurrency = 15;
 
     protected $log = array();
+
+    /** @var LoggerInterface */
+    protected $logger = null;
 
 
     /**
@@ -109,7 +113,7 @@ class Client
             $this->guzzle->setDefaultOption('cookies', array( 'XDEBUG_SESSION' => $_COOKIE['XDEBUG_SESSION'] ));
         }
 
-        if ($msDelayBetweenRequests!=0)
+        if ($msDelayBetweenRequests != 0)
         {
             $adapter   = new Decelerator($msDelayBetweenRequests);
             $logPlugin = new LogPlugin($adapter);
@@ -134,23 +138,29 @@ class Client
     }
 
 
-    public function registerRecordClassForContentType($contentTypeName,$classname)
+    public function registerRecordClassForContentType($contentTypeName, $classname)
     {
-        if ($this->hasContentType($contentTypeName)) {
+        if ($this->hasContentType($contentTypeName))
+        {
             $this->contentRecordClassMap[$contentTypeName] = $classname;
+
             return true;
         }
+
         return false;
     }
 
+
     public function getClassForContentType($contentTypeName)
     {
-        if (array_key_exists($contentTypeName,$this->contentRecordClassMap))
+        if (array_key_exists($contentTypeName, $this->contentRecordClassMap))
         {
             return $this->contentRecordClassMap[$contentTypeName];
         }
+
         return 'AnyContent\Client\Record';
     }
+
 
     /**
      * deletes temporarily collected info about the current repository
@@ -496,11 +506,11 @@ class Client
 
     public function saveRecords($records, $workspace = 'default', $viewName = 'default', $language = 'default')
     {
-        if (count($records)==0)
+        if (count($records) == 0)
         {
             return false;
         }
-        $record = $records[0];
+        $record          = $records[0];
         $contentTypeName = $record->getContentType();
 
         $url = 'content/' . $contentTypeName . '/records/' . $workspace . '/' . $viewName;
@@ -527,7 +537,6 @@ class Client
         {
             return false;
         }
-
 
         return $result;
 
@@ -685,6 +694,7 @@ class Client
         return $result;
     }
 
+
     public function deleteRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'default')
     {
         $url     = 'content/' . $contentTypeDefinition->getName() . '/records/' . $workspace;
@@ -714,7 +724,6 @@ class Client
     public function getRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
     {
         $result = $this->rawFetchRecords($contentTypeDefinition, $workspace, $viewName, $language, $order, $properties, $limit, $page, $filter, $subset, $timeshift);
-
 
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
@@ -746,11 +755,9 @@ class Client
             }
         }
 
-
         // The following operation is slow even on cached requests, therefore the retrieved objects are cached too
 
         $records = array();
-
 
         foreach ($result['records'] as $item)
         {
@@ -760,7 +767,6 @@ class Client
         }
 
         $this->cache->save($cacheToken, $records, $this->cacheSecondsData);
-
 
         return $records;
     }
@@ -799,7 +805,6 @@ class Client
 
         return $records;
     }
-
 
 
     public function rawFetchRecords(ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $viewName = 'default', $language = 'default', $order = 'id', $properties = array(), $limit = null, $page = 1, $filter = null, $subset = null, $timeshift = 0)
@@ -889,9 +894,8 @@ class Client
 
                 $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
 
-
                 // Put up to 10 record objects of this result into cache, as retrieval will be very likely
-                $i=0;
+                $i = 0;
                 foreach ($result['records'] AS $item)
                 {
                     $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $item['id'] . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
@@ -902,7 +906,7 @@ class Client
                         $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
                         $i++;
                     }
-                    if ($i>10)
+                    if ($i > 10)
                     {
                         break;
                     }
@@ -1351,12 +1355,37 @@ class Client
     public function log($url, $cache, $code, $time, $size)
     {
         $this->log[] = array( 'url' => $url, 'cache' => $cache, 'code' => $code, 'time' => $time, 'size' => $size );
+        if ($this->logger)
+        {
+            $this->logger->debug('AnyContent\Client Request ' . count($this->log) . ' ' . $url);
+
+            $path = parse_url($url, PHP_URL_PATH);
+
+            if ($cache)
+            {
+                $this->logger->info('AnyContent\Client Cache Hit (' . $path . ')');
+            }
+            else
+            {
+                $this->logger->info('AnyContent\Client Cache Miss - Status Code ' . $code . ' ' . $time . 'ms ' . $size . ' bytes (' . $path . ')');
+            }
+
+        }
     }
 
 
     public function getLog()
     {
         return $this->log;
+    }
+
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
 }
