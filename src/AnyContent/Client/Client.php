@@ -67,6 +67,11 @@ class Client
     /** @var LoggerInterface */
     protected $logger = null;
 
+    /**
+     * @var bool
+     */
+    protected $validateProperties = false;
+
 
     /**
      * @param                              $url
@@ -159,6 +164,26 @@ class Client
         }
 
         return 'AnyContent\Client\Record';
+    }
+
+
+    /**
+     * @return boolean
+     */
+    public function isValidateProperties()
+    {
+        return $this->validateProperties;
+    }
+
+
+    /**
+     * Activate, if json results from repository server might contain invalid properties - which would be an implementation error
+     *
+     * @param boolean $validateProperties
+     */
+    public function setValidateProperties($validateProperties)
+    {
+        $this->validateProperties = $validateProperties;
     }
 
 
@@ -583,7 +608,9 @@ class Client
         {
             $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName(), $workspace, $language, $timeshift);
 
-            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
+            $className = $this->getClassForContentType($contentTypeDefinition->getName());
+
+            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . md5($className . '_' . $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -601,7 +628,7 @@ class Client
 
             $result = $request->send()->json();
 
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $viewName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $viewName, $workspace, $language, $this->validateProperties);
 
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
@@ -746,8 +773,8 @@ class Client
                 }
 
             }
-
-            $cacheToken = $this->cachePrefix . '_records-objects_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
+            $className  = $this->getClassForContentType($contentTypeDefinition->getName());
+            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . md5($className . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift) . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -761,12 +788,15 @@ class Client
 
         foreach ($result['records'] as $item)
         {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validateProperties);
 
             $records[$record->getID()] = $record;
         }
 
-        $this->cache->save($cacheToken, $records, $this->cacheSecondsData);
+        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
+        {
+            $this->cache->save($cacheToken, $records, $this->cacheSecondsData);
+        }
 
         return $records;
     }
@@ -798,7 +828,7 @@ class Client
 
         foreach ($result['records'] as $item)
         {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validateProperties);
 
             $records[$record->getID()] = $record;
         }
@@ -830,8 +860,9 @@ class Client
                 }
 
             }
+            $className = $this->getClassForContentType($contentTypeDefinition->getName());
 
-            $cacheToken = $this->cachePrefix . '_records-json_' . $contentTypeDefinition->getName() . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
+            $cacheToken = $this->cachePrefix . '_records-json_' . $contentTypeDefinition->getName() . '_' . md5($className . '_' . $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -898,11 +929,14 @@ class Client
                 $i = 0;
                 foreach ($result['records'] AS $item)
                 {
-                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $item['id'] . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $this->getHeartBeat();
+
+                    $className = $this->getClassForContentType($contentTypeDefinition->getName());
+
+                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $item['id'] . '_' . md5($className . '_' . $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
 
                     if (!$this->cache->contains($cacheToken))
                     {
-                        $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language);
+                        $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validateProperties);
                         $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
                         $i++;
                     }
@@ -950,10 +984,21 @@ class Client
     }
 
 
-    protected function createRecordFromJSONResult($contentTypeDefinition, $result, $viewName, $workspace, $language)
+    /**
+     * @param $contentTypeDefinition
+     * @param $result
+     * @param $viewName
+     * @param $workspace
+     * @param $language
+     *
+     * @return Record
+     * @throws \CMDL\CMDLParserException
+     */
+    protected function createRecordFromJSONResult($contentTypeDefinition, $result, $viewName, $workspace, $language, $validateProperties = true)
     {
         $classname = $this->getClassForContentType($contentTypeDefinition->getName());
 
+        /** @var Record $record */
         $record = new $classname($contentTypeDefinition, $result['properties']['name'], $viewName, $workspace, $language);
         $record->setID($result['id']);
         $record->setRevision($result['info']['revision']);
@@ -963,9 +1008,16 @@ class Client
         $record->setLevelWithinSortedTree($result['info']['level']);
         $record->setParentRecordId($result['info']['parent_id']);
 
-        foreach ($result['properties'] AS $property => $value)
+        if ($validateProperties)
         {
-            $record->setProperty($property, $value);
+            foreach ($result['properties'] AS $property => $value)
+            {
+                $record->setProperty($property, $value);
+            }
+        }
+        else
+        {
+            $record->setProperties($result['properties']);
         }
 
         $record->setCreationUserInfo(new UserInfo($result['info']['creation']['username'], $result['info']['creation']['firstname'], $result['info']['creation']['lastname'], $result['info']['creation']['timestamp']));
