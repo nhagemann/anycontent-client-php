@@ -70,8 +70,11 @@ class Client
     /**
      * @var bool
      */
-    protected $validateProperties = false;
+    protected $validatePropertyNames = false;
 
+
+    /** @var null|Repository */
+    protected $repository = null;
 
     /**
      * @param                              $url
@@ -170,20 +173,20 @@ class Client
     /**
      * @return boolean
      */
-    public function isValidateProperties()
+    public function isValidatePropertyNames()
     {
-        return $this->validateProperties;
+        return $this->validatePropertyNames;
     }
 
 
     /**
      * Activate, if json results from repository server might contain invalid properties - which would be an implementation error
      *
-     * @param boolean $validateProperties
+     * @param boolean $validatePropertyNames
      */
-    public function setValidateProperties($validateProperties)
+    public function setValidatePropertyNames($validatePropertyNames)
     {
-        $this->validateProperties = $validateProperties;
+        $this->validatePropertyNames = $validatePropertyNames;
     }
 
 
@@ -215,7 +218,12 @@ class Client
 
     public function getRepository()
     {
-        return new Repository($this);
+        if (!$this->repository)
+        {
+            $this->repository = new Repository($this);
+        }
+
+        return $this->repository;
     }
 
 
@@ -608,13 +616,15 @@ class Client
         {
             $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName(), $workspace, $language, $timeshift);
 
-            $className = $this->getClassForContentType($contentTypeDefinition->getName());
+            //$className = $this->getClassForContentType($contentTypeDefinition->getName());
 
-            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . md5($className . '_' . $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
+            $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . md5($timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
-                return $this->cache->fetch($cacheToken);
+                $json = $this->cache->fetch($cacheToken);
+                $record = $this->createRecordFromJSONResult($contentTypeDefinition, $json, $viewName, $workspace, $language, $this->validatePropertyNames);
+                return $record;
             }
         }
 
@@ -628,12 +638,12 @@ class Client
 
             $result = $request->send()->json();
 
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $viewName, $workspace, $language, $this->validateProperties);
-
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
-                $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
+                $this->cache->save($cacheToken, $result['record'], $this->cacheSecondsData);
             }
+
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $viewName, $workspace, $language, $this->validatePropertyNames);
 
             return $record;
         }
@@ -776,10 +786,10 @@ class Client
             $className  = $this->getClassForContentType($contentTypeDefinition->getName());
             $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . md5($className . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift) . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
 
-            if ($this->cache->contains($cacheToken))
+            /*if ($this->cache->contains($cacheToken))
             {
                 return $this->cache->fetch($cacheToken);
-            }
+            } */
         }
 
         // The following operation is slow even on cached requests, therefore the retrieved objects are cached too
@@ -788,15 +798,16 @@ class Client
 
         foreach ($result['records'] as $item)
         {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validateProperties);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validatePropertyNames);
 
             $records[$record->getID()] = $record;
         }
 
+        /*
         if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
         {
             $this->cache->save($cacheToken, $records, $this->cacheSecondsData);
-        }
+        } */
 
         return $records;
     }
@@ -828,7 +839,7 @@ class Client
 
         foreach ($result['records'] as $item)
         {
-            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validateProperties);
+            $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validatePropertyNames);
 
             $records[$record->getID()] = $record;
         }
@@ -860,9 +871,9 @@ class Client
                 }
 
             }
-            $className = $this->getClassForContentType($contentTypeDefinition->getName());
+            //$className = $this->getClassForContentType($contentTypeDefinition->getName());
 
-            $cacheToken = $this->cachePrefix . '_records-json_' . $contentTypeDefinition->getName() . '_' . md5($className . '_' . $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
+            $cacheToken = $this->cachePrefix . '_records-json_' . $contentTypeDefinition->getName() . '_' . md5( $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -930,14 +941,14 @@ class Client
                 foreach ($result['records'] AS $item)
                 {
 
-                    $className = $this->getClassForContentType($contentTypeDefinition->getName());
+                    //$className = $this->getClassForContentType($contentTypeDefinition->getName());
 
-                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $item['id'] . '_' . md5($className . '_' . $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
+                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $item['id'] . '_' . md5( $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
 
                     if (!$this->cache->contains($cacheToken))
                     {
-                        $record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validateProperties);
-                        $this->cache->save($cacheToken, $record, $this->cacheSecondsData);
+                        //$record = $this->createRecordFromJSONResult($contentTypeDefinition, $item, $viewName, $workspace, $language, $this->validatePropertyNames);
+                        $this->cache->save($cacheToken, $item, $this->cacheSecondsData);
                         $i++;
                     }
                     if ($i > 10)

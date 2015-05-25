@@ -68,6 +68,27 @@ class CustomRecordClassTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('a', $record->getSource());
 
+        $record->setProperty('source','b');
+
+        $record = $this->client->getRecord($contentTypeDefinition,1);
+
+        $this->assertEquals('a', $record->getSource());
+
+        $record->setProperty('source','b');
+
+        $record = $this->client->getRecord($contentTypeDefinition,1);
+
+        $this->assertEquals('a', $record->getSource());
+
+        $records = $this->client->getRecords($contentTypeDefinition);
+
+        $this->assertCount(2, $records);
+
+        $record = array_shift($records);
+
+        $this->assertInstanceOf('AnyContent\Client\CustomRecordClassTestRecordClass', $record);
+
+        $this->assertEquals('a', $record->getSource());
     }
 
 }
