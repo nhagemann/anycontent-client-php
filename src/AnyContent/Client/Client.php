@@ -72,9 +72,17 @@ class Client
      */
     protected $validatePropertyNames = false;
 
+    // precaching of records
+
+    protected $cacheMissesCounter = array();
+
+    protected $cachePreFetchTrigger = 5;
+
+    protected $cachePreFetchCount = 250;
 
     /** @var null|Repository */
     protected $repository = null;
+
 
     /**
      * @param                              $url
@@ -616,14 +624,13 @@ class Client
         {
             $timestamp = $this->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName(), $workspace, $language, $timeshift);
 
-            //$className = $this->getClassForContentType($contentTypeDefinition->getName());
-
             $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $id . '_' . md5($timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
-                $json = $this->cache->fetch($cacheToken);
+                $json   = $this->cache->fetch($cacheToken);
                 $record = $this->createRecordFromJSONResult($contentTypeDefinition, $json, $viewName, $workspace, $language, $this->validatePropertyNames);
+
                 return $record;
             }
         }
@@ -641,6 +648,9 @@ class Client
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
                 $this->cache->save($cacheToken, $result['record'], $this->cacheSecondsData);
+
+                $this->countRecordCacheMiss($contentTypeDefinition);
+                $this->preCacheRecordsIfAdvisable($contentTypeDefinition, $workspace, $viewName, $language, $timeshift);
             }
 
             $record = $this->createRecordFromJSONResult($contentTypeDefinition, $result['record'], $viewName, $workspace, $language, $this->validatePropertyNames);
@@ -784,12 +794,6 @@ class Client
 
             }
             $className  = $this->getClassForContentType($contentTypeDefinition->getName());
-            $cacheToken = $this->cachePrefix . '_records_' . $contentTypeDefinition->getName() . '_' . md5($className . '_' . $timestamp . '_' . $workspace . '_' . $viewName . '_' . $language . '_' . $timeshift) . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
-
-            /*if ($this->cache->contains($cacheToken))
-            {
-                return $this->cache->fetch($cacheToken);
-            } */
         }
 
         // The following operation is slow even on cached requests, therefore the retrieved objects are cached too
@@ -802,12 +806,6 @@ class Client
 
             $records[$record->getID()] = $record;
         }
-
-        /*
-        if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
-        {
-            $this->cache->save($cacheToken, $records, $this->cacheSecondsData);
-        } */
 
         return $records;
     }
@@ -871,9 +869,8 @@ class Client
                 }
 
             }
-            //$className = $this->getClassForContentType($contentTypeDefinition->getName());
 
-            $cacheToken = $this->cachePrefix . '_records-json_' . $contentTypeDefinition->getName() . '_' . md5( $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
+            $cacheToken = $this->cachePrefix . '_records-json_' . $contentTypeDefinition->getName() . '_' . md5($timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . md5($order . $propertiesToken . $limit . $page . $filterToken . $subset) . '_' . $this->getHeartBeat();
 
             if ($this->cache->contains($cacheToken))
             {
@@ -936,14 +933,14 @@ class Client
 
                 $this->cache->save($cacheToken, $result, $this->cacheSecondsData);
 
-                // Put up to 10 record objects of this result into cache, as retrieval will be very likely
+                // Put record objects of this result into cache, as retrieval will be very likely
                 $i = 0;
                 foreach ($result['records'] AS $item)
                 {
 
                     //$className = $this->getClassForContentType($contentTypeDefinition->getName());
 
-                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $item['id'] . '_' . md5( $timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
+                    $cacheToken = $this->cachePrefix . '_record_' . $contentTypeDefinition->getName() . '_' . $item['id'] . '_' . md5($timestamp . '_' . $timeshift . '_' . $workspace . '_' . $viewName . '_' . $language) . '_' . $this->getHeartBeat();
 
                     if (!$this->cache->contains($cacheToken))
                     {
@@ -951,7 +948,7 @@ class Client
                         $this->cache->save($cacheToken, $item, $this->cacheSecondsData);
                         $i++;
                     }
-                    if ($i > 10)
+                    if ($i > $this->getCachePreFetchCount())
                     {
                         break;
                     }
@@ -1451,4 +1448,66 @@ class Client
         $this->logger = $logger;
     }
 
+
+    /**
+     * @return int
+     */
+    public function getCachePreFetchCount()
+    {
+        return $this->cachePreFetchCount;
+    }
+
+
+    /**
+     * @param int $cachePreFetchCount
+     */
+    public function setCachePreFetchCount($cachePreFetchCount)
+    {
+        $this->cachePreFetchCount = $cachePreFetchCount;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getCachePreFetchTrigger()
+    {
+        return $this->cachePreFetchTrigger;
+    }
+
+
+    /**
+     * @param int $cachePreFetchTrigger
+     */
+    public function setCachePreFetchTrigger($cachePreFetchTrigger)
+    {
+        $this->cachePreFetchTrigger = $cachePreFetchTrigger;
+    }
+
+
+    protected function countRecordCacheMiss(ContentTypeDefinition $contentTypeDefinition)
+    {
+        $contentTypeName = $contentTypeDefinition->getName();
+        $c               = 0;
+        if (isset($this->cacheMissesCounter[$contentTypeName]))
+        {
+            $c = $this->cacheMissesCounter[$contentTypeName];
+        }
+        $this->cacheMissesCounter[$contentTypeName] = ++$c;
+    }
+
+
+    protected function preCacheRecordsIfAdvisable(ContentTypeDefinition $contentTypeDefinition, $workspace, $viewName, $language, $timeShift)
+    {
+        $contentTypeName = $contentTypeDefinition->getName();
+        if (isset($this->cacheMissesCounter[$contentTypeName]))
+        {
+            $c = $this->cacheMissesCounter[$contentTypeName];
+            if ($c >= $this->getCachePreFetchTrigger())
+            {
+                $this->getRecords($contentTypeDefinition, $workspace, $viewName, $language, 'id', array(), null, 1, null, null, $timeShift);
+                $this->cacheMissesCounter[$contentTypeName] = 0;
+            }
+        }
+    }
 }
