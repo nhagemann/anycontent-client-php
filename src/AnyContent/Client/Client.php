@@ -690,7 +690,10 @@ class Client
                 try
                 {
                     $result = $request->send()->json();
-                    $config->setProperties($result['record']['properties']);
+                    foreach ($result['record']['properties'] AS $property => $value)
+                    {
+                        $config->setProperty($property, $value);
+                    }
                     $config->setHash($result['record']['info']['hash']);
                     $config->setRevision($result['record']['info']['revision']);
                     $config->setRevisionTimestamp($result['record']['info']['revision_timestamp']);
