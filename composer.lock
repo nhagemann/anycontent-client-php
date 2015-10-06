@@ -172,16 +172,16 @@
         },
         {
             "name": "nhagemann/cmdl-parser-php",
-            "version": "0.13",
+            "version": "0.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nhagemann/cmdl-parser-php.git",
-                "reference": "2455a9e31b88c190773df7221c2c0c826e233efe"
+                "reference": "55154923f17efd81a4b6dee7ded35a9955d89e2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/2455a9e31b88c190773df7221c2c0c826e233efe",
-                "reference": "2455a9e31b88c190773df7221c2c0c826e233efe",
+                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/55154923f17efd81a4b6dee7ded35a9955d89e2f",
+                "reference": "55154923f17efd81a4b6dee7ded35a9955d89e2f",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +209,7 @@
             ],
             "description": "Library to parse CMDL files into an object representation",
             "homepage": "http://www.nilshagemann.de",
-            "time": "2015-04-04 10:13:06"
+            "time": "2015-10-06 16:06:49"
         },
         {
             "name": "symfony/event-dispatcher",
