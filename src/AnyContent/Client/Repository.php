@@ -16,6 +16,8 @@ class Repository
     /** @var  Client */
     protected $client;
 
+    protected $title;
+
     protected $contentTypeName = '';
 
     protected $configTypeName = '';
@@ -50,12 +52,36 @@ class Repository
     }
 
 
+    public function getName()
+    {
+        return $this->getRepositoryName();
+    }
+
+
     public function getRepositoryName()
     {
         $url   = trim($this->getClient()->getUrl(), '/');
         $parts = explode('/', $url);
 
         return array_pop($parts);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
 
 
