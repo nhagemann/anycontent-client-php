@@ -327,6 +327,10 @@ class Record
         return $this->levelWithinSortedTree;
     }
 
+    public function getLevel()
+    {
+        return $this->getLevelWithinSortedTree();
+    }
 
     public function setProperties($properties)
     {
