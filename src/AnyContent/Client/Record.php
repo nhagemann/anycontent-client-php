@@ -39,7 +39,7 @@ class Record
         $this->contentTypeDefinition = $contentTypeDefinition;
 
         $this->setProperty('name', $name);
-        $this->view  = $view;
+        $this->view      = $view;
         $this->workspace = $workspace;
         $this->language  = $language;
 
@@ -89,6 +89,7 @@ class Record
         return new Sequence($this->contentTypeDefinition, $values);
     }
 
+
     public function getTable($property)
     {
         $values = json_decode($this->getProperty($property), true);
@@ -98,7 +99,8 @@ class Record
             $values = array();
         }
 
-        $formElementDefinition = $this->contentTypeDefinition->getViewDefinition($this->view)->getFormElementDefinition($property);
+        $formElementDefinition = $this->contentTypeDefinition->getViewDefinition($this->view)
+                                                             ->getFormElementDefinition($property);
 
         $columns = count($formElementDefinition->getList(1));
 
@@ -112,15 +114,18 @@ class Record
         return $table;
     }
 
+
     public function getArrayProperty($property)
     {
         $value = $this->getProperty($property);
         if ($value)
         {
-            return explode(',',$value);
+            return explode(',', $value);
         }
+
         return array();
     }
+
 
     public function getID()
     {
@@ -322,15 +327,20 @@ class Record
     }
 
 
+    /**
+     * @deprecated
+     */
     public function getLevelWithinSortedTree()
     {
         return $this->levelWithinSortedTree;
     }
 
+
     public function getLevel()
     {
         return $this->getLevelWithinSortedTree();
     }
+
 
     public function setProperties($properties)
     {
@@ -343,8 +353,9 @@ class Record
         return $this->properties;
     }
 
+
     public function getAttributes()
     {
-        return array('workspace'=>$this->getWorkspace(),'language'=>$this->getLanguage(),'position'=>$this->getPosition(),'parent_id'=>$this->getParentRecordId(),'level'=>$this->getLevelWithinSortedTree());
+        return array( 'workspace' => $this->getWorkspace(), 'language' => $this->getLanguage(), 'position' => $this->getPosition(), 'parent_id' => $this->getParentRecordId(), 'level' => $this->getLevelWithinSortedTree() );
     }
 }
