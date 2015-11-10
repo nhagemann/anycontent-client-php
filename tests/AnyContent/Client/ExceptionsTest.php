@@ -31,16 +31,16 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testUnknownDomain()
-    {
-
-        $this->setExpectedException('AnyContent\Client\AnyContentClientException','',AnyContentClientException::CLIENT_CONNECTION_ERROR);
-
-        $client = new Client('http://unknown/1/example', null, null, 'Basic', null);
-
-        $client->getRepositoryInfo();
-
-    }
+//    public function testUnknownDomain()
+//    {
+//
+//        $this->setExpectedException('AnyContent\Client\AnyContentClientException','',AnyContentClientException::CLIENT_CONNECTION_ERROR);
+//
+//        $client = new Client('http://unknown/1/example', null, null, 'Basic', null);
+//
+//        $client->getRepositoryInfo();
+//
+//    }
 
 
     public function testUnknownRepository()
@@ -61,13 +61,13 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
         $client->getRepositoryInfo();
     }
 
-    public function testWrongUrlWith200()
-    {
-        $this->setExpectedException('AnyContent\Client\AnyContentClientException','',AnyContentClientException::CLIENT_CONNECTION_ERROR);
-        $client = new Client('http://www.ard.de', null, null, 'Basic', null);
-
-        $client->getRepositoryInfo();
-    }
+//    public function testWrongUrlWith200()
+//    {
+//        $this->setExpectedException('AnyContent\Client\AnyContentClientException','',AnyContentClientException::CLIENT_CONNECTION_ERROR);
+//        $client = new Client('http://www.ard.de', null, null, 'Basic', null);
+//
+//        $client->getRepositoryInfo();
+//    }
 
 
 

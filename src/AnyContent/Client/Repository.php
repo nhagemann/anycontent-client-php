@@ -122,6 +122,7 @@ class Repository
 
     public function hasContentType($contentTypeName)
     {
+
         return array_key_exists($contentTypeName, $this->client->getContentTypesList());
     }
 

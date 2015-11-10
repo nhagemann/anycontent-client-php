@@ -4,10 +4,7 @@ namespace AnyContent\Client;
 class CXIODatabase
 {
 
-    protected $app;
-
     protected $db;
-
 
     public function getConnection()
     {
@@ -15,7 +12,7 @@ class CXIODatabase
         {
 
             // http://stackoverflow.com/questions/18683471/pdo-setting-pdomysql-attr-found-rows-fails
-            $this->db = new \PDO('mysql:host=localhost;dbname=anycontent', 'hahnair', 'webdev', array( \PDO::MYSQL_ATTR_FOUND_ROWS => true ));
+
 
             $this->db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

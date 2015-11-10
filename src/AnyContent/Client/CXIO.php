@@ -78,47 +78,51 @@ class CXIO
     }
 
 
-
     protected static function countRecords($repositoryName, ContentTypeDefinition $contentTypeDefinition, $workspace = 'default', $language = 'default', $timeshift = 0)
     {
 
-        $db = self::getDatabase();
-
-        $contentTypeName = $contentTypeDefinition->getName();
-
-        $tableName = $repositoryName . '$' . $contentTypeName;
-
-        if ($tableName != Util::generateValidIdentifier($repositoryName) . '$' . Util::generateValidIdentifier($contentTypeName))
+        try
         {
-            throw new \Exception ('Invalid repository and/or content type name(s).', self::INVALID_NAMES);
+            $db = self::getDatabase();
+
+            $contentTypeName = $contentTypeDefinition->getName();
+
+            $tableName = $repositoryName . '$' . $contentTypeName;
+
+            if ($tableName != Util::generateValidIdentifier($repositoryName) . '$' . Util::generateValidIdentifier($contentTypeName))
+            {
+                throw new \Exception ('Invalid repository and/or content type name(s).', self::INVALID_NAMES);
+            }
+
+            $sql = 'SELECT COUNT(*) AS C FROM ' . $tableName . ' WHERE workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <= ? AND validuntil_timestamp > ? ';
+
+            $timestamp = self::getTimeshiftTimestamp($timeshift);
+
+            $params   = array();
+            $params[] = $workspace;
+            $params[] = $language;
+            $params[] = $timestamp;
+            $params[] = $timestamp;
+
+            $row   = $db->fetchOneSQL($sql, $params);
+            $count = $row['C'];
+
+            $sql       = 'SELECT MAX(validfrom_timestamp) AS T FROM ' . $tableName . ' WHERE workspace = ? AND language = ? AND validfrom_timestamp <= ? AND validuntil_timestamp > ? ';
+            $row       = $db->fetchOneSQL($sql, $params);
+            $timestamp = $row['T'];
+            if (!$timestamp)
+            {
+                $timestamp = 0;
+            }
+
+            return array( 'count' => $count, 'lastchange' => $timestamp );
         }
-
-
-        $sql = 'SELECT COUNT(*) AS C FROM ' . $tableName . ' WHERE workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <= ? AND validuntil_timestamp > ? ';
-
-        $timestamp = self::getTimeshiftTimestamp($timeshift);
-
-
-        $params   = array();
-        $params[] = $workspace;
-        $params[] = $language;
-        $params[] = $timestamp;
-        $params[] = $timestamp;
-
-
-        $row = $db->fetchOneSQL($sql,$params);
-        $count = $row['C'];
-
-        $sql  = 'SELECT MAX(validfrom_timestamp) AS T FROM ' . $tableName . ' WHERE workspace = ? AND language = ? AND validfrom_timestamp <= ? AND validuntil_timestamp > ? ';
-        $row = $db->fetchOneSQL($sql,$params);
-        $timestamp = $row['T'];
-        if (!$timestamp)
+        catch (\Exception $e)
         {
-            $timestamp = 0;
+            return array( 'count' => 0, 'lastchange' => 0 );
         }
+    }
 
-        return array( 'count' => $count, 'lastchange' => $timestamp );
-     }
 
     public static function getCMDL(Client $client, $contentTypeName)
     {
@@ -149,21 +153,16 @@ class CXIO
 
         $db = self::getDatabase();
 
-
         $sql = 'SELECT COUNT(*) AS C FROM _cmdl_ WHERE repository = ?';
 
         $row = $db->fetchOneSQL($sql, [ $repositoryName ]);
 
-        /*if ($row['C']==0)
+        if ($row['C'] == 0)
         {
-            throw new AnyContentClientException();
-        }*/
-
-
+            throw new \Exception('unknown');
+        }
 
         $result = [ 'content' => [ ], 'config' => [ ], 'files' => true, 'admin' => false ];
-
-
 
         $sql = 'SELECT * FROM _cmdl_ WHERE repository = ? AND data_type=? ORDER BY name';
 
@@ -190,11 +189,10 @@ class CXIO
             }
             catch (\Exception $e)
             {
-
+                var_dump($e->getMessage());
             }
 
         }
-
 
         $sql = 'SELECT * FROM _cmdl_ WHERE repository = ? AND data_type=? ORDER BY name';
 
@@ -210,19 +208,19 @@ class CXIO
                 $timestamp = self::getTimeshiftTimestamp($timeshift);
                 $tableName = $repositoryName . '$$config';
 
-                $sql      = 'SELECT * FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND validfrom_timestamp <= ? AND validuntil_timestamp > ?';
-                $config = $db->fetchOneSQL($sql,[$row['name'],$workspace,$language,$timestamp,$timestamp]);
+                $sql    = 'SELECT * FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND validfrom_timestamp <= ? AND validuntil_timestamp > ?';
+                $config = $db->fetchOneSQL($sql, [ $row['name'], $workspace, $language, $timestamp, $timestamp ]);
 
                 $item = [ ];
 
-                $item['title']              = $definition->getTitle();
+                $item['title']             = $definition->getTitle();
                 $item['lastchange_config'] = 0;
                 if ($config)
                 {
                     $item['lastchange_config'] = $config['validfrom_timestamp'];
                 }
-                $item['lastchange_cmdl']    = $row['lastchange_timestamp'];
-                $item['description']        = $definition->getDescription();
+                $item['lastchange_cmdl'] = $row['lastchange_timestamp'];
+                $item['description']     = $definition->getDescription();
 
                 $result['config'][$row['name']] = $item;
             }

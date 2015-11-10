@@ -259,9 +259,8 @@ class Client
             try
             {
 
-                $request = $this->guzzle->get($url, null, $options);
-                $result = $request->send()->json();
-
+                //$request = $this->guzzle->get($url, null, $options);
+                //$result = $request->send()->json();
 
                 $result = CXIO::getRepositoryInfo($this,$workspace,$language,$timeshift);
 
@@ -269,16 +268,19 @@ class Client
             catch (\Exception $e)
             {
 
-                $response = $request->getResponse();
 
-                if ($response && $response->getStatusCode() == 404)
-                {
-                    throw new AnyContentClientException($e->getMessage(), AnyContentClientException::ANYCONTENT_UNKNOW_REPOSITORY);
-                }
-                else
-                {
-                    throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
-                }
+                throw new AnyContentClientException($e->getMessage(), AnyContentClientException::ANYCONTENT_UNKNOW_REPOSITORY);
+
+//                $response = $request->getResponse();
+//
+//                if ($e->getMessage() == 'unknown')
+//                {
+//                    throw new AnyContentClientException($e->getMessage(), AnyContentClientException::ANYCONTENT_UNKNOW_REPOSITORY);
+//                }
+//                else
+//                {
+//                    throw new AnyContentClientException($e->getMessage(), AnyContentClientException::CLIENT_CONNECTION_ERROR);
+//                }
             }
 
             if ($this->cacheSecondsIgnoreDataConcurrency != 0)
