@@ -255,12 +255,15 @@ class Client
 
             $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
 
+
             try
             {
 
                 $request = $this->guzzle->get($url, null, $options);
-
                 $result = $request->send()->json();
+
+
+                $result = CXIO::getRepositoryInfo($this,$workspace,$language,$timeshift);
 
             }
             catch (\Exception $e)
@@ -446,11 +449,11 @@ class Client
                 return $this->cache->fetch($cacheToken);
             }
 
+
             try
             {
+                $result = CXIO::getCMDL($this,$contentTypeName);
 
-                $request = $this->guzzle->get('content/' . $contentTypeName . '/cmdl');
-                $result  = $request->send()->json();
             }
             catch (\Exception $e)
             {
@@ -640,10 +643,18 @@ class Client
         $options = array( 'query' => array( 'language' => $language, 'timeshift' => $timeshift ) );
         $request = $this->guzzle->get($url, null, $options);
 
+
+        $result = CXIO::getRecord($this, $contentTypeDefinition, $id, $workspace , $viewName, $language , $timeshift );
         try
         {
 
-            $result = $request->send()->json();
+            //$result = $request->send()->json();
+            $result = CXIO::getRecord($this, $contentTypeDefinition, $id, $workspace , $viewName, $language , $timeshift );
+
+            if (!$result)
+            {
+                return false;
+            }
 
             if ($timeshift == 0 OR $timeshift > self::MAX_TIMESHIFT)
             {
@@ -923,6 +934,9 @@ class Client
             $request = $this->guzzle->get($url, null, $options);
 
             $result = $request->send()->json();
+
+            // TODO CXIO::getRecord($this,>)
+
         }
         catch (\Exception $e)
         {

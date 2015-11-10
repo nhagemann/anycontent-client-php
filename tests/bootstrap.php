@@ -15,7 +15,7 @@ if (!function_exists('apc_exists'))
 }
 
 global $testWithCaching;
-$testWithCaching = true;
+$testWithCaching = false;
 
 if ($testWithCaching == true)
 {
