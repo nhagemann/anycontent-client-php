@@ -8,6 +8,8 @@ class CXIODatabase
 
     public function getConnection()
     {
+        global $app;
+
         if (!$this->db)
         {
             /** @var ConfigService $config */
