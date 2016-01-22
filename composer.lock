@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fdc8087f58cd52f47da552fe84c7a1bc",
+    "hash": "040e8e850da55445936d005d9a50efc1",
     "packages": [
         {
             "name": "cpliakas/git-wrapper",
@@ -425,7 +425,7 @@
         },
         {
             "name": "nhagemann/kvmlogger",
-            "version": "dev-master",
+            "version": "1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nhagemann/kvmlogger.git",
@@ -451,6 +451,7 @@
                     "KVMLogger": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -462,10 +463,6 @@
                 }
             ],
             "homepage": "http://www.nilshagemann.de",
-            "support": {
-                "source": "https://github.com/nhagemann/kvmlogger/tree/master",
-                "issues": "https://github.com/nhagemann/kvmlogger/issues"
-            },
             "time": "2016-01-18 14:10:04"
         },
         {
@@ -1173,9 +1170,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "nhagemann/kvmlogger": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
