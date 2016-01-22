@@ -32,11 +32,14 @@ class RestLikeConfiguration extends AbstractConfiguration
      */
     public function setUri($uri)
     {
-        $uri       = rtrim($uri, '/');
-        $uri       = rtrim($uri, '/info');
+        $uri = rtrim($uri, '/');
+
+        if (substr($uri, -5) == '/info')
+        {
+            $uri = substr($uri, 0, -5);
+        }
         $uri       = $uri . '/';
         $this->uri = $uri;
-
     }
 
 
@@ -74,10 +77,12 @@ class RestLikeConfiguration extends AbstractConfiguration
         return new RestLikeBasicReadOnlyConnection($this);
     }
 
+
     public function createReadWriteConnection()
     {
         return new  RestLikeBasicReadWriteConnection($this);
     }
+
 
     /**
      * @return int
