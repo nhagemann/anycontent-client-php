@@ -1,0 +1,12 @@
+#
+# example02 - exemplary simple content type (used within unit tests)
+#
+
+Name
+Article Nr. = textfield {artno}
+Short Description = textarea 5
+Long Description = textarea 15
+Size = selection (XS,S,M,L,XL,XXL)
+Price = number 2 $
+
+

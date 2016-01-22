@@ -1,0 +1,7 @@
+#
+# config2 - exemplary simple config type (used within unit tests)
+#
+value1
+value2
+value3
+value4

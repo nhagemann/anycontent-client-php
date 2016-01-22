@@ -2,8 +2,6 @@
 
 namespace AnyContent\Client;
 
-use CMDL\Util;
-
 class File
 {
 

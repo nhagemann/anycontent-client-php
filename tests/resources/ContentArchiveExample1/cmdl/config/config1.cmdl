@@ -1,0 +1,16 @@
+#
+# config1 - exemplary simple config type (used within unit tests)
+#
+Title = textfield {name}
+Description = textarea
+Copyright
+Company Name
+Adress Line 1
+Adress Line 2
+ZipCode
+City
+Country
+
+=== test ===
+
+comment = richtext

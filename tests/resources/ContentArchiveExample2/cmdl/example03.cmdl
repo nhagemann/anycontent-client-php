@@ -1,0 +1,16 @@
+#
+# example03 - content type with synchronized properties (used within unit tests)
+#
+
+Title = textfield {name}
+Date = date
+Article = textarea
+Source
+
+@workspaces (default,live)
+
+@languages (default,en,es:Spanish)
+
+@title "Example 03!"
+@description  "Example Content Type"
+@synchronized-properties (source)

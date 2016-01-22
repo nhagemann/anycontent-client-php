@@ -2,103 +2,164 @@
 
 namespace AnyContent\Client;
 
+use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use CMDL\Parser;
 
-use AnyContent\Client\Client;
-use AnyContent\Client\Record;
-use AnyContent\Client\UserInfo;
+use KVMLogger\KVMLoggerFactory;
+use KVMLogger\KVMLogger;
+use Symfony\Component\Filesystem\Filesystem;
 
 class CustomRecordClassTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @var $client Client
-     */
-    public $client = null;
+    /** @var  ContentArchiveReadWriteConnection */
+    public $connection;
+
+
+    public static function setUpBeforeClass()
+    {
+        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
+        $source = __DIR__ . '/../../resources/ContentArchiveExample2';
+
+        $fs = new Filesystem();
+
+        if (file_exists($target))
+        {
+            $fs->remove($target);
+        }
+
+        $fs->mirror($source, $target);
+
+    }
 
 
     public function setUp()
     {
-        global $testWithCaching;
+        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
-        $cache = null;
-        if ($testWithCaching)
-        {
-            $cache = new \Doctrine\Common\Cache\ApcCache();
-        }
+        $configuration = new ContentArchiveConfiguration();
 
-        // Connect to repository
-        $client = new Client('http://acrs.github.dev/1/example', null, null, 'Basic', $cache);
-        $client->setUserInfo(new UserInfo('john.doe@example.org', 'John', 'Doe'));
-        $this->client = $client;
+        $configuration->setContentArchiveFolder($target);
+
+        $connection = $configuration->createReadWriteConnection();
+
+        $this->connection = $connection;
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
     public function testSaveRecords()
     {
-        // Execute admin call to delete all existing data of the test content types
-        $guzzle  = new \Guzzle\Http\Client('http://acrs.github.dev');
-        $request = $guzzle->delete('1/example/content/example01/records', null, null, array( 'query' => array( 'global' => 1 ) ));
-        $result  = $request->send()->getBody();
 
-        $cmdl = $this->client->getCMDL('example01');
+        $cmdl = $this->connection->getCMDLForContentType('example01');
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
         $contentTypeDefinition->setName('example01');
 
-        $record = new Record($contentTypeDefinition, 'New Record');
-        $record->setProperty('source', 'a');
-        $id = $this->client->saveRecord($record);
-        $this->assertEquals(1, $id);
+        $this->connection->selectContentType('example01');
 
-        $record = new Record($contentTypeDefinition, 'New Record');
-        $record->setProperty('source', 'b');
-        $id = $this->client->saveRecord($record);
-        $this->assertEquals(2, $id);
+        for ($i = 1; $i <= 5; $i++)
+        {
+            $record = new Record($contentTypeDefinition, 'New Record ' . $i);
+            $record->setProperty('article', 'Test ' . $i);
 
-        $this->client->registerRecordClassForContentType('example01', 'AnyContent\Client\CustomRecordClassTestRecordClass');
+            $id = $this->connection->saveRecord($record);
+            $this->assertEquals($i, $id);
+        }
 
-        $records = $this->client->getRecords($contentTypeDefinition);
+    }
 
-        $this->assertCount(2, $records);
 
-        $record = array_shift($records);
+    public function testGetRecords()
+    {
+        $repository = new Repository('phpunit', $this->connection);
 
-        $this->assertInstanceOf('AnyContent\Client\CustomRecordClassTestRecordClass', $record);
+        $repository->selectContentType('example01');
 
-        $this->assertEquals('a', $record->getSource());
+        $records = $repository->getRecords();
 
-        $record->setProperty('source','b');
+        $this->assertCount(5, $records);
+        $this->assertEquals(5, $repository->countRecords());
 
-        $record = $this->client->getRecord($contentTypeDefinition,1);
+        $i = 0;
+        foreach ($records as $id => $record)
+        {
+            $i++;
+            $this->assertEquals($i, $id);
+            $this->assertEquals('Test ' . $i, $record->getProperty('article'));
+        }
 
-        $this->assertEquals('a', $record->getSource());
+        $repository->registerRecordClassForContentType('example01', 'AnyContent\Client\AlternateRecordClass');
 
-        $record->setProperty('source','b');
+        $records = $repository->getRecords();
 
-        $record = $this->client->getRecord($contentTypeDefinition,1);
+        $i = 0;
+        foreach ($records as $id => $record)
+        {
+            $i++;
+            $this->assertInstanceOf('AnyContent\Client\AlternateRecordClass', $record);
+            $this->assertEquals($i, $id);
+            $this->assertEquals('New Record ' . $i, $record->getName());
+            $this->assertEquals('Test ' . $i, $record->getProperty('article'));
+        }
 
-        $this->assertEquals('a', $record->getSource());
+    }
 
-        $records = $this->client->getRecords($contentTypeDefinition);
 
-        $this->assertCount(2, $records);
+    public function testGetConfig()
+    {
+        $repository = new Repository('phpunit', $this->connection);
 
-        $record = array_shift($records);
+        $repository->registerRecordClassForConfigType('config1', 'AnyContent\Client\AlternateConfigRecordClass');
 
-        $this->assertInstanceOf('AnyContent\Client\CustomRecordClassTestRecordClass', $record);
+        $config = $repository->getConfig('config1');
 
-        $this->assertEquals('a', $record->getSource());
+        $this->assertInstanceOf('AnyContent\Client\AlternateConfigRecordClass', $config);
+
+        $config->setProperty('city', 'Hamburg');
+
+        $repository->saveConfig($config);
+    }
+
+
+    public function testGetConfigNewConnection()
+    {
+        $repository = new Repository('phpunit', $this->connection);
+
+        $config = $repository->getConfig('config1');
+
+        $this->assertInstanceOf('AnyContent\Client\Config', $config);
+
+        $this->assertEquals('Hamburg',$config->getProperty('city'));
+
+        $repository->registerRecordClassForConfigType('config1', 'AnyContent\Client\AlternateConfigRecordClass');
+
+        $config = $repository->getConfig('config1');
+
+        $this->assertInstanceOf('AnyContent\Client\AlternateConfigRecordClass', $config);
+
+        $config->setProperty('city', 'Hamburg');
     }
 
 }
 
 
-class CustomRecordClassTestRecordClass extends Record
+class AlternateRecordClass extends Record
 {
 
-    public function getSource()
+    public function getArticle()
     {
-        return $this->getProperty('source');
+        return $this->getProperty('article');
+    }
+}
+
+class AlternateConfigRecordClass extends Config
+{
+
+    public function getCity()
+    {
+        return $this->getProperty('city');
     }
 }

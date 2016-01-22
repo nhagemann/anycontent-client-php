@@ -1,0 +1,95 @@
+Name
+Claim
+Website = link
+Typ {subtype} = selection (Agentur, Startup, Anderes)
+Schwerpunkte (Tags) {tags} = textarea 3 M
+
+[Kennzahlen]
+[[[Mitarbeiter]]]
+Mitarbeiter = number
+Quelle {mitarbeiter_quelle} = link
+[[[Umsatz]]]
+Umsatz= number 1 "Mio â‚¬"
+Quelle {umsatz_quelle} = link
+[[[Gründung]]]
+Gründungsjahr = number 0
+[[[Netzwerk]]]
+Name {netzwerk_name} = textfield
+Website {netzwerk_website} = link
+> oder
+gehört zu = reference profiles
+[[[BVDW Ranking]]]]
+Position {bvdw_position} = number 0
+Jahr {bvdw_jahr} = number 0 "YYYY"
+]]]
+
+
+[Adresse(n)]
+[[[Adresse]]]
+Name inkl. Rechtsform
+Adresse Zeile 1 = textfield M
+Adresse Zeile 2 = textfield M
+PLZ = textfield S
+Ort = textfield M
+Geolokation = geolocation
+
+
+[[[Weitere Standorte]]]
+Standorte = sequence (standort)
+]]]
+
+
+
+[Social Media Profile]
+[[[General]]]
+Twitter = link
+Facebook = link
+Google+ = link
+[[[Jobs]]]
+XING = link
+Kununu = link
+LinkedIn = link
+[[[Pictures & Videos]]]
+Instagram = link
+Flickr = link
+Pinterest = link
+YouTube = link
+Vimeo = link
+[[[Showcases]]]
+Behance = link
+Dribbble = link
+[[[Other]]]
+Github = link
+Slideshare = link
+Foursquare = link
+Tumblr = link
+Snapchat = link
+]]]
+>
+
+[Feeds]
+News
+Jobs
+Blogs = sequence (blog)
+
+
++++ blog +++
+Name
+URL = link
+RSS = link
+
++++ standort +++
+Name, falls abweichend {standort_name} = textfield M
+Adresse Zeile 1 = textfield M
+Adresse Zeile 2 = textfield M
+PLZ = textfield S
+Ort = textfield M
+Geolokation = geolocation
+
+@title "Profile"
+
+@time-shiftable
+
+@custom content-view default
+@custom content-view map geolokation "Karte"
+@custom content-view glossary "Glossar"

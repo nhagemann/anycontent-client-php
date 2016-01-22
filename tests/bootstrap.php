@@ -14,13 +14,12 @@ if (!function_exists('apc_exists'))
     }
 }
 
-global $testWithCaching;
-$testWithCaching = true;
 
-if ($testWithCaching == true)
+if (file_exists(__DIR__.'/_credentials.php'))
 {
-    echo PHP_EOL . PHP_EOL . 'CLIENT CACHE ACTIVATED!! ' . PHP_EOL . PHP_EOL;
+    require_once(__DIR__.'/_credentials.php');
 }
+
 
 
 

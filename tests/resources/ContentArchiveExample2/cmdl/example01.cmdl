@@ -1,0 +1,17 @@
+#
+# example01 - exemplary simple content type (used within unit tests)
+#
+
+Title = textfield {name}
+Date = date
+Article = textarea
+Source
+
+@workspaces (default,live)
+
+@languages (default,en,es:Spanish)
+
+@sortable
+
+@title "Example 01"
+@description  "Example Content Type"

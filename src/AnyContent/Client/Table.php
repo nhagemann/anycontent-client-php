@@ -3,11 +3,6 @@
 namespace AnyContent\Client;
 
 
-use CMDL\Util;
-
-use CMDL\ContentTypeDefinition;
-use Symfony\Component\Config\Definition\Exception\Exception;
-
 class Table implements \Iterator, \Countable
 {
     protected $position = 0;

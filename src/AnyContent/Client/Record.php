@@ -2,91 +2,33 @@
 
 namespace AnyContent\Client;
 
-use CMDL\CMDLParserException;
-use CMDL\Util;
-
 use CMDL\ContentTypeDefinition;
-use AnyContent\Client\Sequence;
 
-class Record
+class Record extends AbstractRecord implements \JsonSerializable
 {
 
     public $id = null;
 
-    protected $contentTypeDefinition = null;
+    /** @var ContentTypeDefinition */
+    protected $dataTypeDefinition = null;
 
-    protected $view = 'default';
-    protected $workspace = 'default';
-    protected $language = 'default';
+    protected $level = null;
 
-    public $properties = array();
-
-    public $revision = 1;
-    public $revisionTimestamp = null;
-
-    public $hash = null;
-
-    public $position = null;
-    public $parentRecordId = null;
-    public $levelWithinSortedTree = null;
-
-    public $creationUserInfo;
-    public $lastChangeUserInfo;
+    /** @var  UserInfo */
+    public $creationUserInfo = null;
 
 
     public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $view = 'default', $workspace = 'default', $language = 'default')
     {
-        $this->contentTypeDefinition = $contentTypeDefinition;
+        $this->dataTypeDefinition = $contentTypeDefinition;
 
         $this->setProperty('name', $name);
         $this->view      = $view;
         $this->workspace = $workspace;
         $this->language  = $language;
+        $this->setCreationUserInfo(new UserInfo());
+        $this->setLastChangeUserInfo(new UserInfo());
 
-    }
-
-
-    public function setProperty($property, $value)
-    {
-
-        $property = Util::generateValidIdentifier($property);
-        if ($this->contentTypeDefinition->hasProperty($property, $this->view))
-        {
-            $this->properties[$property] = $value;
-            $this->hash                  = null;
-            $this->revisionTimestamp     = null;
-        }
-        else
-        {
-            throw new CMDLParserException('Unknown property ' . $property, CMDLParserException::CMDL_UNKNOWN_PROPERTY);
-        }
-
-    }
-
-
-    public function getProperty($property, $default = null)
-    {
-        if (array_key_exists($property, $this->properties))
-        {
-            return $this->properties[$property];
-        }
-        else
-        {
-            return $default;
-        }
-    }
-
-
-    public function getSequence($property)
-    {
-        $values = json_decode($this->getProperty($property), true);
-
-        if (!is_array($values))
-        {
-            $values = array();
-        }
-
-        return new Sequence($this->contentTypeDefinition, $values);
     }
 
 
@@ -99,8 +41,8 @@ class Record
             $values = array();
         }
 
-        $formElementDefinition = $this->contentTypeDefinition->getViewDefinition($this->view)
-                                                             ->getFormElementDefinition($property);
+        $formElementDefinition = $this->dataTypeDefinition->getViewDefinition($this->view)
+                                                          ->getFormElementDefinition($property);
 
         $columns = count($formElementDefinition->getList(1));
 
@@ -127,15 +69,23 @@ class Record
     }
 
 
-    public function getID()
+    public function getId()
     {
         return $this->id;
     }
 
 
-    public function setID($id)
+    public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+
+    public function setName($value)
+    {
+        return $this->setProperty('name', $value);
     }
 
 
@@ -145,51 +95,81 @@ class Record
     }
 
 
-    public function setHash($hash)
+    public function getPosition()
     {
-        $this->hash = $hash;
+        return $this->getProperty('position');
     }
 
 
-    public function getHash()
+    public function setPosition($value)
     {
-        return $this->hash;
+        if ($this->getParent() === null)
+        {
+            $this->setParent(0);
+        }
+
+        return $this->setProperty('position', $value);
     }
 
 
+    public function getParent()
+    {
+        $parent = $this->getProperty('parent');
+        if ($parent !== null)
+        {
+            return (int)$parent;
+        }
+    }
+
+
+    public function setParent($value)
+    {
+        return $this->setProperty('parent', $value);
+    }
+
+
+    /**
+     * @return null
+     */
+    public function getLevel()
+    {
+        return $this->level;
+    }
+
+
+    /**
+     * @param null $level
+     */
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+
+
+    public function getDataType()
+    {
+        return 'content';
+    }
+
+
+    /**
+     * @deprecated
+     */
     public function getContentType()
     {
-        return $this->contentTypeDefinition->getName();
+        return $this->dataTypeDefinition->getName();
+    }
+
+
+    public function getContentTypeName()
+    {
+        return $this->dataTypeDefinition->getName();
     }
 
 
     public function getContentTypeDefinition()
     {
-        return $this->contentTypeDefinition;
-    }
-
-
-    public function setRevision($revision)
-    {
-        $this->revision = $revision;
-    }
-
-
-    public function getRevision()
-    {
-        return $this->revision;
-    }
-
-
-    public function setRevisionTimestamp($revisionTimestamp)
-    {
-        $this->revisionTimestamp = $revisionTimestamp;
-    }
-
-
-    public function getRevisionTimestamp()
-    {
-        return $this->revisionTimestamp;
+        return $this->dataTypeDefinition;
     }
 
 
@@ -201,7 +181,7 @@ class Record
 
     public function getStatusLabel()
     {
-        $statusList = $this->contentTypeDefinition->getStatusList();
+        $statusList = $this->dataTypeDefinition->getStatusList();
         if ($statusList)
         {
             if (array_key_exists($this->getProperty('status'), $statusList))
@@ -223,7 +203,7 @@ class Record
 
     public function getSubtypeLabel()
     {
-        $subtypesList = $this->contentTypeDefinition->getSubtypes();
+        $subtypesList = $this->dataTypeDefinition->getSubtypes();
         if ($subtypesList)
         {
             if (array_key_exists($this->getProperty('subtype'), $subtypesList))
@@ -237,21 +217,11 @@ class Record
     }
 
 
-    public function setLastChangeUserInfo($lastChangeUserInfo)
+    public function setCreationUserInfo(UserInfo $creationUserInfo)
     {
-        $this->lastChangeUserInfo = $lastChangeUserInfo;
-    }
+        $this->creationUserInfo = clone $creationUserInfo;
 
-
-    public function getLastChangeUserInfo()
-    {
-        return $this->lastChangeUserInfo;
-    }
-
-
-    public function setCreationUserInfo($creationUserInfo)
-    {
-        $this->creationUserInfo = $creationUserInfo;
+        return $this;
     }
 
 
@@ -261,101 +231,16 @@ class Record
     }
 
 
-    public function setLanguage($language)
+    function jsonSerialize()
     {
-        $this->language = $language;
-    }
+        $record                       = [ ];
+        $record['id']                 = $this->getID();
+        $record['properties']         = $this->getProperties();
+        $record['info']               = [ ];
+        $record['info']['revision']   = $this->getRevision();
+        $record['info']['creation']   = $this->getCreationUserInfo();
+        $record['info']['lastchange'] = $this->getLastChangeUserInfo();
 
-
-    public function getLanguage()
-    {
-        return $this->language;
-    }
-
-
-    public function setWorkspace($workspace)
-    {
-        $this->workspace = $workspace;
-    }
-
-
-    public function getWorkspace()
-    {
-        return $this->workspace;
-    }
-
-
-    public function setViewName($view)
-    {
-        $this->view = $view;
-    }
-
-
-    public function getViewName()
-    {
-        return $this->view;
-    }
-
-
-    public function setPosition($position)
-    {
-        $this->position = $position;
-    }
-
-
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-
-    public function setParentRecordId($parentRecordId)
-    {
-        $this->parentRecordId = $parentRecordId;
-    }
-
-
-    public function getParentRecordId()
-    {
-        return $this->parentRecordId;
-    }
-
-
-    public function setLevelWithinSortedTree($levelWithinSortedTree)
-    {
-        $this->levelWithinSortedTree = $levelWithinSortedTree;
-    }
-
-
-    /**
-     * @deprecated
-     */
-    public function getLevelWithinSortedTree()
-    {
-        return $this->levelWithinSortedTree;
-    }
-
-
-    public function getLevel()
-    {
-        return $this->getLevelWithinSortedTree();
-    }
-
-
-    public function setProperties($properties)
-    {
-        $this->properties = $properties;
-    }
-
-
-    public function getProperties()
-    {
-        return $this->properties;
-    }
-
-
-    public function getAttributes()
-    {
-        return array( 'workspace' => $this->getWorkspace(), 'language' => $this->getLanguage(), 'position' => $this->getPosition(), 'parent_id' => $this->getParentRecordId(), 'level' => $this->getLevelWithinSortedTree() );
+        return $record;
     }
 }

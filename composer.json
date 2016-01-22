@@ -1,30 +1,42 @@
 {
-    "name": "nhagemann/anycontent-client-php",
-    "description": "",
-    "type": "library",
-    "homepage": "http://www.nilshagemann.de",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Nils Hagemann",
-            "email": "mail@nilshagemann.de",
-            "homepage": "http://www.nilshagemann.de"
-        }
-    ],
-    "require": {
-        "php": ">=5.3",
-        "guzzle/guzzle": "3.9.*",
-        "nhagemann/cmdl-parser-php": "0.13.*",
-        "doctrine/cache": "1.3.*"
-    },
-
-    "require-dev": {
-        "phpunit/phpunit": "~3.7.0"
-    },
-    "autoload": {
-        "psr-0": {
-            "AnyContent": "src/"
-        }
-    },
-    "prefer-stable": true
+  "name": "nhagemann/anycontent-php",
+  "description": "",
+  "type": "library",
+  "homepage": "http://www.nilshagemann.de",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Nils Hagemann",
+      "email": "mail@nilshagemann.de",
+      "homepage": "http://www.nilshagemann.de"
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "nhagemann/cmdl-parser-php": "2.0.x-dev",
+    "psr/log": "1.*",
+    "symfony/filesystem": "2.*",
+    "symfony/finder": "2.*",
+    "guzzlehttp/guzzle": "5.*",
+    "doctrine/cache": "1.5.*",
+    "cpliakas/git-wrapper": "1.*",
+    "ktamas77/firebase-php": "2.*",
+    "nhagemann/kvmlogger": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/nhagemann/kvmlogger"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "~3.7.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "AnyContent": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
