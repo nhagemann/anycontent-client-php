@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "73d6176050ed978a2442e44b92fd700e",
+    "hash": "fdc8087f58cd52f47da552fe84c7a1bc",
     "packages": [
         {
             "name": "cpliakas/git-wrapper",
@@ -384,20 +384,20 @@
         },
         {
             "name": "nhagemann/cmdl-parser-php",
-            "version": "2.0.x-dev",
+            "version": "2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nhagemann/cmdl-parser-php.git",
-                "reference": "0974af910410f4aa858eb1ee17bea63cab3d8c00"
+                "reference": "0e83b350a6624851f38fe72ea03dd3733cb76ff3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/0974af910410f4aa858eb1ee17bea63cab3d8c00",
-                "reference": "0974af910410f4aa858eb1ee17bea63cab3d8c00",
+                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/0e83b350a6624851f38fe72ea03dd3733cb76ff3",
+                "reference": "0e83b350a6624851f38fe72ea03dd3733cb76ff3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3"
+                "php": ">=5.4"
             },
             "require-dev": {
                 "phpunit/phpunit": "~3.7.0"
@@ -421,7 +421,7 @@
             ],
             "description": "Library to parse CMDL files into an object representation",
             "homepage": "http://www.nilshagemann.de",
-            "time": "2016-01-05 17:38:48"
+            "time": "2016-01-22 10:38:39"
         },
         {
             "name": "nhagemann/kvmlogger",
@@ -1174,7 +1174,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "nhagemann/cmdl-parser-php": 20,
         "nhagemann/kvmlogger": 20
     },
     "prefer-stable": true,

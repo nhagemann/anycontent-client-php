@@ -13,7 +13,7 @@
   ],
   "require": {
     "php": ">=5.4",
-    "nhagemann/cmdl-parser-php": "2.0.x-dev",
+    "nhagemann/cmdl-parser-php": "2.*",
     "psr/log": "1.*",
     "symfony/filesystem": "2.*",
     "symfony/finder": "2.*",
@@ -21,7 +21,7 @@
     "doctrine/cache": "1.5.*",
     "cpliakas/git-wrapper": "1.*",
     "ktamas77/firebase-php": "2.*",
-    "nhagemann/kvmlogger": "dev-master"
+    "nhagemann/kvmlogger": "master-dev"
   },
   "repositories": [
     {
