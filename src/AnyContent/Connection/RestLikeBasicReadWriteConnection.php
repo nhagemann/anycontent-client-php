@@ -19,9 +19,10 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         }
         unset($this->repositoryInfo[(string)$dataDimensions]);
 
-        $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
+        $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName();
 
-        $response = $this->getClient()->post($url, [ 'body' => [ 'record' => json_encode($record) ] ]);
+        $response = $this->getClient()
+                         ->post($url, [ 'body' => [ 'record' => json_encode($record), 'language' => $dataDimensions->getLanguage() ] ]);
 
         $id = $response->json();
         $record->setId($id);
@@ -52,9 +53,10 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
             $record = reset($records);
 
-            $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
+            $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName();
 
-            $response = $this->getClient()->post($url, [ 'body' => [ 'records' => json_encode($records) ] ]);
+            $response = $this->getClient()
+                             ->post($url, [ 'body' => [ 'records' => json_encode($records) ], 'language' => $dataDimensions->getLanguage() ]);
 
             $this->stashRecord($record, $dataDimensions);
 
@@ -80,7 +82,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         unset($this->repositoryInfo[(string)$dataDimensions]);
         $this->unstashRecord($contentTypeName, $recordId, $dataDimensions);
 
-        $url = 'content/' . $contentTypeName . '/record/' . $recordId . '/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
+        $url = 'content/' . $contentTypeName . '/record/' . $recordId . '/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage();
 
         $response = $this->getClient()->delete($url);
 
