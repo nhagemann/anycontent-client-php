@@ -82,7 +82,7 @@ class RepositoryFactory
 
         $configuration = new RestLikeConfiguration();
         $configuration->setUri($baseUrl);
-        $connection = $configuration->createReadOnlyConnection();
+        $connection = $configuration->createReadWriteConnection();
         $configuration->addContentTypes();
         $configuration->addConfigTypes();
 
