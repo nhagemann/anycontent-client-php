@@ -1,3 +1,4 @@
+- check restlike url params post and view and delete
 - finalizeRecord muss unerlaubte Properties entfernen und Warnings loggen
 - finalizeConfig mit selbem Prinzip und hidden properties
 - check mandatory

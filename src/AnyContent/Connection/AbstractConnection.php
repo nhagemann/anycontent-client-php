@@ -350,6 +350,47 @@ abstract class AbstractConnection
 
 
     /**
+     * @return array
+     */
+    public function getContentTypeList()
+    {
+        $result = [ ];
+        foreach ($this->getContentTypeDefinitions() as $contentType)
+        {
+            $title = $contentType->getTitle();
+            if ($title == '')
+            {
+                $title = $contentType->getName();
+            }
+            $result[$contentType->getName()] = $title;
+        }
+
+        return $result;
+
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getConfigTypeList()
+    {
+        $result = [ ];
+        foreach ($this->getConfigTypeDefinitions() as $configType)
+        {
+            $title = $configType->getTitle();
+            if ($title == '')
+            {
+                $title = $configType->getName();
+            }
+            $result[$configType->getName()] = $title;
+        }
+
+        return $result;
+    }
+
+
+    /**
      * @return ContentTypeDefinition[]
      * @throws AnyContentClientException
      */

@@ -26,6 +26,18 @@ interface ReadOnlyConnection
 
 
     /**
+     * @return array[]
+     */
+    public function getContentTypeList();
+
+
+    /**
+     * @return array[]
+     */
+    public function getConfigTypeList();
+
+
+    /**
      * @return ContentTypeDefinition[]
      */
     public function getContentTypeDefinitions();
@@ -156,10 +168,11 @@ interface ReadOnlyConnection
     public function hasRepository();
 
 
-
     public function setCacheProvider(CacheProvider $cacheProvider);
 
+
     public function enableCMDLCaching($duration = 60);
+
 
     /**
      * Check for last content/config or cmdl change within repository or for a distinct content/config type

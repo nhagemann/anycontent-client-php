@@ -235,6 +235,28 @@ class Repository implements FileManager
 
 
     /**
+     * allows to access content type titles without need to parse cmdl definition - if connection supports it
+     *
+     * @return array[]
+     */
+    public function getContentTypeList()
+    {
+        return $this->readConnection->getContentTypeList();
+    }
+
+
+    /**
+     *  allows to access config type titles without need to parse cmdl definition - if connection supports it
+     *
+     * @return array[]
+     */
+    public function getConfigTypeList()
+    {
+        return $this->readConnection->getConfigTypeList();
+    }
+
+
+    /**
      * @param $contentTypeName
      *
      * @return bool

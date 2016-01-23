@@ -89,6 +89,48 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
 
     /**
+     * @return array[]
+     */
+    public function getContentTypeList()
+    {
+        $info   = $this->getRepositoryInfo();
+        $result = [ ];
+        foreach ($info['content'] as $name => $item)
+        {
+            $title = $name;
+            if ($item['title'] != '')
+            {
+                $title = $item['title'];
+            }
+            $result[$name] = $title;
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * @return array[]
+     */
+    public function getConfigTypeList()
+    {
+        $info   = $this->getRepositoryInfo();
+        $result = [ ];
+        foreach ($info['config'] as $name => $item)
+        {
+            $title = $name;
+            if ($item['title'] != '')
+            {
+                $title = $item['title'];
+            }
+            $result[$name] = $title;
+        }
+
+        return $result;
+    }
+
+
+    /**
      * @param $contentTypeName
      *
      * @return string
