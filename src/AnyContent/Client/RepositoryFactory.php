@@ -83,8 +83,21 @@ class RepositoryFactory
         $configuration = new RestLikeConfiguration();
         $configuration->setUri($baseUrl);
         $connection = $configuration->createReadWriteConnection();
-        $configuration->addContentTypes();
-        $configuration->addConfigTypes();
+
+        $contentTypeNames = false;
+        if ($this->hasOption('contenttypes'))
+        {
+            $contentTypeNames = $this->getOption('contenttypes');
+        }
+
+        $configuration->addContentTypes($contentTypeNames);
+
+        $configTypeNames = false;
+        if ($this->hasOption('configtypes'))
+        {
+            $configTypeNames = $this->getOption('configtypes');
+        }
+        $configuration->addConfigTypes($configTypeNames);
 
         $fileManager = null;
 

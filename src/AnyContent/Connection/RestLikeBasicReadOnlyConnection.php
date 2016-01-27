@@ -97,12 +97,16 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         $result = [ ];
         foreach ($info['content'] as $name => $item)
         {
-            $title = $name;
-            if ($item['title'] != '')
+            if ($this->hasContentType($name))
             {
-                $title = $item['title'];
+                $title = $name;
+                if ($item['title'] != '')
+                {
+                    $title = $item['title'];
+                }
+
+                $result[$name] = $title;
             }
-            $result[$name] = $title;
         }
 
         return $result;
@@ -118,12 +122,15 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         $result = [ ];
         foreach ($info['config'] as $name => $item)
         {
-            $title = $name;
-            if ($item['title'] != '')
+            if ($this->hasConfigType($name))
             {
-                $title = $item['title'];
+                $title = $name;
+                if ($item['title'] != '')
+                {
+                    $title = $item['title'];
+                }
+                $result[$name] = $title;
             }
-            $result[$name] = $title;
         }
 
         return $result;

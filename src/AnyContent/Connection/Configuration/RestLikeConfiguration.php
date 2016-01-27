@@ -43,30 +43,36 @@ class RestLikeConfiguration extends AbstractConfiguration
     }
 
 
-    public function addContentTypes()
+    public function addContentTypes($contentTypeNames = false)
     {
-        /** @var RestLikeBasicReadOnlyConnection $connection */
-        $connection = $this->getConnection();
-        $info       = $connection->getRepositoryInfo();
 
-        $contentTypes = array_keys($info['content']);
+        if ($contentTypeNames===false)
+        {
+            /** @var RestLikeBasicReadOnlyConnection $connection */
+            $connection = $this->getConnection();
+            $info       = $connection->getRepositoryInfo();
 
-        $this->contentTypes = array_fill_keys($contentTypes, [ ]);
+            $contentTypeNames = array_keys($info['content']);
+        }
+
+        $this->contentTypes = array_fill_keys($contentTypeNames, [ ]);
 
         return $this;
     }
 
 
-    public function addConfigTypes()
+    public function addConfigTypes($configTypeNames = false)
     {
+        if ($configTypeNames===false)
+        {
+            /** @var RestLikeBasicReadOnlyConnection $connection */
+            $connection = $this->getConnection();
+            $info       = $connection->getRepositoryInfo();
 
-        /** @var RestLikeBasicReadOnlyConnection $connection */
-        $connection = $this->getConnection();
-        $info       = $connection->getRepositoryInfo();
+            $configTypeNames = array_keys($info['config']);
 
-        $configTypes = array_keys($info['config']);
-
-        $this->configTypes = array_fill_keys($configTypes, [ ]);
+        }
+        $this->configTypes = array_fill_keys($configTypeNames, [ ]);
 
         return $this;
     }
