@@ -295,10 +295,13 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         $map = [ '.id' => 'id', '.id-' => 'id', 'position' => 'pos', 'position-' => 'pos-', '.info.creation.timestamp' => 'creation', '.info.creation.timestamp-' => 'creation-', '.info.lastchange.timestamp' => 'change', '.info.lastchange.timestamp-' => 'change-' ];
 
-        $order = reset($order);
-        if (array_key_exists($order, $map))
+        if (is_array($order))
         {
-            $order = $map[$order];
+            $order = reset($order);
+            if (array_key_exists($order, $map))
+            {
+                $order = $map[$order];
+            }
         }
 
         $url.='&order='.$order;

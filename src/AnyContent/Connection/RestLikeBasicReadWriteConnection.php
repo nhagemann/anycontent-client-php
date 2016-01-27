@@ -56,9 +56,12 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
             $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName();
 
             $response = $this->getClient()
-                             ->post($url, [ 'body' => [ 'records' => json_encode($records) ], 'language' => $dataDimensions->getLanguage() ]);
+                             ->post($url, [ 'body' => [ 'records' => json_encode($records), 'language' => $dataDimensions->getLanguage() ] ]);
 
-            $this->stashRecord($record, $dataDimensions);
+            foreach ($records as $record)
+            {
+                $this->stashRecord($record, $dataDimensions);
+            }
 
             return $response->json();
         }
