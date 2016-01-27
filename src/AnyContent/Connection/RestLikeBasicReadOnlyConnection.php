@@ -6,7 +6,9 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
+use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
+use AnyContent\Filter\PropertyFilter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Event\EndEvent;
@@ -15,7 +17,7 @@ use GuzzleHttp\Message\Response;
 use KVMLogger\KVMLogger;
 use KVMLogger\LogMessage;
 
-class RestLikeBasicReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection
+class RestLikeBasicReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection, FilteringConnection
 {
 
     /**
@@ -235,18 +237,81 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
                 return $this->getStashedAllRecords($contentTypeName, $dataDimensions, $this->getRecordClassForContentType($contentTypeName));
             }
 
-            $url = 'content/' . $contentTypeName . '/records/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
-
-            $response = $this->getClient()->get($url);
-
-            $json    = $response->json();
-            $records = $this->getRecordFactory()
-                            ->createRecordsFromJSONRecordsArray($this->getContentTypeDefinition($contentTypeName), $json['records']);
+            $records = $this->requestRecords($contentTypeName, $dataDimensions, '');
 
             $this->stashAllRecords($records, $dataDimensions);
 
             return $records;
         }
+
+        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+    }
+
+
+    public function getRecords($contentTypeName, DataDimensions $dataDimensions, $filter, $page = 1, $count = null, $order = [ '.id' ])
+    {
+
+        if ($contentTypeName == null)
+        {
+            $contentTypeName = $this->getCurrentContentTypeName();
+        }
+
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
+
+        if ($this->hasContentType($contentTypeName))
+        {
+            $records = $this->requestRecords($contentTypeName, $dataDimensions, $filter, $page, $count, $order);
+
+            return $records;
+        }
+
+        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+    }
+
+
+    protected function requestRecords($contentTypeName, DataDimensions $dataDimensions, $filter, $page = 1, $count = null, $order = [ '.id' ])
+    {
+
+        $url = 'content/' . $contentTypeName . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
+
+        if ($count != null)
+        {
+
+            $url .= '&page=' . $page . '&limit' . $count;
+
+        }
+        if ($filter)
+        {
+            // V1 compatibility
+            $filter = str_replace('*=', '><', (string)$filter);
+
+            $url .= '&filter=' . urlencode($filter);
+        }
+
+        // V1 compatibility - multi sort is not possible
+
+        $map = [ '.id' => 'id', '.id-' => 'id', 'position' => 'pos', 'position-' => 'pos-', '.info.creation.timestamp' => 'creation', '.info.creation.timestamp-' => 'creation-', '.info.lastchange.timestamp' => 'change', '.info.lastchange.timestamp-' => 'change-' ];
+
+        $order = reset($order);
+        if (array_key_exists($order, $map))
+        {
+            $order = $map[$order];
+        }
+
+        $url.='&order='.$order;
+
+
+        $response = $this->getClient()->get($url);
+
+        $json = $response->json();
+
+        $records = $this->getRecordFactory()
+                        ->createRecordsFromJSONRecordsArray($this->getContentTypeDefinition($contentTypeName), $json['records']);
+
+        return $records;
     }
 
 

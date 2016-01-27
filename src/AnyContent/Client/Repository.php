@@ -7,6 +7,7 @@ use AnyContent\Client\Util\RecordsFilter;
 use AnyContent\Client\Util\RecordsPager;
 use AnyContent\Client\Util\RecordsSorter;
 use AnyContent\Connection\Interfaces\FileManager;
+use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
 use AnyContent\Filter\Interfaces\Filter;
@@ -498,6 +499,11 @@ class Repository implements FileManager
      */
     public function getRecords($filter = '', $page = 1, $count = null, $order = [ '.id' ])
     {
+
+        if ($this->readConnection instanceof FilteringConnection)
+        {
+            return $this->readConnection->getRecords($this->getCurrentContentTypeName(), $this->getCurrentDataDimensions(), $filter, $page, $count, $order);
+        }
 
         $records = $this->getAllRecords();
 

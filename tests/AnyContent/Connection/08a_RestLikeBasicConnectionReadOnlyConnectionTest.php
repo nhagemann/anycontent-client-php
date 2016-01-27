@@ -2,6 +2,7 @@
 
 namespace AnyContent\Connection;
 
+use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\RecordsFileReadOnlyConnection;
@@ -159,6 +160,34 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModified()
     {
-        $this->assertInternalType('string',$this->connection->getLastModifiedDate());
+        $this->assertInternalType('string', $this->connection->getLastModifiedDate());
+    }
+
+
+    public function testGetFilteredRecords()
+    {
+        KVMLogger::instance()->debug(__METHOD__);
+
+        $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
+        }
+
+        $repository = new Repository('pidtag', $connection);
+        $connection->selectContentType('dtag_searchresult_product');
+
+        $records = $repository->getRecords();
+
+        $this->assertCount(149, $records);
+
+        $records = $repository->getRecords('name *= apple');
+
+        $this->assertCount(10, $records);
+
+        $records = $repository->getRecords('name = banana');
+
+        $this->assertCount(0, $records);
     }
 }
