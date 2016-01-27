@@ -280,7 +280,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         if ($count != null)
         {
 
-            $url .= '&page=' . $page . '&limit' . $count;
+            $url .= '&page=' . $page . '&limit=' . $count;
 
         }
         if ($filter)
