@@ -6,7 +6,6 @@ use AnyContent\Client\Config;
 use AnyContent\Client\File;
 use AnyContent\Client\Folder;
 use AnyContent\Client\Record;
-use AnyContent\Client\RecordFactory;
 use AnyContent\Client\Repository;
 use AnyContent\Filter\Interfaces\Filter;
 use Doctrine\Common\Cache\ArrayCache;
@@ -98,14 +97,14 @@ class CachingRepository extends Repository
     public function selectExpirationCacheStrategy($duration = 300)
     {
         $this->cacheStrategy = self::CACHE_STRATEGY_EXPIRATION;
-        $this->duration      = 300;
+        $this->duration      = $duration;
     }
 
 
     public function selectLastModifiedCacheStrategy($confidence = 0)
     {
         $this->cacheStrategy = self::CACHE_STRATEGY_LASTMODIFIED;
-        $this->confidence    = 0;
+        $this->confidence    = $confidence;
     }
 
 
@@ -238,7 +237,7 @@ class CachingRepository extends Repository
     {
 
         $dataDimensions = $this->getCurrentDataDimensions();
-        $cacheKey       = '[' . $this->getName() . '][' . $realm . '][' . (string)$dataDimensions . '][' . join(';', $params) . ']';
+        $cacheKey       = '[' . $this->getName() . '][' . $realm . '][' . join(';', $params) . '][' . (string)$dataDimensions . ']';
 
         if ($this->hasLastModifiedCacheStrategy())
         {
@@ -399,6 +398,35 @@ class CachingRepository extends Repository
 
     public function getSortedRecords($parentId, $includeParent = false, $depth = null, $height = 0)
     {
+        if ($this->isContentQueryRecordsCaching())
+        {
+
+
+            $cacheKey = $this->createCacheKey('records-sort', [ $this->getCurrentContentTypeName(), $parentId, (int)$includeParent, serialize($depth), $height ]);
+
+            $data = $this->getCacheProvider()->fetch($cacheKey);
+            if ($data)
+            {
+                $data = json_decode($data, true);
+
+                $recordFactory = $this->getRecordFactory();
+                $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(), $data);
+
+                return $records;
+            }
+
+            $records = parent::getSortedRecords($parentId, $includeParent, $depth, $height);
+
+            $data = json_encode($records);
+
+            $this->getCacheProvider()->save($cacheKey, $data, $this->contentQueryRecordsCaching);
+
+            return $records;
+
+        }
+
+
+
         return parent::getSortedRecords($parentId, $includeParent, $depth, $height);
     }
 
