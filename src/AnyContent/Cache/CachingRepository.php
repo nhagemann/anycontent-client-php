@@ -397,9 +397,9 @@ class CachingRepository extends Repository
     }
 
 
-    public function getSortedRecords($parentId, $includeParent = false, $depth = null)
+    public function getSortedRecords($parentId, $includeParent = false, $depth = null, $height = 0)
     {
-        return parent::getSortedRecords($parentId, $includeParent, $depth);
+        return parent::getSortedRecords($parentId, $includeParent, $depth, $height);
     }
 
 
