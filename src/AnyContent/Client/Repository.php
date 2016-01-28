@@ -545,11 +545,11 @@ class Repository implements FileManager
     }
 
 
-    public function getSortedRecords($parentId, $includeParent = false, $depth = null)
+    public function getSortedRecords($parentId, $includeParent = false, $depth = null, $height = 0)
     {
         $records = $this->getRecords();
 
-        return RecordsSorter::sortRecords($records, $parentId, $includeParent, $depth);
+        return RecordsSorter::sortRecords($records, $parentId, $includeParent, $depth, $height);
     }
 
 

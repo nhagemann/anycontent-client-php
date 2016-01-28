@@ -130,7 +130,7 @@ class RecordsSorter
      *
      * @return array
      */
-    public static function sortRecords(array $records, $parentId = 0, $includeParent = false, $depth = null)
+    public static function sortRecords(array $records, $parentId = 0, $includeParent = false, $depth = null, $height = 0)
     {
         $list = [ ];
         $map  = [ ];
@@ -149,20 +149,36 @@ class RecordsSorter
         $util      = new AdjacentList2NestedSet($list);
         $nestedSet = $util->getNestedSet();
 
-        $result = [ ];
+        $root = false;
 
         if ($parentId != 0)
         {
             $root = $nestedSet[$parentId];
+        }
+
+        $result = [ ];
+
+        if ($height!=0 && $root)
+        {
+            foreach ($nestedSet as $id => $positioning)
+            {
+                if ($root['left']>$positioning['left'] && $root['right']<$positioning['right'])
+                {
+                    $result[$id] = $map[$id];
+                    $result[$id]->setLevel($positioning['level']);
+                }
+            }
+        }
+
+
+
+        if ($includeParent && $root)
+        {
+            $result[$parentId] = $map[$parentId];
+            $result[$parentId]->setLevel($root['level']);
             if ($depth != null)
             {
                 $depth = $depth + $root['level'];
-            }
-
-            if ($includeParent)
-            {
-                $result[$parentId] = $map[$parentId];
-                $result[$parentId]->setLevel($root['level']);
             }
         }
 
