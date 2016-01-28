@@ -293,7 +293,7 @@ class CachingRepository extends Repository
             {
                 $data = json_decode($data, true);
 
-                $recordFactory = new RecordFactory([ 'validateProperties' => false ]);
+                $recordFactory = $this->getRecordFactory();
                 $record        = $recordFactory->createRecordFromJSON($this->getCurrentContentTypeDefinition(), $data);
 
                 return $record;
@@ -341,7 +341,7 @@ class CachingRepository extends Repository
                 {
                     $data = json_decode($data, true);
 
-                    $recordFactory = new RecordFactory([ 'validateProperties' => false ]);
+                    $recordFactory = $this->getRecordFactory();
                     $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(), $data);
 
                     return $records;
@@ -372,7 +372,7 @@ class CachingRepository extends Repository
             {
                 $data = json_decode($data, true);
 
-                $recordFactory = new RecordFactory([ 'validateProperties' => false ]);
+                $recordFactory = $this->getRecordFactory();
                 $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(), $data);
 
                 return $records;
