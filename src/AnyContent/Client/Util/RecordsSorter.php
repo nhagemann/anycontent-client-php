@@ -3,6 +3,7 @@
 namespace AnyContent\Client\Util;
 
 use AnyContent\Client\Record;
+use KVMLogger\KVMLogger;
 
 class RecordsSorter
 {
@@ -158,11 +159,11 @@ class RecordsSorter
 
         $result = [ ];
 
-        if ($height!=0 && $root)
+        if ($height != 0 && $root)
         {
             foreach ($nestedSet as $id => $positioning)
             {
-                if ($root['left']>$positioning['left'] && $root['right']<$positioning['right'])
+                if ($root['left'] > $positioning['left'] && $root['right'] < $positioning['right'])
                 {
                     $result[$id] = $map[$id];
                     $result[$id]->setLevel($positioning['level']);
@@ -170,16 +171,16 @@ class RecordsSorter
             }
         }
 
-
-
         if ($includeParent && $root)
         {
             $result[$parentId] = $map[$parentId];
             $result[$parentId]->setLevel($root['level']);
-            if ($depth != null)
-            {
-                $depth = $depth + $root['level'];
-            }
+
+        }
+
+        if ($depth != null)
+        {
+            $depth = $depth + $root['level'];
         }
 
         foreach ($nestedSet as $id => $positioning)
@@ -198,6 +199,7 @@ class RecordsSorter
         return $result;
 
     }
+
 }
 
 

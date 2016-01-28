@@ -2,6 +2,7 @@
 
 namespace AnyContent\Client;
 
+use AnyContent\Client\Util\MenuBuilder;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
@@ -145,6 +146,20 @@ class SortingTest extends \PHPUnit_Framework_TestCase
         $records = $this->repository->getSortedRecords(4, true, 1, 1);
         $this->assertEquals([ 2, 4, 8, 5 ], array_keys($records));
 
+        $records = $this->repository->getSortedRecords(2, false, 1);
+        $this->assertEquals([ 4, 6 ], array_keys($records));
+
+        $records = MenuBuilder::getBreadcrumb($this->repository, 'example01', 8);
+        $this->assertEquals([ 2, 4, 8 ], array_keys($records));
+
+        $records = MenuBuilder::getExpandedMenu($this->repository, 'example01', 8);
+        $this->assertEquals([ 1, 2, 4, 8, 5, 6, 3, 7 ], array_keys($records));
+
+        $records = MenuBuilder::getExpandedMenu($this->repository, 'example01', 6);
+        $this->assertEquals([ 1, 2, 4, 6, 3, 7 ], array_keys($records));
+
+        $records = MenuBuilder::getExpandedMenu($this->repository, 'example01', 4);
+        $this->assertEquals([ 1, 2, 4, 8, 5, 6, 3, 7 ], array_keys($records));
     }
 
 }
