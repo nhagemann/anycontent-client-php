@@ -8,6 +8,7 @@ use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
+use AnyContent\Connection\FileManager\RestLikeFilesAccess;
 
 class RepositoryFactory
 {
@@ -76,7 +77,7 @@ class RepositoryFactory
     }
 
 
-    public function createRestLikeRepository($name, $baseUrl, $options = [ ], $cache = true)
+    public function createRestLikeRepository($name, $baseUrl, $options = [ ], $cache = true, $files = true)
     {
         $this->options = $options;
 
@@ -100,6 +101,11 @@ class RepositoryFactory
         $configuration->addConfigTypes($configTypeNames);
 
         $fileManager = null;
+
+        if ($files)
+        {
+            $fileManager = new RestLikeFilesAccess($configuration);
+        }
 
         $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null), $cache);
 
