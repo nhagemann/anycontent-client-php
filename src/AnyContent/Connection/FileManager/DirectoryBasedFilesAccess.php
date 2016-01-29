@@ -80,7 +80,7 @@ class DirectoryBasedFilesAccess implements FileManager
     {
         if (file_exists($this->baseFolder . '/' . $path))
         {
-            $result = [ 'folder' => $this->listSubFolder($path), 'files' => $this->listFiles($path) ];
+            $result = [ 'folders' => $this->listSubFolder($path), 'files' => $this->listFiles($path) ];
 
             $folder = new Folder($path, $result);
 

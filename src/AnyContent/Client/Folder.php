@@ -31,7 +31,7 @@ class Folder
             }
         }
 
-        foreach ($data['folder'] as $folder)
+        foreach ($data['folders'] as $folder)
         {
             $this->subFolders[$this->path . '/' . $folder] = $folder;
         }

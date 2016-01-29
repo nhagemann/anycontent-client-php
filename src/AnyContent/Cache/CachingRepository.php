@@ -135,8 +135,12 @@ class CachingRepository extends Repository
      *
      * @param $duration
      */
-    public function enableCmdlCaching($duration = 60)
+    public function enableCmdlCaching($duration = null)
     {
+        if ($duration==null)
+        {
+            $duration = $this->duration;
+        }
         $this->cmdlCaching = $duration;
         $this->readConnection->enableCMDLCaching($duration);
         if ($this->writeConnection)
@@ -155,8 +159,12 @@ class CachingRepository extends Repository
     }
 
 
-    public function enableSingleContentRecordCaching($duration)
+    public function enableSingleContentRecordCaching($duration=null)
     {
+        if ($duration==null)
+        {
+            $duration = $this->duration;
+        }
         $this->singleContentRecordCaching = $duration;
     }
 
@@ -170,8 +178,12 @@ class CachingRepository extends Repository
     }
 
 
-    public function enableAllContentRecordsCaching($duration)
+    public function enableAllContentRecordsCaching($duration=null)
     {
+        if ($duration==null)
+        {
+            $duration = $this->duration;
+        }
         $this->allContentRecordsCaching = $duration;
     }
 
@@ -185,8 +197,12 @@ class CachingRepository extends Repository
     }
 
 
-    public function enableContentQueryRecordsCaching($duration)
+    public function enableContentQueryRecordsCaching($duration=null)
     {
+        if ($duration==null)
+        {
+            $duration = $this->duration;
+        }
         $this->contentQueryRecordsCaching = $duration;
     }
 

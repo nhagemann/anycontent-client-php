@@ -22,5 +22,5 @@
 - CachingRepository: FilesCaching
 - CachingRepository: respect confidence value
 - CachingRepository: check only for cmdl modification
-
+- Alternate Mechanism to access file binary via a public url (e.g. url type binary?)
 - Decision: Property VALIDATION - NOT PART OF THE STORAGE ENGINGE  
