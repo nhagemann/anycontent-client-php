@@ -2,7 +2,6 @@
 - finalizeRecord muss unerlaubte Properties entfernen und Warnings loggen
 - finalizeConfig mit selbem Prinzip und hidden properties
 - check mandatory
-- reihenfolge filter,order,count,page
 - alpha ids
 - erneut check id = property? (u.a. wegen elastic)
 - S3 Files

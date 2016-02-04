@@ -497,7 +497,7 @@ class Repository implements FileManager
      *
      * @return Record[]
      */
-    public function getRecords($filter = '', $page = 1, $count = null, $order = [ '.id' ])
+    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null)
     {
 
         if ($this->readConnection instanceof FilteringConnection)

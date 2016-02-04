@@ -87,11 +87,11 @@ class GetRecordsTest extends \PHPUnit_Framework_TestCase
 
         $repository->selectContentType('profiles');
 
-        $records = $repository->getRecords('',1,10);
+        $records = $repository->getRecords('',['.id'],1,10);
 
         $this->assertCount(10, $records);
 
-        $records = $repository->getRecords('',1,10);
+        $records = $repository->getRecords('',['.id'],1,10);
 
         $this->assertCount(10, $records);
 

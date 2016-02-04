@@ -70,18 +70,18 @@ class PagingTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($i, $id);
         }
 
-        $records = $this->repository->getRecords('', 1, 5);
+        $records = $this->repository->getRecords('',['.id'], 1, 5);
         $this->assertCount(5, $records);
-        $records = $this->repository->getRecords('', 2, 5);
+        $records = $this->repository->getRecords('',['.id'], 2, 5);
         $this->assertCount(5, $records);
-        $records = $this->repository->getRecords('', 3, 5);
+        $records = $this->repository->getRecords('',['.id'], 3, 5);
         $this->assertCount(0, $records);
-        $records = $this->repository->getRecords('', 99, 99);
+        $records = $this->repository->getRecords('',['.id'], 99, 99);
         $this->assertCount(0, $records);
 
-        $records = $this->repository->getRecords('', 1, 6);
+        $records = $this->repository->getRecords('',['.id'], 1, 6);
         $this->assertCount(6, $records);
-        $records = $this->repository->getRecords('', 2, 6);
+        $records = $this->repository->getRecords('',['.id'], 2, 6);
         $this->assertCount(4, $records);
 
     }
@@ -91,12 +91,12 @@ class PagingTest extends \PHPUnit_Framework_TestCase
     {
         $this->repository->selectContentType('example01');
 
-        $records = $this->repository->getRecords('source > 3', 1, 5, 'source');
+        $records = $this->repository->getRecords('source > 3', 'source',1, 5);
         $this->assertCount(5, $records);
 
         $this->assertEquals([ 4, 5, 6, 7, 8 ], array_keys($records));
 
-        $records = $this->repository->getRecords('source > 3', 2, 5, 'source');
+        $records = $this->repository->getRecords('source > 3','source', 2, 5);
         $this->assertCount(2, $records);
 
         $this->assertEquals([ 9, 10 ], array_keys($records));

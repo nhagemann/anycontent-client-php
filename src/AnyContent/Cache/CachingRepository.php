@@ -338,7 +338,7 @@ class CachingRepository extends Repository
      *
      * @return Record[]
      */
-    public function getRecords($filter = '', $page = 1, $count = null, $order = [ '.id' ])
+    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null )
     {
         if ($this->isContentQueryRecordsCaching())
         {
@@ -362,7 +362,7 @@ class CachingRepository extends Repository
                     return $records;
                 }
 
-                $records = parent::getRecords($filter, $page, $count, $order);
+                $records = parent::getRecords($filter, $order, $page, $count);
 
                 $data = json_encode($records);
 
@@ -372,7 +372,7 @@ class CachingRepository extends Repository
             }
         }
 
-        return parent::getRecords($filter, $page, $count, $order);
+        return parent::getRecords($filter, $order, $page, $count);
     }
 
 
