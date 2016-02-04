@@ -248,7 +248,7 @@ abstract class AbstractConnection
     {
         if ($this->getConfiguration()->hasContentType($contentTypeName))
         {
-            $cacheKey = '[cmdl][config][' . $contentTypeName . ']';
+            $cacheKey = '[cmdl][content][' . $contentTypeName . ']';
             if ($this->repository)
             {
                 $cacheKey = '[' . $this->repository->getName() . ']' . $cacheKey;
@@ -303,7 +303,7 @@ abstract class AbstractConnection
 
             if ($this->getCMDLCache()->contains($cacheKey))
             {
-                return $this->getCMDLCache()->fetch($cacheKey);
+                return unserialize($this->getCMDLCache()->fetch($cacheKey));
             }
 
             $cmdl = $this->getCMDLForConfigType($configTypeName);
@@ -319,7 +319,7 @@ abstract class AbstractConnection
                 {
 
                     //$this->contentTypeDefinitions[$configTypeName]['definition'] = $definition;
-                    $this->getCMDLCache()->save($cacheKey, $definition, (int)$this->cmdlCaching);
+                    $this->getCMDLCache()->save($cacheKey, serialize($definition), (int)$this->cmdlCaching);
 
                     return $definition;
                 }
