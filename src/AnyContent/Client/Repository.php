@@ -481,10 +481,12 @@ class Repository implements FileManager
      *
      * @return Record
      */
-    public function getRecord($recordId)
+    public function getRecord($recordId, $dataDimensions = null)
     {
-
-        $dataDimensions = $this->getCurrentDataDimensions();
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
 
         return $this->readConnection->getRecord($recordId, $this->getCurrentContentTypeName(), $dataDimensions);
     }
@@ -502,15 +504,19 @@ class Repository implements FileManager
      *
      * @return Record[]
      */
-    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null)
+    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null, $dataDimensions = null)
     {
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
 
         if ($this->readConnection instanceof FilteringConnection)
         {
-            return $this->readConnection->getRecords($this->getCurrentContentTypeName(), $this->getCurrentDataDimensions(), $filter, $page, $count, $order);
+            return $this->readConnection->getRecords($this->getCurrentContentTypeName(), $dataDimensions, $filter, $page, $count, $order);
         }
 
-        $records = $this->getAllRecords();
+        $records = $this->getAllRecords($dataDimensions);
 
         if ($filter != '')
         {
@@ -528,9 +534,12 @@ class Repository implements FileManager
     }
 
 
-    protected function getAllRecords()
+    protected function getAllRecords($dataDimensions = null)
     {
-        $dataDimensions = $this->getCurrentDataDimensions();
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
 
         return $this->readConnection->getAllRecords($this->getCurrentContentTypeName(), $dataDimensions);
     }

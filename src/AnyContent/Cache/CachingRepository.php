@@ -249,11 +249,10 @@ class CachingRepository extends Repository
 //        $this->filesCaching = $duration;
 //    }
 
-    protected function createCacheKey($realm, $params = [ ])
+    protected function createCacheKey($realm, $params = [ ], $dataDimensions)
     {
 
-        $dataDimensions = $this->getCurrentDataDimensions();
-        $cacheKey       = '[' . $this->getName() . '][' . $realm . '][' . join(';', $params) . '][' . (string)$dataDimensions . ']';
+        $cacheKey = '[' . $this->getName() . '][' . $realm . '][' . join(';', $params) . '][' . (string)$dataDimensions . ']';
 
         if ($this->hasLastModifiedCacheStrategy())
         {
@@ -297,11 +296,16 @@ class CachingRepository extends Repository
      *
      * @return Record
      */
-    public function getRecord($recordId)
+    public function getRecord($recordId, $dataDimensions = null)
     {
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
+
         if ($this->isSingleContentRecordCaching())
         {
-            $cacheKey = $this->createCacheKey('record', [ $this->getCurrentContentTypeName(), $recordId ]);
+            $cacheKey = $this->createCacheKey('record', [ $this->getCurrentContentTypeName(), $recordId ], $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
             if ($data)
@@ -314,7 +318,7 @@ class CachingRepository extends Repository
                 return $record;
             }
 
-            $record = parent::getRecord($recordId);
+            $record = parent::getRecord($recordId, $dataDimensions);
 
             $data = json_encode($record);
 
@@ -323,7 +327,7 @@ class CachingRepository extends Repository
             return $record;
         }
 
-        return parent::getRecord($recordId);
+        return parent::getRecord($recordId, $dataDimensions);
     }
 
     /**
@@ -338,8 +342,14 @@ class CachingRepository extends Repository
      *
      * @return Record[]
      */
-    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null)
+    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null, $dataDimensions = null)
     {
+
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
+
         $caching = false;
 
         if ($this->isContentQueryRecordsCaching() && ($filter != '' || $count != null))
@@ -359,7 +369,7 @@ class CachingRepository extends Repository
                 $order = [ $order ];
             }
 
-            $cacheKey = $this->createCacheKey('records-query', [ $this->getCurrentContentTypeName(), $filter, $page, $count, join(',', $order) ]);
+            $cacheKey = $this->createCacheKey('records-query', [ $this->getCurrentContentTypeName(), $filter, $page, $count, join(',', $order) ], $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
             if ($data)
@@ -372,7 +382,7 @@ class CachingRepository extends Repository
                 return $records;
             }
 
-            $records = parent::getRecords($filter, $order, $page, $count);
+            $records = parent::getRecords($filter, $order, $page, $count, $dataDimensions);
 
             $data = json_encode($records);
 
@@ -381,16 +391,21 @@ class CachingRepository extends Repository
             return $records;
         }
 
-        return parent::getRecords($filter, $order, $page, $count);
+        return parent::getRecords($filter, $order, $page, $count, $dataDimensions);
     }
 
 
-    protected function getAllRecords()
+    protected function getAllRecords($dataDimensions = null)
     {
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
+
         if ($this->isAllContentRecordsCaching())
         {
 
-            $cacheKey = $this->createCacheKey('records-query', [ $this->getCurrentContentTypeName(), '', 1, null, '.id' ]);
+            $cacheKey = $this->createCacheKey('records-query', [ $this->getCurrentContentTypeName(), '', 1, null, '.id' ], $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
             if ($data)
@@ -403,7 +418,7 @@ class CachingRepository extends Repository
                 return $records;
             }
 
-            $records = parent::getAllRecords();
+            $records = parent::getAllRecords($dataDimensions);
 
             $data = json_encode($records);
 
@@ -412,7 +427,7 @@ class CachingRepository extends Repository
             return $records;
         }
 
-        return parent::getAllRecords();
+        return parent::getAllRecords($dataDimensions);
     }
 
 
@@ -426,8 +441,9 @@ class CachingRepository extends Repository
     {
         if ($this->isContentQueryRecordsCaching())
         {
+            $dataDimensions = $this->getCurrentDataDimensions();
 
-            $cacheKey = $this->createCacheKey('records-sort', [ $this->getCurrentContentTypeName(), $parentId, (int)$includeParent, serialize($depth), $height ]);
+            $cacheKey = $this->createCacheKey('records-sort', [ $this->getCurrentContentTypeName(), $parentId, (int)$includeParent, serialize($depth), $height ], $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
             if ($data)
