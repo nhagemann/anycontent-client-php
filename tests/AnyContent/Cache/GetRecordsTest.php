@@ -60,8 +60,9 @@ class GetRecordsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(608, $records);
 
-        $this->assertEquals(2,$repository->getCacheProvider()->getMissCounter());
+        $this->assertEquals(3,$repository->getCacheProvider()->getMissCounter());
         $this->assertEquals(1,$repository->getCacheProvider()->getHitCounter());
+
     }
 
 

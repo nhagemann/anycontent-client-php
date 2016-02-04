@@ -137,7 +137,7 @@ class CachingRepository extends Repository
      */
     public function enableCmdlCaching($duration = null)
     {
-        if ($duration==null)
+        if ($duration == null)
         {
             $duration = $this->duration;
         }
@@ -159,9 +159,9 @@ class CachingRepository extends Repository
     }
 
 
-    public function enableSingleContentRecordCaching($duration=null)
+    public function enableSingleContentRecordCaching($duration = null)
     {
-        if ($duration==null)
+        if ($duration == null)
         {
             $duration = $this->duration;
         }
@@ -178,9 +178,9 @@ class CachingRepository extends Repository
     }
 
 
-    public function enableAllContentRecordsCaching($duration=null)
+    public function enableAllContentRecordsCaching($duration = null)
     {
-        if ($duration==null)
+        if ($duration == null)
         {
             $duration = $this->duration;
         }
@@ -197,9 +197,9 @@ class CachingRepository extends Repository
     }
 
 
-    public function enableContentQueryRecordsCaching($duration=null)
+    public function enableContentQueryRecordsCaching($duration = null)
     {
-        if ($duration==null)
+        if ($duration == null)
         {
             $duration = $this->duration;
         }
@@ -338,38 +338,47 @@ class CachingRepository extends Repository
      *
      * @return Record[]
      */
-    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null )
+    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null)
     {
-        if ($this->isContentQueryRecordsCaching())
+        $caching = false;
+
+        if ($this->isContentQueryRecordsCaching() && ($filter != '' || $count != null))
         {
-            if ($filter != '' || $count != null)
+            $caching = true;
+        }
+        if ($this->isAllContentRecordsCaching() && ($filter == null && $count == null))
+        {
+            $caching = true;
+        }
+
+        if ($caching)
+        {
+
+            if (!is_array($order))
             {
-                if (!is_array($order))
-                {
-                    $order = [ $order ];
-                }
+                $order = [ $order ];
+            }
 
-                $cacheKey = $this->createCacheKey('records-query', [ $this->getCurrentContentTypeName(), $filter, $page, $count, join(',', $order) ]);
+            $cacheKey = $this->createCacheKey('records-query', [ $this->getCurrentContentTypeName(), $filter, $page, $count, join(',', $order) ]);
 
-                $data = $this->getCacheProvider()->fetch($cacheKey);
-                if ($data)
-                {
-                    $data = json_decode($data, true);
+            $data = $this->getCacheProvider()->fetch($cacheKey);
+            if ($data)
+            {
+                $data = json_decode($data, true);
 
-                    $recordFactory = $this->getRecordFactory();
-                    $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(), $data);
-
-                    return $records;
-                }
-
-                $records = parent::getRecords($filter, $order, $page, $count);
-
-                $data = json_encode($records);
-
-                $this->getCacheProvider()->save($cacheKey, $data, $this->contentQueryRecordsCaching);
+                $recordFactory = $this->getRecordFactory();
+                $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(), $data);
 
                 return $records;
             }
+
+            $records = parent::getRecords($filter, $order, $page, $count);
+
+            $data = json_encode($records);
+
+            $this->getCacheProvider()->save($cacheKey, $data, $this->contentQueryRecordsCaching);
+
+            return $records;
         }
 
         return parent::getRecords($filter, $order, $page, $count);
@@ -380,7 +389,8 @@ class CachingRepository extends Repository
     {
         if ($this->isAllContentRecordsCaching())
         {
-            $cacheKey = $this->createCacheKey('allrecords', [ $this->getCurrentContentTypeName() ]);
+
+            $cacheKey = $this->createCacheKey('records-query', [ $this->getCurrentContentTypeName(), '', 1, null, '.id' ]);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
             if ($data)
@@ -417,7 +427,6 @@ class CachingRepository extends Repository
         if ($this->isContentQueryRecordsCaching())
         {
 
-
             $cacheKey = $this->createCacheKey('records-sort', [ $this->getCurrentContentTypeName(), $parentId, (int)$includeParent, serialize($depth), $height ]);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
@@ -440,8 +449,6 @@ class CachingRepository extends Repository
             return $records;
 
         }
-
-
 
         return parent::getSortedRecords($parentId, $includeParent, $depth, $height);
     }
