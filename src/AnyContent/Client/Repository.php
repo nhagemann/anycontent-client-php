@@ -424,11 +424,16 @@ class Repository implements FileManager
     }
 
 
-    public function getCurrentDataDimensions()
+    public function getCurrentDataDimensions($decoupled = false)
     {
         if (!$this->dataDimensions)
         {
             $this->reset();
+        }
+
+        if ($decoupled)
+        {
+            return clone $this->dataDimensions;
         }
 
         return $this->dataDimensions;
@@ -807,11 +812,16 @@ class Repository implements FileManager
     /**
      * @return UserInfo
      */
-    public function getCurrentUserInfo()
+    public function getCurrentUserInfo($decoupled = false)
     {
         $this->userInfo->setTimestampToNow();
 
-        return clone $this->userInfo;
+        if ($decoupled)
+        {
+            return clone $this->userInfo;
+        }
+
+        return $this->userInfo;
     }
 
 
