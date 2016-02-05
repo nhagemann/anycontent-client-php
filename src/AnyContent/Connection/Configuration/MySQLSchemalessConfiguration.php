@@ -118,49 +118,59 @@ TEMPLATE_COUNTERTABLE;
     }
 
 
-    public function addContentTypes($repositoryName = null)
+    public function addContentTypes($repositoryName = null, $contentTypes = null)
     {
+
         if (!$this->getDatabase())
         {
             throw new AnyContentClientException('Database must be initalized first.');
         }
-
-        if ($this->pathCMDLFolderForContentTypes != null) // file based content/config types definition
+        if ($contentTypes == null)
         {
-
-            $finder = new Finder();
-
-            $uri = 'file://' . $this->pathCMDLFolderForContentTypes;
-
-            $finder->in($uri)->depth(0);
-
-            /** @var SplFileInfo $file */
-            foreach ($finder->files('*.cmdl') as $file)
+            if ($this->pathCMDLFolderForContentTypes != null) // file based content/config types definition
             {
-                $contentTypeName = $file->getBasename('.cmdl');
 
-                $this->contentTypes[$contentTypeName] = [ ];
+                $finder = new Finder();
 
-            }
+                $uri = 'file://' . $this->pathCMDLFolderForContentTypes;
 
-        }
-        else // database based content/config types definition
-        {
-            if ($repositoryName == null)
-            {
-                throw new AnyContentClientException('Please provide repository name or set cmdl folder path.');
-            }
-            $sql = 'SELECT name, data_type FROM _cmdl_ WHERE repository = ?';
+                $finder->in($uri)->depth(0);
 
-            $rows = $this->getDatabase()->fetchAllSQL($sql, [ $repositoryName ]);
-
-            foreach ($rows as $row)
-            {
-                if ($row['data_type'] == 'content')
+                /** @var SplFileInfo $file */
+                foreach ($finder->files('*.cmdl') as $file)
                 {
-                    $contentTypeName                      = $row['name'];
+                    $contentTypeName = $file->getBasename('.cmdl');
+
                     $this->contentTypes[$contentTypeName] = [ ];
+
                 }
+
+            }
+            else // database based content/config types definition
+            {
+                if ($repositoryName == null)
+                {
+                    throw new AnyContentClientException('Please provide repository name or set cmdl folder path.');
+                }
+                $sql = 'SELECT name, data_type FROM _cmdl_ WHERE repository = ?';
+
+                $rows = $this->getDatabase()->fetchAllSQL($sql, [ $repositoryName ]);
+
+                foreach ($rows as $row)
+                {
+                    if ($row['data_type'] == 'content')
+                    {
+                        $contentTypeName                      = $row['name'];
+                        $this->contentTypes[$contentTypeName] = [ ];
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach ($contentTypes as $contentTypeName)
+            {
+                $this->contentTypes[$contentTypeName] = [ ];
             }
         }
     }
