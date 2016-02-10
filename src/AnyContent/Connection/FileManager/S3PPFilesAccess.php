@@ -1,0 +1,159 @@
+<?php
+
+namespace AnyContent\Connection\FileManager;
+
+use AnyContent\Client\File;
+use AnyContent\Client\Folder;
+use AnyContent\Connection\Interfaces\FileManager;
+
+use Dflydev\ApacheMimeTypes\JsonRepository;
+use Symfony\Component\Finder\Finder;
+
+class S3PPFilesAccess extends S3FilesAccess implements FileManager
+{
+
+    /**
+     * @param string $path
+     *
+     * @return Folder|bool
+     */
+    public function getFolder($path = '')
+    {
+        $path = trim(trim($path, '/'));
+
+        if ($this->isRootPath($path))
+        {
+            $data            = [ ];
+            $data['files']   = [ ];
+            $data['folders'] = [ 'Public', 'Protected' ];
+            $folder          = new Folder('', $data);
+
+            return $folder;
+        }
+
+        if (!$this->isValidPath($path))
+        {
+            return false;
+        }
+
+        $folder = parent::getFolder($path);
+
+
+
+        if (!$folder && strpos($path, '/') === false) // Public or Protected folder
+        {
+            $data            = [ ];
+            $data['files']   = [ ];
+            $data['folders'] = [ ];
+            $folder          = new Folder('', $data);
+
+            return $folder;
+        }
+
+        return $folder;
+    }
+
+
+
+
+    public function saveFile($fileId, $binary)
+    {
+        $fileId   = trim($fileId, '/');
+        $fileName = pathinfo($fileId, PATHINFO_FILENAME);
+
+        if ($fileName != '') // No writing of .xxx-files
+        {
+            $mimeTypeRepository = new JsonRepository();
+            $contentType        = $mimeTypeRepository->findType(pathinfo($fileId, PATHINFO_EXTENSION));
+
+            if (!$contentType)
+            {
+                $contentType = 'binary/octet-stream';
+            }
+
+            $acl = 'private';
+            if ($this->isPublicPath($fileId))
+            {
+                $acl = 'public-read';
+            }
+
+
+            try
+            {
+                $this->client->putObject(array(
+                                             'Bucket'      => $this->bucketName,
+                                             'Key'         => $this->baseFolder . '/' . $fileId,
+                                             'Body'        => $binary,
+                                             'ACL'         => $acl,
+                                             'ContentType' => $contentType
+                                         ));
+
+                return true;
+            }
+            catch (\Exception $e)
+            {
+
+            }
+
+        }
+
+        return false;
+    }
+
+
+
+
+    protected function isRootPath($path)
+    {
+
+        if ($path == '')
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    protected function isValidPath($path)
+    {
+        $path   = trim($path, '/');
+        $tokens = explode('/', $path);
+
+        if (in_array($tokens[0], array( 'Public', 'Protected' )))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    protected function isPublicPath($path)
+    {
+
+        $tokens = explode('/', $path);
+
+        if ($tokens[0] == 'Public')
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function listFiles($path)
+    {
+        $items = parent::listFiles($path);
+
+        if (!$this->isPublicPath($path))
+        {
+            foreach ($items as &$item)
+            {
+                unset ($item['url']);
+            }
+        }
+
+        return $items;
+    }
+}

@@ -27,12 +27,12 @@ class S3FilesAccess implements FileManager
 
     protected $baseFolder = null;
 
-    protected $baseUrl = null;
-
     protected $imagesize = false;
 
+    protected $publicUrl = false;
 
-    public function __construct($key, $secret, $bucketName, $baseFolder, $region = false)
+
+    public function __construct($key, $secret, $bucketName, $baseFolder = '', $region = false)
     {
 
         $this->filesystem = new Filesystem();
@@ -67,15 +67,41 @@ class S3FilesAccess implements FileManager
             throw new \Exception ('Bucket ' . $this->bucketName . ' missing.');
         }
 
-//        if (isset($config['url']))
-//        {
-//            $this->baseUrl = trim($config['url'], '/') . '/' . $this->baseFolder;
-//        }
-//
-//        if (isset($config['imagesize']))
-//        {
-//            $this->imagesize = (boolean)$config['imagesize'];
-//        }
+    }
+
+
+    public function enableImageSizeCalculation()
+    {
+        $this->imagesize = true;
+
+        return $this;
+    }
+
+
+    public function disableImageSizeCalculation()
+    {
+        $this->imagesize = true;
+
+        return $this;
+    }
+
+
+    /**
+     * @return boolean
+     */
+    public function getPublicUrl()
+    {
+        return $this->publicUrl;
+    }
+
+
+    /**
+     * @param boolean $publicUrl
+     */
+    public function setPublicUrl($publicUrl)
+    {
+        $this->publicUrl = $publicUrl;
+
     }
 
 
@@ -180,14 +206,6 @@ class S3FilesAccess implements FileManager
         return false;
     }
 
-
-    /**
-     *
-     * @param           $fileId
-     * @param bool|true $deleteEmptyFolder - irrelevant in key / value stores
-     *
-     * @return bool
-     */
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
 
@@ -353,9 +371,9 @@ class S3FilesAccess implements FileManager
                     }
                     $item['timestamp_lastchange'] = $file->getMTime();
 
-                    if ($this->baseUrl != null)
+                    if ($this->publicUrl != false)
                     {
-                        $item['urls']['default'] = $this->baseUrl . '/' . $item['id'];
+                        $item['url'] = $this->publicUrl . '/' . $item['id'];
                     }
 
                     $files[$file->getFilename()] = $item;
