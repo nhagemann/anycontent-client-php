@@ -3,20 +3,18 @@
 namespace AnyContent\Files;
 
 use AnyContent\Client\File;
-use AnyContent\Connection\Configuration\RestLikeConfiguration;
 
-use AnyContent\Connection\FileManager\RestLikeFilesAccess;
-use AnyContent\Connection\RestLikeBasicReadWriteConnection;
+use AnyContent\Connection\FileManager\S3FilesAccess;
+
 use KVMLogger\KVMLoggerFactory;
 
-class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
+class S3Test extends \PHPUnit_Framework_TestCase
 {
 
-    /** @var  RestLikeBasicReadWriteConnection */
-    public $connection;
+
 
     /**
-     * @var RestLikeFilesAccess
+     * @var S3FilesAccess
      */
     public $fileManager;
 
@@ -33,19 +31,11 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if (defined('PHPUNIT_CREDENTIALS_RESTLIKE_URL2'))
+        if (defined('S3_KEY'))
         {
-            $configuration = new RestLikeConfiguration();
 
-            $configuration->setUri(PHPUNIT_CREDENTIALS_RESTLIKE_URL1);
-            $connection = $configuration->createReadWriteConnection();
 
-            $configuration->addContentTypes();
-            $configuration->addConfigTypes();
-
-            $this->connection = $connection;
-
-            $fileManager       = new RestLikeFilesAccess($configuration);
+            $fileManager       = new S3FilesAccess(S3_KEY,S3_SECRET,S3_BUCKET,S3_BASEPATH,S3_REGION);
             $this->fileManager = $fileManager;
 
             KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
@@ -58,13 +48,13 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->fileManager)
         {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
+            $this->markTestSkipped('S3 config missing.');
         }
 
         $folder = $this->fileManager->getFolder();
         $this->assertInstanceOf('AnyContent\Client\Folder', $folder);
 
-        $folder = $this->fileManager->getFolder('test');
+        $folder = $this->fileManager->getFolder('Public');
         $this->assertInstanceOf('AnyContent\Client\Folder', $folder);
 
         $folder = $this->fileManager->getFolder('notfound');
@@ -76,14 +66,14 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->fileManager)
         {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
+            $this->markTestSkipped('S3 config missing.');
         }
 
-        $file = $this->fileManager->getFile('test/heiko.jpg');
+        $file = $this->fileManager->getFile('Public/geek_tasks.png');
         $this->assertInstanceOf('AnyContent\Client\File', $file);
 
         $binary = $this->fileManager->getBinary($file);
-        $this->assertEquals(5237, strlen($binary));
+        $this->assertEquals(67098, strlen($binary));
 
         $file   = new File('test', 'test/heike.jpg', 'heike.jpg', $binary, [ ]);
         $binary = $this->fileManager->getBinary($file);
@@ -95,7 +85,7 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->fileManager)
         {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
+            $this->markTestSkipped('S3 config missing.');
         }
 
         $this->fileManager->createFolder('testfolder');
@@ -113,10 +103,10 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->fileManager)
         {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
+            $this->markTestSkipped('S3 config missing.');
         }
 
-        $file = $this->fileManager->getFile('test/heiko.jpg');
+        $file = $this->fileManager->getFile('Public/geek_tasks.png');
         $this->assertInstanceOf('AnyContent\Client\File', $file);
 
         $binary = $this->fileManager->getBinary($file);
@@ -127,7 +117,7 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\File', $file);
 
         $binary = $this->fileManager->getBinary($file);
-        $this->assertEquals(5237, strlen($binary));
+        $this->assertEquals(67098, strlen($binary));
 
         $this->fileManager->deleteFile('norbert.jpg');
 
