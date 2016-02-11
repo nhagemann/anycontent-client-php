@@ -62,6 +62,7 @@ class RepositoryFactory
 
         $configuration->setRepositoryName($name);
         $configuration->addContentTypes($this->getOption('contentTypes'));
+        $configuration->addConfigTypes($this->getOption('configTypes'));
 
         $connection = $configuration->createReadWriteConnection();
 
