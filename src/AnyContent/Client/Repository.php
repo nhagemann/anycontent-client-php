@@ -6,6 +6,7 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Util\RecordsFilter;
 use AnyContent\Client\Util\RecordsPager;
 use AnyContent\Client\Util\RecordsSorter;
+use AnyContent\Connection\Interfaces\AdminConnection;
 use AnyContent\Connection\Interfaces\FileManager;
 use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
@@ -62,9 +63,16 @@ class Repository implements FileManager
 
         if ($writeConnection != null)
         {
-            $this->writeConnection = $writeConnection;
+            if ($writeConnection instanceof WriteConnection)
+            {
+                $this->writeConnection = $writeConnection;
 
-            $this->writeConnection->apply($this);
+                $this->writeConnection->apply($this);
+            }
+            else
+            {
+                throw new AnyContentClientException ('Given connection is not a write connection');
+            }
         }
         elseif ($readConnection instanceof WriteConnection)
         {
@@ -854,4 +862,25 @@ class Repository implements FileManager
 
     }
 
+
+    public function isWritable()
+    {
+        return (boolean)$this->writeConnection;
+    }
+
+
+    public function isAdministrable()
+    {
+        if ($this->isWritable())
+        {
+            $connection = $this->getWriteConnection();
+
+            if ($connection instanceof AdminConnection)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -1,28 +1,43 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace AnyContent\Admin;
+
+
 
 use AnyContent\Client\Repository;
-use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
+use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
+use Symfony\Component\Filesystem\Filesystem;
 
-class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
+class AdminTestMySQLSchemaless1Test extends \PHPUnit_Framework_TestCase
 {
-
-    /** @var  MySQLSchemalessReadOnlyConnection */
+    /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
+    /** @var  Repository */
+    public $repository;
 
     public static function setUpBeforeClass()
     {
         if (defined('PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST'))
         {
+            $source = __DIR__ . '/../../resources/ContentArchiveExample1/cmdl';
+            $target = __DIR__ . '/../../../tmp/MySqlSchemaLessCMDL';
+
+            $fs = new Filesystem();
+
+            if (file_exists($target))
+            {
+                $fs->remove($target);
+            }
+
+            $fs->mirror($source, $target);
+
             $configuration = new MySQLSchemalessConfiguration();
 
             $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
-            $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+            $configuration->setCMDLFolder($target);
             $configuration->setRepositoryName('phpunit');
             $configuration->addContentTypes();
 
@@ -63,24 +78,27 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
     {
         if (defined('PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST'))
         {
+            $target = __DIR__ . '/../../../tmp/MySqlSchemaLessCMDL';
+
             $configuration = new MySQLSchemalessConfiguration();
 
             $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
-            $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+            $configuration->setCMDLFolder($target);
             $configuration->setRepositoryName('phpunit');
             $configuration->addContentTypes();
+            $configuration->addConfigTypes();
 
-            $connection = $configuration->createReadOnlyConnection();
+            $connection = $configuration->createReadWriteConnection();
 
             $this->connection = $connection;
-            $repository       = new Repository('phpunit',$connection);
+            $this->repository       = new Repository('phpunit',$connection);
 
             KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
         }
     }
 
 
-    public function testContentTypeNotSelected()
+    public function testSetupAsExpected()
     {
         $connection = $this->connection;
 
@@ -88,13 +106,56 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
         {
             $this->markTestSkipped('MySQL credentials missing.');
         }
+
+        $repository = $this->repository;
+
+        $this->assertCount(2,$repository->getContentTypeNames());
+        $this->assertCount(1,$connection->getConfigTypeNames());
+
+        $this->assertTrue($repository->isWritable());
+        $this->assertTrue($repository->isAdministrable());
+    }
+
+    public function testAddContentType()
+    {
+        $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
+        $repository = $this->repository;
+
+        $cmdl = 'Name';
+
+        $connection->saveContentTypeCMDL('neu',$cmdl);
+
+        $this->assertCount(3,$connection->getContentTypeNames());
+
+        $this->assertEquals($cmdl,$connection->getCMDLForContentType('neu'));
+    }
+
+    public function testDeleteContentType()
+    {
+        $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
+        $repository = $this->repository;
+
+        $connection->deleteContentTypeCMDL('neu');
+
+        $this->assertCount(2,$connection->getContentTypeNames());
 
         $this->setExpectedException('AnyContent\AnyContentClientException');
-        $this->assertEquals(12, $connection->countRecords());
+        $connection->getCMDLForContentType('neu');
     }
 
-
-    public function testContentTypeNames()
+    public function testAddConfigType()
     {
         $connection = $this->connection;
 
@@ -103,13 +164,20 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('MySQL credentials missing.');
         }
 
-        $contentTypeNames = $connection->getContentTypeNames();
+        $repository = $this->repository;
 
-        $this->assertContains('profiles', $contentTypeNames);
+        $cmdl = 'Name';
+
+        $this->assertCount(1,$connection->getConfigTypeNames());
+
+        $connection->saveConfigTypeCMDL('neu',$cmdl);
+
+        $this->assertCount(2,$connection->getConfigTypeNames());
+
+        $this->assertEquals($cmdl,$connection->getCMDLForConfigType('neu'));
     }
 
-
-    public function testContentTypeDefinitions()
+    public function testDeleteConfigType()
     {
         $connection = $this->connection;
 
@@ -118,97 +186,13 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('MySQL credentials missing.');
         }
 
-        $contentTypes = $connection->getContentTypeDefinitions();
+        $repository = $this->repository;
 
-        $this->assertArrayHasKey('profiles', $contentTypes);
+        $connection->deleteConfigTypeCMDL('neu');
 
-        $contentType = $contentTypes['profiles'];
-        $this->assertInstanceOf('CMDL\ContentTypeDefinition', $contentType);
-    }
+        $this->assertCount(1,$connection->getConfigTypeNames());
 
-
-    public function testCountRecords()
-    {
-        $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
-        $connection = $this->connection;
-
-        $connection->selectContentType('profiles');
-
-        $this->assertEquals(3, $connection->countRecords());
-
-    }
-
-
-    public function testGetRecord()
-    {
-        $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
-        $connection->selectContentType('profiles');
-
-        $record = $connection->getRecord(5);
-
-        $this->assertInstanceOf('AnyContent\Client\Record', $record);
-
-        $this->assertEquals('Agency 5', $record->getProperty('name'));
-
-    }
-
-
-    public function testGetRecords()
-    {
-        $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
-        $connection->selectContentType('profiles');
-
-        $records = $connection->getAllRecords();
-
-        $this->assertCount(3, $records);
-
-        foreach ($records as $record)
-        {
-            $id          = $record->getID();
-            $fetchRecord = $connection->getRecord($id);
-            $this->assertEquals($id, $fetchRecord->getID());
-        }
-    }
-
-
-    public function testWorkspaces()
-    {
-        $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
-        $connection->selectContentType('profiles');
-
-        $connection->selectWorkspace('live');
-
-        $records = $connection->getAllRecords();
-
-        $this->assertCount(2, $records);
-    }
-
-    public function testLastModified()
-    {
-        $this->assertInternalType('int',$this->connection->getLastModifiedDate());
+        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $connection->getCMDLForConfigType('neu');
     }
 }

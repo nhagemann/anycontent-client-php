@@ -22,6 +22,8 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
 
     protected $pathCMDLFolderForConfigTypes = null;
 
+    protected $repositoryName = null;
+
 
     public function initDatabase($host, $dbName, $username, $password, $port = 3306)
     {
@@ -51,6 +53,29 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
         {
             $this->pathCMDLFolderForConfigTypes = $pathContentTypes . '/config';
         }
+    }
+
+
+    /**
+     * @return null
+     */
+    public function getRepositoryName()
+    {
+        if (!$this->repositoryName)
+        {
+            throw new AnyContentClientException('Please provide repository name or set cmdl folder path.');
+        }
+
+        return $this->repositoryName;
+    }
+
+
+    /**
+     * @param null $repositoryName
+     */
+    public function setRepositoryName($repositoryName)
+    {
+        $this->repositoryName = $repositoryName;
     }
 
 
@@ -118,7 +143,7 @@ TEMPLATE_COUNTERTABLE;
     }
 
 
-    public function addContentTypes($repositoryName = null, $contentTypes = null)
+    public function addContentTypes($contentTypes = null)
     {
 
         if (!$this->getDatabase())
@@ -148,10 +173,8 @@ TEMPLATE_COUNTERTABLE;
             }
             else // database based content/config types definition
             {
-                if ($repositoryName == null)
-                {
-                    throw new AnyContentClientException('Please provide repository name or set cmdl folder path.');
-                }
+                $repositoryName = $this->getRepositoryName();
+
                 $sql = 'SELECT name, data_type FROM _cmdl_ WHERE repository = ?';
 
                 $rows = $this->getDatabase()->fetchAllSQL($sql, [ $repositoryName ]);
@@ -176,53 +199,70 @@ TEMPLATE_COUNTERTABLE;
     }
 
 
-    public function addConfigTypes($repositoryName = null)
+    public function removeContentType($contentTypeName)
+    {
+        unset ($this->contentTypes[$contentTypeName]);
+    }
+
+
+    public function addConfigTypes($configTypes = null)
     {
         if (!$this->getDatabase())
         {
             throw new AnyContentClientException('Database must be initalized first.');
         }
-
-        if ($this->pathCMDLFolderForConfigTypes != null) // file based content/config types definition
+        if ($configTypes == null)
         {
-
-            $finder = new Finder();
-
-            $uri = 'file://' . $this->pathCMDLFolderForConfigTypes;
-
-            $finder->in($uri)->depth(0);
-
-            /** @var SplFileInfo $file */
-            foreach ($finder->files('*.cmdl') as $file)
+            if ($this->pathCMDLFolderForConfigTypes != null) // file based content/config types definition
             {
-                $configTypeName = $file->getBasename('.cmdl');
 
-                $this->configTypes[$configTypeName] = [ ];
+                $finder = new Finder();
 
-            }
+                $uri = 'file://' . $this->pathCMDLFolderForConfigTypes;
 
-        }
-        else // database based content/config types definition
-        {
-            if ($repositoryName == null)
-            {
-                throw new AnyContentClientException('Please provide repository name or set cmdl folder path.');
-            }
-            $sql = 'SELECT name, data_type FROM _cmdl_ WHERE repository = ?';
+                $finder->in($uri)->depth(0);
 
-            $rows = $this->getDatabase()->fetchAllSQL($sql, [ $repositoryName ]);
-
-            foreach ($rows as $row)
-            {
-                if ($row['data_type'] == 'config')
+                /** @var SplFileInfo $file */
+                foreach ($finder->files('*.cmdl') as $file)
                 {
-                    $configTypeName                     = $row['name'];
+                    $configTypeName = $file->getBasename('.cmdl');
+
                     $this->configTypes[$configTypeName] = [ ];
+
                 }
+
+            }
+            else // database based content/config types definition
+            {
+                $repositoryName = $this->getRepositoryName();
+
+                $sql = 'SELECT name, data_type FROM _cmdl_ WHERE repository = ?';
+
+                $rows = $this->getDatabase()->fetchAllSQL($sql, [ $repositoryName ]);
+
+                foreach ($rows as $row)
+                {
+                    if ($row['data_type'] == 'config')
+                    {
+                        $configTypeName                     = $row['name'];
+                        $this->configTypes[$configTypeName] = [ ];
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach ($configTypes as $configTypeName)
+            {
+                $this->configTypes[$configTypeName] = [ ];
             }
         }
     }
 
+    public function removeConfigType($configTypeName)
+    {
+        unset ($this->configTypes[$configTypeName]);
+    }
 
     /**
      * @return Database

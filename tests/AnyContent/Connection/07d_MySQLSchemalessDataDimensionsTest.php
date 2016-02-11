@@ -23,7 +23,8 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
             $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
             $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->addContentTypes('phpunit');
+            $configuration->setRepositoryName('phpunit');
+            $configuration->addContentTypes();
 
             $database = $configuration->getDatabase();
 
@@ -64,7 +65,8 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
             $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
             $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->addContentTypes('phpunit');
+            $configuration->setRepositoryName('phpunit');
+            $configuration->addContentTypes();
 
             $connection = $configuration->createReadWriteConnection();
 

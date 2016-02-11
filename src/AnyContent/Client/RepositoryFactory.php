@@ -60,7 +60,8 @@ class RepositoryFactory
             $configuration->setCMDLFolder($this->getOption('cmdlFolder'));
         }
 
-        $configuration->addContentTypes($name,$this->getOption('contentTypes'));
+        $configuration->setRepositoryName($name);
+        $configuration->addContentTypes($this->getOption('contentTypes'));
 
         $connection = $configuration->createReadWriteConnection();
 

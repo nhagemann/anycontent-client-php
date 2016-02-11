@@ -23,8 +23,9 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
 
             $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
             $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->addContentTypes('phpunit');
-            $configuration->addConfigTypes('phpunit');
+            $configuration->setRepositoryName('phpunit');
+            $configuration->addContentTypes();
+            $configuration->addConfigTypes();
 
             $database = $configuration->getDatabase();
 
@@ -45,8 +46,9 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
 
             $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
             $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->addContentTypes('phpunit');
-            $configuration->addConfigTypes('phpunit');
+            $configuration->setRepositoryName('phpunit');
+            $configuration->addContentTypes();
+            $configuration->addConfigTypes();
 
             $connection = $configuration->createReadWriteConnection();
 

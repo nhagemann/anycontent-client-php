@@ -9,9 +9,10 @@ use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
 
 use AnyContent\Client\Util\TimeShifter;
+use AnyContent\Connection\Interfaces\AdminConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
 
-class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnection implements WriteConnection
+class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnection implements WriteConnection, AdminConnection
 {
 
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null)
@@ -336,7 +337,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $this->getDatabase()
              ->execute($sql, [ $timeshiftTimestamp, $configTypeName, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timeshiftTimestamp, $timeshiftTimestamp ]);
 
-
         $values['properties'] = json_encode($properties);
 
         $values['lastchange_timestamp'] = $timeshiftTimestamp;
@@ -348,6 +348,119 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['validuntil_timestamp'] = TimeShifter::getMaxTimestamp();
 
         $this->getDatabase()->insert($tableName, $values);
+
+        return true;
+    }
+
+
+    public function saveContentTypeCMDL($contentTypeName, $cmdl)
+    {
+        if ($this->getConfiguration()->hasCMDLFolder())
+        {
+            $path = $this->getConfiguration()
+                         ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
+            file_put_contents($path, $cmdl);
+
+        }
+        else
+        {
+
+            $data = [ 'repository'           => $this->getRepository()->getName(),
+                      'data_type'            => 'content',
+                      'name'                 => $contentTypeName,
+                      'cmdl'                 => $cmdl,
+                      'lastchange_timestamp' => TimeShifter::getTimeshiftTimestamp()
+            ];
+
+            $this->getDatabase()->insert('_cmdl_', $data, $data);
+
+        }
+
+        $this->getConfiguration()->addContentTypes([ $contentTypeName ]);
+
+        $this->getCMDLCache()->flushAll();
+
+        return true;
+    }
+
+
+    public function saveConfigTypeCMDL($configTypeName, $cmdl)
+    {
+        if ($this->getConfiguration()->hasCMDLFolder())
+        {
+            $path = $this->getConfiguration()
+                         ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
+            file_put_contents($path, $cmdl);
+
+        }
+        else
+        {
+
+            $data = [ 'repository'           => $this->getRepository()->getName(),
+                      'data_type'            => 'config',
+                      'name'                 => $configTypeName,
+                      'cmdl'                 => $cmdl,
+                      'lastchange_timestamp' => TimeShifter::getTimeshiftTimestamp()
+            ];
+
+            $this->getDatabase()->insert('_cmdl_', $data, $data);
+        }
+
+        $this->getConfiguration()->addConfigTypes([ $configTypeName ]);
+
+        $this->getCMDLCache()->flushAll();
+
+        return true;
+    }
+
+
+    public function deleteContentTypeCMDL($contentTypeName)
+    {
+        if ($this->getConfiguration()->hasCMDLFolder())
+        {
+            $path = $this->getConfiguration()
+                         ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
+
+            unlink($path);
+
+        }
+        else
+        {
+            $this->getDatabase()
+                 ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"', [ $this->getRepository()
+                                                                                                                  ->getName(), $contentTypeName
+                 ]);
+        }
+
+        $this->getConfiguration()->removeContentType($contentTypeName);
+
+        $this->getCMDLCache()->flushAll();
+
+        return true;
+    }
+
+
+    public function deleteConfigTypeCMDL($configTypeName)
+    {
+        if ($this->getConfiguration()->hasCMDLFolder())
+        {
+            $path = $this->getConfiguration()
+                         ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
+
+            unlink($path);
+
+        }
+        else
+        {
+            $this->getDatabase()
+                 ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"', [ $this->getRepository()
+                                                                                                                 ->getName(), $configTypeName
+                 ]);
+        }
+
+        $this->getConfiguration()->removeConfigType($configTypeName);
+
+        $this->getCMDLCache()->flushAll();
 
         return true;
     }
