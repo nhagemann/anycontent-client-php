@@ -14,6 +14,9 @@ use Aws\S3\S3Client;
 class S3FilesAccess implements FileManager
 {
 
+    /** @var S3Client */
+    protected $client;
+
     /**
      * @var Filesystem null
      */
@@ -21,7 +24,11 @@ class S3FilesAccess implements FileManager
 
     protected $scheme = null;
 
-    protected $client = null;
+    protected $key = null;
+
+    protected $secret = null;
+
+    protected $region = null;
 
     protected $bucketName = null;
 
@@ -32,40 +39,63 @@ class S3FilesAccess implements FileManager
     protected $publicUrl = false;
 
 
+    /**
+     * @return S3Client
+     */
+    public function connect()
+    {
+        if (!$this->client)
+        {
+            // Create an Amazon S3 client object
+            $this->client = S3Client::factory(array( 'key' => $this->key, 'secret' => $this->secret ));
+
+
+            if ($this->region)
+            {
+                $this->client->setRegion($this->region);
+            }
+
+            // Register the stream wrapper from a client object
+            $this->client->registerStreamWrapper();
+
+            $this->scheme = 's3://' . $this->bucketName;
+
+            if (file_exists($this->scheme))
+            {
+                $this->scheme .= '/' . $this->baseFolder;
+                if (!file_exists($this->scheme))
+                {
+                    $this->filesystem->mkdir($this->scheme);
+                }
+            }
+            else
+            {
+                throw new \Exception ('Bucket ' . $this->bucketName . ' missing.');
+            }
+        }
+
+
+
+        return $this->client;
+    }
+
+
     public function __construct($key, $secret, $bucketName, $baseFolder = '', $region = false)
     {
 
         $this->filesystem = new Filesystem();
 
-        // Create an Amazon S3 client object
-        $this->client = S3Client::factory(array( 'key' => $key, 'secret' => $secret ));
+        $this->key = $key;
+
+        $this->secret = $secret;
+
+        $this->region = $region;
 
         $this->bucketName = $bucketName;
 
         $this->baseFolder = $baseFolder;
 
-        // Register the stream wrapper from a client object
-        $this->client->registerStreamWrapper();
 
-        $this->scheme = 's3://' . $this->bucketName;
-
-        if ($region)
-        {
-            $this->client->setRegion($region);
-        }
-
-        if (file_exists($this->scheme))
-        {
-            $this->scheme .= '/' . $baseFolder;
-            if (!file_exists($this->scheme))
-            {
-                $this->filesystem->mkdir($this->scheme);
-            }
-        }
-        else
-        {
-            throw new \Exception ('Bucket ' . $this->bucketName . ' missing.');
-        }
 
     }
 
@@ -112,6 +142,8 @@ class S3FilesAccess implements FileManager
      */
     public function getFolder($path = '')
     {
+        $this->connect();
+
         $path = trim($path, '/');
 
         if (file_exists($this->scheme . '/' . $path))
@@ -135,6 +167,8 @@ class S3FilesAccess implements FileManager
      */
     public function getFile($fileId)
     {
+        $this->connect();
+
         $fileId = trim(trim($fileId, '/'));
         if ($fileId != '')
         {
@@ -159,6 +193,7 @@ class S3FilesAccess implements FileManager
 
     public function getBinary(File $file)
     {
+        $this->connect();
 
         if (file_exists($this->scheme . '/' . $file->getId()))
         {
@@ -172,6 +207,8 @@ class S3FilesAccess implements FileManager
 
     public function saveFile($fileId, $binary)
     {
+        $client = $this->connect();
+
         $fileId   = trim($fileId, '/');
         $fileName = pathinfo($fileId, PATHINFO_FILENAME);
 
@@ -186,13 +223,13 @@ class S3FilesAccess implements FileManager
             }
             try
             {
-                $this->client->putObject(array(
-                                             'Bucket'      => $this->bucketName,
-                                             'Key'         => $this->baseFolder . '/' . $fileId,
-                                             'Body'        => $binary,
-                                             'ACL'         => 'public-read',
-                                             'ContentType' => $contentType
-                                         ));
+                $client->putObject(array(
+                                       'Bucket'      => $this->bucketName,
+                                       'Key'         => $this->baseFolder . '/' . $fileId,
+                                       'Body'        => $binary,
+                                       'ACL'         => 'public-read',
+                                       'ContentType' => $contentType
+                                   ));
 
                 return true;
             }
@@ -206,8 +243,10 @@ class S3FilesAccess implements FileManager
         return false;
     }
 
+
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
+        $this->connect();
 
         try
         {
@@ -235,6 +274,8 @@ class S3FilesAccess implements FileManager
 
     public function createFolder($path)
     {
+        $this->connect();
+
         $path = trim($path, '/');
 
         $this->filesystem->mkdir($this->scheme . '/' . $path . '/');
@@ -245,6 +286,7 @@ class S3FilesAccess implements FileManager
 
     public function deleteFolder($path, $deleteIfNotEmpty = false)
     {
+        $client = $this->connect();
 
         $path = trim($path, '/');
 
@@ -260,7 +302,7 @@ class S3FilesAccess implements FileManager
             $path = $this->baseFolder . '/' . $path;
             $path = trim($path, '/');
 
-            $nr = $this->client->deleteMatchingObjects($this->bucketName, $path);
+            $nr = $client->deleteMatchingObjects($this->bucketName, $path);
 
             if ($nr > 1)
             {
@@ -274,6 +316,7 @@ class S3FilesAccess implements FileManager
 
     protected function listSubFolder($path)
     {
+        $this->connect();
 
         if ($path != '')
         {
@@ -316,6 +359,7 @@ class S3FilesAccess implements FileManager
 
     protected function listFiles($path)
     {
+        $this->connect();
 
         if ($path != '')
         {

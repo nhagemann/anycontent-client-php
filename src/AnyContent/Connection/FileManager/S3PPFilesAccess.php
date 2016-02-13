@@ -2,12 +2,10 @@
 
 namespace AnyContent\Connection\FileManager;
 
-use AnyContent\Client\File;
 use AnyContent\Client\Folder;
 use AnyContent\Connection\Interfaces\FileManager;
 
 use Dflydev\ApacheMimeTypes\JsonRepository;
-use Symfony\Component\Finder\Finder;
 
 class S3PPFilesAccess extends S3FilesAccess implements FileManager
 {
@@ -19,6 +17,8 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
      */
     public function getFolder($path = '')
     {
+        $this->connect();
+
         $path = trim(trim($path, '/'));
 
         if ($this->isRootPath($path))
@@ -38,8 +38,6 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
 
         $folder = parent::getFolder($path);
 
-
-
         if (!$folder && strpos($path, '/') === false) // Public or Protected folder
         {
             $data            = [ ];
@@ -54,10 +52,10 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
     }
 
 
-
-
     public function saveFile($fileId, $binary)
     {
+        $client = $this->connect();
+
         $fileId   = trim($fileId, '/');
         $fileName = pathinfo($fileId, PATHINFO_FILENAME);
 
@@ -77,16 +75,15 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
                 $acl = 'public-read';
             }
 
-
             try
             {
-                $this->client->putObject(array(
-                                             'Bucket'      => $this->bucketName,
-                                             'Key'         => $this->baseFolder . '/' . $fileId,
-                                             'Body'        => $binary,
-                                             'ACL'         => $acl,
-                                             'ContentType' => $contentType
-                                         ));
+                $client->putObject(array(
+                                       'Bucket'      => $this->bucketName,
+                                       'Key'         => $this->baseFolder . '/' . $fileId,
+                                       'Body'        => $binary,
+                                       'ACL'         => $acl,
+                                       'ContentType' => $contentType
+                                   ));
 
                 return true;
             }
@@ -99,8 +96,6 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
 
         return false;
     }
-
-
 
 
     protected function isRootPath($path)
@@ -142,8 +137,11 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
         return false;
     }
 
+
     protected function listFiles($path)
     {
+        $this->connect();
+
         $items = parent::listFiles($path);
 
         if (!$this->isPublicPath($path))
