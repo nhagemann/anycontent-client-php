@@ -13,6 +13,7 @@
 - silex based anycontent-server-php to serve any type of repository
 - Parser reduzieren / remove synchronize properties
 - MySQLOneToOne
+- RestLikeExtendedConnection with custom queries
 - MySQLCache
 - ParensParser
 - CachingRepository: ForwardCaching
@@ -20,7 +21,8 @@
 - CachingRepository: FilesCaching
 - CachingRepository: respect confidence value
 - CachingRepository: check only for cmdl modification
-- Alternate Mechanism to access file binary via a public url (e.g. url type binary?)
+
+- Decision: Property VALIDATION - NOT PART OF THE STORAGE ENGINGE  - Alternate Mechanism to access file binary via a public url (e.g. url type binary?)
 - Decision: Property VALIDATION - NOT PART OF THE STORAGE ENGINGE
 - harmonize unique connection handling
 - set records threshold for filtering connection
