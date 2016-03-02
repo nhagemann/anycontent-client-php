@@ -853,6 +853,11 @@ class Repository implements FileManager
 
     public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
     {
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
+
         if ($this->writeConnection)
         {
             return $this->writeConnection->getLastModifiedDate($contentTypeName, $configTypeName, $dataDimensions);
