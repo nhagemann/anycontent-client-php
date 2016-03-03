@@ -39,6 +39,7 @@ class CMDLCacheTest extends \PHPUnit_Framework_TestCase
         $cache = new PhpFileCache(__DIR__ . '/../../../tmp/phpfilecache');
 
         $repository->setCacheProvider($cache);
+        $repository->selectLastModifiedCacheStrategy();
         $this->repository = $repository;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');

@@ -209,6 +209,6 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModified()
     {
-        $this->assertInternalType('int',$this->connection->getLastModifiedDate());
+        $this->assertNotEquals(0,$this->connection->getLastModifiedDate());
     }
 }

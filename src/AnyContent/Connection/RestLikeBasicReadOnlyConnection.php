@@ -304,8 +304,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             }
         }
 
-        $url.='&order='.$order;
-
+        $url .= '&order=' . $order;
 
         $response = $this->getClient()->get($url);
 
@@ -497,4 +496,49 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         return $t;
     }
 
+
+    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
+    {
+
+        $t = 0;
+
+        $info = $this->getRepositoryInfo();
+
+        $configuration = $this->getConfiguration();
+
+        if ($contentTypeName == null && $configTypeName == null)
+        {
+            foreach ($configuration->getContentTypeNames() as $contentTypeName)
+            {
+                if (isset($info['content'][$contentTypeName]['lastchange_cmdl']))
+                {
+                    $t = max($t, $info['content'][$contentTypeName]['lastchange_cmdl']);
+                }
+            }
+
+            foreach ($configuration->getConfigTypeNames() as $configTypeName)
+            {
+                if (isset($info['config'][$configTypeName]['lastchange_cmdl']))
+                {
+                    $t = max($t, $info['config'][$configTypeName]['lastchange_cmdl']);
+                }
+            }
+        }
+        elseif ($contentTypeName != null)
+        {
+            if (isset($info['content'][$contentTypeName]['lastchange_cmdl']))
+            {
+                $t = max($t, $info['content'][$contentTypeName]['lastchange_cmdl']);
+            }
+        }
+        elseif ($configTypeName != null)
+        {
+            if (isset($info['config'][$configTypeName]['lastchange_cmdl']))
+            {
+                $t = max($t, $info['config'][$configTypeName]['lastchange_cmdl']);
+            }
+        }
+
+        return $t;
+    }
 }

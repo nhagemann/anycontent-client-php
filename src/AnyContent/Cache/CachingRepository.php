@@ -32,8 +32,6 @@ class CachingRepository extends Repository
 
     protected $duration = 300;
 
-    protected $confidence = 0;
-
     /** @var  CacheProvider */
     protected $cacheProvider;
 
@@ -98,13 +96,23 @@ class CachingRepository extends Repository
     {
         $this->cacheStrategy = self::CACHE_STRATEGY_EXPIRATION;
         $this->duration      = $duration;
+
+        if ($this->isCmdlCaching()) // reflect strategy chage within cmdl caching
+        {
+            $this->enableCmdlCaching($this->cmdlCaching);
+        }
     }
 
 
-    public function selectLastModifiedCacheStrategy($confidence = 0)
+    public function selectLastModifiedCacheStrategy($duration = 300)
     {
         $this->cacheStrategy = self::CACHE_STRATEGY_LASTMODIFIED;
-        $this->confidence    = $confidence;
+        $this->duration    = $duration;
+
+        if ($this->isCmdlCaching()) // reflect strategy chage within cmdl caching
+        {
+            $this->enableCmdlCaching($this->cmdlCaching);
+        }
     }
 
 
@@ -142,10 +150,17 @@ class CachingRepository extends Repository
             $duration = $this->duration;
         }
         $this->cmdlCaching = $duration;
-        $this->readConnection->enableCMDLCaching($duration);
+
+        $checkLastModifiedDate = false;
+        if ($this->hasLastModifiedCacheStrategy())
+        {
+            $checkLastModifiedDate = true;
+        }
+
+        $this->readConnection->enableCMDLCaching($duration,$checkLastModifiedDate);
         if ($this->writeConnection)
         {
-            $this->writeConnection->enableCMDLCaching($duration);
+            $this->writeConnection->enableCMDLCaching($duration,$checkLastModifiedDate);
         }
     }
 

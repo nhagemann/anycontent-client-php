@@ -12,6 +12,7 @@ use AnyContent\Client\RecordFactory;
 use AnyContent\Client\Repository;
 use AnyContent\Client\UserInfo;
 use AnyContent\Connection\Configuration\AbstractConfiguration;
+use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use CMDL\ConfigTypeDefinition;
 use CMDL\ContentTypeDefinition;
 use CMDL\Parser;
@@ -19,7 +20,7 @@ use CMDL\Util;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\CacheProvider;
 
-abstract class AbstractConnection
+abstract class AbstractConnection implements ReadOnlyConnection
 {
 
     protected $precalculations = [ ];
@@ -63,7 +64,7 @@ abstract class AbstractConnection
 
     protected $cmdlCaching = false;
 
-    protected $durationCMDLCaching = 0;
+    protected $cmdlCachingCheckLastModifiedDate = false;
 
 
     public function __construct(AbstractConfiguration $configuration)
@@ -129,9 +130,10 @@ abstract class AbstractConnection
     }
 
 
-    public function enableCMDLCaching($duration = 60)
+    public function enableCMDLCaching($duration = 60, $checkLastModifiedDate = false)
     {
-        $this->cmdlCaching = $duration;
+        $this->cmdlCaching                      = $duration;
+        $this->cmdlCachingCheckLastModifiedDate = $checkLastModifiedDate;
     }
 
 
@@ -254,6 +256,11 @@ abstract class AbstractConnection
                 $cacheKey = '[' . $this->repository->getName() . ']' . $cacheKey;
             }
 
+            if ($this->cmdlCachingCheckLastModifiedDate)
+            {
+                $cacheKey .= '[' . $this->getCMDLLastModifiedDate($contentTypeName) . ']';
+            }
+
             if ($this->getCMDLCache()->contains($cacheKey))
             {
                 return unserialize($this->getCMDLCache()->fetch($cacheKey));
@@ -301,6 +308,11 @@ abstract class AbstractConnection
                 $cacheKey = '[' . $this->repository->getName() . ']' . $cacheKey;
             }
 
+            if ($this->cmdlCachingCheckLastModifiedDate)
+            {
+                $cacheKey .= '[' . $this->getCMDLLastModifiedDate(null, $configTypeName) . ']';
+            }
+
             if ($this->getCMDLCache()->contains($cacheKey))
             {
                 return unserialize($this->getCMDLCache()->fetch($cacheKey));
@@ -318,7 +330,6 @@ abstract class AbstractConnection
                 if ($definition)
                 {
 
-                    //$this->contentTypeDefinitions[$configTypeName]['definition'] = $definition;
                     $this->getCMDLCache()->save($cacheKey, serialize($definition), (int)$this->cmdlCaching);
 
                     return $definition;
@@ -464,22 +475,6 @@ abstract class AbstractConnection
         return $this;
     }
 
-//
-//    /**
-//     * @return ContentTypeDefinition
-//     * @throws AnyContentClientException
-//     * @deprecated
-//     */
-//    public function getCurrentContentTypeDefinition()
-//    {
-//        if ($this->currentContentTypeDefinition == null)
-//        {
-//            throw new AnyContentClientException('No content type selected.');
-//        }
-//
-//        return $this->currentContentTypeDefinition;
-//
-//    }
 
     /**
      * @return ContentTypeDefinition
@@ -854,4 +849,23 @@ abstract class AbstractConnection
         return $record;
     }
 
+
+    public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
+    {
+        throw new AnyContentClientException ('Method getLastModifiedDate must be implemented.');
+
+    }
+
+
+    /**
+     * Check for last cmdl change within repository or for a distinct content/config type
+     *
+     * @param null $contentTypeName
+     * @param null $configTypeName
+     */
+    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
+    {
+        throw new AnyContentClientException ('Method getCMDLLastModifiedDate must be implemented.');
+
+    }
 }

@@ -361,4 +361,46 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
     }
 
+
+    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
+    {
+        $t = 0;
+
+        $configuration = $this->getConfiguration();
+
+        if ($contentTypeName == null && $configTypeName == null)
+        {
+            foreach ($configuration->getContentTypeNames() as $contentTypeName)
+            {
+                $uri = $configuration->getUriCMDLForContentType($contentTypeName);
+
+                $t = max((int)@filemtime($uri), $t);
+
+            }
+            foreach ($configuration->getConfigTypeNames() as $configTypeName)
+            {
+                $uri = $configuration->getUriCMDLForConfigType($configTypeName);
+
+                $t = max((int)@filemtime($uri), $t);
+
+            }
+        }
+        elseif ($contentTypeName != null)
+        {
+            $uri = $configuration->getUriCMDLForContentType($contentTypeName);
+
+            $t = max((int)@filemtime($uri), $t);
+
+        }
+        elseif ($configTypeName != null)
+        {
+            $uri = $configuration->getUriCMDLForConfigType($configTypeName);
+
+            $t = max((int)@filemtime($uri), $t);
+
+        }
+
+        return $t;
+    }
+
 }

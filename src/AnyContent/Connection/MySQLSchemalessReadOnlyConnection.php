@@ -578,8 +578,141 @@ TEMPLATE_CONFIGTABLE;
 
     public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
     {
-        //@upgrade
-        return time();
+
+        if ($dataDimensions == null)
+        {
+            $dataDimensions = $this->getCurrentDataDimensions();
+        }
+
+        $t = 0;
+
+        $configuration = $this->getConfiguration();
+
+        if ($contentTypeName == null && $configTypeName == null)
+        {
+            foreach ($configuration->getContentTypeNames() as $contentTypeName)
+            {
+                $t = max($t, $this->getLastModifedDateForContentType($contentTypeName, $dataDimensions));
+            }
+
+            foreach ($configuration->getConfigTypeNames() as $configTypeName)
+            {
+                $t = max($t, $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions));
+            }
+        }
+        elseif ($contentTypeName != null)
+        {
+            return $this->getLastModifedDateForContentType($contentTypeName, $dataDimensions);
+        }
+        elseif ($configTypeName != null)
+        {
+            return $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions);
+        }
+
+        return $t;
+    }
+
+
+    protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
+    {
+
+        $tableName = $this->getContentTypeTableName($contentTypeName);
+
+        $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM ' . $tableName . ' WHERE workspace = ? AND language = ? ';
+
+        $row = $this->getDatabase()
+                    ->fetchOneSQL($sql, [ $dataDimensions->getWorkspace(), $dataDimensions->getLanguage() ]);
+
+        $t = $row['T'];
+
+        $t = max($this->getCMDLLastModifiedDate($contentTypeName, null), $t);
+
+        return $t;
+    }
+
+
+    protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions)
+    {
+
+        $tableName = $this->getConfigTypeTableName();
+
+        $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? ';
+
+        $row = $this->getDatabase()
+                    ->fetchOneSQL($sql, [ $configTypeName, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage() ]);
+
+        $t = $row['T'];
+
+        $t = max($this->getCMDLLastModifiedDate(null, $configTypeName), $t);
+
+        return $t;
+    }
+
+
+    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
+    {
+        $t = 0;
+
+        if ($this->getConfiguration()->hasCMDLFolder())
+        {
+            if ($contentTypeName == null && $configTypeName == null)
+            {
+                foreach ($this->getConfiguration()->getContentTypeNames() as $contentTypeName)
+                {
+                    $uri = $this->getConfiguration()
+                                ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
+                    $t   = max((int)@filemtime($uri), $t);
+                }
+
+                foreach ($this->getConfiguration()->getConfigTypeNames() as $configTypeName)
+                {
+                    $uri = $this->getConfiguration()
+                                ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
+                    $t   = max((int)@filemtime($uri), $t);
+                }
+            }
+            elseif ($contentTypeName != null)
+            {
+                $uri = $this->getConfiguration()
+                            ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
+                $t   = max((int)@filemtime($uri), $t);
+            }
+            elseif ($configTypeName != null)
+            {
+                $uri = $this->getConfiguration()
+                            ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
+                $t   = max((int)@filemtime($uri), $t);
+            }
+        }
+        else
+        {
+            if ($contentTypeName == null && $configTypeName == null)
+            {
+                $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM _cmdl_ WHERE repository = ?';
+
+                $row = $this->getDatabase()->fetchOneSQL($sql, [ $this->getRepository()->getName() ]);
+
+                $t = $row['T'];
+            }
+            elseif ($contentTypeName != null)
+            {
+                $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"';
+
+                $row = $this->getDatabase()->fetchOneSQL($sql, [ $this->getRepository()->getName(), $contentTypeName ]);
+
+                $t = $row['T'];
+            }
+            elseif ($configTypeName != null)
+            {
+                $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"';
+
+                $row = $this->getDatabase()->fetchOneSQL($sql, [ $this->getRepository()->getName(), $configTypeName ]);
+
+                $t = $row['T'];
+            }
+        }
+
+        return $t;
     }
 
 }

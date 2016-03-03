@@ -171,7 +171,7 @@ interface ReadOnlyConnection
     public function setCacheProvider(CacheProvider $cacheProvider);
 
 
-    public function enableCMDLCaching($duration = 60);
+    public function enableCMDLCaching($duration = 60, $checkLastModifiedDate = false);
 
 
     /**
@@ -181,5 +181,13 @@ interface ReadOnlyConnection
      * @param null $configTypeName
      */
     public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null);
+
+    /**
+     * Check for last cmdl change within repository or for a distinct content/config type
+     *
+     * @param null $contentTypeName
+     * @param null $configTypeName
+     */
+    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null);
 
 }
