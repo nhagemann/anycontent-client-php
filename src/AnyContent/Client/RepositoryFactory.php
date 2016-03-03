@@ -125,6 +125,7 @@ class RepositoryFactory
             $repository->enableSingleContentRecordCaching(60);
             $repository->enableAllContentRecordsCaching(60);
             $repository->enableContentQueryRecordsCaching(60);
+            $repository->enableCmdlCaching(60);
         }
         else
         {
