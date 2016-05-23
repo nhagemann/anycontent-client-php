@@ -25,6 +25,7 @@ class RestLikeFilesAccess implements FileManager
      */
     protected $client;
 
+    protected $publicUrl = false;
 
     public function __construct(RestLikeConfiguration $configuration)
     {
@@ -60,8 +61,8 @@ class RestLikeFilesAccess implements FileManager
         {
 
             $client = new Client([ 'base_url' => $this->getConfiguration()->getUri(),
-                                   'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ]
-                                 ]);
+                'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ]
+            ]);
 
             $this->client = $client;
 
@@ -92,6 +93,25 @@ class RestLikeFilesAccess implements FileManager
 
 
     /**
+     * @return boolean
+     */
+    public function getPublicUrl()
+    {
+        return $this->publicUrl;
+    }
+
+
+    /**
+     * @param boolean $publicUrl
+     */
+    public function setPublicUrl($publicUrl)
+    {
+        $this->publicUrl = $publicUrl;
+
+        return $this;
+    }
+
+    /**
      * @param string $path
      *
      * @return Folder|bool
@@ -111,7 +131,18 @@ class RestLikeFilesAccess implements FileManager
         if ($json)
         {
 
+            if ($this->publicUrl != false)
+            {
+                $files = [];
+                foreach ($json['files'] as $file)
+                {
+                    $file['urls']['default']=$this->publicUrl . '/' . $file['id'];
+                    $files[]=$file;
+                }
+                $json['files'] = $files;
+            }
             $folder = new Folder($path, $json);
+
 
             return $folder;
         }
@@ -163,7 +194,7 @@ class RestLikeFilesAccess implements FileManager
     {
         $url = 'file/' . trim($fileId, '/');
         $this->getClient()
-             ->post($url, [ 'body' => $binary ]);
+            ->post($url, [ 'body' => $binary ]);
 
         return true;
 
