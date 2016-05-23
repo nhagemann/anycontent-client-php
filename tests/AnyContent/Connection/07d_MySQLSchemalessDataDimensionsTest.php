@@ -82,6 +82,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
 
         $record = $connection->getRecord(5);
@@ -103,6 +108,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     public function testWorkSpaceLive()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles');
 
@@ -131,6 +141,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
         $connection->selectWorkspace('live');
 
@@ -147,6 +162,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
@@ -162,6 +182,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     public function testSaveRecordsSameConnection()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
@@ -186,6 +211,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
 
         $this->assertEquals(2, $connection->countRecords());
@@ -199,6 +229,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     public function testDeleteRecord()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
@@ -219,6 +254,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
         $this->assertEquals(6, $connection->countRecords());
@@ -228,6 +268,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     public function testDeleteRecords()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
@@ -243,6 +288,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
         $this->assertEquals(5, $connection->countRecords());
@@ -252,6 +302,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     public function testDeleteAllRecords()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
@@ -267,6 +322,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
         $this->assertEquals(0, $connection->countRecords());
@@ -275,6 +335,11 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     public function testSwitchLanguage()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles')->selectWorkspace('live')->selectLanguage('de');
 

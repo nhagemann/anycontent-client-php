@@ -64,6 +64,11 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $config = $connection->getConfig('config1');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
@@ -86,6 +91,11 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $config = $connection->getConfig('config1');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
@@ -97,6 +107,11 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
     public function testViewsConfigSameConnection()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectView('test');
 

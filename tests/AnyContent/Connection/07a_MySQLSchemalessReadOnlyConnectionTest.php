@@ -209,6 +209,12 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModified()
     {
+        $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
         $this->assertNotEquals(0,$this->connection->getLastModifiedDate());
     }
 }

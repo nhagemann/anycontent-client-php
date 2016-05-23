@@ -160,6 +160,13 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModified()
     {
+        $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
+        }
+        
         $this->assertInternalType('string', $this->connection->getLastModifiedDate());
     }
 

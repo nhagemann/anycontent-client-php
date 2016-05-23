@@ -39,11 +39,12 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     {
         $connection = $this->connection;
 
-        $connection->selectContentType('profiles');
         if (!$connection)
         {
             $this->markTestSkipped('RestLike Basic Connection credentials missing.');
         }
+
+        $connection->selectContentType('profiles');
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'Agency 5');
         $record->setId(5);
 

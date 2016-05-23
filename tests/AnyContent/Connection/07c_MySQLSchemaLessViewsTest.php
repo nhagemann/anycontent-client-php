@@ -62,6 +62,11 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('test');
 
         $definition = $connection->getCurrentContentTypeDefinition();
@@ -83,6 +88,11 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('test');
 
         $definition = $connection->getCurrentContentTypeDefinition();
@@ -101,6 +111,11 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
     public function testSaveRecordTestView()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('test');
 
@@ -130,6 +145,11 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
     public function testGetRecordDifferentViews()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('test');
 

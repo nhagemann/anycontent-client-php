@@ -62,6 +62,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'Agency 5');
@@ -84,6 +89,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
 
         $record = $connection->getRecord(5);
@@ -96,6 +106,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testAddRecord()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles');
 
@@ -112,6 +127,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testSaveRecordsSameConnection()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles');
 
@@ -136,6 +156,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
 
         $this->assertEquals(7, $connection->countRecords());
@@ -145,6 +170,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDeleteRecord()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles');
 
@@ -165,6 +195,10 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
         $connection->selectContentType('profiles');
 
         $this->assertEquals(6, $connection->countRecords());
@@ -174,6 +208,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDeleteRecords()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles');
 
@@ -189,6 +228,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
 
         $this->assertEquals(5, $connection->countRecords());
@@ -198,6 +242,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDeleteAllRecords()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles');
 
@@ -212,6 +261,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDeleteAllRecordsNewConnection()
     {
         $connection = $this->connection;
+
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
 
         $connection->selectContentType('profiles');
 
