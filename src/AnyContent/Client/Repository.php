@@ -496,7 +496,12 @@ class Repository implements FileManager
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        return $this->readConnection->getRecord($recordId, $this->getCurrentContentTypeName(), $dataDimensions);
+        $record = $this->readConnection->getRecord($recordId, $this->getCurrentContentTypeName(), $dataDimensions);
+
+        if ($record) {
+            $record->setRepository($this);
+        }
+        return $record;
     }
 
 
@@ -521,21 +526,26 @@ class Repository implements FileManager
 
         if ($this->readConnection instanceof FilteringConnection)
         {
-            return $this->readConnection->getRecords($this->getCurrentContentTypeName(), $dataDimensions, $filter, $page, $count, $order);
+            $records = $this->readConnection->getRecords($this->getCurrentContentTypeName(), $dataDimensions, $filter, $page, $count, $order);
+        }
+        else {
+
+            $records = $this->getAllRecords($dataDimensions);
+
+            if ($filter != '') {
+                $records = RecordsFilter::filterRecords($records, $filter);
+            }
+
+            $records = RecordsSorter::orderRecords($records, $order);
+
+            if ($count != null) {
+                $records = RecordsPager::sliceRecords($records, $page, $count);
+            }
         }
 
-        $records = $this->getAllRecords($dataDimensions);
-
-        if ($filter != '')
+        foreach ($records as $record)
         {
-            $records = RecordsFilter::filterRecords($records, $filter);
-        }
-
-        $records = RecordsSorter::orderRecords($records, $order);
-
-        if ($count != null)
-        {
-            $records = RecordsPager::sliceRecords($records, $page, $count);
+            $record->setRepository($this);
         }
 
         return $records;

@@ -23,8 +23,7 @@ class LanguagesAndWorkspacesText extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
@@ -76,6 +75,33 @@ class LanguagesAndWorkspacesText extends \PHPUnit_Framework_TestCase
     public function testLastModified()
     {
 
+    }
+
+    public function testRecordCanAccessRepository()
+    {
+        $repository = new Repository('phpunit', $this->connection);
+
+        $repository->selectContentType('example01');
+
+        $definition = $repository->getContentTypeDefinition();
+
+        $records = [];
+
+        for ($i = 1; $i <= 5; $i++) {
+            $record = new Record($definition, 'Test ' . $i);        
+            $records[] = $record;
+        }
+
+        $repository->saveRecords($records);
+
+        $record = $repository->getRecord(1);
+
+        $this->assertInstanceOf('AnyContent\Client\Repository', $record->getRepository());
+
+        $records = $repository->getRecords();
+        $record = array_shift($records);
+
+        $this->assertInstanceOf('AnyContent\Client\Repository', $record->getRepository());
     }
 
 }

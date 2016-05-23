@@ -17,6 +17,10 @@ class Record extends AbstractRecord implements \JsonSerializable
     /** @var  UserInfo */
     public $creationUserInfo = null;
 
+    /**
+     * @var Repository
+     */
+    protected $repository;
 
     public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $view = 'default', $workspace = 'default', $language = 'default')
     {
@@ -30,6 +34,24 @@ class Record extends AbstractRecord implements \JsonSerializable
         $this->setLastChangeUserInfo(new UserInfo());
 
     }
+
+    /**
+     * @return Repository
+     */
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
+    /**
+     * @param Repository $repository
+     */
+    public function setRepository($repository)
+    {
+        $this->repository = $repository;
+    }
+
+
 
 
     public function getTable($property)
