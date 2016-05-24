@@ -1,6 +1,6 @@
 <?php
 
-namespace AnyContent\Util\Imagine;
+namespace AnyContent\Client\Util;
 
 use AnyContent\Client\File;
 use AnyContent\Client\Repository;
@@ -15,9 +15,8 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Class ImageManager
  *
- * The ImageManger class is responsible for creating image versions/copies of AnyContent Images and storing them as
+ * This class is responsible for creating image versions/copies of AnyContent Images and storing them as
  * local files in a to be defined folder ($basePath). This should be a public accessible web folder ($baseUrl).
  *
  * The main methods are getFittingImage(), getResizedImage() and getOriginalImage(). All of them expect a File object
@@ -25,7 +24,7 @@ use Symfony\Component\Finder\Finder;
  *
  * @package AnyContent\Util\Imagine
  */
-class ImageManager
+class ImageVersionCreator
 {
 
     /**
@@ -89,7 +88,7 @@ class ImageManager
 
     public function selectRepository($repository)
     {
-        $this->repository     = $repository;
+        $this->repository = $repository;
         $this->cachedBinaries = array();
     }
 
@@ -141,28 +140,34 @@ class ImageManager
      */
     public function enableBinaryCache()
     {
-        $this->cacheBinaries  = true;
+        $this->cacheBinaries = true;
         $this->cachedBinaries = array();
     }
 
     public function disableBinaryCache()
     {
-        $this->cacheBinaries  = false;
+        $this->cacheBinaries = false;
         $this->cachedBinaries = array();
     }
 
     /**
-     * @param File   $file
+     * @param File $file
      * @param string $urlType
-     * @param int    $width
-     * @param null   $height
-     * @param null   $filename
-     * @param null   $quality
+     * @param int $width
+     * @param null $height
+     * @param null $filename
+     * @param null $quality
      *
      * @return File|bool
      */
-    public function getFittingImage(File $file, $urlType = 'default', $width = 100, $height = null, $filename = null, $quality = null)
-    {
+    public function getFittingImage(
+        File $file,
+        $urlType = 'default',
+        $width = 100,
+        $height = null,
+        $filename = null,
+        $quality = null
+    ) {
         if ($height == null) {
             $height = $width;
         }
@@ -177,15 +182,14 @@ class ImageManager
 
                     if ($binary) {
                         $imagine = new Imagine();
-                        $image   = $imagine->load($binary);
+                        $image = $imagine->load($binary);
 
-                        $size  = $image->getSize();
+                        $size = $image->getSize();
                         $ratio = $size->getWidth() / $size->getHeight();
 
                         if ($ratio > $width / $height) {
                             $size = $size->widen($width);
-                        }
-                        else {
+                        } else {
                             $size = $size->heighten($height);
                         }
 
@@ -193,8 +197,7 @@ class ImageManager
 
                         $quality = $this->determineQuality($quality);
                         $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
-                    }
-                    else {
+                    } else {
                         return false;
                     }
                 }
@@ -211,18 +214,25 @@ class ImageManager
     }
 
     /**
-     * @param File   $file
+     * @param File $file
      * @param string $urlType
-     * @param int    $width
-     * @param null   $height
-     * @param bool   $crop
-     * @param null   $filename
-     * @param null   $quality
+     * @param int $width
+     * @param null $height
+     * @param bool $crop
+     * @param null $filename
+     * @param null $quality
      *
      * @return File|bool
      */
-    public function getResizedImage(File $file, $urlType = 'default', $width = 100, $height = null, $crop = true, $filename = null, $quality = null)
-    {
+    public function getResizedImage(
+        File $file,
+        $urlType = 'default',
+        $width = 100,
+        $height = null,
+        $crop = true,
+        $filename = null,
+        $quality = null
+    ) {
         if ($crop) {
             return $this->getCroppedImage($file, $urlType, $width, $height, $filename, $quality);
         }
@@ -240,14 +250,13 @@ class ImageManager
 
                     if ($binary) {
                         $imagine = new Imagine();
-                        $image   = $imagine->load($binary);
+                        $image = $imagine->load($binary);
 
                         $image->resize(new Box($width, $height));
 
                         $quality = $this->determineQuality($quality);
                         $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
-                    }
-                    else {
+                    } else {
                         return false;
                     }
                 }
@@ -263,17 +272,23 @@ class ImageManager
     }
 
     /**
-     * @param File   $file
+     * @param File $file
      * @param string $urlType
-     * @param int    $width
-     * @param null   $height
-     * @param null   $filename
-     * @param null   $quality
+     * @param int $width
+     * @param null $height
+     * @param null $filename
+     * @param null $quality
      *
      * @return File|bool
      */
-    protected function getCroppedImage(File $file, $urlType = 'default', $width = 100, $height = null, $filename = null, $quality = null)
-    {
+    protected function getCroppedImage(
+        File $file,
+        $urlType = 'default',
+        $width = 100,
+        $height = null,
+        $filename = null,
+        $quality = null
+    ) {
         if ($height == null) {
             $height = $width;
         }
@@ -288,7 +303,7 @@ class ImageManager
 
                     if ($binary) {
                         $imagine = new Imagine();
-                        $image   = $imagine->load($binary);
+                        $image = $imagine->load($binary);
 
                         $size = $image->getSize();
 
@@ -308,8 +323,7 @@ class ImageManager
                             $upperLeft = new Point($start, 0);
 
                             $image->crop($upperLeft, new Box ($width, $height));
-                        }
-                        else {
+                        } else {
 
                             // create image that has the desired width and an oversize height to crop from
                             $x = $width;
@@ -327,8 +341,7 @@ class ImageManager
 
                         $quality = $this->determineQuality($quality);
                         $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
-                    }
-                    else {
+                    } else {
                         return false;
                     }
                 }
@@ -354,8 +367,7 @@ class ImageManager
 
                     if ($binary) {
                         file_put_contents($this->basePath . '/' . $filename, $binary);
-                    }
-                    else {
+                    } else {
                         return false;
                     }
                 }
@@ -373,13 +385,12 @@ class ImageManager
     public function deleteRecentlyNotAccessedFiles($minutes = 1440, $path = null)
     {
 
-        $fs     = new Filesystem();
+        $fs = new Filesystem();
         $finder = new Finder();
 
         if ($path == null) {
             $path = $this->basePath;
-        }
-        else {
+        } else {
             $path = $this->basePath . '/' . $path;
         }
 
@@ -417,10 +428,9 @@ class ImageManager
             if (array_key_exists($file->getId(), $this->cachedBinaries)) {
                 return $this->cachedBinaries[$file->getId()];
             }
-            $binary                               = $this->repository->getBinary($file);
+            $binary = $this->repository->getBinary($file);
             $this->cachedBinaries[$file->getId()] = $binary;
-        }
-        else {
+        } else {
             $binary = $this->repository->getBinary($file);
         }
 
@@ -433,13 +443,12 @@ class ImageManager
             $info = pathinfo($file->getName());
             if ($mode == 'o') {
                 $filename = $info['filename'] . '.orig.' . $info['extension'];
-            }
-            else {
+            } else {
                 $filename = $info['filename'] . '_' . $width . 'x' . $height . $mode . '.' . $info['extension'];
             }
         }
 
-        $fs   = new Filesystem();
+        $fs = new Filesystem();
         $info = pathinfo($this->basePath . '/' . $filename);
         $fs->mkdir($info['dirname']);
 
