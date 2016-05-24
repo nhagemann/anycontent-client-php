@@ -274,6 +274,64 @@ class ImageVersionCreator
     /**
      * @param File $file
      * @param string $urlType
+     * @param null $width
+     * @param null $height
+     * @param null $filename
+     * @param null $quality
+     * @return File|bool
+     */
+    public function getScaledImage(
+        File $file,
+        $urlType = 'default',
+        $width = null,
+        $height = null,
+        $filename = null,
+        $quality = null
+    ) {
+
+        if ($width != null && $height != null) {
+            return $this->getResizedImage($file, $urlType, $width, $height, false, $filename, $quality);
+        }
+
+        if ($this->mustBuildImage($file, $filename)) {
+            $binary = $this->getBinary($file);
+
+            if ($binary) {
+                $imagine = new Imagine();
+                $image = $imagine->load($binary);
+
+                $size = $image->getSize();
+                $ratio = $size->getWidth() / $size->getHeight();
+
+
+                if ($width == null) {
+                    $width = $height * $ratio;
+                } else {
+                    $height = $width / $ratio;
+                }
+
+                $image->resize(new Box($width, $height));
+
+                $quality = $this->determineQuality($quality);
+                $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                $url = $this->baseUrl . '/' . $filename;
+
+                $file->addUrl($urlType, $url);
+
+                return $file;
+
+            } else {
+                return false;
+            }
+        }
+
+
+        return $file;
+    }
+
+    /**
+     * @param File $file
+     * @param string $urlType
      * @param int $width
      * @param null $height
      * @param null $filename
