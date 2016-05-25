@@ -317,17 +317,7 @@ class Repository implements FileManager
         return $this->readConnection->getConfigTypeDefinition($configTypeName);
     }
 
-//
-//    /**
-//     * @deprecated
-//     *
-//     * @return \CMDL\ContentTypeDefinition
-//     * @throws AnyContentClientException
-//     */
-//    public function getCurrentContentTypeDefinition()
-//    {
-//        return $this->readConnection->getCurrentContentTypeDefinition();
-//    }
+
 
     /**
      *

@@ -24,6 +24,10 @@ interface FileManager
     public function getFile($fileId);
 
 
+    /**
+     * @param File $file
+     * @return File|bool
+     */
     public function getBinary(File $file);
 
 
@@ -38,4 +42,9 @@ interface FileManager
 
     public function deleteFolder($path, $deleteIfNotEmpty = false);
 
+
+    public function getPublicUrl();
+    
+
+    public function setPublicUrl($publicUrl);
 }
