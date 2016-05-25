@@ -29,6 +29,11 @@ class Sequence implements \Iterator
         }
     }
 
+    public function getProperties()
+    {
+        return $this->items[$this->position]['properties'];
+    }
+
     public function getProperty($property, $default = null)
     {
         if (array_key_exists($property, $this->items[$this->position]['properties'])) {
