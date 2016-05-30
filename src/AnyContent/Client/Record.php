@@ -2,6 +2,7 @@
 
 namespace AnyContent\Client;
 
+use AnyContent\AnyContentClientException;
 use CMDL\ContentTypeDefinition;
 
 class Record extends AbstractRecord implements \JsonSerializable
@@ -40,6 +41,10 @@ class Record extends AbstractRecord implements \JsonSerializable
      */
     public function getRepository()
     {
+        if (!$this->repository)
+        {
+            throw new AnyContentClientException('Record does not know it\'s repository.');
+        }
         return $this->repository;
     }
 

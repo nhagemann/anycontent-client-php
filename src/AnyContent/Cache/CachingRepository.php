@@ -330,6 +330,8 @@ class CachingRepository extends Repository
                 $recordFactory = $this->getRecordFactory();
                 $record        = $recordFactory->createRecordFromJSON($this->getCurrentContentTypeDefinition(), $data);
 
+                $record->setRepository($this);
+                
                 return $record;
             }
 
