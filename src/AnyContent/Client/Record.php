@@ -257,6 +257,12 @@ class Record extends AbstractRecord implements \JsonSerializable
         return $this->creationUserInfo;
     }
 
+    public function getHash()
+    {
+        $properties = $this->getProperties();
+        sort($properties);
+        return md5(json_encode($properties,true));
+    }
 
     function jsonSerialize()
     {
