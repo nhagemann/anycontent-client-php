@@ -16,37 +16,60 @@ class MenuBuilder
     }
 
 
-    public static function getExpandedMenu(Repository $repository, $contentTypeName, $recordId)
+    /**
+     * @param Repository $repository
+     * @param $contentTypeName
+     * @param $recordId
+     * @param array $options currently only one option available: levels = array containing menu levels, that should get expanded
+     * @return Record[]
+     */
+    public static function getExpandedMenu(Repository $repository, $contentTypeName, $recordId, $options = [])
     {
 
         $path = self::getBreadcrumb($repository, $contentTypeName, $recordId);
 
         $repository->selectContentType($contentTypeName);
 
-        $result = [ ];
+        $result = [];
 
 
         // Add all same level pages within path
 
+        $i = 0;
         /**
-         * @var int    $id
+         * @var int $id
          * @var Record $record
          */
-        foreach ($path as $id => $record)
-        {
-            $records = $repository->getSortedRecords($record->getParent(), false, 1);
-            foreach ($records as $record)
-            {
-                $result[$record->getId()] = $record;
+        foreach ($path as $id => $record) {
 
+            $i++;
+            $expand = true;
+
+            if (array_key_exists('levels',$options)) {
+                $expand = false;
+                if (in_array($i, $options['levels'])) {
+                    $expand = true;
+                }
             }
+
+
+            if ($expand) {
+                $records = $repository->getSortedRecords($record->getParent(), false, 1);
+                foreach ($records as $record) {
+                    $result[$record->getId()] = $record;
+
+                }
+            } else {
+                $result[$record->getId()] = $record;
+            }
+
+
         }
 
         // Add children
 
         $records = $repository->getSortedRecords($id, false, 1);
-        foreach ($records as $record)
-        {
+        foreach ($records as $record) {
             $result[$record->getId()] = $record;
 
         }
