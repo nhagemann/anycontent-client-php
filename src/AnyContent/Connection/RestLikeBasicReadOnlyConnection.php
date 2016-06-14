@@ -50,17 +50,26 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
                 $kvm = KVMLogger::instance('anycontent-connection');
 
-                $response = $event->getResponse();
-
-                $duration = (int)($event->getTransferInfo('total_time') * 1000);
-
                 $message = new LogMessage();
                 $message->addLogValue('method', $event->getRequest()->getMethod());
-                $message->addLogValue('code', $response->getStatusCode());
-                $message->addLogValue('duration', $duration);
-                $message->addLogValue('url', $response->getEffectiveUrl());
 
-                $kvm->debug($message);
+                $response = $event->getResponse();
+
+                if ($response)
+                {
+                    $duration = (int)($event->getTransferInfo('total_time') * 1000);
+
+                    $message->addLogValue('code', $response->getStatusCode());
+                    $message->addLogValue('duration', $duration);
+                    $message->addLogValue('url', $response->getEffectiveUrl());
+                    $kvm->debug($message);
+                }
+                else{
+                    $message->addLogValue('url',$event->getRequest()->getUrl());
+                    $message->addLogValue('exception',$event->getException()->getCode().': '.$event->getException()->getMessage());
+                    $kvm->error($message);
+                }
+
 
             });
         }

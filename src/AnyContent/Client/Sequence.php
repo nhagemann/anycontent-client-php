@@ -34,12 +34,35 @@ class Sequence implements \Iterator
         return $this->items[$this->position]['properties'];
     }
 
+//    public function getProperty($property, $default = null)
+//    {
+//        if (array_key_exists($property, $this->items[$this->position]['properties'])) {
+//
+//            return $this->items[$this->position]['properties'][$property];
+//        }
+//        else {
+//            return $default;
+//        }
+//    }
+
     public function getProperty($property, $default = null)
     {
-        if (array_key_exists($property, $this->items[$this->position]['properties'])) {
+        if (array_key_exists($property, $this->items[$this->position]['properties']))
+        {
+
+            if ($this->items[$this->position]['properties'][$property] === '')
+            {
+                return $default;
+            }
+            if ($this->items[$this->position]['properties'][$property] === null)
+            {
+                return $default;
+            }
+
             return $this->items[$this->position]['properties'][$property];
         }
-        else {
+        else
+        {
             return $default;
         }
     }

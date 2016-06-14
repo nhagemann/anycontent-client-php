@@ -267,7 +267,7 @@ class Record extends AbstractRecord implements \JsonSerializable
     function jsonSerialize()
     {
         $record                       = [ ];
-        $record['id']                 = $this->getID();
+        $record['id']                 = $this->getId();
         $record['properties']         = $this->getProperties();
         $record['info']               = [ ];
         $record['info']['revision']   = $this->getRevision();

@@ -58,6 +58,15 @@ abstract class AbstractRecord
     {
         if (array_key_exists($property, $this->properties))
         {
+            if ($this->properties[$property] === '')
+            {
+                return $default;
+            }
+            if ($this->properties[$property] === null)
+            {
+                return $default;
+            }
+
             return $this->properties[$property];
         }
         else
@@ -65,6 +74,7 @@ abstract class AbstractRecord
             return $default;
         }
     }
+
 
     public function setProperty($property, $value)
     {
