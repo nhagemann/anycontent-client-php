@@ -314,17 +314,15 @@ class ImageVersionCreator
 
                 $quality = $this->determineQuality($quality);
                 $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
-                $url = $this->baseUrl . '/' . $filename;
-
-                $file->addUrl($urlType, $url);
-
-                return $file;
 
             } else {
                 return false;
             }
         }
 
+        $url = $this->baseUrl . '/' . $filename;
+
+        $file->addUrl($urlType, $url);
 
         return $file;
     }
