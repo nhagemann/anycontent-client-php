@@ -331,7 +331,7 @@ class CachingRepository extends Repository
                 $record        = $recordFactory->createRecordFromJSON($this->getCurrentContentTypeDefinition(), $data);
 
                 $record->setRepository($this);
-                
+
                 return $record;
             }
 
@@ -396,6 +396,11 @@ class CachingRepository extends Repository
                 $recordFactory = $this->getRecordFactory();
                 $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(), $data);
 
+                foreach ($records as $record)
+                {
+                    $record->setRepository($this);
+                }
+
                 return $records;
             }
 
@@ -431,6 +436,11 @@ class CachingRepository extends Repository
 
                 $recordFactory = $this->getRecordFactory();
                 $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(), $data);
+
+                foreach ($records as $record)
+                {
+                    $record->setRepository($this);
+                }
 
                 return $records;
             }
@@ -469,6 +479,11 @@ class CachingRepository extends Repository
 
                 $recordFactory = $this->getRecordFactory();
                 $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(), $data);
+
+                foreach ($records as $record)
+                {
+                    $record->setRepository($this);
+                }
 
                 return $records;
             }

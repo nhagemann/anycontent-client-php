@@ -71,7 +71,10 @@ class MenuBuilder
         $records = $repository->getSortedRecords($id, false, 1);
         foreach ($records as $record) {
             $result[$record->getId()] = $record;
+        }
 
+        foreach ($result as $record) {
+            $record->setRepository($repository);
         }
 
 
