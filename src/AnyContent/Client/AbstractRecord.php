@@ -75,6 +75,41 @@ abstract class AbstractRecord
         return (int)$this->getProperty($property, $default);
     }
 
+    public function getTable($property)
+    {
+        $values = json_decode($this->getProperty($property), true);
+
+        if (!is_array($values))
+        {
+            $values = array();
+        }
+
+        $formElementDefinition = $this->dataTypeDefinition->getViewDefinition($this->view)
+            ->getFormElementDefinition($property);
+
+        $columns = count($formElementDefinition->getList(1));
+
+        $table = new Table($columns);
+
+        foreach ($values as $row)
+        {
+            $table->addRow($row);
+        }
+
+        return $table;
+    }
+
+
+    public function getArrayProperty($property)
+    {
+        $value = $this->getProperty($property);
+        if ($value)
+        {
+            return explode(',', $value);
+        }
+
+        return array();
+    }
 
     public function setProperty($property, $value)
     {
