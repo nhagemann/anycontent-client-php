@@ -64,12 +64,13 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
                     $message->addLogValue('url', $response->getEffectiveUrl());
                     $kvm->debug($message);
                 }
-                else{
-                    $message->addLogValue('url',$event->getRequest()->getUrl());
-                    $message->addLogValue('exception',$event->getException()->getCode().': '.$event->getException()->getMessage());
+                else
+                {
+                    $message->addLogValue('url', $event->getRequest()->getUrl());
+                    $message->addLogValue('exception', $event->getException()->getCode() . ': ' . $event->getException()
+                                                                                                        ->getMessage());
                     $kvm->error($message);
                 }
-
 
             });
         }
@@ -408,6 +409,16 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
                 $config = $this->getRecordFactory()
                                ->createRecordFromJSON($this->getConfigTypeDefinition($configTypeName), $json['record'], $dataDimensions->getViewName(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage());
+
+                // make sure config record does not have properties, that are not allowed for the current view (bugfix for old rest like services, that do not know config views)
+                $properties = $config->getProperties();
+                foreach ($properties as $property => $value)
+                {
+                    if (!$config->getDataTypeDefinition()->hasProperty($property, $dataDimensions->getViewName()))
+                    {
+                        $config->clearProperty($property);
+                    }
+                }
 
                 return $config;
             }

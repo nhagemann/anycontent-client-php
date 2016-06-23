@@ -125,6 +125,14 @@ abstract class AbstractRecord
     }
 
 
+    public function clearProperty($property)
+    {
+        if (isset($this->properties[$property]))
+        {
+            unset($this->properties[$property]);
+        }
+    }
+
     public function getSequence($property)
     {
         $values = json_decode($this->getProperty($property), true);

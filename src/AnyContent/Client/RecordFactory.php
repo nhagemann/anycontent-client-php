@@ -108,8 +108,8 @@ class RecordFactory
             $record = new $classname($dataTypeDefinition, '', $viewName, $workspace, $language);
             $record->setID($jsonRecord['id']);
 
-        }
-
+        }                
+        
         $record = $this->finishRecordCreationFromJSON($record,$jsonRecord);
 
 
@@ -125,7 +125,7 @@ class RecordFactory
      * @return mixed
      * @throws AnyContentClientException
      */
-    protected function finishRecordCreationFromJSON($record,$jsonRecord)
+    protected function finishRecordCreationFromJSON(AbstractRecord $record,$jsonRecord)
     {
         $revision = isset($jsonRecord['info']['revision']) ? $jsonRecord['info']['revision'] : 1;
         $record->setRevision($revision);
