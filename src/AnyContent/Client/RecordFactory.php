@@ -215,7 +215,7 @@ class RecordFactory
         $classname = $this->getRecordClassForConfigType($configTypeDefinition->getName());
 
         /** @var Config $config */
-        $config = new $classname($configTypeDefinition, '', $viewName, $workspace, $language);
+        $config = new $classname($configTypeDefinition, $viewName, $workspace, $language);
 
         $config->setRevision(0);
 

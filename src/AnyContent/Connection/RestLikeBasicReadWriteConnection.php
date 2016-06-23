@@ -155,9 +155,9 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         }
         unset($this->repositoryInfo[(string)$dataDimensions]);
 
-        $url = 'config/' . $config->getConfigTypeName() . '/record/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage() . '&timeshift=' . $dataDimensions->getTimeShift();
+        $url = 'config/' . $config->getConfigTypeName() . '/record/' . $dataDimensions->getWorkspace();
 
-        $this->getClient()->post($url, [ 'body' => [ 'record' => json_encode($config) ] ]);
+        $this->getClient()->post($url, [ 'body' => [ 'record' => json_encode($config), 'language' => $dataDimensions->getLanguage() ] ]);
 
         $this->stashConfig($config, $dataDimensions);
 
