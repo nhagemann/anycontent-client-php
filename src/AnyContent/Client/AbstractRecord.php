@@ -2,6 +2,7 @@
 
 namespace AnyContent\Client;
 
+use AnyContent\Client\Traits\Properties;
 use CMDL\CMDLParserException;
 use CMDL\DataTypeDefinition;
 use CMDL\Util;
@@ -9,14 +10,11 @@ use CMDL\Util;
 abstract class AbstractRecord
 {
 
-    /** @var  DataTypeDefinition */
-    protected $dataTypeDefinition;
+    use Properties;
 
     protected $view = 'default';
     protected $workspace = 'default';
     protected $language = 'default';
-
-    public $properties = array();
 
     public $revision = 0;
 
@@ -24,15 +22,17 @@ abstract class AbstractRecord
     public $lastChangeUserInfo = null;
 
 
-    public function getDataTypeName()
+    /**
+     * Check if a property is allowed by definition
+     *
+     * @param      $property
+     * @param null $viewName
+     *
+     * @return bool
+     */
+    public function hasProperty($property, $viewName = null)
     {
-        return $this->dataTypeDefinition->getName();
-    }
-
-
-    public function getDataTypeDefinition()
-    {
-        return $this->dataTypeDefinition;
+        return $this->dataTypeDefinition->hasProperty($property, $viewName);
     }
 
 
@@ -45,117 +45,6 @@ abstract class AbstractRecord
     public function getRevision()
     {
         return $this->revision;
-    }
-
-
-    public function hasProperty($property, $viewName = null)
-    {
-        return $this->dataTypeDefinition->hasProperty($property, $viewName);
-    }
-
-
-    public function getProperty($property, $default = null)
-    {
-        if (array_key_exists($property, $this->properties)) {
-            if ($this->properties[$property] === '') {
-                return $default;
-            }
-            if ($this->properties[$property] === null) {
-                return $default;
-            }
-
-            return $this->properties[$property];
-        } else {
-            return $default;
-        }
-    }
-
-    public function getIntProperty($property, $default = null)
-    {
-        return (int)$this->getProperty($property, $default);
-    }
-
-    public function getTable($property)
-    {
-        $values = json_decode($this->getProperty($property), true);
-
-        if (!is_array($values))
-        {
-            $values = array();
-        }
-
-        $formElementDefinition = $this->dataTypeDefinition->getViewDefinition($this->view)
-            ->getFormElementDefinition($property);
-
-        $columns = count($formElementDefinition->getList(1));
-
-        $table = new Table($columns);
-
-        foreach ($values as $row)
-        {
-            $table->addRow($row);
-        }
-
-        return $table;
-    }
-
-
-    public function getArrayProperty($property)
-    {
-        $value = $this->getProperty($property);
-        if ($value)
-        {
-            return explode(',', $value);
-        }
-
-        return array();
-    }
-
-    public function setProperty($property, $value)
-    {
-
-        $property = Util::generateValidIdentifier($property);
-        if ($this->dataTypeDefinition->hasProperty($property, $this->view)) {
-            $this->properties[$property] = $value;
-        } else {
-            throw new CMDLParserException('Unknown property ' . $property, CMDLParserException::CMDL_UNKNOWN_PROPERTY);
-        }
-
-        return $this;
-    }
-
-
-    public function clearProperty($property)
-    {
-        if (isset($this->properties[$property]))
-        {
-            unset($this->properties[$property]);
-        }
-    }
-
-    public function getSequence($property)
-    {
-        $values = json_decode($this->getProperty($property), true);
-
-        if (!is_array($values)) {
-            $values = array();
-        }
-
-        return new Sequence($this->dataTypeDefinition, $values);
-    }
-
-
-    public function setProperties($properties)
-    {
-        $this->properties = $properties;
-
-        return $this;
-    }
-
-
-    public function getProperties()
-    {
-        return $this->properties;
     }
 
 
@@ -211,7 +100,8 @@ abstract class AbstractRecord
 
     public function getLastChangeUserInfo()
     {
-        if ($this->lastChangeUserInfo == null) {
+        if ($this->lastChangeUserInfo == null)
+        {
             $this->lastChangeUserInfo = new UserInfo();
         }
 
