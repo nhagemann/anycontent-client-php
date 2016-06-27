@@ -29,27 +29,7 @@ class SequenceItem
             throw new AnyContentClientException('Unknown sequence property ' . $property . ' for data type ' . $definition->getName());
         }
 
-        /** @var SequenceFormElementDefinition $formElementDefinition */
-        $formElementDefinition = false;
-        foreach ($definition->getViewDefinitions() as $viewDefinition)
-        {
-            if ($viewDefinition->hasProperty($property))
-            {
-                $formElementDefinition = $viewDefinition->getFormElementDefinition($property);
-                $this->type            = $type;
-                break;
-            }
-        }
-
-        if (!$formElementDefinition)
-        {
-            throw new AnyContentClientException('Unexpected error. Could not find form element definition for sequence ' . $property);
-        }
-
-        if (!$formElementDefinition->hasInsert($type))
-        {
-            throw new AnyContentClientException('Unknown insert type ' . $type . ' for sequence ' . $property . ' of data type ' . $definition->getName());
-        }
+        $this->type            = $type;
     }
 
 
