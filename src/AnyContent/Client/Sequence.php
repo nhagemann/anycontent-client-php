@@ -23,17 +23,17 @@ class Sequence implements \Iterator, \Countable
         $this->dataTypeDefinition = $dataTypeDefinition;
 
         /** @var SequenceFormElementDefinition $formElementDefinition */
-        $formElementDefinition = false;
+        $view = false;
         foreach ($dataTypeDefinition->getViewDefinitions() as $viewDefinition)
         {
             if ($viewDefinition->hasProperty($property))
             {
-                $formElementDefinition = $viewDefinition->getFormElementDefinition($property);
+                $view = true;
                 break;
             }
         }
 
-        if (!$formElementDefinition)
+        if ($view == false)
         {
             throw new AnyContentClientException('Unexpected error. Could not find form element definition for sequence ' . $property);
         }
