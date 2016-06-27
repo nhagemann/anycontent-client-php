@@ -2,6 +2,7 @@
 namespace AnyContent\Client\Traits;
 
 use AnyContent\Client\Sequence;
+use AnyContent\Client\Table;
 use CMDL\CMDLParserException;
 use CMDL\DataTypeDefinition;
 use CMDL\Util;
