@@ -114,4 +114,15 @@ abstract class AbstractRecord
         sort($properties);
         return md5(json_encode($properties,true));
     }
+
+    public function reduceProperties($viewName)
+    {
+        $properties = $this->getProperties();
+
+        $allowedProperties = $this->dataTypeDefinition->getViewDefinition($viewName)->getProperties();
+
+        $properties = array_intersect_key($properties, array_combine($allowedProperties, $allowedProperties));
+
+        $this->setProperties($properties);
+    }
 }
