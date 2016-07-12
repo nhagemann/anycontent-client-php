@@ -543,7 +543,7 @@ class CachingRepository extends Repository
     {
         $this->flushCacheBeforeChange();
 
-        $result = parent::deleteRecord($recordIds);
+        $result = parent::deleteRecords($recordIds);
         $this->flushCacheAfterChange();
 
         return $result;
