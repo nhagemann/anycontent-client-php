@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "30e378c4117498aff72158cdf3f9eafa",
+    "hash": "8f485c4706245df950e7b4179b9ffa2f",
     "packages": [
         {
             "name": "cpliakas/git-wrapper",
@@ -435,16 +435,16 @@
         },
         {
             "name": "nhagemann/cmdl-parser-php",
-            "version": "2.1",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nhagemann/cmdl-parser-php.git",
-                "reference": "9c2f76bec8b80c6d6353e898f003465e701f3605"
+                "reference": "14e49fa8d817d46daedbee1ed48276b46b60c69f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/9c2f76bec8b80c6d6353e898f003465e701f3605",
-                "reference": "9c2f76bec8b80c6d6353e898f003465e701f3605",
+                "url": "https://api.github.com/repos/nhagemann/cmdl-parser-php/zipball/14e49fa8d817d46daedbee1ed48276b46b60c69f",
+                "reference": "14e49fa8d817d46daedbee1ed48276b46b60c69f",
                 "shasum": ""
             },
             "require": {
@@ -472,7 +472,7 @@
             ],
             "description": "Library to parse CMDL files into an object representation",
             "homepage": "http://www.nilshagemann.de",
-            "time": "2016-06-09 12:27:49"
+            "time": "2016-08-01 14:46:46"
         },
         {
             "name": "nhagemann/kvmlogger",
@@ -1438,7 +1438,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "nhagemann/cmdl-parser-php": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
