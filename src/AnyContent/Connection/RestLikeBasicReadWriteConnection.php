@@ -21,6 +21,15 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName();
 
+        $record = $record->setLastChangeUserInfo($this->userInfo);
+
+        $this->getClient()->setDefaultOption('query',
+                                             [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
+                                                               'firstname' => $this->userInfo->getFirstname(),
+                                                               'lastname'  => $this->userInfo->getLastname()
+                                             ]
+                                             ]);
+
         $response = $this->getClient()
                          ->post($url, [ 'body' => [ 'record' => json_encode($record), 'language' => $dataDimensions->getLanguage() ] ]);
 
@@ -53,15 +62,23 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
             $record = reset($records);
 
+            foreach ($records as $record)
+            {
+                $record = $record->setLastChangeUserInfo($this->userInfo);
+                $this->stashRecord($record, $dataDimensions);
+            }
+
             $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName();
+
+            $this->getClient()->setDefaultOption('query',
+                                                 [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
+                                                                   'firstname' => $this->userInfo->getFirstname(),
+                                                                   'lastname'  => $this->userInfo->getLastname()
+                                                 ]
+                                                 ]);
 
             $response = $this->getClient()
                              ->post($url, [ 'body' => [ 'records' => json_encode($records), 'language' => $dataDimensions->getLanguage() ] ]);
-
-            foreach ($records as $record)
-            {
-                $this->stashRecord($record, $dataDimensions);
-            }
 
             return $response->json();
         }
@@ -86,6 +103,13 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         $this->unstashRecord($contentTypeName, $recordId, $dataDimensions);
 
         $url = 'content/' . $contentTypeName . '/record/' . $recordId . '/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage();
+
+        $this->getClient()->setDefaultOption('query',
+                                             [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
+                                                               'firstname' => $this->userInfo->getFirstname(),
+                                                               'lastname'  => $this->userInfo->getLastname()
+                                             ]
+                                             ]);
 
         $response = $this->getClient()->delete($url);
 
@@ -141,6 +165,13 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         $url = 'content/' . $contentTypeName . '/records/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
 
+        $this->getClient()->setDefaultOption('query',
+                                             [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
+                                                               'firstname' => $this->userInfo->getFirstname(),
+                                                               'lastname'  => $this->userInfo->getLastname()
+                                             ]
+                                             ]);
+
         $response = $this->getClient()->delete($url);
 
         return $response->json();
@@ -157,7 +188,17 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         $url = 'config/' . $config->getConfigTypeName() . '/record/' . $dataDimensions->getWorkspace();
 
-        $this->getClient()->post($url, [ 'body' => [ 'record' => json_encode($config), 'language' => $dataDimensions->getLanguage() ] ]);
+        $config->setLastChangeUserInfo($this->userInfo);
+
+        $this->getClient()->setDefaultOption('query',
+                                             [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
+                                                               'firstname' => $this->userInfo->getFirstname(),
+                                                               'lastname'  => $this->userInfo->getLastname()
+                                             ]
+                                             ]);
+
+        $this->getClient()
+             ->post($url, [ 'body' => [ 'record' => json_encode($config), 'language' => $dataDimensions->getLanguage() ] ]);
 
         $this->stashConfig($config, $dataDimensions);
 
