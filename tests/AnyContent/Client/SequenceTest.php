@@ -92,17 +92,6 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testWrongItemType()
-    {
-        $this->repository->selectContentType('profiles');
-
-        $record = $this->repository->getRecord(5);
-
-        $this->setExpectedException('AnyContent\AnyContentClientException');
-
-        $item = new SequenceItem($record->getDataTypeDefinition(), 'standorte', 'test');
-    }
-
 
     public function testAddItemWrongProperty()
     {

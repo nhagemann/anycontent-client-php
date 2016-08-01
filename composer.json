@@ -13,7 +13,7 @@
   ],
   "require": {
     "php": ">=5.4",
-    "nhagemann/cmdl-parser-php": "dev-develop",
+    "nhagemann/cmdl-parser-php": "2.1",
     "psr/log": "1.*",
     "symfony/filesystem": "~2.3|~3.0",
     "symfony/finder": "~2.3|~3.0",
