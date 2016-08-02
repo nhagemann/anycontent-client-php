@@ -361,8 +361,9 @@ TEMPLATE_CONFIGTABLE;
 
         $record->setRevision($row['revision']);
         $record->setPosition($row['position']);
-        $record->setParent($row['parent_id']);
-        $record->setLevel($row['position_level']);
+        $record->setPosition($row['property_position']);
+        $record->setParent($row['property_parent']);
+        //$record->setLevel($row['position_level']);
 
         $userInfo = new UserInfo($row['creation_username'], $row['creation_firstname'], $row['creation_lastname'], $row['creation_timestamp']);
         $record->setCreationUserInfo($userInfo);
