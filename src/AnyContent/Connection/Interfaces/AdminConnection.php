@@ -8,12 +8,12 @@ interface AdminConnection extends WriteConnection
     public function saveContentTypeCMDL($contentTypeName, $cmdl);
 
 
-    public function saveConfigTypeCMDL($contentTypeName, $cmdl);
+    public function saveConfigTypeCMDL($configTypeName, $cmdl);
 
 
     public function deleteContentTypeCMDL($contentTypeName);
 
 
-    public function deleteConfigTypeCMDL($contentTypeName);
+    public function deleteConfigTypeCMDL($configTypeName);
 
 }

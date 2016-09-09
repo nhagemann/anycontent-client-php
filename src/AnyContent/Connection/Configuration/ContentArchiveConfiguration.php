@@ -31,6 +31,9 @@ class ContentArchiveConfiguration extends AbstractConfiguration
 
     public function apply(AbstractConnection $connection)
     {
+        $this->contentTypes = [];
+        $this->configTypes = [];
+
         parent::apply($connection);
 
         $finder = new Finder();
