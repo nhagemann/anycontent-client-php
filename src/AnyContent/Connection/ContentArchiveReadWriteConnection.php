@@ -54,6 +54,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
         $this->getConfiguration()->apply($this);
 
+        return true;
     }
 
 
@@ -65,6 +66,8 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         $sf->dumpFile($uri, $cmdl);
 
         $this->getConfiguration()->apply($this);
+
+        return true;
     }
 
 
@@ -76,6 +79,8 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         $sf->remove($uri);
 
         $this->getConfiguration()->apply($this);
+
+        return true;
     }
 
 
@@ -87,5 +92,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         $sf->remove($uri);
 
         $this->getConfiguration()->apply($this);
+
+        return true;
     }
 }
