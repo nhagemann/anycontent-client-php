@@ -6,15 +6,16 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
+use AnyContent\Connection\Interfaces\AdminConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
+use GuzzleHttp\Exception\ClientException;
 
-class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection implements WriteConnection
+class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection implements WriteConnection, AdminConnection
 {
 
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
         unset($this->repositoryInfo[(string)$dataDimensions]);
@@ -24,14 +25,21 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         $record = $record->setLastChangeUserInfo($this->userInfo);
 
         $this->getClient()->setDefaultOption('query',
-                                             [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
-                                                               'firstname' => $this->userInfo->getFirstname(),
-                                                               'lastname'  => $this->userInfo->getLastname()
-                                             ]
-                                             ]);
+            [
+                'userinfo' => [
+                    'username'  => $this->userInfo->getUsername(),
+                    'firstname' => $this->userInfo->getFirstname(),
+                    'lastname'  => $this->userInfo->getLastname()
+                ]
+            ]);
 
         $response = $this->getClient()
-                         ->post($url, [ 'body' => [ 'record' => json_encode($record), 'language' => $dataDimensions->getLanguage() ] ]);
+                         ->post($url, [
+                             'body' => [
+                                 'record'   => json_encode($record),
+                                 'language' => $dataDimensions->getLanguage()
+                             ]
+                         ]);
 
         $id = $response->json();
         $record->setId($id);
@@ -52,18 +60,15 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
     public function saveRecords(array $records, DataDimensions $dataDimensions = null)
     {
 
-        if (count($records) > 0)
-        {
-            if (!$dataDimensions)
-            {
+        if (count($records) > 0) {
+            if (!$dataDimensions) {
                 $dataDimensions = $this->getCurrentDataDimensions();
             }
             unset($this->repositoryInfo[(string)$dataDimensions]);
 
             $record = reset($records);
 
-            foreach ($records as $record)
-            {
+            foreach ($records as $record) {
                 $record = $record->setLastChangeUserInfo($this->userInfo);
                 $this->stashRecord($record, $dataDimensions);
             }
@@ -71,31 +76,36 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
             $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName();
 
             $this->getClient()->setDefaultOption('query',
-                                                 [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
-                                                                   'firstname' => $this->userInfo->getFirstname(),
-                                                                   'lastname'  => $this->userInfo->getLastname()
-                                                 ]
-                                                 ]);
+                [
+                    'userinfo' => [
+                        'username'  => $this->userInfo->getUsername(),
+                        'firstname' => $this->userInfo->getFirstname(),
+                        'lastname'  => $this->userInfo->getLastname()
+                    ]
+                ]);
 
             $response = $this->getClient()
-                             ->post($url, [ 'body' => [ 'records' => json_encode($records), 'language' => $dataDimensions->getLanguage() ] ]);
+                             ->post($url, [
+                                 'body' => [
+                                     'records'  => json_encode($records),
+                                     'language' => $dataDimensions->getLanguage()
+                                 ]
+                             ]);
 
             return $response->json();
         }
 
-        return [ ];
+        return [];
     }
 
 
     public function deleteRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        if (!$contentTypeName)
-        {
+        if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
@@ -105,16 +115,17 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         $url = 'content/' . $contentTypeName . '/record/' . $recordId . '/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage();
 
         $this->getClient()->setDefaultOption('query',
-                                             [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
-                                                               'firstname' => $this->userInfo->getFirstname(),
-                                                               'lastname'  => $this->userInfo->getLastname()
-                                             ]
-                                             ]);
+            [
+                'userinfo' => [
+                    'username'  => $this->userInfo->getUsername(),
+                    'firstname' => $this->userInfo->getFirstname(),
+                    'lastname'  => $this->userInfo->getLastname()
+                ]
+            ]);
 
         $response = $this->getClient()->delete($url);
 
-        if ($response->json() == true)
-        {
+        if ($response->json() == true) {
             return $recordId;
         }
 
@@ -125,20 +136,16 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
     public function deleteRecords(array $recordsIds, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
 
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
-        if (!$contentTypeName)
-        {
+        if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
-        $recordIds = [ ];
-        foreach ($recordsIds as $recordId)
-        {
-            if ($this->deleteRecord($recordId, $contentTypeName, $dataDimensions))
-            {
+        $recordIds = [];
+        foreach ($recordsIds as $recordId) {
+            if ($this->deleteRecord($recordId, $contentTypeName, $dataDimensions)) {
                 $recordIds[] = $recordId;
             }
         }
@@ -150,13 +157,11 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
     public function deleteAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        if (!$contentTypeName)
-        {
+        if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
@@ -166,11 +171,13 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         $url = 'content/' . $contentTypeName . '/records/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
 
         $this->getClient()->setDefaultOption('query',
-                                             [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
-                                                               'firstname' => $this->userInfo->getFirstname(),
-                                                               'lastname'  => $this->userInfo->getLastname()
-                                             ]
-                                             ]);
+            [
+                'userinfo' => [
+                    'username'  => $this->userInfo->getUsername(),
+                    'firstname' => $this->userInfo->getFirstname(),
+                    'lastname'  => $this->userInfo->getLastname()
+                ]
+            ]);
 
         $response = $this->getClient()->delete($url);
 
@@ -180,8 +187,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
     public function saveConfig(Config $config, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
         unset($this->repositoryInfo[(string)$dataDimensions]);
@@ -191,18 +197,182 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         $config->setLastChangeUserInfo($this->userInfo);
 
         $this->getClient()->setDefaultOption('query',
-                                             [ 'userinfo' => [ 'username'  => $this->userInfo->getUsername(),
-                                                               'firstname' => $this->userInfo->getFirstname(),
-                                                               'lastname'  => $this->userInfo->getLastname()
-                                             ]
-                                             ]);
+            [
+                'userinfo' => [
+                    'username'  => $this->userInfo->getUsername(),
+                    'firstname' => $this->userInfo->getFirstname(),
+                    'lastname'  => $this->userInfo->getLastname()
+                ]
+            ]);
 
         $this->getClient()
-             ->post($url, [ 'body' => [ 'record' => json_encode($config), 'language' => $dataDimensions->getLanguage() ] ]);
+             ->post($url, ['body' => ['record' => json_encode($config), 'language' => $dataDimensions->getLanguage()]]);
 
         $this->stashConfig($config, $dataDimensions);
 
         return true;
     }
 
+    /**
+     *
+     *
+     *   // update cmdl for a content type / create content type
+     * $app->post('/1/{repositoryName}/content/{contentTypeName}/cmdl', 'AnyContent\Repository\Modules\Core\Repositories\RepositoryController::postContentTypeCMDL');
+     * $app->post('/1/{repositoryName}/content/{contentTypeName}/cmdl/{locale}', 'AnyContent\Repository\Modules\Core\Repositories\RepositoryController::postContentTypeCMDL');
+     *
+     * // delete content type
+     * $app->delete('/1/{repositoryName}/content/{contentTypeName}', 'AnyContent\Repository\Modules\Core\Repositories\RepositoryController::deleteContentType');
+     *
+     * // update cmdl for a config type / create config type
+     * $app->post('/1/{repositoryName}/config/{configTypeName}/cmdl', 'AnyContent\Repository\Modules\Core\Repositories\RepositoryController::postConfigTypeCMDL');
+     * $app->post('/1/{repositoryName}/config/{configTypeName}/cmdl/{locale}', 'AnyContent\Repository\Modules\Core\Repositories\RepositoryController::postConfigTypeCMDL');
+     *
+     * // delete config type
+     * $app->delete('/1/{repositoryName}/config/{configTypeName}', 'AnyContent\Repository\Modules\Core\Repositories\RepositoryController::deleteConfigType');
+     */
+
+    /**
+     * @param $contentTypeName
+     * @param $cmdl
+     *
+     * @return boolean
+     */
+    public function saveContentTypeCMDL($contentTypeName, $cmdl)
+    {
+        $this->repositoryInfo = [];
+
+        $url = 'content/' . $contentTypeName . '/cmdl';
+
+        $this->getClient()->setDefaultOption('query',
+            [
+                'userinfo' => [
+                    'username'  => $this->userInfo->getUsername(),
+                    'firstname' => $this->userInfo->getFirstname(),
+                    'lastname'  => $this->userInfo->getLastname()
+                ]
+            ]);
+
+        $this->getClient()->post($url, ['body' => ['cmdl' => $cmdl]]);
+
+        $contentTypeNames = $this->getConfiguration()->getContentTypeNames();
+
+        $contentTypeNames[] = $contentTypeName;
+
+        $this->getConfiguration()->addContentTypes($contentTypeNames);
+
+        return true;
+
+    }
+
+
+    /**
+     * @param $configTypeName
+     * @param $cmdl
+     *
+     * @return boolean
+     */
+    public function saveConfigTypeCMDL($configTypeName, $cmdl)
+    {
+        $this->repositoryInfo = [];
+
+        $url = 'config/' . $configTypeName . '/cmdl';
+
+        $this->getClient()->setDefaultOption('query',
+            [
+                'userinfo' => [
+                    'username'  => $this->userInfo->getUsername(),
+                    'firstname' => $this->userInfo->getFirstname(),
+                    'lastname'  => $this->userInfo->getLastname()
+                ]
+            ]);
+
+        $this->getClient()->post($url, ['body' => ['cmdl' => $cmdl]]);
+
+        $configTypeNames = $this->getConfiguration()->getConfigTypeNames();
+
+        $configTypeNames[] = $configTypeName;
+
+        $this->getConfiguration()->addConfigTypes($configTypeNames);
+
+        return true;
+    }
+
+
+    /**
+     * @param $contentTypeName
+     *
+     * @return boolean
+     */
+    public function deleteContentTypeCMDL($contentTypeName)
+    {
+        $this->repositoryInfo = [];
+
+        try {
+            $url = 'content/' . $contentTypeName;
+
+            $this->getClient()->setDefaultOption('query',
+                [
+                    'userinfo' => [
+                        'username'  => $this->userInfo->getUsername(),
+                        'firstname' => $this->userInfo->getFirstname(),
+                        'lastname'  => $this->userInfo->getLastname()
+                    ]
+                ]);
+
+            $this->getClient()->delete($url);
+
+            $contentTypeNames = $this->getConfiguration()->getContentTypeNames();
+
+            if (($key = array_search($contentTypeName, $contentTypeNames)) !== false) {
+                unset($contentTypeNames[$key]);
+            }
+
+            $this->getConfiguration()->addContentTypes($contentTypeNames);
+
+            return true;
+        } catch (ClientException $e) {
+
+            return false;
+        }
+
+    }
+
+
+    /**
+     * @param $configTypeName
+     *
+     * @return boolean
+     */
+    public function deleteConfigTypeCMDL($configTypeName)
+    {
+        $this->repositoryInfo = [];
+
+        try {
+            $url = 'config/' . $configTypeName;
+
+            $this->getClient()->setDefaultOption('query',
+                [
+                    'userinfo' => [
+                        'username'  => $this->userInfo->getUsername(),
+                        'firstname' => $this->userInfo->getFirstname(),
+                        'lastname'  => $this->userInfo->getLastname()
+                    ]
+                ]);
+
+            $this->getClient()->delete($url);
+
+            $configTypeNames = $this->getConfiguration()->getConfigTypeNames();
+
+            if (($key = array_search($configTypeName, $configTypeNames)) !== false) {
+                unset($configTypeNames[$key]);
+            }
+
+            $this->getConfiguration()->addConfigTypes($configTypeNames);
+
+            return true;
+        } catch (ClientException $e) {
+
+            return false;
+        }
+    }
 }

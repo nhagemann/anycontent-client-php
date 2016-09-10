@@ -6,6 +6,7 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
+use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use AnyContent\Filter\PropertyFilter;
@@ -27,6 +28,17 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
     protected $repositoryInfo = [ ];
 
+    /** @var  RestLikeConfiguration */
+    protected $configuration;
+
+
+    /**
+     * @return RestLikeConfiguration
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
 
     /**
      * @return Client
@@ -85,6 +97,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
+
 
         if (!array_key_exists((string)$dataDimensions, $this->repositoryInfo))
         {
@@ -558,4 +571,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         return $t;
     }
+
+
 }
