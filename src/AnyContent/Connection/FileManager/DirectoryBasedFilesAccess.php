@@ -18,7 +18,7 @@ class DirectoryBasedFilesAccess implements FileManager
 
     protected $baseFolder = null;
 
-    protected $imagesize = true;
+    protected $imagesize = false;
 
     protected $publicUrl = false;
 
@@ -45,7 +45,7 @@ class DirectoryBasedFilesAccess implements FileManager
 
     public function disableImageSizeCalculation()
     {
-        $this->imagesize = true;
+        $this->imagesize = false;
 
         return $this;
     }
