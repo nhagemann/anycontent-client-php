@@ -40,9 +40,12 @@ class ImageVersionCreator
 
     protected $timestampCheck = true;
 
+    protected $keepOriginalImageIfSizeIsTheSame = false;
+
     protected $cacheBinaries = false;
 
     protected $cachedBinaries = array();
+
 
     /**
      * @param      $repository
@@ -63,12 +66,14 @@ class ImageVersionCreator
         }
     }
 
+
     public function setBasePathAndUrl($basePath, $baseUrl)
     {
         $this->basePath = $basePath;
 
         $this->baseUrl = $baseUrl;
     }
+
 
     /**
      * @return null
@@ -78,6 +83,7 @@ class ImageVersionCreator
         return $this->basePath;
     }
 
+
     /**
      * @return null
      */
@@ -86,16 +92,19 @@ class ImageVersionCreator
         return $this->baseUrl;
     }
 
+
     public function selectRepository($repository)
     {
-        $this->repository = $repository;
+        $this->repository     = $repository;
         $this->cachedBinaries = array();
     }
+
 
     public function getCurrentRepository()
     {
         return $this->repository;
     }
+
 
     /**
      * @param int $quality
@@ -105,6 +114,7 @@ class ImageVersionCreator
         $this->quality = $quality;
     }
 
+
     /**
      * @return int
      */
@@ -112,6 +122,7 @@ class ImageVersionCreator
     {
         return $this->quality;
     }
+
 
     /**
      * If the timestamp check is enabled, images won't get rebuild, if the modified date of the generated image
@@ -125,10 +136,12 @@ class ImageVersionCreator
         $this->timestampCheck = true;
     }
 
+
     public function disableTimestampCheck()
     {
         $this->timestampCheck = false;
     }
+
 
     /**
      * If you create more than one version of an image, you might turn on the (request scoped) binary cache, to avoid multiple fetching
@@ -140,23 +153,43 @@ class ImageVersionCreator
      */
     public function enableBinaryCache()
     {
-        $this->cacheBinaries = true;
+        $this->cacheBinaries  = true;
         $this->cachedBinaries = array();
     }
+
 
     public function disableBinaryCache()
     {
-        $this->cacheBinaries = false;
+        $this->cacheBinaries  = false;
         $this->cachedBinaries = array();
     }
 
+
     /**
-     * @param File $file
+     * @return boolean
+     */
+    public function isKeepOriginalImageIfSizeIsTheSame()
+    {
+        return $this->keepOriginalImageIfSizeIsTheSame;
+    }
+
+
+    /**
+     * @param boolean $keepOriginalImageIfSizeIsTheSame
+     */
+    public function setKeepOriginalImageIfSizeIsTheSame($keepOriginalImageIfSizeIsTheSame)
+    {
+        $this->keepOriginalImageIfSizeIsTheSame = $keepOriginalImageIfSizeIsTheSame;
+    }
+
+
+    /**
+     * @param File   $file
      * @param string $urlType
-     * @param int $width
-     * @param null $height
-     * @param null $filename
-     * @param null $quality
+     * @param int    $width
+     * @param null   $height
+     * @param null   $filename
+     * @param null   $quality
      *
      * @return File|bool
      */
@@ -182,15 +215,19 @@ class ImageVersionCreator
 
                     if ($binary) {
                         $imagine = new Imagine();
-                        $image = $imagine->load($binary);
+                        $image   = $imagine->load($binary);
 
-                        $size = $image->getSize();
+                        $size  = $image->getSize();
                         $ratio = $size->getWidth() / $size->getHeight();
 
                         if ($ratio > $width / $height) {
                             $size = $size->widen($width);
                         } else {
                             $size = $size->heighten($height);
+                        }
+
+                        if ($this->keepOriginalImage($binary, $size->getWidth(), $size->getHeight())) {
+                            return $this->getOriginalImage($file, $urlType, $filename);
                         }
 
                         $image->resize($size);
@@ -213,14 +250,15 @@ class ImageVersionCreator
         return false;
     }
 
+
     /**
-     * @param File $file
+     * @param File   $file
      * @param string $urlType
-     * @param int $width
-     * @param null $height
-     * @param bool $crop
-     * @param null $filename
-     * @param null $quality
+     * @param int    $width
+     * @param null   $height
+     * @param bool   $crop
+     * @param null   $filename
+     * @param null   $quality
      *
      * @return File|bool
      */
@@ -248,9 +286,13 @@ class ImageVersionCreator
                 if ($this->mustBuildImage($file, $filename)) {
                     $binary = $this->getBinary($file);
 
+                    if ($this->keepOriginalImage($binary, $width, $height)) {
+                        return $this->getOriginalImage($file, $urlType, $filename);
+                    }
+
                     if ($binary) {
                         $imagine = new Imagine();
-                        $image = $imagine->load($binary);
+                        $image   = $imagine->load($binary);
 
                         $image->resize(new Box($width, $height));
 
@@ -271,13 +313,15 @@ class ImageVersionCreator
         return false;
     }
 
+
     /**
-     * @param File $file
+     * @param File   $file
      * @param string $urlType
-     * @param null $width
-     * @param null $height
-     * @param null $filename
-     * @param null $quality
+     * @param null   $width
+     * @param null   $height
+     * @param null   $filename
+     * @param null   $quality
+     *
      * @return File|bool
      */
     public function getScaledImage(
@@ -293,16 +337,15 @@ class ImageVersionCreator
             return $this->getResizedImage($file, $urlType, $width, $height, false, $filename, $quality);
         }
 
-        if ($this->mustBuildImage($file, $filename)) {
+        if ($this->mustBuildImage($file, $filename) || $filename == null) {
             $binary = $this->getBinary($file);
 
             if ($binary) {
                 $imagine = new Imagine();
-                $image = $imagine->load($binary);
+                $image   = $imagine->load($binary);
 
-                $size = $image->getSize();
+                $size  = $image->getSize();
                 $ratio = $size->getWidth() / $size->getHeight();
-
 
                 if ($width == null) {
                     $width = $height * $ratio;
@@ -310,10 +353,17 @@ class ImageVersionCreator
                     $height = $width / $ratio;
                 }
 
-                $image->resize(new Box($width, $height));
+                $filename = $this->determineFileName($file, $width, $height, 's', $filename);
+                if ($this->mustBuildImage($file, $filename)) {
+                    if ($this->keepOriginalImage($binary, $width, $height)) {
+                        return $this->getOriginalImage($file, $urlType, $filename);
+                    }
 
-                $quality = $this->determineQuality($quality);
-                $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                    $image->resize(new Box($width, $height));
+
+                    $quality = $this->determineQuality($quality);
+                    $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                }
 
             } else {
                 return false;
@@ -327,13 +377,14 @@ class ImageVersionCreator
         return $file;
     }
 
+
     /**
-     * @param File $file
+     * @param File   $file
      * @param string $urlType
-     * @param int $width
-     * @param null $height
-     * @param null $filename
-     * @param null $quality
+     * @param int    $width
+     * @param null   $height
+     * @param null   $filename
+     * @param null   $quality
      *
      * @return File|bool
      */
@@ -357,9 +408,13 @@ class ImageVersionCreator
                 if ($this->mustBuildImage($file, $filename)) {
                     $binary = $this->getBinary($file);
 
+                    if ($this->keepOriginalImage($binary, $width, $height)) {
+                        return $this->getOriginalImage($file, $urlType, $filename);
+                    }
+
                     if ($binary) {
                         $imagine = new Imagine();
-                        $image = $imagine->load($binary);
+                        $image   = $imagine->load($binary);
 
                         $size = $image->getSize();
 
@@ -412,6 +467,7 @@ class ImageVersionCreator
         return false;
     }
 
+
     public function getOriginalImage(File $file, $urlType = 'binary', $filename = null)
     {
         if ($this->repository) {
@@ -438,10 +494,11 @@ class ImageVersionCreator
         return false;
     }
 
+
     public function deleteRecentlyNotAccessedFiles($minutes = 1440, $path = null)
     {
 
-        $fs = new Filesystem();
+        $fs     = new Filesystem();
         $finder = new Finder();
 
         if ($path == null) {
@@ -478,13 +535,14 @@ class ImageVersionCreator
         return $c;
     }
 
+
     protected function getBinary(File $file)
     {
         if ($this->cacheBinaries == true) {
             if (array_key_exists($file->getId(), $this->cachedBinaries)) {
                 return $this->cachedBinaries[$file->getId()];
             }
-            $binary = $this->repository->getBinary($file);
+            $binary                               = $this->repository->getBinary($file);
             $this->cachedBinaries[$file->getId()] = $binary;
         } else {
             $binary = $this->repository->getBinary($file);
@@ -492,6 +550,7 @@ class ImageVersionCreator
 
         return $binary;
     }
+
 
     protected function determineFileName($file, $width, $height, $mode, $filename = null)
     {
@@ -504,12 +563,13 @@ class ImageVersionCreator
             }
         }
 
-        $fs = new Filesystem();
+        $fs   = new Filesystem();
         $info = pathinfo($this->basePath . '/' . $filename);
         $fs->mkdir($info['dirname']);
 
         return $filename;
     }
+
 
     protected function determineQuality($quality = null)
     {
@@ -519,6 +579,7 @@ class ImageVersionCreator
 
         return $quality;
     }
+
 
     protected function mustBuildImage(File $file, $filename)
     {
@@ -542,6 +603,20 @@ class ImageVersionCreator
         // Change timestamp of the file, to mark it as "active"
 
         $fs->touch($this->basePath . '/' . $filename);
+
+        return false;
+    }
+
+
+    protected function keepOriginalImage($binary, $width, $height)
+    {
+        if ($this->isKeepOriginalImageIfSizeIsTheSame() == true) {
+            list($originalWidth, $originalHeight) = getimagesizefromstring($binary);
+
+            if ($originalWidth == $width && $originalHeight == $height) {
+                return true;
+            }
+        }
 
         return false;
     }
