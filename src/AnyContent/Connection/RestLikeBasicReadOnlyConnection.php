@@ -316,7 +316,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         // V1 compatibility - multi sort is not possible
 
-        $map = [ '.id' => 'id', '.id-' => 'id', 'position' => 'pos', 'position-' => 'pos-', '.info.creation.timestamp' => 'creation', '.info.creation.timestamp-' => 'creation-', '.info.lastchange.timestamp' => 'change', '.info.lastchange.timestamp-' => 'change-' ];
+        $map = [ '.id' => 'id', '.id-' => 'id-', 'position' => 'pos', 'position-' => 'pos-', '.info.creation.timestamp' => 'creation', '.info.creation.timestamp-' => 'creation-', '.info.lastchange.timestamp' => 'change', '.info.lastchange.timestamp-' => 'change-' ];
 
 
         $first = reset($order);
