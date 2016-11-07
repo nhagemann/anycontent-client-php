@@ -100,5 +100,25 @@ class GetRecordsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1,$repository->getCacheProvider()->getHitCounter());
     }
 
+    public function testGetRecordWithIdNull()
+    {
+        $repository = $this->repository;
+        $repository->selectContentType('profiles');
+
+        $record = $repository->getRecord(null);
+        $this->assertFalse($record);
+        $record = $repository->getRecord(null);
+        $this->assertFalse($record);
+
+        $repository->enableSingleContentRecordCaching(60);
+
+        $record = $repository->getRecord(null);
+        $this->assertFalse($record);
+
+        $record = $repository->getRecord(null);
+        $this->assertFalse($record);
+
+    }
+
 
 }

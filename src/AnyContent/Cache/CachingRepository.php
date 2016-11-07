@@ -323,8 +323,10 @@ class CachingRepository extends Repository
             $cacheKey = $this->createCacheKey('record', [ $this->getCurrentContentTypeName(), $recordId ], $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
+
             if ($data)
             {
+
                 $data = json_decode($data, true);
 
                 $recordFactory = $this->getRecordFactory();
@@ -337,9 +339,11 @@ class CachingRepository extends Repository
 
             $record = parent::getRecord($recordId, $dataDimensions);
 
-            $data = json_encode($record);
+            if ($record) {
+                $data = json_encode($record);
 
-            $this->getCacheProvider()->save($cacheKey, $data, $this->singleContentRecordCaching);
+                $this->getCacheProvider()->save($cacheKey, $data, $this->singleContentRecordCaching);
+            }
 
             return $record;
         }
