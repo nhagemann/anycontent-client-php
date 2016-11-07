@@ -37,7 +37,7 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
         {
             $configuration = new RestLikeConfiguration();
 
-            $configuration->setUri(PHPUNIT_CREDENTIALS_RESTLIKE_URL1);
+            $configuration->setUri(PHPUNIT_CREDENTIALS_RESTLIKE_URL2);
             $connection = $configuration->createReadWriteConnection();
 
             $configuration->addContentTypes();
@@ -79,10 +79,15 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('RestLike Basic Connection credentials missing.');
         }
 
+        $file = $this->fileManager->getFile('test/dieter.jpg');
+        $this->assertFalse($file);
+
         $file = $this->fileManager->getFile('test/heiko.jpg');
         $this->assertInstanceOf('AnyContent\Client\File', $file);
 
+
         $binary = $this->fileManager->getBinary($file);
+
         $this->assertEquals(5237, strlen($binary));
 
         $file   = new File('test', 'test/heike.jpg', 'heike.jpg', $binary, [ ]);
