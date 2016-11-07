@@ -828,14 +828,15 @@ abstract class AbstractConnection implements ReadOnlyConnection
      *
      * @param Record $record
      */
-    protected function finalizeRecord(Record $record, DataDimensions $dataDimensions)
+    protected function finalizeRecord(AbstractRecord $record, DataDimensions $dataDimensions)
     {
 
-        // Apply @name annotation
-        if ($record->getDataTypeDefinition()->hasNamingPattern())
-        {
-            $record->setName(Util::applyNamingPattern($record->getProperties(), $record->getDataTypeDefinition()
-                                                                                       ->getNamingPattern()));
+        if ($record instanceof Record) {
+            // Apply @name annotation
+            if ($record->getDataTypeDefinition()->hasNamingPattern()) {
+                $record->setName(Util::applyNamingPattern($record->getProperties(), $record->getDataTypeDefinition()
+                                                                                           ->getNamingPattern()));
+            }
         }
 
         // remove protected properties

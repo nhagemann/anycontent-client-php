@@ -21,6 +21,8 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
+        $this->finalizeRecord($record,$dataDimensions);
+
         if ($record->getID() == '')
         {
             $record->setId($this->getNextId($record->getContentTypeName(), $dataDimensions));
@@ -181,6 +183,8 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
+
+        $config = $this->finalizeRecord($config,$dataDimensions);
 
         $configTypeName = $config->getConfigTypeName();
 

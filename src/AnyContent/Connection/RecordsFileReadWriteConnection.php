@@ -189,6 +189,8 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
+        $config = $this->finalizeRecord($config,$dataDimensions);
+
         $configTypeName = $config->getConfigTypeName();
 
         $mergedConfig = $this->mergeExistingConfig($config, $dataDimensions);
