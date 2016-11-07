@@ -12,6 +12,8 @@ City
 Country
 Comment
 
+Ranking = number§
+
 === test ===
 
 comment = richtext

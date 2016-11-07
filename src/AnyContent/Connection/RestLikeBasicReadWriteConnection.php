@@ -18,6 +18,9 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
+
+        $this->finalizeRecord($record,$dataDimensions);
+
         unset($this->repositoryInfo[(string)$dataDimensions]);
 
         $url = 'content/' . $record->getContentTypeName() . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName();
@@ -191,6 +194,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
             $dataDimensions = $this->getCurrentDataDimensions();
         }
         unset($this->repositoryInfo[(string)$dataDimensions]);
+
+        $this->finalizeRecord($config,$dataDimensions);
 
         $url = 'config/' . $config->getConfigTypeName() . '/record/' . $dataDimensions->getWorkspace();
 

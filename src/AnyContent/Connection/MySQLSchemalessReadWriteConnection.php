@@ -296,7 +296,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $definition = $config->getConfigTypeDefinition();
+        $this->finalizeRecord($config,$dataDimensions);
 
         $configTypeName = $config->getConfigTypeName();
 

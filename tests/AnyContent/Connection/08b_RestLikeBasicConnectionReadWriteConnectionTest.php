@@ -194,4 +194,24 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
         $this->assertEquals(0, $connection->countRecords());
     }
 
+    public function testProtectedProperties()
+    {
+        KVMLogger::instance()->debug(__METHOD__);
+
+        $connection = $this->connection;
+
+        $connection->selectContentType('profiles');
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+
+        $record->setProperty('ranking',1);
+
+        $this->assertEquals(1,$record->getProperty('ranking'));
+
+        $id = $connection->saveRecord($record);
+
+        $record = $connection->getRecord($id);
+
+        $this->assertEquals('',$record->getProperty('ranking'));
+    }
 }

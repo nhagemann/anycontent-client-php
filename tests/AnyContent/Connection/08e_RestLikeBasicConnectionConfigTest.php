@@ -125,4 +125,23 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testProtectedProperties()
+    {
+        KVMLogger::instance()->debug(__METHOD__);
+
+        $connection = $this->connection;
+
+        $config = $connection->getConfig('config1');
+
+        $config->setProperty('ranking',1);
+
+        $this->assertEquals(1,$config->getProperty('ranking'));
+
+        $connection->saveConfig($config);
+
+        $config = $connection->getConfig('config1');
+
+        $this->assertEquals('',$config->getProperty('ranking'));
+    }
+
 }
