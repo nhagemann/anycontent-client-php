@@ -37,12 +37,12 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
             ]);
 
         $response = $this->getClient()
-                         ->post($url, [
-                             'body' => [
-                                 'record'   => json_encode($record),
-                                 'language' => $dataDimensions->getLanguage()
-                             ]
-                         ]);
+            ->post($url, [
+                'body' => [
+                    'record'   => json_encode($record),
+                    'language' => $dataDimensions->getLanguage()
+                ]
+            ]);
 
         $id = $response->json();
         $record->setId($id);
@@ -88,12 +88,12 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                 ]);
 
             $response = $this->getClient()
-                             ->post($url, [
-                                 'body' => [
-                                     'records'  => json_encode($records),
-                                     'language' => $dataDimensions->getLanguage()
-                                 ]
-                             ]);
+                ->post($url, [
+                    'body' => [
+                        'records'  => json_encode($records),
+                        'language' => $dataDimensions->getLanguage()
+                    ]
+                ]);
 
             return $response->json();
         }
@@ -211,7 +211,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
             ]);
 
         $this->getClient()
-             ->post($url, ['body' => ['record' => json_encode($config), 'language' => $dataDimensions->getLanguage()]]);
+            ->post($url, ['body' => ['record' => json_encode($config), 'language' => $dataDimensions->getLanguage()]]);
 
         $this->stashConfig($config, $dataDimensions);
 
@@ -265,6 +265,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         $this->getConfiguration()->addContentTypes($contentTypeNames);
 
+        $this->getCMDLCache()->flushAll();
+
         return true;
 
     }
@@ -299,6 +301,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         $this->getConfiguration()->addConfigTypes($configTypeNames);
 
+        $this->getCMDLCache()->flushAll();
+
         return true;
     }
 
@@ -311,6 +315,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
     public function deleteContentTypeCMDL($contentTypeName)
     {
         $this->repositoryInfo = [];
+
+        $this->getCMDLCache()->flushAll();
 
         try {
             $url = 'content/' . $contentTypeName;
@@ -334,6 +340,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
             $this->getConfiguration()->addContentTypes($contentTypeNames);
 
+            $this->getCMDLCache()->flushAll();
+
             return true;
         } catch (ClientException $e) {
 
@@ -351,6 +359,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
     public function deleteConfigTypeCMDL($configTypeName)
     {
         $this->repositoryInfo = [];
+
+        $this->getCMDLCache()->flushAll();
 
         try {
             $url = 'config/' . $configTypeName;
@@ -373,6 +383,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
             }
 
             $this->getConfiguration()->addConfigTypes($configTypeNames);
+
+            $this->getCMDLCache()->flushAll();
 
             return true;
         } catch (ClientException $e) {

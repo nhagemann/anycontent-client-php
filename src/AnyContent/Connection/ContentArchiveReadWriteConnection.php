@@ -52,6 +52,8 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         $sf = new Filesystem();
         $sf->dumpFile($uri, $cmdl);
 
+        $this->getCMDLCache()->flushAll();
+
         $this->getConfiguration()->apply($this);
 
         return true;
@@ -64,6 +66,8 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
         $sf = new Filesystem();
         $sf->dumpFile($uri, $cmdl);
+
+        $this->getCMDLCache()->flushAll();
 
         $this->getConfiguration()->apply($this);
 
@@ -78,6 +82,8 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         $sf = new Filesystem();
         $sf->remove($uri);
 
+        $this->getCMDLCache()->flushAll();
+
         $this->getConfiguration()->apply($this);
 
         return true;
@@ -91,6 +97,8 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         $sf = new Filesystem();
         $sf->remove($uri);
 
+        $this->getCMDLCache()->flushAll();
+        
         $this->getConfiguration()->apply($this);
 
         return true;
