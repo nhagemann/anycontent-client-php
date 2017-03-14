@@ -154,7 +154,13 @@ class RecordsSorter
 
         if ($parentId != 0)
         {
-            $root = $nestedSet[$parentId];
+            if (array_key_exists($parentId,$nestedSet)) {
+                $root = $nestedSet[$parentId];
+            }
+            else
+            {
+                return [];
+            }
         }
 
         $result = [ ];
