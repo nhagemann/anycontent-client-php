@@ -382,6 +382,9 @@ TEMPLATE_CONFIGTABLE;
         {
             $precalculate           = $this->precalculations[$key];
             $precalculate['record'] = clone$precalculate['record'];
+            $precalculate['record']->setLanguage($dataDimensions->getLanguage());
+            $precalculate['record']->setWorkspace($dataDimensions->getWorkspace());
+            $precalculate['record']->setViewName($dataDimensions->getViewName());
         }
         else
         {
