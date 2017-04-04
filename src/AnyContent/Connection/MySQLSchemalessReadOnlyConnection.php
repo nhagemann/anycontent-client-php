@@ -163,7 +163,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
           `workspace` varchar(255) NOT NULL DEFAULT 'default',
           `language` varchar(255) NOT NULL DEFAULT 'default',
           `property_subtype` varchar(255) DEFAULT NULL,
-          `property_status` varchar(255) DEFAULT '1',
+          `property_status` varchar(255) DEFAULT NULL,
           `property_parent` int(11) DEFAULT NULL,
           `property_position` int(11) DEFAULT NULL,
           `parent_id` int(11) DEFAULT NULL,
