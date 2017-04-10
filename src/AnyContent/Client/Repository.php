@@ -542,6 +542,24 @@ class Repository implements FileManager
     }
 
 
+    /**
+     * @param $filter
+     * @param $order
+     * @param int $page
+     * @param null $count
+     * @param DataDimensions $dataDimensions
+     * @return bool|Record
+     */
+    public function getFirstRecord ($filter = '', $order = [ '.id' ], $page = 1, $count = null, $dataDimensions = null)
+    {
+        $records = $this->getRecords($filter,$order,$page,$count,$dataDimensions);
+        if ($records)
+        {
+            return array_shift($records);
+        }
+        return false;
+    }
+
     protected function getAllRecords($dataDimensions = null)
     {
         if ($dataDimensions == null)
@@ -888,4 +906,5 @@ class Repository implements FileManager
 
         return false;
     }
+
 }
