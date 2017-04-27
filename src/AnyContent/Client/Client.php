@@ -109,6 +109,12 @@ class Client
     }
 
 
+    /**
+     * @param $repositoryName
+     *
+     * @return Repository
+     * @throws AnyContentClientException
+     */
     public function getRepository($repositoryName)
     {
         if (array_key_exists($repositoryName, $this->repositories))

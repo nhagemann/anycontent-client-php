@@ -16,7 +16,7 @@ use CMDL\ConfigTypeDefinition;
 use CMDL\ContentTypeDefinition;
 use KVMLogger\KVMLogger;
 
-class Repository implements FileManager
+class Repository implements FileManager, \JsonSerializable
 {
 
     /** @var  ReadOnlyConnection */
@@ -53,29 +53,27 @@ class Repository implements FileManager
     protected $recordFactory;
 
 
-    public function __construct($name, ReadOnlyConnection $readConnection, FileManager $fileManager = null, WriteConnection $writeConnection = null)
-    {
+    public function __construct(
+        $name,
+        ReadOnlyConnection $readConnection,
+        FileManager $fileManager = null,
+        WriteConnection $writeConnection = null
+    ) {
         $this->setName($name);
 
         $this->readConnection = $readConnection;
 
         $this->readConnection->apply($this);
 
-        if ($writeConnection != null)
-        {
-            if ($writeConnection instanceof WriteConnection)
-            {
+        if ($writeConnection != null) {
+            if ($writeConnection instanceof WriteConnection) {
                 $this->writeConnection = $writeConnection;
 
                 $this->writeConnection->apply($this);
-            }
-            else
-            {
+            } else {
                 throw new AnyContentClientException ('Given connection is not a write connection');
             }
-        }
-        elseif ($readConnection instanceof WriteConnection)
-        {
+        } elseif ($readConnection instanceof WriteConnection) {
             $this->writeConnection = $readConnection;
         }
 
@@ -296,8 +294,7 @@ class Repository implements FileManager
     public function getContentTypeDefinition($contentTypeName = null)
     {
 
-        if ($contentTypeName == null)
-        {
+        if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
@@ -316,7 +313,6 @@ class Repository implements FileManager
 
         return $this->readConnection->getConfigTypeDefinition($configTypeName);
     }
-
 
 
     /**
@@ -340,8 +336,7 @@ class Repository implements FileManager
     {
         $this->readConnection->selectContentType($contentTypeName);
 
-        if ($resetDataDimensions)
-        {
+        if ($resetDataDimensions) {
             $this->reset();
         }
 
@@ -370,12 +365,10 @@ class Repository implements FileManager
         $dataDimension = $this->getCurrentDataDimensions();
 
         $dataDimension->setWorkspace($workspace);
-        if ($language !== null)
-        {
+        if ($language !== null) {
             $dataDimension->setLanguage($language);
         }
-        if ($timeshift !== null)
-        {
+        if ($timeshift !== null) {
             $dataDimension->setTimeShift($timeshift);
         }
 
@@ -424,13 +417,11 @@ class Repository implements FileManager
 
     public function getCurrentDataDimensions($decoupled = false)
     {
-        if (!$this->dataDimensions)
-        {
+        if (!$this->dataDimensions) {
             $this->reset();
         }
 
-        if ($decoupled)
-        {
+        if ($decoupled) {
             return clone $this->dataDimensions;
         }
 
@@ -443,9 +434,8 @@ class Repository implements FileManager
      */
     public function getRecordFactory()
     {
-        if (!$this->recordFactory)
-        {
-            $this->recordFactory = new RecordFactory([ 'validateProperties' => false ]);
+        if (!$this->recordFactory) {
+            $this->recordFactory = new RecordFactory(['validateProperties' => false]);
 
         }
 
@@ -458,10 +448,11 @@ class Repository implements FileManager
     {
 
         $record = $this->getRecordFactory()
-                       ->createRecord($this->getContentTypeDefinition(), [ ], $this->getCurrentDataDimensions()
-                                                                                   ->getViewName(), $this->getCurrentDataDimensions()
-                                                                                                         ->getWorkspace(), $this->getCurrentDataDimensions()
-                                                                                                                                ->getLanguage());
+            ->createRecord($this->getContentTypeDefinition(), [], $this->getCurrentDataDimensions()
+                ->getViewName(),
+                $this->getCurrentDataDimensions()
+                    ->getWorkspace(), $this->getCurrentDataDimensions()
+                    ->getLanguage());
         $record->setId($recordId);
         $record->setName($name);
 
@@ -481,8 +472,7 @@ class Repository implements FileManager
      */
     public function getRecord($recordId, $dataDimensions = null)
     {
-        if ($dataDimensions == null)
-        {
+        if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
@@ -491,6 +481,7 @@ class Repository implements FileManager
         if ($record) {
             $record->setRepository($this);
         }
+
         return $record;
     }
 
@@ -507,18 +498,16 @@ class Repository implements FileManager
      *
      * @return Record[]
      */
-    public function getRecords($filter = '', $order = [ '.id' ], $page = 1, $count = null, $dataDimensions = null)
+    public function getRecords($filter = '', $order = ['.id'], $page = 1, $count = null, $dataDimensions = null)
     {
-        if ($dataDimensions == null)
-        {
+        if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        if ($this->readConnection instanceof FilteringConnection)
-        {
-            $records = $this->readConnection->getRecords($this->getCurrentContentTypeName(), $dataDimensions, $filter, $page, $count, $order);
-        }
-        else {
+        if ($this->readConnection instanceof FilteringConnection) {
+            $records = $this->readConnection->getRecords($this->getCurrentContentTypeName(), $dataDimensions, $filter,
+                $page, $count, $order);
+        } else {
 
             $records = $this->getAllRecords($dataDimensions);
 
@@ -533,8 +522,7 @@ class Repository implements FileManager
             }
         }
 
-        foreach ($records as $record)
-        {
+        foreach ($records as $record) {
             $record->setRepository($this);
         }
 
@@ -543,27 +531,28 @@ class Repository implements FileManager
 
 
     /**
-     * @param $filter
-     * @param $order
-     * @param int $page
-     * @param null $count
+     * @param                $filter
+     * @param                $order
+     * @param int            $page
+     * @param null           $count
      * @param DataDimensions $dataDimensions
+     *
      * @return bool|Record
      */
-    public function getFirstRecord ($filter = '', $order = [ '.id' ], $page = 1, $count = null, $dataDimensions = null)
+    public function getFirstRecord($filter = '', $order = ['.id'], $page = 1, $count = null, $dataDimensions = null)
     {
-        $records = $this->getRecords($filter,$order,$page,$count,$dataDimensions);
-        if ($records)
-        {
+        $records = $this->getRecords($filter, $order, $page, $count, $dataDimensions);
+        if ($records) {
             return array_shift($records);
         }
+
         return false;
     }
 
+
     protected function getAllRecords($dataDimensions = null)
     {
-        if ($dataDimensions == null)
-        {
+        if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
@@ -574,8 +563,7 @@ class Repository implements FileManager
     public function countRecords($filter = '')
     {
 
-        if ($filter == '')
-        {
+        if ($filter == '') {
             $dataDimensions = $this->getCurrentDataDimensions();
 
             return $this->readConnection->countRecords($this->getCurrentContentTypeName(), $dataDimensions);
@@ -595,8 +583,7 @@ class Repository implements FileManager
 
     public function saveRecord(Record $record)
     {
-        if (!$this->writeConnection)
-        {
+        if (!$this->writeConnection) {
             throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
         }
 
@@ -607,7 +594,7 @@ class Repository implements FileManager
         $result = $this->writeConnection->saveRecord($record, $dataDimensions);
 
         KVMLogger::instance('anycontent-repository')
-                 ->info('Saving record ' . $record->getId() . ' for content type ' . $record->getContentTypeName());
+            ->info('Saving record ' . $record->getId() . ' for content type ' . $record->getContentTypeName());
 
         return $result;
 
@@ -616,8 +603,7 @@ class Repository implements FileManager
 
     public function saveRecords($records)
     {
-        if (!$this->writeConnection)
-        {
+        if (!$this->writeConnection) {
             throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
         }
 
@@ -627,11 +613,10 @@ class Repository implements FileManager
 
         $result = $this->writeConnection->saveRecords($records, $dataDimensions);
 
-        if (count($records) > 0)
-        {
+        if (count($records) > 0) {
             $record = reset($records);
             KVMLogger::instance('anycontent-repository')
-                     ->info('Saving ' . count($records) . ' records of content type ' . $record->getContentTypeName());
+                ->info('Saving ' . count($records) . ' records of content type ' . $record->getContentTypeName());
         }
 
         return $result;
@@ -641,8 +626,7 @@ class Repository implements FileManager
 
     public function deleteRecord($recordId)
     {
-        if (!$this->writeConnection)
-        {
+        if (!$this->writeConnection) {
             throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
         }
 
@@ -655,8 +639,7 @@ class Repository implements FileManager
 
     public function deleteRecords($recordIds)
     {
-        if (!$this->writeConnection)
-        {
+        if (!$this->writeConnection) {
             throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
         }
 
@@ -674,23 +657,19 @@ class Repository implements FileManager
      */
     public function sortRecords(array $sorting)
     {
-        if (!$this->writeConnection)
-        {
+        if (!$this->writeConnection) {
             throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
         }
 
         $records = $records = $this->getRecords();
-        foreach ($records as $record)
-        {
+        foreach ($records as $record) {
             $record->setPosition(null);
             $record->setParent(null);
         }
 
-        $positions = [ ];
-        foreach ($sorting as $recordId => $parentId)
-        {
-            if (!array_key_exists($parentId, $positions))
-            {
+        $positions = [];
+        foreach ($sorting as $recordId => $parentId) {
+            if (!array_key_exists($parentId, $positions)) {
                 $positions[$parentId] = 1;
             }
 
@@ -704,8 +683,7 @@ class Repository implements FileManager
 
     public function deleteAllRecords()
     {
-        if (!$this->writeConnection)
-        {
+        if (!$this->writeConnection) {
             throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
         }
 
@@ -726,8 +704,7 @@ class Repository implements FileManager
 
     public function saveConfig(Config $config)
     {
-        if (!$this->writeConnection)
-        {
+        if (!$this->writeConnection) {
             throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
         }
 
@@ -738,7 +715,7 @@ class Repository implements FileManager
         $result = $this->writeConnection->saveConfig($config, $dataDimensions);
 
         KVMLogger::instance('anycontent-repository')
-                 ->info('Saving config ' . $config->getConfigTypeName());
+            ->info('Saving config ' . $config->getConfigTypeName());
 
         return $result;
 
@@ -801,12 +778,11 @@ class Repository implements FileManager
     public function registerRecordClassForContentType($contentTypeName, $classname)
     {
 
-        if ($this->hasContentType($contentTypeName))
-        {
+        if ($this->hasContentType($contentTypeName)) {
             $this->getRecordFactory()->registerRecordClassForContentType($contentTypeName, $classname);
 
             KVMLogger::instance('anycontent-repository')
-                     ->info('Custom record class ' . $classname . ' for content type ' . $contentTypeName);
+                ->info('Custom record class ' . $classname . ' for content type ' . $contentTypeName);
 
             return true;
         }
@@ -824,12 +800,11 @@ class Repository implements FileManager
     public function registerRecordClassForConfigType($configTypeName, $classname)
     {
 
-        if ($this->hasConfigType($configTypeName))
-        {
+        if ($this->hasConfigType($configTypeName)) {
             $this->getRecordFactory()->registerRecordClassForConfigType($configTypeName, $classname);
 
             KVMLogger::instance('anycontent-repository')
-                     ->info('Custom record class ' . $classname . ' for config type ' . $configTypeName);
+                ->info('Custom record class ' . $classname . ' for config type ' . $configTypeName);
 
             return true;
         }
@@ -851,8 +826,7 @@ class Repository implements FileManager
     {
         $this->userInfo->setTimestampToNow();
 
-        if ($decoupled)
-        {
+        if ($decoupled) {
             return clone $this->userInfo;
         }
 
@@ -869,15 +843,16 @@ class Repository implements FileManager
     }
 
 
-    public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
-    {
-        if ($dataDimensions == null)
-        {
+    public function getLastModifiedDate(
+        $contentTypeName = null,
+        $configTypeName = null,
+        DataDimensions $dataDimensions = null
+    ) {
+        if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        if ($this->writeConnection)
-        {
+        if ($this->writeConnection) {
             return $this->writeConnection->getLastModifiedDate($contentTypeName, $configTypeName, $dataDimensions);
         }
 
@@ -894,17 +869,58 @@ class Repository implements FileManager
 
     public function isAdministrable()
     {
-        if ($this->isWritable())
-        {
+        if ($this->isWritable()) {
             $connection = $this->getWriteConnection();
 
-            if ($connection instanceof AdminConnection)
-            {
+            if ($connection instanceof AdminConnection) {
                 return true;
             }
         }
 
         return false;
+    }
+
+
+    function jsonSerialize()
+    {
+        $repository = [];
+
+        foreach ($this->getContentTypeDefinitions() as $definition) {
+
+            $contentTypeName = $definition->getName();
+
+            $this->selectContentType($contentTypeName);
+
+            $repository['content'][$contentTypeName]['title']              = $definition->getTitle();
+            $repository['content'][$contentTypeName]['lastchange_content'] = $this->getLastModifiedDate($contentTypeName);
+            $repository['content'][$contentTypeName]['lastchange_cmdl']    = $this->getReadConnection()
+                ->getCMDLLastModifiedDate($contentTypeName);
+            $repository['content'][$contentTypeName]['count']              = $this->countRecords();
+            $repository['content'][$contentTypeName]['description']        = $definition->getDescription();
+        }
+
+        foreach ($this->getConfigTypeDefinitions() as $definition) {
+
+            $configTypeName = $definition->getName();
+
+            $repository['content'][$configTypeName]['title']              = $definition->getTitle();
+            $repository['content'][$configTypeName]['lastchange_content'] = $this->getLastModifiedDate(null,
+                $configTypeName);
+            $repository['content'][$configTypeName]['lastchange_cmdl']    = $this->getReadConnection()
+                ->getCMDLLastModifiedDate(null,
+                    $configTypeName);
+            $repository['content'][$configTypeName]['description']        = $definition->getDescription();
+        }
+
+        $repository['files'] = false;
+        if ($this->getFileManager()) {
+            $repository['files'] = true;
+        }
+
+        $repository ['admin'] = $this->isAdministrable();
+
+        $repository['random']=microtime();
+        return $repository;
     }
 
 }
