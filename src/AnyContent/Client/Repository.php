@@ -903,13 +903,13 @@ class Repository implements FileManager, \JsonSerializable
 
             $configTypeName = $definition->getName();
 
-            $repository['content'][$configTypeName]['title']              = $definition->getTitle();
-            $repository['content'][$configTypeName]['lastchange_content'] = $this->getLastModifiedDate(null,
+            $repository['config'][$configTypeName]['title']              = $definition->getTitle();
+            $repository['config'][$configTypeName]['lastchange_content'] = $this->getLastModifiedDate(null,
                 $configTypeName);
-            $repository['content'][$configTypeName]['lastchange_cmdl']    = $this->getReadConnection()
+            $repository['config'][$configTypeName]['lastchange_cmdl']    = $this->getReadConnection()
                 ->getCMDLLastModifiedDate(null,
                     $configTypeName);
-            $repository['content'][$configTypeName]['description']        = $definition->getDescription();
+            $repository['config'][$configTypeName]['description']        = $definition->getDescription();
         }
 
         $repository['files'] = false;
@@ -918,8 +918,6 @@ class Repository implements FileManager, \JsonSerializable
         }
 
         $repository ['admin'] = $this->isAdministrable();
-
-        $repository['random']=microtime();
         return $repository;
     }
 
