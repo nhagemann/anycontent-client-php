@@ -881,9 +881,16 @@ class Repository implements FileManager, \JsonSerializable
     }
 
 
-    function jsonSerialize()
+ function jsonSerialize()
     {
         $repository = [];
+
+        $current = false;
+
+        try {
+            $current = $this->getCurrentContentTypeDefinition();
+        } catch (AnyContentClientException $e) {
+        }
 
         foreach ($this->getContentTypeDefinitions() as $definition) {
 
@@ -894,7 +901,7 @@ class Repository implements FileManager, \JsonSerializable
             $repository['content'][$contentTypeName]['title']              = $definition->getTitle();
             $repository['content'][$contentTypeName]['lastchange_content'] = $this->getLastModifiedDate($contentTypeName);
             $repository['content'][$contentTypeName]['lastchange_cmdl']    = $this->getReadConnection()
-                ->getCMDLLastModifiedDate($contentTypeName);
+                                                                                  ->getCMDLLastModifiedDate($contentTypeName);
             $repository['content'][$contentTypeName]['count']              = $this->countRecords();
             $repository['content'][$contentTypeName]['description']        = $definition->getDescription();
         }
@@ -907,8 +914,8 @@ class Repository implements FileManager, \JsonSerializable
             $repository['config'][$configTypeName]['lastchange_content'] = $this->getLastModifiedDate(null,
                 $configTypeName);
             $repository['config'][$configTypeName]['lastchange_cmdl']    = $this->getReadConnection()
-                ->getCMDLLastModifiedDate(null,
-                    $configTypeName);
+                                                                                ->getCMDLLastModifiedDate(null,
+                                                                                    $configTypeName);
             $repository['config'][$configTypeName]['description']        = $definition->getDescription();
         }
 
@@ -918,6 +925,11 @@ class Repository implements FileManager, \JsonSerializable
         }
 
         $repository ['admin'] = $this->isAdministrable();
+
+        if ($current) {
+            $this->selectContentType($current->getName());
+        }
+
         return $repository;
     }
 
