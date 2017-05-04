@@ -147,6 +147,11 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $config = $connection->getConfig('config1');
 
         $config->setProperty('ranking',1);

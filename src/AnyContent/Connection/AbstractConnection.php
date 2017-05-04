@@ -775,9 +775,9 @@ abstract class AbstractConnection implements ReadOnlyConnection
      *
      * @param AbstractRecord $record - multi view record !
      */
-    protected function exportRecord(AbstractRecord $record, $viewName)
+    protected function exportRecord(AbstractRecord $record, DataDimensions $dataDimensions)
     {
-        $precalculate      = $this->precalculateExportRecord($record, $this->getCurrentDataDimensions());
+        $precalculate      = $this->precalculateExportRecord($record, $dataDimensions);
         $allowedProperties = array_intersect_key($record->getProperties(), $precalculate['allowedProperties']);
         $record            = clone $record;
         $record->setProperties($allowedProperties);
@@ -811,12 +811,12 @@ abstract class AbstractConnection implements ReadOnlyConnection
     }
 
 
-    protected function exportRecords($records, $viewName)
+    protected function exportRecords($records, DataDimensions $dataDimensions)
     {
         $result = [ ];
         foreach ($records as $record)
         {
-            $result[$record->getId()] = $this->exportRecord($record, $viewName);
+            $result[$record->getId()] = $this->exportRecord($record, $dataDimensions);
         }
 
         return $result;

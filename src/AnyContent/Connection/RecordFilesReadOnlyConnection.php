@@ -93,7 +93,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
                 $record = $this->getRecordFactory()
                                ->createRecordFromJSON($definition, $data, $dataDimensions->getViewName(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage());
 
-                return $this->exportRecord($record, $dataDimensions->getViewName());
+                return $this->exportRecord($record, $dataDimensions);
             }
         }
 

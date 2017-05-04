@@ -78,7 +78,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             }
             $records = $this->getAllMultiViewRecords($contentTypeName, $dataDimensions);
 
-            $records = $this->exportRecords($records, $dataDimensions->getViewName());
+            $records = $this->exportRecords($records, $dataDimensions);
 
             $this->stashAllRecords($records, $dataDimensions);
 
@@ -205,7 +205,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        return $this->exportRecord($this->getMultiViewConfig($configTypeName, $dataDimensions), $dataDimensions->getViewName());
+        return $this->exportRecord($this->getMultiViewConfig($configTypeName, $dataDimensions),$dataDimensions);
 
     }
 

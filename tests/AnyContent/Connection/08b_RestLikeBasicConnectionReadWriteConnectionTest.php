@@ -200,6 +200,11 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
 
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');

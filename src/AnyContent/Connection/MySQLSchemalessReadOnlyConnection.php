@@ -515,7 +515,7 @@ TEMPLATE_CONFIGTABLE;
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        return $this->exportRecord($this->getMultiViewConfig($configTypeName, $dataDimensions), $dataDimensions->getViewName());
+        return $this->exportRecord($this->getMultiViewConfig($configTypeName, $dataDimensions), $dataDimensions);
 
     }
 

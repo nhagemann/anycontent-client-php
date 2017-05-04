@@ -278,6 +278,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
+        if (!$connection)
+        {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
         $connection->selectContentType('profiles');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
