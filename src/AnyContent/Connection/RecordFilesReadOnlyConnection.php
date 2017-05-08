@@ -201,7 +201,9 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             $iterator = $finder->getIterator();
             $file     = reset($iterator);
 
-            $t = max($t, (int)$file->getMTime());
+            if ($file) {
+                $t = max($t, (int)$file->getMTime());
+            }
         }
 
         $uri = $this->getConfiguration()->getUriCMDLForContentType($contentTypeName);
