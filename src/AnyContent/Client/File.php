@@ -2,7 +2,7 @@
 
 namespace AnyContent\Client;
 
-class File
+class File implements \JsonSerializable
 {
 
     protected $folder;
@@ -143,4 +143,24 @@ class File
         return (boolean)$this->getUrl('default');
     }
 
+
+    function jsonSerialize()
+    {
+        $file = [];
+        $file['id']=$this->getId();
+        $file['name']=$this->getName();
+        $file['urls']=$this->getUrls();
+        $file['type']=$this->getType();
+        $file['size']=$this->getSize();
+        $file['timestamp_lastchange']=$this->getTimestampLastChange();
+        if ($this->getType()=='image')
+        {
+            if ($this->getWidth()!=0&&$this->getHeight()!=0)
+            {
+                $file['width']=$this->getWidth();
+                $file['height']=$this->getHeight();
+            }
+        }
+        return $file;
+    }
 }
