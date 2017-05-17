@@ -35,7 +35,7 @@ class RepositoryFactory
             $options['files']=$this->getOption('files',true);
 
             return $this->createContentArchiveRepository($name, $this->getOption('folder'), $options,
-                $cache);
+                                                         $cache);
         }
 
         if ($this->getOption('type') == 'restlike') {
@@ -59,7 +59,7 @@ class RepositoryFactory
             $files=$this->getOption('files',true);
 
             return $this->createRestLikeRepository($name, $this->getOption('url'), $options,
-                $cache,$files);
+                                                   $cache,$files);
         }
 
         throw new AnyContentClientException('Invalid config array. Unknown type ' . $config['type']);
@@ -83,10 +83,15 @@ class RepositoryFactory
 
         if ($this->getOption('files', true) == true) {
             $fileManager = new DirectoryBasedFilesAccess($folder . '/files');
+            if ($this->getOption('files')!==true)
+            {
+                $fileManager->setPublicUrl($this->getOption('files'));
+            }
+
         }
 
         $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-            $cache);
+                                              $cache);
 
         return $repository;
 
@@ -104,7 +109,7 @@ class RepositoryFactory
 
         $this->requireOptions(['host', 'dbName', 'user', 'password']);
         $configuration->initDatabase($this->getOption('host'), $this->getOption('dbName'), $this->getOption('user'),
-            $this->getOption('password'), $this->getOption('port', 3306));
+                                     $this->getOption('password'), $this->getOption('port', 3306));
         $this->options = $options;
 
         if ($this->hasOption('cmdlFolder')) {
@@ -124,7 +129,7 @@ class RepositoryFactory
         }
 
         $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-            $cache);
+                                              $cache);
 
         return $repository;
     }
@@ -158,7 +163,7 @@ class RepositoryFactory
         }
 
         $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-            $cache);
+                                              $cache);
 
         return $repository;
 

@@ -106,7 +106,7 @@ class RestLikeFilesAccess implements FileManager
      */
     public function setPublicUrl($publicUrl)
     {
-        $this->publicUrl = $publicUrl;
+        $this->publicUrl = rtrim($publicUrl,'/');
 
         return $this;
     }
