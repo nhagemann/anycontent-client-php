@@ -692,7 +692,7 @@ TEMPLATE_CONFIGTABLE;
         {
             if ($contentTypeName == null && $configTypeName == null)
             {
-                $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM _cmdl_ WHERE repository = ?';
+                $sql = 'SELECT MAX(lastchange_timestamp) AS T FROM _cmdl_ WHERE repository = ?';
 
                 $row = $this->getDatabase()->fetchOneSQL($sql, [ $this->getRepository()->getName() ]);
 
@@ -700,7 +700,7 @@ TEMPLATE_CONFIGTABLE;
             }
             elseif ($contentTypeName != null)
             {
-                $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"';
+                $sql = 'SELECT MAX(lastchange_timestamp) AS T FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"';
 
                 $row = $this->getDatabase()->fetchOneSQL($sql, [ $this->getRepository()->getName(), $contentTypeName ]);
 
@@ -708,7 +708,7 @@ TEMPLATE_CONFIGTABLE;
             }
             elseif ($configTypeName != null)
             {
-                $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"';
+                $sql = 'SELECT MAX(lastchange_timestamp) AS T FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"';
 
                 $row = $this->getDatabase()->fetchOneSQL($sql, [ $this->getRepository()->getName(), $configTypeName ]);
 
