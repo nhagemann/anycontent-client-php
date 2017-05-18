@@ -250,6 +250,8 @@ class RepositoryFactory
         $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
                                               $cache);
 
+        $repository->setPublicUrl($baseUrl);
+
         return $repository;
     }
 
