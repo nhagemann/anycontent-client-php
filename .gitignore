@@ -4,3 +4,5 @@
 # mac os
 *.DS_Store
 ._*
+
+tests/_credentials.php
