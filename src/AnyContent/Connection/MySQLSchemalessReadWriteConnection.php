@@ -133,19 +133,11 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['parent_id'] = $record->getParent();
         $values['position']  = $record->getPosition();
 
-        // TODO: Rebuild Nested Set On Change, but only if not within saveRecords
-        //        if ($mode == 'update')
-        //        {
-        //
-        //            $values['parent_id']      = $row['parent_id'];
-        //            $values['position']       = $row['position'];
-        //            $values['position_left']  = $row['position_left'];
-        //            $values['position_right'] = $row['position_right'];
-        //            $values['position_level'] = $row['position_level'];
-        //
-        //        }
-
         $this->getDatabase()->insert($tableName, $values);
+
+
+        $sql = 'INSERT INTO _update_ (repository, data_type, name, workspace, language, lastchange_timestamp) VALUES (? , "content", ? , ? , ? , ?) ON DUPLICATE KEY UPDATE lastchange_timestamp=?;';
+        $this->getDatabase()->execute($sql, [ $repositoryName, $contentTypeName, $dataDimensions->getWorkspace(),$dataDimensions->getLanguage(),$timeshiftTimestamp,$timeshiftTimestamp ]);
 
         return $record->getId();
 
@@ -233,6 +225,9 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['validuntil_timestamp'] = TimeShifter::getMaxTimestamp();
 
         $this->getDatabase()->insert($tableName, $values);
+
+        $sql = 'INSERT INTO _update_ (repository, data_type, name, workspace, language, lastchange_timestamp) VALUES (? , "content", ? , ? , ? , ?) ON DUPLICATE KEY UPDATE lastchange_timestamp=?;';
+        $this->getDatabase()->execute($sql, [ $this->getRepository()->getName(), $contentTypeName, $dataDimensions->getWorkspace(),$dataDimensions->getLanguage(),$timeshiftTimestamp,$timeshiftTimestamp ]);
 
         return $result;
     }
@@ -349,12 +344,18 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         $this->getDatabase()->insert($tableName, $values);
 
+        $sql = 'INSERT INTO _update_ (repository, data_type, name, workspace, language, lastchange_timestamp) VALUES (? , "config", ? , ? , ? , ?) ON DUPLICATE KEY UPDATE lastchange_timestamp=?;';
+        $this->getDatabase()->execute($sql, [ $this->getRepository()->getName(), $configTypeName, $dataDimensions->getWorkspace(),$dataDimensions->getLanguage(),$timeshiftTimestamp,$timeshiftTimestamp ]);
+
+
         return true;
     }
 
 
     public function saveContentTypeCMDL($contentTypeName, $cmdl)
     {
+        $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
+
         if ($this->getConfiguration()->hasCMDLFolder())
         {
             $path = $this->getConfiguration()
@@ -369,7 +370,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                       'data_type'            => 'content',
                       'name'                 => $contentTypeName,
                       'cmdl'                 => $cmdl,
-                      'lastchange_timestamp' => TimeShifter::getTimeshiftTimestamp()
+                      'lastchange_timestamp' => $timeshiftTimestamp
             ];
 
             $this->getDatabase()->insert('_cmdl_', $data, $data);
@@ -380,12 +381,17 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         $this->getCMDLCache()->flushAll();
 
+        $sql = 'UPDATE _update_ SET lastchange_timestamp = ? WHERE data_type = "content" AND `name` = ?';
+        $this->getDatabase()->execute($sql, [$timeshiftTimestamp,$contentTypeName]);
+
         return true;
     }
 
 
     public function saveConfigTypeCMDL($configTypeName, $cmdl)
     {
+        $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
+
         if ($this->getConfiguration()->hasCMDLFolder())
         {
             $path = $this->getConfiguration()
@@ -400,7 +406,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                       'data_type'            => 'config',
                       'name'                 => $configTypeName,
                       'cmdl'                 => $cmdl,
-                      'lastchange_timestamp' => TimeShifter::getTimeshiftTimestamp()
+                      'lastchange_timestamp' => $timeshiftTimestamp
             ];
 
             $this->getDatabase()->insert('_cmdl_', $data, $data);
@@ -409,6 +415,9 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $this->getConfiguration()->addConfigTypes([ $configTypeName ]);
 
         $this->getCMDLCache()->flushAll();
+
+        $sql = 'UPDATE _update_ SET lastchange_timestamp = ? WHERE data_type = "config" AND `name` = ?';
+        $this->getDatabase()->execute($sql, [$timeshiftTimestamp,$configTypeName]);
 
         return true;
     }

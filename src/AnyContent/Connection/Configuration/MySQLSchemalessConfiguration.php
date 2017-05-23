@@ -94,7 +94,7 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
         `data_type` ENUM('content', 'config', ''),
         `name` varchar(255) NOT NULL DEFAULT '',
         `cmdl` text,
-        `lastchange_timestamp` varchar(16) DEFAULT NULL,
+        `lastchange_timestamp` varchar(16) DEFAULT 0,
         UNIQUE KEY `index1` (`repository`,`data_type`,`name`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -137,9 +137,51 @@ TEMPLATE_COUNTERTABLE;
             }
             catch (\PDOException $e)
             {
-                throw new AnyContentClientException('Could not create mandatory table _cmdl_');
+                throw new AnyContentClientException('Could not create mandatory table _counter_');
             }
         }
+
+
+
+
+        $sql = "Show Tables Like '_update_'";
+
+        $stmt = $this->getDatabase()->getConnection()->prepare($sql);
+        $stmt->execute();
+
+        if ($stmt->rowCount() == 0)
+        {
+            $sql = <<< TEMPLATE_UPDATETABLE
+CREATE TABLE `_update_` (
+  `repository` varchar(255) NOT NULL,
+  `data_type` enum('content','config') NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `workspace` varchar(255) NOT NULL DEFAULT 'default',
+  `language` varchar(255) NOT NULL DEFAULT 'default',
+  `lastchange_timestamp` varchar(16) DEFAULT 0,
+  PRIMARY KEY (`repository`,`data_type`,`name`,`workspace`,`language`),
+  KEY `lastchange` (`lastchange_timestamp`),
+  KEY `workspace` (`workspace`,`language`,`data_type`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+TEMPLATE_UPDATETABLE;
+
+            $stmt = $this->getDatabase()->getConnection()->prepare($sql);
+
+            try
+            {
+                $stmt->execute();
+            }
+            catch (\PDOException $e)
+            {
+                throw new AnyContentClientException('Could not create mandatory table _update_');
+            }
+        }
+
+
+
+
+
+
     }
 
 

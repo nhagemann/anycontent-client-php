@@ -590,19 +590,16 @@ TEMPLATE_CONFIGTABLE;
 
         $t = 0;
 
-        $configuration = $this->getConfiguration();
-
         if ($contentTypeName == null && $configTypeName == null)
         {
-            foreach ($configuration->getContentTypeNames() as $contentTypeName)
-            {
-                $t = max($t, $this->getLastModifedDateForContentType($contentTypeName, $dataDimensions));
-            }
+            $sql = 'SELECT MAX(lastchange_timestamp) AS T FROM _update_ WHERE workspace = ? AND language = ? ';
 
-            foreach ($configuration->getConfigTypeNames() as $configTypeName)
-            {
-                $t = max($t, $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions));
-            }
+            $row = $this->getDatabase()
+                        ->fetchOneSQL($sql, [ $dataDimensions->getWorkspace(), $dataDimensions->getLanguage() ]);
+
+            $t = $row['T'];
+
+            $t = max($this->getCMDLLastModifiedDate(), $t);
         }
         elseif ($contentTypeName != null)
         {
@@ -620,12 +617,10 @@ TEMPLATE_CONFIGTABLE;
     protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
     {
 
-        $tableName = $this->getContentTypeTableName($contentTypeName);
-
-        $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM ' . $tableName . ' WHERE workspace = ? AND language = ? ';
+        $sql = 'SELECT lastchange_timestamp AS T FROM _update WHERE data_type = "content" AND name = ? AND workspace = ? AND language = ?';
 
         $row = $this->getDatabase()
-                    ->fetchOneSQL($sql, [ $dataDimensions->getWorkspace(), $dataDimensions->getLanguage() ]);
+                    ->fetchOneSQL($sql, [ $contentTypeName, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage() ]);
 
         $t = $row['T'];
 
@@ -638,9 +633,9 @@ TEMPLATE_CONFIGTABLE;
     protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions)
     {
 
-        $tableName = $this->getConfigTypeTableName();
 
-        $sql = 'SELECT MAX(validfrom_timestamp) AS T FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? ';
+
+        $sql = 'SELECT lastchange_timestamp AS T FROM _update WHERE data_type = "config" AND name = ? AND workspace = ? AND language = ?';
 
         $row = $this->getDatabase()
                     ->fetchOneSQL($sql, [ $configTypeName, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage() ]);

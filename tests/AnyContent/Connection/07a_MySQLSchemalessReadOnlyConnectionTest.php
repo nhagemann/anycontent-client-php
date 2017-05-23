@@ -30,7 +30,11 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
 
             $database->execute('DROP TABLE IF EXISTS _cmdl_');
             $database->execute('DROP TABLE IF EXISTS _counter_');
+            $database->execute('DROP TABLE IF EXISTS _update_');
             $database->execute('DROP TABLE IF EXISTS phpunit$profiles');
+
+            // init again, since we just removed some vital tables, but had to init the database before, to get the database object
+            $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
 
             $connection = $configuration->createReadWriteConnection();
 
