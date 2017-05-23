@@ -617,7 +617,7 @@ TEMPLATE_CONFIGTABLE;
     protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
     {
 
-        $sql = 'SELECT lastchange_timestamp AS T FROM _update WHERE data_type = "content" AND name = ? AND workspace = ? AND language = ?';
+        $sql = 'SELECT lastchange_timestamp AS T FROM _update_ WHERE data_type = "content" AND name = ? AND workspace = ? AND language = ?';
 
         $row = $this->getDatabase()
                     ->fetchOneSQL($sql, [ $contentTypeName, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage() ]);
@@ -635,7 +635,7 @@ TEMPLATE_CONFIGTABLE;
 
 
 
-        $sql = 'SELECT lastchange_timestamp AS T FROM _update WHERE data_type = "config" AND name = ? AND workspace = ? AND language = ?';
+        $sql = 'SELECT lastchange_timestamp AS T FROM _update_ WHERE data_type = "config" AND name = ? AND workspace = ? AND language = ?';
 
         $row = $this->getDatabase()
                     ->fetchOneSQL($sql, [ $configTypeName, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage() ]);
