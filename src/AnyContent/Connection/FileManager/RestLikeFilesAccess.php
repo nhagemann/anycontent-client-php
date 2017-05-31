@@ -79,9 +79,12 @@ class RestLikeFilesAccess implements FileManager
 
                 $message = new LogMessage();
                 $message->addLogValue('method', $event->getRequest()->getMethod());
-                $message->addLogValue('code', $response->getStatusCode());
                 $message->addLogValue('duration', $duration);
-                $message->addLogValue('url', $response->getEffectiveUrl());
+
+                if ($response) {
+                    $message->addLogValue('code', $response->getStatusCode());
+                    $message->addLogValue('url', $response->getEffectiveUrl());
+                }
 
                 $kvm->debug($message);
 
