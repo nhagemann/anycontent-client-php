@@ -125,9 +125,12 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['validfrom_timestamp']  = $timeshiftTimestamp;
         $values['validuntil_timestamp'] = TimeShifter::getMaxTimestamp();
 
-        foreach ($definition->getViewDefinition($dataDimensions->getViewName())->getProperties() as $property)
+        foreach ($record->getProperties() as $property => $value)
         {
-            $values['property_' . $property] = $record->getProperty($property);
+            if ($definition->getViewDefinition($dataDimensions->getViewName())->hasProperty($property))
+            {
+                $values['property_' . $property] = $record->getProperty($property);
+            }
         }
 
         $values['parent_id'] = $record->getParent();

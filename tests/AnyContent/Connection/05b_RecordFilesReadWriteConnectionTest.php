@@ -232,4 +232,36 @@ class RecordFilesReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('',$record->getProperty('ranking'));
     }
+
+    public function testOmmittedProperties()
+    {
+        KVMLogger::instance()->debug(__METHOD__);
+
+        $connection = $this->connection;
+
+        if (!$connection) {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
+        $connection->selectContentType('profiles');
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+
+        $record->setProperty('claim', 'A');
+        $id = $connection->saveRecord($record);
+
+        $record = $connection->getRecord($id);
+
+        $this->assertEquals('A',$record->getProperty('claim'));
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+
+        $record->setId($id);
+        $id = $connection->saveRecord($record);
+
+        $record = $connection->getRecord($id);
+
+        $this->assertEquals('A',$record->getProperty('claim'));
+
+    }
 }
