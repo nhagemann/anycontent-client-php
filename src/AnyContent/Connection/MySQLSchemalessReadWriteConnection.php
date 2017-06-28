@@ -129,7 +129,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         {
             if ($definition->getViewDefinition($dataDimensions->getViewName())->hasProperty($property))
             {
-                $values['property_' . $property] = $record->getProperty($property);
+                $values['property_' . $property] = $value;
             }
         }
 
