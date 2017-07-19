@@ -9,7 +9,6 @@ class Folder implements \JsonSerializable
     protected $files = array();
     protected $subFolders = array();
 
-
     public function __construct($path, $data)
     {
 
@@ -37,16 +36,17 @@ class Folder implements \JsonSerializable
         }
 
         foreach ($data['folders'] as $folder) {
-            $this->subFolders[ltrim($this->path.'/'.$folder, '/')] = $folder;
+            $this->subFolders[ltrim($this->path . '/' . $folder, '/')] = $folder;
         }
-    }
 
+        ksort($this->files);
+        ksort($this->subFolders);
+    }
 
     public function getFiles()
     {
         return $this->files;
     }
-
 
     public function getFile($identifier)
     {
@@ -63,12 +63,10 @@ class Folder implements \JsonSerializable
         return false;
     }
 
-
     public function listSubFolders()
     {
         return $this->subFolders;
     }
-
 
     public function isEmpty()
     {
@@ -83,12 +81,11 @@ class Folder implements \JsonSerializable
         return true;
     }
 
-
     function jsonSerialize()
     {
-        $folder = [];
+        $folder            = [];
         $folder['folders'] = array_values($this->listSubFolders());
-        $folder['files'] = [];
+        $folder['files']   = [];
         /** @var File $file */
         foreach ($this->getFiles() as $file) {
             $folder['files'][$file->getName()] = $file;
