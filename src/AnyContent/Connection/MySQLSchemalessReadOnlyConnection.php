@@ -378,15 +378,7 @@ TEMPLATE_CONFIGTABLE;
     protected function precalculateCreateRecordFromRow($contentTypeName, DataDimensions $dataDimensions)
     {
         $key = 'createrecordfromrow' . $contentTypeName . '-' . $dataDimensions->getViewName();
-        if (array_key_exists($key, $this->precalculations))
-        {
-            $precalculate           = $this->precalculations[$key];
-            $precalculate['record'] = clone$precalculate['record'];
-            $precalculate['record']->setLanguage($dataDimensions->getLanguage());
-            $precalculate['record']->setWorkspace($dataDimensions->getWorkspace());
-            $precalculate['record']->setViewName($dataDimensions->getViewName());
-        }
-        else
+        if (!array_key_exists($key, $this->precalculations))
         {
             $definition = $this->getContentTypeDefinition($contentTypeName);
 
@@ -397,8 +389,16 @@ TEMPLATE_CONFIGTABLE;
             $this->precalculations[$key] = $precalculate;
         }
 
+        $precalculate           = $this->precalculations[$key];
+        $precalculate['record'] = clone$precalculate['record'];
+        $precalculate['record']->setLanguage($dataDimensions->getLanguage());
+        $precalculate['record']->setWorkspace($dataDimensions->getWorkspace());
+        $precalculate['record']->setViewName($dataDimensions->getViewName());
+
+
         return $precalculate;
     }
+
 
 
     /**

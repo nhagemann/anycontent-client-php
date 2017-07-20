@@ -332,6 +332,10 @@ class CachingRepository extends Repository
                 $recordFactory = $this->getRecordFactory();
                 $record        = $recordFactory->createRecordFromJSON($this->getCurrentContentTypeDefinition(), $data);
 
+                $record->setLanguage($dataDimensions->getLanguage());
+                $record->setWorkspace($dataDimensions->getWorkspace());
+                $record->setViewName($dataDimensions->getViewName());
+
                 $record->setRepository($this);
 
                 return $record;
@@ -403,6 +407,9 @@ class CachingRepository extends Repository
                 foreach ($records as $record)
                 {
                     $record->setRepository($this);
+                    $record->setLanguage($dataDimensions->getLanguage());
+                    $record->setWorkspace($dataDimensions->getWorkspace());
+                    $record->setViewName($dataDimensions->getViewName());
                 }
 
                 return $records;
@@ -444,6 +451,9 @@ class CachingRepository extends Repository
                 foreach ($records as $record)
                 {
                     $record->setRepository($this);
+                    $record->setLanguage($dataDimensions->getLanguage());
+                    $record->setWorkspace($dataDimensions->getWorkspace());
+                    $record->setViewName($dataDimensions->getViewName());
                 }
 
                 return $records;
