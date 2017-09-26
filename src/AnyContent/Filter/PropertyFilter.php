@@ -18,12 +18,9 @@ class PropertyFilter implements Filter
     {
         $term = $this->parseTerm($query);
 
-        if ($term)
-        {
+        if ($term) {
             $this->term = $term;
-        }
-        else
-        {
+        } else {
             throw new AnyContentClientException('Could not parse term ' . $query);
         }
     }
@@ -32,13 +29,16 @@ class PropertyFilter implements Filter
     public function match(Record $record)
     {
 
-        $operator       = $this->term['operator'];
-        $property       = Util::generateValidIdentifier($this->term['property']);
-        $recordValue    = strtolower($record->getProperty($property));
+        $operator = $this->term['operator'];
+        if ($this->term['property'] == '.id') {
+            $recordValue =$record->getId();
+        } else {
+            $property = Util::generateValidIdentifier($this->term['property']);
+            $recordValue = strtolower($record->getProperty($property));
+        }
         $conditionValue = strtolower($this->term['value']);
 
-        switch ($operator)
-        {
+        switch ($operator) {
             case '=':
                 return ($recordValue == $conditionValue);
                 break;
@@ -59,8 +59,7 @@ class PropertyFilter implements Filter
                 break;
             case '*=':
                 $p = strpos($recordValue, $conditionValue);
-                if ($p !== false)
-                {
+                if ($p !== false) {
                     return true;
                 }
                 break;
@@ -84,12 +83,11 @@ class PropertyFilter implements Filter
 
         $match = preg_match("/([^>=|<=|!=|>|<|=|\*=)]*)(>=|<=|!=|>|<|=|\*=)(.*)/", $query, $matches);
 
-        if ($match)
-        {
-            $term             = array();
+        if ($match) {
+            $term = array();
             $term['property'] = trim($matches[1]);
             $term['operator'] = trim($matches[2]);
-            $term['value']    = $this->decode(trim(($matches[3])));
+            $term['value'] = $this->decode(trim(($matches[3])));
 
             return $term;
         }
@@ -115,13 +113,10 @@ class PropertyFilter implements Filter
         //       $s = str_replace('&#61;', '=', $s);
 
         // remove surrounding quotes
-        if (substr($s, 0, 1) == '"')
-        {
+        if (substr($s, 0, 1) == '"') {
 
             $s = trim($s, '"');
-        }
-        else
-        {
+        } else {
 
             $s = trim($s, "'");
         }
@@ -132,12 +127,9 @@ class PropertyFilter implements Filter
 
     public function __toString()
     {
-        if ($this->term)
-        {
+        if ($this->term) {
             return $this->term['property'] . ' ' . $this->term['operator'] . ' ' . $this->term['value'];
-        }
-        else
-        {
+        } else {
             return '';
         }
     }
