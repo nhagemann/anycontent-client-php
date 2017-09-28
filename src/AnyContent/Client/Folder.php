@@ -25,7 +25,7 @@ class Folder implements \JsonSerializable
                 $file['size'],
                 $file['timestamp_lastchange']
             );
-            if ($file['type'] == 'image' AND array_key_exists('width', $file) AND array_key_exists('height', $file)) {
+            if ($file['type'] == 'image' && array_key_exists('width', $file) && array_key_exists('height', $file)) {
 
                 $this->files[$file['id']]->setWidth($file['width']);
                 $this->files[$file['id']]->setHeight($file['height']);

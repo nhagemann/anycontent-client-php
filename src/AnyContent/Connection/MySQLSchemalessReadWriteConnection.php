@@ -61,7 +61,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         }
 
-        if ($mode == 'insert' AND $record->getId() == '')
+        if ($mode == 'insert' && $record->getId() == '')
         {
             // update counter for new record
 

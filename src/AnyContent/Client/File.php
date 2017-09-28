@@ -108,7 +108,7 @@ class File implements \JsonSerializable
         {
             return $this->urls[$type];
         }
-        if ($type != 'default' AND $fallback == true)
+        if ($type != 'default' && $fallback == true)
         {
             return $this->getUrl('default');
         }
