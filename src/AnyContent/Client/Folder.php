@@ -81,7 +81,7 @@ class Folder implements \JsonSerializable
         return true;
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $folder            = [];
         $folder['folders'] = array_values($this->listSubFolders());

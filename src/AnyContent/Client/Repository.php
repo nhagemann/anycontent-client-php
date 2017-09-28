@@ -881,7 +881,7 @@ class Repository implements FileManager, \JsonSerializable
     }
 
 
- function jsonSerialize()
+    public function jsonSerialize()
     {
         $repository = [];
 

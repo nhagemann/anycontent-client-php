@@ -41,7 +41,7 @@ class Config extends AbstractRecord implements \JsonSerializable
     }
 
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $record                       = [ ];
         $record['properties']         = $this->getProperties();

@@ -1,6 +1,6 @@
 {
   "name": "nhagemann/anycontent-php",
-  "description": " ",
+  "description": "Client library to work with AnyContent repositories. Provides connectors for different repository types (file based, mysql, rest).",
   "type": "library",
   "homepage": "http://www.nilshagemann.de",
   "license": "MIT",
@@ -17,17 +17,17 @@
     "psr/log": "1.*",
     "symfony/filesystem": "~2.3|~3.0",
     "symfony/finder": "~2.3|~3.0",
-    "guzzlehttp/guzzle": "5.*",
-    "doctrine/cache": "1.5.*",
-    "nhagemann/kvmlogger": "1.*",
-    "imagine/imagine": "0.6.*"
+    "guzzlehttp/guzzle": "~5.0",
+    "doctrine/cache": "~1.5",
+    "nhagemann/kvmlogger": "~1.0",
+    "imagine/imagine": "~0.6"
   },
   "require-dev": {
     "phpunit/phpunit": "~3.7.0",
-    "aws/aws-sdk-php": "2.8.*",
-    "dflydev/apache-mime-types": "1.*",
-    "cpliakas/git-wrapper": "1.*",
-    "ktamas77/firebase-php": "2.*"
+    "aws/aws-sdk-php": "~2.8",
+    "dflydev/apache-mime-types": "~1.0",
+    "cpliakas/git-wrapper": "~1.0",
+    "ktamas77/firebase-php": "~2.0"
   },
   "autoload": {
     "psr-0": {

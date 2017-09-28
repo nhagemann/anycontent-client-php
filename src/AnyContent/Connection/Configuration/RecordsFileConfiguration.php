@@ -22,9 +22,9 @@ class RecordsFileConfiguration extends AbstractConfiguration
      */
     public function addContentType($contentTypeName, $filenameCMDL, $filenameRecords)
     {
-        $fs = new Filesystem();
+        /*$fs = new Filesystem();
 
-        /*if (!$fs->exists($filenameCMDL))
+        if (!$fs->exists($filenameCMDL))
         {
             throw new AnyContentClientException('File ' . $filenameRecords . ' not found.');
         }

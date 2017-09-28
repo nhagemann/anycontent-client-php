@@ -218,7 +218,7 @@ class Record extends AbstractRecord implements \JsonSerializable
         return $this->creationUserInfo;
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $record                       = [ ];
         $record['id']                 = $this->getId();

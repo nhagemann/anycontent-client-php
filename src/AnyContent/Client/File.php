@@ -144,7 +144,7 @@ class File implements \JsonSerializable
     }
 
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $file = [];
         $file['id']=$this->getId();

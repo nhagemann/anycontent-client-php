@@ -1,8 +1,3 @@
-# php storm files
-.idea/
-
-# mac os
-*.DS_Store
-._*
-
 tests/_credentials.php
+tmp
+tmp2

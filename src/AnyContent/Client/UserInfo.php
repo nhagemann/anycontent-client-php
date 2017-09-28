@@ -113,7 +113,7 @@ class UserInfo implements \JsonSerializable
     }
 
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $userInfo              = [ ];
         $userInfo['timestamp'] = $this->getTimestamp();

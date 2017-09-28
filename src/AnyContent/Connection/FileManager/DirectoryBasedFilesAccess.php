@@ -128,7 +128,7 @@ class DirectoryBasedFilesAccess implements FileManager
     public function saveFile($fileId, $binary)
     {
 
-        $id       = trim($fileId, '/');
+        $fileId       = trim($fileId, '/');
         $fileName = pathinfo($fileId, PATHINFO_FILENAME);
 
         if ($fileName != '') // No writing of .xxx-files
