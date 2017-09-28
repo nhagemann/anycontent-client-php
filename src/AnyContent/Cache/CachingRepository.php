@@ -97,7 +97,7 @@ class CachingRepository extends Repository
         $this->cacheStrategy = self::CACHE_STRATEGY_EXPIRATION;
         $this->duration      = $duration;
 
-        if ($this->isCmdlCaching()) // reflect strategy chage within cmdl caching
+        if ($this->isCmdlCaching()) // reflect strategy change within cmdl caching
         {
             $this->enableCmdlCaching($this->cmdlCaching);
         }
@@ -109,7 +109,7 @@ class CachingRepository extends Repository
         $this->cacheStrategy = self::CACHE_STRATEGY_LASTMODIFIED;
         $this->duration    = $duration;
 
-        if ($this->isCmdlCaching()) // reflect strategy chage within cmdl caching
+        if ($this->isCmdlCaching()) // reflect strategy change within cmdl caching
         {
             $this->enableCmdlCaching($this->cmdlCaching);
         }
