@@ -14,11 +14,12 @@ use KVMLogger\LogMessage;
 
 class RestLikeFilesAccess implements FileManager
 {
-
     /**
      * @var RestLikeConfiguration
      */
     protected $configuration;
+
+    protected $folders = [];
 
     /**
      * @var Client
@@ -61,8 +62,8 @@ class RestLikeFilesAccess implements FileManager
         {
 
             $client = new Client([ 'base_url' => $this->getConfiguration()->getUri(),
-                'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ]
-            ]);
+                                   'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ]
+                                 ]);
 
             $this->client = $client;
 
@@ -121,37 +122,38 @@ class RestLikeFilesAccess implements FileManager
      */
     public function getFolder($path = '')
     {
-        $url  = 'files';
-        $path = trim($path, '/');
-        if ($path != '')
-        {
-            $url .= '/' . $path;
-        }
+        if (!array_key_exists($path,$this->folders)) {
 
-        $response = $this->getClient()->get($url);
-        $json     = $response->json();
+            $this->folders[$path] = false;
 
-        if ($json)
-        {
-
-            if ($this->publicUrl != false)
-            {
-                $files = [];
-                foreach ($json['files'] as $file)
-                {
-                    $file['urls']['default']=$this->publicUrl . '/' . $file['id'];
-                    $files[]=$file;
-                }
-                $json['files'] = $files;
+            $url = 'files';
+            $path = trim($path, '/');
+            if ($path != '') {
+                $url .= '/' . $path;
             }
-            $folder = new Folder($path, $json);
+
+            $response = $this->getClient()->get($url);
+            $json = $response->json();
+
+            if ($json) {
+
+                if ($this->publicUrl != false) {
+                    $files = [];
+                    foreach ($json['files'] as $file) {
+                        $file['urls']['default'] = $this->publicUrl . '/' . $file['id'];
+                        $files[] = $file;
+                    }
+                    $json['files'] = $files;
+                }
+                $folder = new Folder($path, $json);
 
 
-            return $folder;
+                $this->folders[$path] = $folder;
+            }
+
         }
 
-        return false;
-
+        return $this->folders[$path];
     }
 
 
@@ -195,9 +197,11 @@ class RestLikeFilesAccess implements FileManager
 
     public function saveFile($fileId, $binary)
     {
+        $this->folders=[];
+
         $url = 'file/' . trim($fileId, '/');
         $this->getClient()
-            ->post($url, [ 'body' => $binary ]);
+             ->post($url, [ 'body' => $binary ]);
 
         return true;
 
@@ -206,6 +210,8 @@ class RestLikeFilesAccess implements FileManager
 
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
+        $this->folders=[];
+
         $url = 'file/' . trim($fileId, '/');
         $this->getClient()->delete($url);
 
@@ -240,6 +246,8 @@ class RestLikeFilesAccess implements FileManager
                 $url = 'files/' . trim($path, '/');
 
                 $this->getClient()->delete($url);
+
+                $this->folders=[];
 
                 return true;
             }

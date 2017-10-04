@@ -14,3 +14,6 @@ Consolidation release of all changes added during the last months, e.g.
 - extracting git and firebase connections to separate repositories
 - new simple mysql table connection type
 - refactoring caching repository
+
+## Todo
+- have S3FileAccess and S3PPFileAccess cache folders

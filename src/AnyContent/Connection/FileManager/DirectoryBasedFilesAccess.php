@@ -23,6 +23,9 @@ class DirectoryBasedFilesAccess implements FileManager
     protected $publicUrl = false;
 
 
+    protected $folders = [];
+
+
     public function __construct($baseFolder, $baseUrl = false)
     {
         $this->baseFolder = $baseFolder;
@@ -78,16 +81,21 @@ class DirectoryBasedFilesAccess implements FileManager
      */
     public function getFolder($path = '')
     {
-        if (file_exists($this->baseFolder . '/' . $path))
-        {
-            $result = [ 'folders' => $this->listSubFolder($path), 'files' => $this->listFiles($path) ];
+        if (!array_key_exists($path,$this->folders)) {
 
-            $folder = new Folder($path, $result);
+            $this->folders[$path] = false;
+            if (file_exists($this->baseFolder . '/' . $path)) {
+                $result = ['folders' => $this->listSubFolder($path), 'files' => $this->listFiles($path)];
 
-            return $folder;
+                $folder = new Folder($path, $result);
+
+                $this->folders[$path] = $folder;
+
+            }
         }
 
-        return false;
+        return $this->folders[$path];
+
     }
 
 
@@ -127,6 +135,7 @@ class DirectoryBasedFilesAccess implements FileManager
 
     public function saveFile($fileId, $binary)
     {
+        $this->folders=[];
 
         $fileId       = trim($fileId, '/');
         $fileName = pathinfo($fileId, PATHINFO_FILENAME);
@@ -144,6 +153,8 @@ class DirectoryBasedFilesAccess implements FileManager
 
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
+        $this->folders=[];
+
         try
         {
             if ($this->filesystem->exists($this->baseFolder . '/' . $fileId))
@@ -169,6 +180,8 @@ class DirectoryBasedFilesAccess implements FileManager
 
     public function createFolder($path)
     {
+        $this->folders=[];
+
         try
         {
             $path = trim($path, '/');
@@ -206,6 +219,8 @@ class DirectoryBasedFilesAccess implements FileManager
 
                     }
 
+                    $this->folders=[];
+                    
                     return true;
                 }
                 catch (\Exception $e)
