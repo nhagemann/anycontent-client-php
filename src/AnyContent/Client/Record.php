@@ -85,7 +85,12 @@ class Record extends AbstractRecord implements \JsonSerializable
 
     public function getPosition()
     {
-        return $this->getProperty('position');
+        $position = $this->getProperty('position');
+        if ($position !== null)
+        {
+            return (int)$position;
+        }
+        return null;
     }
 
 
@@ -107,6 +112,7 @@ class Record extends AbstractRecord implements \JsonSerializable
         {
             return (int)$parent;
         }
+        return null;
     }
 
 
