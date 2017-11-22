@@ -530,6 +530,38 @@ class CachingRepository extends Repository
 
     public function getConfig($configTypeName)
     {
+        $dataDimensions = $this->getCurrentDataDimensions();
+
+        $cacheKey = $this->createCacheKey('config', [$configTypeName],
+                                          $dataDimensions);
+
+        $data = $this->getCacheProvider()->fetch($cacheKey);
+
+        if ($data) {
+
+            $data = json_decode($data, true);
+
+            $recordFactory = $this->getRecordFactory();
+            $config = $recordFactory->createConfig($this->getConfigTypeDefinition($configTypeName), $data);
+
+            $config->setLanguage($dataDimensions->getLanguage());
+            $config->setWorkspace($dataDimensions->getWorkspace());
+            $config->setViewName($dataDimensions->getViewName());
+
+
+            return $config;
+        }
+
+        $config = parent::getConfig($configTypeName);
+
+        if ($config) {
+            $data = json_encode($config->getProperties());
+
+            $this->getCacheProvider()->save($cacheKey, $data, $this->singleContentRecordCaching);
+        }
+
+        return $config;
+
 
         return parent::getConfig($configTypeName);
     }
