@@ -562,14 +562,18 @@ class CachingRepository extends Repository
 
         return $config;
 
-
-        return parent::getConfig($configTypeName);
     }
 
 
     public function saveConfig(Config $config)
     {
-        return parent::saveConfig($config);
+        $this->flushCacheBeforeChange();
+
+        $result =  parent::saveConfig($config);
+
+        $this->flushCacheAfterChange();
+
+        return $result;
     }
 
 
