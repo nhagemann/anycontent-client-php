@@ -309,6 +309,8 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['workspace'] = $dataDimensions->getWorkspace();
         $values['language']  = $dataDimensions->getLanguage();
 
+        $config->setRevision(1);
+
         // get row of current revision
 
         $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND validfrom_timestamp <= ? AND validuntil_timestamp > ?';
@@ -322,6 +324,8 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         {
             $values             = reset($rows);
             $values['revision'] = $values['revision'] + 1;
+
+            $config->setRevision($values['revision']);
 
             $properties = array_merge(json_decode($values['properties'], true), $config->getProperties());
 
