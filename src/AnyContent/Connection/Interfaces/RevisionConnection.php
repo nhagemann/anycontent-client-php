@@ -8,7 +8,6 @@ use AnyContent\Client\Record;
 
 interface RevisionConnection extends ReadOnlyConnection
 {
-
     /**
      * @param                     $recordId
      * @param null                $contentTypeName
