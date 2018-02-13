@@ -2,6 +2,7 @@
 
 namespace AnyContent\Client;
 
+use AnyContent\AnyContentClientException;
 use AnyContent\Client\Traits\Properties;
 use CMDL\CMDLParserException;
 use CMDL\DataTypeDefinition;
@@ -21,6 +22,11 @@ abstract class AbstractRecord
     /** @var UserInfo */
     public $lastChangeUserInfo = null;
 
+
+    /**
+     * @var Repository
+     */
+    protected $repository;
 
     /**
      * Check if a property is allowed by definition
@@ -125,4 +131,25 @@ abstract class AbstractRecord
 
         $this->setProperties($properties);
     }
+
+    /**
+     * @return Repository
+     */
+    public function getRepository()
+    {
+        if (!$this->repository)
+        {
+            throw new AnyContentClientException('Record does not know it\'s repository.');
+        }
+        return $this->repository;
+    }
+
+    /**
+     * @param Repository $repository
+     */
+    public function setRepository($repository)
+    {
+        $this->repository = $repository;
+    }
+
 }

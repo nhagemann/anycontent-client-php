@@ -218,7 +218,7 @@ class CachingRepository extends Repository
     {
 
         $cacheKey = '[' . $this->getName() . '][' . $realm . '][' . join(';',
-                $params) . '][' . (string)$dataDimensions . ']';
+                                                                         $params) . '][' . (string)$dataDimensions . ']';
 
         if ($this->hasLastModifiedCacheStrategy()) {
 
@@ -259,20 +259,20 @@ class CachingRepository extends Repository
      */
     public function getRecord($recordId, $dataDimensions = null)
     {
+
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
         if ($this->isSingleContentRecordCaching()) {
             $cacheKey = $this->createCacheKey('record', [$this->getCurrentContentTypeName(), $recordId],
-                $dataDimensions);
+                                              $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
 
             if ($data) {
 
                 $data = json_decode($data, true);
-
                 $recordFactory = $this->getRecordFactory();
                 $record        = $recordFactory->createRecordFromJSON($this->getCurrentContentTypeDefinition(), $data);
 
@@ -334,7 +334,7 @@ class CachingRepository extends Repository
             }
 
             $cacheKey = $this->createCacheKey('records-query',
-                [$this->getCurrentContentTypeName(), $filter, $page, $count, join(',', $order)], $dataDimensions);
+                                              [$this->getCurrentContentTypeName(), $filter, $page, $count, join(',', $order)], $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
             if ($data) {
@@ -342,7 +342,7 @@ class CachingRepository extends Repository
 
                 $recordFactory = $this->getRecordFactory();
                 $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(),
-                    $data);
+                                                                                   $data);
 
                 foreach ($records as $record) {
                     $record->setRepository($this);
@@ -376,7 +376,7 @@ class CachingRepository extends Repository
         if ($this->isAllContentRecordsCaching()) {
 
             $cacheKey = $this->createCacheKey('records-query', [$this->getCurrentContentTypeName(), '', 1, null, '.id'],
-                $dataDimensions);
+                                              $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
             if ($data) {
@@ -384,7 +384,7 @@ class CachingRepository extends Repository
 
                 $recordFactory = $this->getRecordFactory();
                 $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(),
-                    $data);
+                                                                                   $data);
 
                 foreach ($records as $record) {
                     $record->setRepository($this);
@@ -421,8 +421,8 @@ class CachingRepository extends Repository
             $dataDimensions = $this->getCurrentDataDimensions();
 
             $cacheKey = $this->createCacheKey('records-sort',
-                [$this->getCurrentContentTypeName(), $parentId, (int)$includeParent, serialize($depth), $height],
-                $dataDimensions);
+                                              [$this->getCurrentContentTypeName(), $parentId, (int)$includeParent, serialize($depth), $height],
+                                              $dataDimensions);
 
             $data = $this->getCacheProvider()->fetch($cacheKey);
             if ($data) {
@@ -430,7 +430,7 @@ class CachingRepository extends Repository
 
                 $recordFactory = $this->getRecordFactory();
                 $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(),
-                    $data);
+                                                                                   $data);
 
                 foreach ($records as $record) {
                     $record->setRepository($this);
@@ -542,24 +542,23 @@ class CachingRepository extends Repository
             $data = json_decode($data, true);
 
             $recordFactory = $this->getRecordFactory();
-            $config = $recordFactory->createConfig($this->getConfigTypeDefinition($configTypeName), $data);
 
-            $config->setLanguage($dataDimensions->getLanguage());
-            $config->setWorkspace($dataDimensions->getWorkspace());
-            $config->setViewName($dataDimensions->getViewName());
+            $config = $recordFactory->createRecordFromJSON($this->getConfigTypeDefinition($configTypeName),$data,$dataDimensions->getViewName(),$dataDimensions->getWorkspace(),$dataDimensions->getLanguage());
 
-
+            $config->setRepository($this);
             return $config;
         }
 
         $config = parent::getConfig($configTypeName);
 
         if ($config) {
-            $data = json_encode($config->getProperties());
+            $data = json_encode($config);
 
             $this->getCacheProvider()->save($cacheKey, $data, $this->singleContentRecordCaching);
         }
 
+
+        $config->setRepository($this);
         return $config;
 
     }
