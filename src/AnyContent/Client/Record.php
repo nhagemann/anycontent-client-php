@@ -18,6 +18,8 @@ class Record extends AbstractRecord implements \JsonSerializable
     /** @var  UserInfo */
     public $creationUserInfo = null;
 
+    protected $isADeletedRevision = false;
+
     public function __construct(ContentTypeDefinition $contentTypeDefinition, $name, $view = 'default', $workspace = 'default', $language = 'default')
     {
         $this->dataTypeDefinition = $contentTypeDefinition;
@@ -197,6 +199,23 @@ class Record extends AbstractRecord implements \JsonSerializable
     {
         return $this->creationUserInfo;
     }
+
+    /**
+     * @return bool
+     */
+    public function isADeletedRevision()
+    {
+        return $this->isADeletedRevision;
+    }
+
+    /**
+     * @param bool $isADeletedRevision
+     */
+    public function setIsADeletedRevision($isADeletedRevision)
+    {
+        $this->isADeletedRevision = $isADeletedRevision;
+    }
+
 
     public function jsonSerialize()
     {

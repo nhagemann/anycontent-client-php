@@ -322,7 +322,7 @@ TEMPLATE_CONFIGTABLE;
         $record->setPosition($row['position']);
         $record->setPosition($row['property_position']);
         $record->setParent($row['property_parent']);
-        //$record->setLevel($row['position_level']);
+        $record->setIsADeletedRevision((boolean)$row['deleted']);
 
         $userInfo = new UserInfo($row['creation_username'], $row['creation_firstname'], $row['creation_lastname'], $row['creation_timestamp']);
         $record->setCreationUserInfo($userInfo);
