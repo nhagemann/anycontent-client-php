@@ -7,6 +7,7 @@ use AnyContent\Client\File;
 use AnyContent\Client\Folder;
 use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
+use AnyContent\Client\Util\RecordsSorter;
 use AnyContent\Filter\Interfaces\Filter;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\CacheProvider;
@@ -431,6 +432,8 @@ class CachingRepository extends Repository
                 $recordFactory = $this->getRecordFactory();
                 $records       = $recordFactory->createRecordsFromJSONRecordsArray($this->getCurrentContentTypeDefinition(),
                                                                                    $data);
+
+                RecordsSorter::sortRecords($records, $parentId, $includeParent, $depth, $height);
 
                 foreach ($records as $record) {
                     $record->setRepository($this);
