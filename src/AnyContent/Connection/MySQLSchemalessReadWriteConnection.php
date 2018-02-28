@@ -46,7 +46,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         {
             $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <= ? AND validuntil_timestamp > ?';
 
-            $timestamp = TimeShifter::getTimeshiftTimestamp($dataDimensions->getTimeShift());
+            $timestamp = TimeShifter::getTimeshiftTimestamp(0);
 
             $rows = $this->getDatabase()
                          ->fetchAllSQL($sql, [ $record->getId(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timestamp, $timestamp ]);
@@ -59,6 +59,18 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                 $mode = 'update';
             }
 
+            // Check for a deleted revision
+            $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND deleted = 1 AND validfrom_timestamp <= ? AND validuntil_timestamp > ?';
+
+
+            $rows = $this->getDatabase()
+                         ->fetchAllSQL($sql, [ $record->getId(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timestamp, $timestamp ]);
+            if (count($rows) == 1)
+            {
+                $row             = reset($rows);
+                $values['revision'] = $row['revision'] + 1;
+                $record->setRevision($values['revision']);
+            }
         }
 
         if ($mode == 'insert' && $record->getId() == '')

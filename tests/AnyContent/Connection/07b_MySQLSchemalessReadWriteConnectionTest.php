@@ -330,4 +330,36 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('A',$record->getProperty('claim'));
 
     }
+
+    public function testRevisionCounting()
+    {
+        KVMLogger::instance()->debug(__METHOD__);
+
+        $connection = $this->connection;
+
+        if (!$connection) {
+            $this->markTestSkipped('MySQL credentials missing.');
+        }
+
+        $connection->selectContentType('profiles');
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+
+        $record->setProperty('claim', 'A');
+        $id = $connection->saveRecord($record);
+
+        $record = $connection->getRecord($id);
+        $this->assertEquals(1,$record->getRevision());
+
+        $connection->deleteRecord($id);
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+
+        $record->setProperty('claim', 'A');
+        $record->setId($id);
+        $connection->saveRecord($record);
+
+        $record = $connection->getRecord($id);
+        $this->assertEquals(3,$record->getRevision());
+    }
 }
