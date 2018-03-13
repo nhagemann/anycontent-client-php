@@ -117,7 +117,7 @@ abstract class AbstractRecord
     public function getHash()
     {
         $properties = $this->getProperties();
-        sort($properties);
+        ksort($properties);
         return md5(json_encode($properties,true));
     }
 
