@@ -377,7 +377,7 @@ class Repository implements FileManager, \JsonSerializable
     public function reset()
     {
 
-        $this->dataDimensions = new DataDimensions($this->getCurrentContentTypeDefinition());
+        $this->dataDimensions = new DataDimensions();
 
         return $this;
     }

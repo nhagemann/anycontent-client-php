@@ -1,0 +1,1 @@
+docker exec -w /application anycontent-client-php56 php /composer.phar $@

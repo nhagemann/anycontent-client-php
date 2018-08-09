@@ -1,0 +1,1 @@
+docker exec anycontent-client-php56 php -v
