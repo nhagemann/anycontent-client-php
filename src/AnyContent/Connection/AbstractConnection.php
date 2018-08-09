@@ -569,7 +569,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
     public function resetDataDimensions()
     {
 
-        $this->dataDimensions = new DataDimensions($this->getCurrentContentTypeDefinition());
+        $this->dataDimensions = new DataDimensions();
 
         return $this->dataDimensions;
     }
