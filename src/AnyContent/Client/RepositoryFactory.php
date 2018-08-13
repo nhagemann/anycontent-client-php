@@ -32,6 +32,7 @@ class RepositoryFactory
      *    dbname:     anycontent
      *    user:       dbuser
      *    password:   password
+     *    cmdl: /var/www/cmdl (or leave empty for reading cmdl from database)
      *
      *   repos_name_3:
      *      type: archive
@@ -82,7 +83,7 @@ class RepositoryFactory
             $options['files'] = $this->getOption('files', true);
 
             $repository = $this->createContentArchiveRepository($name, $this->getOption('folder'), $options,
-                                                                $cache);
+                $cache);
         }
 
         if ($this->getOption('type') == 'restlike') {
@@ -104,7 +105,7 @@ class RepositoryFactory
             $files = $this->getOption('files', true);
 
             $repository = $this->createRestLikeRepository($name, $this->getOption('url'), $options,
-                                                          $cache, $files);
+                $cache, $files);
         }
 
         if ($this->getOption('type') == 'mysqlschemaless') {
@@ -113,6 +114,10 @@ class RepositoryFactory
 
             $options             = [];
             $options['database'] = ['host' => $this->getOption('host'), 'dbname' => $this->getOption('dbname'), 'user' => $this->getOption('user'), 'password' => $this->getOption('password')];
+
+            if ($this->hasOption('cmdl')) {
+                $options['cmdlFolder'] = $this->getOption('cmdl');
+            }
 
             $repository = $this->createMySQLSchemalessRepository($name, $options, $cache);
         }
@@ -179,7 +184,7 @@ class RepositoryFactory
         }
 
         $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-                                              $cache);
+            $cache);
 
         return $repository;
     }
@@ -195,7 +200,7 @@ class RepositoryFactory
 
         $this->requireOptions(['host', 'dbname', 'user', 'password']);
         $configuration->initDatabase($this->getOption('host'), $this->getOption('dbname'), $this->getOption('user'),
-                                     $this->getOption('password'), $this->getOption('port', 3306));
+            $this->getOption('password'), $this->getOption('port', 3306));
         $this->options = $options;
 
         if ($this->hasOption('cmdlFolder')) {
@@ -215,7 +220,7 @@ class RepositoryFactory
         }
 
         $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-                                              $cache);
+            $cache);
 
         return $repository;
     }
@@ -248,7 +253,7 @@ class RepositoryFactory
         }
 
         $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-                                              $cache);
+            $cache);
 
         $repository->setPublicUrl($baseUrl);
 
