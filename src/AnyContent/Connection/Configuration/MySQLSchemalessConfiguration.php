@@ -1,4 +1,5 @@
 <?php
+
 namespace AnyContent\Connection\Configuration;
 
 use AnyContent\AnyContentClientException;
@@ -28,7 +29,8 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
     public function initDatabase($host, $dbName, $username, $password, $port = 3306)
     {
         // http://stackoverflow.com/questions/18683471/pdo-setting-pdomysql-attr-found-rows-fails
-        $pdo = new \PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $username, $password, array( \PDO::MYSQL_ATTR_FOUND_ROWS => true ));
+        $pdo = new \PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $username, $password,
+            array(\PDO::MYSQL_ATTR_FOUND_ROWS => true));
 
         $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -45,12 +47,9 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
     {
         $this->pathCMDLFolderForContentTypes = $pathContentTypes;
 
-        if ($pathConfigTypes)
-        {
+        if ($pathConfigTypes) {
             $this->pathCMDLFolderForConfigTypes = $pathConfigTypes;
-        }
-        else
-        {
+        } else {
             $this->pathCMDLFolderForConfigTypes = $pathContentTypes . '/config';
         }
     }
@@ -61,8 +60,7 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
      */
     public function getRepositoryName()
     {
-        if (!$this->repositoryName)
-        {
+        if (!$this->repositoryName) {
             throw new AnyContentClientException('Please provide repository name or set cmdl folder path.');
         }
 
@@ -84,10 +82,9 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
         $sql = 'SHOW TABLES LIKE ?';
 
         $stmt = $this->getDatabase()->getConnection()->prepare($sql);
-        $stmt->execute(array( '_cmdl_' ));
+        $stmt->execute(array('_cmdl_'));
 
-        if ($stmt->rowCount() == 0)
-        {
+        if ($stmt->rowCount() == 0) {
             $sql = <<< TEMPLATE_CMDLTABLE
         CREATE TABLE `_cmdl_` (
         `repository` varchar(255) NOT NULL DEFAULT '',
@@ -102,12 +99,9 @@ TEMPLATE_CMDLTABLE;
 
             $stmt = $this->getDatabase()->getConnection()->prepare($sql);
 
-            try
-            {
+            try {
                 $stmt->execute();
-            }
-            catch (\PDOException $e)
-            {
+            } catch (\PDOException $e) {
                 throw new AnyContentClientException('Could not create mandatory table _cmdl_');
             }
 
@@ -118,8 +112,7 @@ TEMPLATE_CMDLTABLE;
         $stmt = $this->getDatabase()->getConnection()->prepare($sql);
         $stmt->execute();
 
-        if ($stmt->rowCount() == 0)
-        {
+        if ($stmt->rowCount() == 0) {
             $sql = <<< TEMPLATE_COUNTERTABLE
 CREATE TABLE `_counter_` (
   `repository` varchar(128) NOT NULL DEFAULT '',
@@ -131,26 +124,19 @@ TEMPLATE_COUNTERTABLE;
 
             $stmt = $this->getDatabase()->getConnection()->prepare($sql);
 
-            try
-            {
+            try {
                 $stmt->execute();
-            }
-            catch (\PDOException $e)
-            {
+            } catch (\PDOException $e) {
                 throw new AnyContentClientException('Could not create mandatory table _counter_');
             }
         }
-
-
-
 
         $sql = "Show Tables Like '_update_'";
 
         $stmt = $this->getDatabase()->getConnection()->prepare($sql);
         $stmt->execute();
 
-        if ($stmt->rowCount() == 0)
-        {
+        if ($stmt->rowCount() == 0) {
             $sql = <<< TEMPLATE_UPDATETABLE
 CREATE TABLE `_update_` (
   `repository` varchar(255) NOT NULL,
@@ -167,20 +153,12 @@ TEMPLATE_UPDATETABLE;
 
             $stmt = $this->getDatabase()->getConnection()->prepare($sql);
 
-            try
-            {
+            try {
                 $stmt->execute();
-            }
-            catch (\PDOException $e)
-            {
+            } catch (\PDOException $e) {
                 throw new AnyContentClientException('Could not create mandatory table _update_');
             }
         }
-
-
-
-
-
 
     }
 
@@ -188,12 +166,10 @@ TEMPLATE_UPDATETABLE;
     public function addContentTypes($contentTypes = null)
     {
 
-        if (!$this->getDatabase())
-        {
+        if (!$this->getDatabase()) {
             throw new AnyContentClientException('Database must be initalized first.');
         }
-        if ($contentTypes == null)
-        {
+        if ($contentTypes == null) {
             if ($this->pathCMDLFolderForContentTypes != null) // file based content/config types definition
             {
 
@@ -204,38 +180,31 @@ TEMPLATE_UPDATETABLE;
                 $finder->in($uri)->depth(0);
 
                 /** @var SplFileInfo $file */
-                foreach ($finder->files('*.cmdl') as $file)
-                {
+                foreach ($finder->files('*.cmdl') as $file) {
                     $contentTypeName = $file->getBasename('.cmdl');
 
-                    $this->contentTypes[$contentTypeName] = [ ];
+                    $this->contentTypes[$contentTypeName] = [];
 
                 }
 
-            }
-            else // database based content/config types definition
+            } else // database based content/config types definition
             {
                 $repositoryName = $this->getRepositoryName();
 
                 $sql = 'SELECT name, data_type FROM _cmdl_ WHERE repository = ?';
 
-                $rows = $this->getDatabase()->fetchAllSQL($sql, [ $repositoryName ]);
+                $rows = $this->getDatabase()->fetchAllSQL($sql, [$repositoryName]);
 
-                foreach ($rows as $row)
-                {
-                    if ($row['data_type'] == 'content')
-                    {
+                foreach ($rows as $row) {
+                    if ($row['data_type'] == 'content') {
                         $contentTypeName                      = $row['name'];
-                        $this->contentTypes[$contentTypeName] = [ ];
+                        $this->contentTypes[$contentTypeName] = [];
                     }
                 }
             }
-        }
-        else
-        {
-            foreach ($contentTypes as $contentTypeName)
-            {
-                $this->contentTypes[$contentTypeName] = [ ];
+        } else {
+            foreach ($contentTypes as $contentTypeName) {
+                $this->contentTypes[$contentTypeName] = [];
             }
         }
     }
@@ -249,12 +218,10 @@ TEMPLATE_UPDATETABLE;
 
     public function addConfigTypes($configTypes = null)
     {
-        if (!$this->getDatabase())
-        {
+        if (!$this->getDatabase()) {
             throw new AnyContentClientException('Database must be initalized first.');
         }
-        if ($configTypes == null)
-        {
+        if ($configTypes == null) {
             if ($this->pathCMDLFolderForConfigTypes != null) // file based content/config types definition
             {
 
@@ -265,46 +232,41 @@ TEMPLATE_UPDATETABLE;
                 $finder->in($uri)->depth(0);
 
                 /** @var SplFileInfo $file */
-                foreach ($finder->files('*.cmdl') as $file)
-                {
+                foreach ($finder->files('*.cmdl') as $file) {
                     $configTypeName = $file->getBasename('.cmdl');
 
-                    $this->configTypes[$configTypeName] = [ ];
+                    $this->configTypes[$configTypeName] = [];
 
                 }
 
-            }
-            else // database based content/config types definition
+            } else // database based content/config types definition
             {
                 $repositoryName = $this->getRepositoryName();
 
                 $sql = 'SELECT name, data_type FROM _cmdl_ WHERE repository = ?';
 
-                $rows = $this->getDatabase()->fetchAllSQL($sql, [ $repositoryName ]);
+                $rows = $this->getDatabase()->fetchAllSQL($sql, [$repositoryName]);
 
-                foreach ($rows as $row)
-                {
-                    if ($row['data_type'] == 'config')
-                    {
+                foreach ($rows as $row) {
+                    if ($row['data_type'] == 'config') {
                         $configTypeName                     = $row['name'];
-                        $this->configTypes[$configTypeName] = [ ];
+                        $this->configTypes[$configTypeName] = [];
                     }
                 }
             }
-        }
-        else
-        {
-            foreach ($configTypes as $configTypeName)
-            {
-                $this->configTypes[$configTypeName] = [ ];
+        } else {
+            foreach ($configTypes as $configTypeName) {
+                $this->configTypes[$configTypeName] = [];
             }
         }
     }
+
 
     public function removeConfigType($configTypeName)
     {
         unset ($this->configTypes[$configTypeName]);
     }
+
 
     /**
      * @return Database
@@ -365,6 +327,74 @@ TEMPLATE_UPDATETABLE;
     public function createReadWriteConnection()
     {
         return new MySQLSchemalessReadWriteConnection($this);
+    }
+
+
+    /**
+     * Import content/config types from a cmdl folder into the _cmdl_ table
+     *
+     * Will purge existing entries
+     *
+     */
+    public function importCMDL($path)
+    {
+        $connection = $this->getDatabase()->getConnection();
+
+        // scan cmdl folder for repositories
+
+        $finder1 = new Finder();
+        $finder1->depth(0);
+        $directories = $finder1->directories()->in($path);
+
+        /** @var SplFileInfo $directory */
+        foreach ($directories as $directory) {
+
+            $repositoryName = $directory->getFilename();
+
+            $sql  = 'DELETE FROM _cmdl_ WHERE repository = ?';
+            $stmt = $connection->prepare($sql);
+            $stmt->execute([$repositoryName]);
+
+            $path = realpath($directory->getPathname());
+
+            $finder2 = new Finder();
+            $finder2->depth(0);
+
+            // transfer content types
+
+            $finder2->files('*.cmdl')->in($path);
+
+            /** @var SplFileInfo $file */
+            foreach ($finder2 as $file) {
+                $contentTypeName = $file->getBasename('.cmdl');
+
+                $cmdl = $file->getContents();
+
+                $sql  = 'INSERT INTO _cmdl_ (repository,data_type,name,cmdl,lastchange_timestamp) VALUES(?,"content",?,?,?)';
+                $stmt = $connection->prepare($sql);
+                $stmt->execute([$repositoryName, $contentTypeName, $cmdl, time()]);
+            }
+
+            // transfer config types
+
+            if (file_exists($path . '/config')) {
+                $finder3 = new Finder();
+                $finder3->depth(0);
+                $finder3->files('*.cmdl')->in($path . '/config');
+
+                /** @var SplFileInfo $file */
+                foreach ($finder3 as $file) {
+                    $configTypeName = $file->getBasename('.cmdl');
+
+                    $cmdl = $file->getContents();
+
+                    $sql  = 'INSERT INTO _cmdl_ (repository,data_type,name,cmdl,lastchange_timestamp) VALUES(?,"config",?,?,?)';
+                    $stmt = $connection->prepare($sql);
+                    $stmt->execute([$repositoryName, $configTypeName, $cmdl, time()]);
+                }
+            }
+        }
+
     }
 
 }
