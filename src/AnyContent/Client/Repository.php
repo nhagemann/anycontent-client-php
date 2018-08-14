@@ -930,6 +930,7 @@ class Repository implements FileManager, \JsonSerializable
             // content type might have been deleted in the meantime
         }
 
+        $repository['content']=[];
         foreach ($this->getContentTypeDefinitions() as $definition) {
 
             $contentTypeName = $definition->getName();
@@ -944,6 +945,7 @@ class Repository implements FileManager, \JsonSerializable
             $repository['content'][$contentTypeName]['description']        = $definition->getDescription();
         }
 
+        $repository['config']=[];
         foreach ($this->getConfigTypeDefinitions() as $definition) {
 
             $configTypeName = $definition->getName();
