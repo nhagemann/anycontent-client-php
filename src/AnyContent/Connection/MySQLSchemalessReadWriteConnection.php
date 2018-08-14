@@ -149,6 +149,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['position']  = $record->getPosition();
         $values['property_position']  = $record->getPosition();
         $values['property_parent']  = $record->getParent();
+        $values['hash']   = $record->getHash();
 
         $this->getDatabase()->insert($tableName, $values);
 
