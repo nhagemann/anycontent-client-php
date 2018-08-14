@@ -364,6 +364,8 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['validfrom_timestamp']  = $timeshiftTimestamp;
         $values['validuntil_timestamp'] = TimeShifter::getMaxTimestamp();
 
+        $values['hash']   = $config->getHash();
+
         $this->getDatabase()->insert($tableName, $values);
 
         $sql = 'INSERT INTO _update_ (repository, data_type, name, workspace, language, lastchange_timestamp) VALUES (? , "config", ? , ? , ? , ?) ON DUPLICATE KEY UPDATE lastchange_timestamp=?;';
