@@ -229,14 +229,17 @@ TEMPLATE_UPDATETABLE;
 
                 $uri = 'file://' . $this->pathCMDLFolderForConfigTypes;
 
-                $finder->in($uri)->depth(0);
+                if (file_exists($uri)) {
 
-                /** @var SplFileInfo $file */
-                foreach ($finder->files('*.cmdl') as $file) {
-                    $configTypeName = $file->getBasename('.cmdl');
+                    $finder->in($uri)->depth(0);
 
-                    $this->configTypes[$configTypeName] = [];
+                    /** @var SplFileInfo $file */
+                    foreach ($finder->files('*.cmdl') as $file) {
+                        $configTypeName = $file->getBasename('.cmdl');
 
+                        $this->configTypes[$configTypeName] = [];
+
+                    }
                 }
 
             } else // database based content/config types definition
