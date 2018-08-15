@@ -1,4 +1,4 @@
-version: '2'
+version: '3.5'
 services:
   anycontent-client-php56:
     container_name: anycontent-client-php56
@@ -7,10 +7,22 @@ services:
       dockerfile: Dockerfile
     image: anycontent-client-php56:1.0.0
     volumes:
-      - ./config/php/php.ini:/usr/local/etc/php/php.ini
-      - ../../:/application
+      - ./config/php/php.ini:/usr/local/etc/php/php.ini:cached
+      - ../../:/application:cached
     networks:
       - anycontent
+  anycontent-client-phpunit-mysql:
+    container_name: anycontent-client-phpunit-mysql
+    image: mysql:5.7
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+     - anycontent
+
+
 networks:
   anycontent:
     driver: "bridge"
+    name: "anycontent"

@@ -15,57 +15,58 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public $connection;
 
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public static function setUpBeforeClass()
     {
-        if (defined('PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST'))
-        {
-            $configuration = new MySQLSchemalessConfiguration();
 
-            $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
-            $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->setRepositoryName('phpunit');
-            $configuration->addContentTypes();
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
-            $database = $configuration->getDatabase();
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
 
-            $database->execute('DROP TABLE IF EXISTS _cmdl_');
-            $database->execute('DROP TABLE IF EXISTS _counter_');
-            $database->execute('DROP TABLE IF EXISTS phpunit$profiles');
+        $configuration = new MySQLSchemalessConfiguration();
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
+
+        $connection = $configuration->createReadWriteConnection();
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public function setUp()
     {
-        if (defined('PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST'))
-        {
-            $configuration = new MySQLSchemalessConfiguration();
 
-            $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
-            $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->setRepositoryName('phpunit');
-            $configuration->addContentTypes();
+        $configuration = new MySQLSchemalessConfiguration();
 
-            $connection = $configuration->createReadWriteConnection();
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
 
-            $this->connection = $connection;
-            $repository       = new Repository('phpunit',$connection);
+        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        $connection = $configuration->createReadWriteConnection();
+
+        $this->connection = $connection;
+        $repository       = new Repository('phpunit', $connection);
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+
     }
 
 
     public function testSaveRecordSameConnection()
     {
         $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $connection->selectContentType('profiles');
 
@@ -89,11 +90,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
         $record = $connection->getRecord(5);
@@ -106,11 +102,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testAddRecord()
     {
         $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $connection->selectContentType('profiles');
 
@@ -128,19 +119,13 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
         $this->assertEquals(2, $connection->countRecords());
 
-        $records = [ ];
+        $records = [];
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record    = new Record($connection->getCurrentContentTypeDefinition(), 'Test ' . $i);
             $records[] = $record;
         }
@@ -156,11 +141,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
         $this->assertEquals(7, $connection->countRecords());
@@ -170,11 +150,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDeleteRecord()
     {
         $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $connection->selectContentType('profiles');
 
@@ -195,10 +170,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
         $connection->selectContentType('profiles');
 
         $this->assertEquals(6, $connection->countRecords());
@@ -209,14 +180,9 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
-        $result = $connection->deleteRecords([ 6, 999 ]);
+        $result = $connection->deleteRecords([6, 999]);
 
         $this->assertCount(1, $result);
         $this->assertEquals(5, $connection->countRecords());
@@ -228,11 +194,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
         $this->assertEquals(5, $connection->countRecords());
@@ -242,11 +203,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDeleteAllRecords()
     {
         $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $connection->selectContentType('profiles');
 
@@ -262,15 +218,11 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
         $this->assertEquals(0, $connection->countRecords());
     }
+
 
     public function testProtectedProperties()
     {
@@ -278,24 +230,19 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
 
-        $record->setProperty('ranking',1);
+        $record->setProperty('ranking', 1);
 
-        $this->assertEquals(1,$record->getProperty('ranking'));
+        $this->assertEquals(1, $record->getProperty('ranking'));
 
         $id = $connection->saveRecord($record);
 
         $record = $connection->getRecord($id);
 
-        $this->assertEquals('',$record->getProperty('ranking'));
+        $this->assertEquals('', $record->getProperty('ranking'));
     }
 
 
@@ -305,10 +252,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        if (!$connection) {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
@@ -318,7 +261,7 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $record = $connection->getRecord($id);
 
-        $this->assertEquals('A',$record->getProperty('claim'));
+        $this->assertEquals('A', $record->getProperty('claim'));
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
 
@@ -327,19 +270,16 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $record = $connection->getRecord($id);
 
-        $this->assertEquals('A',$record->getProperty('claim'));
+        $this->assertEquals('A', $record->getProperty('claim'));
 
     }
+
 
     public function testRevisionCounting()
     {
         KVMLogger::instance()->debug(__METHOD__);
 
         $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $connection->selectContentType('profiles');
 
@@ -349,7 +289,7 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $id = $connection->saveRecord($record);
 
         $record = $connection->getRecord($id);
-        $this->assertEquals(1,$record->getRevision());
+        $this->assertEquals(1, $record->getRevision());
 
         $connection->deleteRecord($id);
 
@@ -360,6 +300,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $connection->saveRecord($record);
 
         $record = $connection->getRecord($id);
-        $this->assertEquals(3,$record->getRevision());
+        $this->assertEquals(3, $record->getRevision());
     }
 }

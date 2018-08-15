@@ -6,6 +6,8 @@ RUN apt-get update && \
 
 RUN docker-php-ext-install gd
 
+RUN docker-php-ext-install pdo_mysql
+
 RUN curl --silent --show-error https://getcomposer.org/installer | php
 
 # Endless command to keep container running

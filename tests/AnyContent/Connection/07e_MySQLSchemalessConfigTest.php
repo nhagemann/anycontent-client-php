@@ -15,59 +15,59 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
     public $connection;
 
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public static function setUpBeforeClass()
     {
-        if (defined('PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST'))
-        {
-            $configuration = new MySQLSchemalessConfiguration();
 
-            $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
-            $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->setRepositoryName('phpunit');
-            $configuration->addContentTypes();
-            $configuration->addConfigTypes();
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
-            $database = $configuration->getDatabase();
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
 
-            $database->execute('DROP TABLE IF EXISTS _cmdl_');
-            $database->execute('DROP TABLE IF EXISTS _counter_');
-            $database->execute('DROP TABLE IF EXISTS phpunit$$config');
+        $configuration = new MySQLSchemalessConfiguration();
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
+
+        $connection = $configuration->createReadWriteConnection();
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public function setUp()
     {
-        if (defined('PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST'))
-        {
-            $configuration = new MySQLSchemalessConfiguration();
 
-            $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
-            $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->setRepositoryName('phpunit');
-            $configuration->addContentTypes();
-            $configuration->addConfigTypes();
+        $configuration = new MySQLSchemalessConfiguration();
 
-            $connection = $configuration->createReadWriteConnection();
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
 
-            $this->connection = $connection;
-            $repository       = new Repository('phpunit',$connection);
+        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
+        $configuration->addConfigTypes();
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        $connection = $configuration->createReadWriteConnection();
+
+        $this->connection = $connection;
+        $repository       = new Repository('phpunit', $connection);
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+
     }
 
 
     public function testConfigSameConnection()
     {
         $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $config = $connection->getConfig('config1');
 
@@ -91,11 +91,6 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $config = $connection->getConfig('config1');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
@@ -108,10 +103,6 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $connection->selectView('test');
 
@@ -146,11 +137,6 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
         KVMLogger::instance()->debug(__METHOD__);
 
         $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $config = $connection->getConfig('config1');
 

@@ -22,91 +22,87 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends \PHPUni
     /** @var  Repository */
     public $repository;
 
+
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public static function setUpBeforeClass()
     {
-        if (defined('PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST')) {
-            $configuration = new MySQLSchemalessConfiguration();
 
-            $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
-            $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->setRepositoryName('phpunit');
-            $configuration->addContentTypes();
-            $configuration->addConfigTypes();
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
-            $database = $configuration->getDatabase();
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
 
-            $database->execute('DROP TABLE IF EXISTS _cmdl_');
-            $database->execute('DROP TABLE IF EXISTS _counter_');
-            $database->execute('DROP TABLE IF EXISTS _update_');
-            $database->execute('DROP TABLE IF EXISTS phpunit$profiles');
-            $database->execute('DROP TABLE IF EXISTS phpunit$$config');
+        $configuration = new MySQLSchemalessConfiguration();
 
-            // init again, since we just removed some vital tables, but had to init the database before, to get the database object
-            $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
 
-            $connection = $configuration->createReadWriteConnection();
+        $connection = $configuration->createReadWriteConnection();
 
-            $repository = new Repository('phpunit', $connection);
-            $repository->selectContentType('profiles');
+        $repository = new Repository('phpunit', $connection);
+        $repository->selectContentType('profiles');
 
-            $record = $repository->createRecord('Agency 1', 1);
-            $repository->saveRecord($record);
+        $record = $repository->createRecord('Agency 1', 1);
+        $repository->saveRecord($record);
 
-            $record = $repository->createRecord('Agency 2', 2);
-            $repository->saveRecord($record);
+        $record = $repository->createRecord('Agency 2', 2);
+        $repository->saveRecord($record);
 
-            $record = $repository->createRecord('Agency 5', 5);
-            $repository->saveRecord($record);
+        $record = $repository->createRecord('Agency 5', 5);
+        $repository->saveRecord($record);
 
-            $repository->selectWorkspace('live');
+        $repository->selectWorkspace('live');
 
-            $record = $repository->createRecord('Agency 1', 1);
-            $repository->saveRecord($record);
+        $record = $repository->createRecord('Agency 1', 1);
+        $repository->saveRecord($record);
 
-            $record = $repository->createRecord('Agency 2', 2);
-            $repository->saveRecord($record);
+        $record = $repository->createRecord('Agency 2', 2);
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
+
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public function setUp()
     {
-        if (defined('PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST')) {
-            $configuration = new MySQLSchemalessConfiguration();
 
-            $configuration->initDatabase(PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_HOST, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_DBNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_USERNAME, PHPUNIT_CREDENTIALS_MYSQL_SCHEMALESS_PASSWORD);
-            $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-            $configuration->setRepositoryName('phpunit');
-            $configuration->addContentTypes();
-            $configuration->addConfigTypes();
+        $configuration = new MySQLSchemalessConfiguration();
 
-            $connection = $configuration->createReadWriteConnection();
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
 
-            $this->connection = $connection;
+        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
+        $configuration->addConfigTypes();
 
-            $this->repository = new Repository('phpunit', $this->connection);
-        }
+        $connection = $configuration->createReadWriteConnection();
+
+        $this->connection = $connection;
+        $repository       = new Repository('phpunit', $connection);
+
+        $this->repository = $repository;
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+
     }
+
 
     public function testSupportsRevisions()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $this->assertTrue($this->repository->supportsRevisions());
     }
 
+
     public function testCreatingRecordRevisions()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $repository = $this->repository;
 
@@ -133,13 +129,9 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends \PHPUni
         }
     }
 
+
     public function testCreatingConfigRevisions()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $repository = $this->repository;
 
@@ -164,14 +156,9 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends \PHPUni
         }
     }
 
+
     public function testDeleteRecords()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $repository = $this->repository;
 
         $repository->selectContentType('profiles');

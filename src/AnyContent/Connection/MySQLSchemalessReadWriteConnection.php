@@ -18,8 +18,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null)
     {
 
-        if ($dataDimensions == null)
-        {
+        if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
@@ -36,23 +35,27 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $mode = 'insert';
         $record->setRevision(1);
 
-        $values              = [ ];
+        $values              = [];
         $values['revision']  = 1;
         $values['workspace'] = $dataDimensions->getWorkspace();
         $values['language']  = $dataDimensions->getLanguage();
         $values['deleted']   = 0;
 
-        if ($record->getId() != '')
-        {
+        if ($record->getId() != '') {
             $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <= ? AND validuntil_timestamp > ?';
 
             $timestamp = TimeShifter::getTimeshiftTimestamp(0);
 
             $rows = $this->getDatabase()
-                         ->fetchAllSQL($sql, [ $record->getId(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timestamp, $timestamp ]);
+                         ->fetchAllSQL($sql, [
+                             $record->getId(),
+                             $dataDimensions->getWorkspace(),
+                             $dataDimensions->getLanguage(),
+                             $timestamp,
+                             $timestamp
+                         ]);
 
-            if (count($rows) == 1)
-            {
+            if (count($rows) == 1) {
                 $values             = reset($rows);
                 $values['revision'] = $values['revision'] + 1;
                 $record->setRevision($values['revision']);
@@ -62,26 +65,29 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             // Check for a deleted revision
             $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND deleted = 1 AND validfrom_timestamp <= ? AND validuntil_timestamp > ?';
 
-
             $rows = $this->getDatabase()
-                         ->fetchAllSQL($sql, [ $record->getId(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timestamp, $timestamp ]);
-            if (count($rows) == 1)
-            {
-                $row             = reset($rows);
+                         ->fetchAllSQL($sql, [
+                             $record->getId(),
+                             $dataDimensions->getWorkspace(),
+                             $dataDimensions->getLanguage(),
+                             $timestamp,
+                             $timestamp
+                         ]);
+            if (count($rows) == 1) {
+                $row                = reset($rows);
                 $values['revision'] = $row['revision'] + 1;
                 $record->setRevision($values['revision']);
             }
         }
 
-        if ($mode == 'insert' && $record->getId() == '')
-        {
+        if ($mode == 'insert' && $record->getId() == '') {
             // update counter for new record
 
             $sql = 'INSERT INTO _counter_ (repository,content_type,counter) VALUES (? , ? ,1) ON DUPLICATE KEY UPDATE counter=counter+1;';
-            $this->getDatabase()->execute($sql, [ $repositoryName, $contentTypeName ]);
+            $this->getDatabase()->execute($sql, [$repositoryName, $contentTypeName]);
 
             $sql    = 'SELECT counter FROM _counter_ WHERE repository = ? AND content_type = ?';
-            $nextId = $this->getDatabase()->fetchColumnSQL($sql, 0, [ $repositoryName, $contentTypeName ]);
+            $nextId = $this->getDatabase()->fetchColumnSQL($sql, 0, [$repositoryName, $contentTypeName]);
 
             $record->setId($nextId);
 
@@ -90,12 +96,11 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $sql    = 'SELECT MAX(id)+1 FROM ' . $tableName;
             $nextId = $this->getDatabase()->fetchColumnSQL($sql, 0);
 
-            if ($nextId > $record->getId())
-            {
+            if ($nextId > $record->getId()) {
                 $record->setId($nextId);
 
                 $sql = 'INSERT INTO _counter_ (repository,content_type,counter) VALUES (? , ? ,?) ON DUPLICATE KEY UPDATE counter=?;';
-                $this->getDatabase()->execute($sql, [ $repositoryName, $contentTypeName, $nextId, $nextId ]);
+                $this->getDatabase()->execute($sql, [$repositoryName, $contentTypeName, $nextId, $nextId]);
 
             }
         }
@@ -104,8 +109,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
 
-        if ($mode == 'update')
-        {
+        if ($mode == 'update') {
             // invalidate current revision
 
             $sql      = 'UPDATE ' . $tableName . ' SET validuntil_timestamp = ? WHERE id = ? AND workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <=? AND validuntil_timestamp >?';
@@ -121,8 +125,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         }
 
-        if ($mode == 'insert')
-        {
+        if ($mode == 'insert') {
             $values['creation_timestamp'] = $timeshiftTimestamp;
             $values['creation_username']  = $this->userInfo->getUsername();
             $values['creation_firstname'] = $this->userInfo->getFirstname();
@@ -137,25 +140,29 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['validfrom_timestamp']  = $timeshiftTimestamp;
         $values['validuntil_timestamp'] = TimeShifter::getMaxTimestamp();
 
-        foreach ($record->getProperties() as $property => $value)
-        {
-            if ($definition->getViewDefinition($dataDimensions->getViewName())->hasProperty($property))
-            {
+        foreach ($record->getProperties() as $property => $value) {
+            if ($definition->getViewDefinition($dataDimensions->getViewName())->hasProperty($property)) {
                 $values['property_' . $property] = $value;
             }
         }
 
-        $values['parent_id'] = $record->getParent();
-        $values['position']  = $record->getPosition();
-        $values['property_position']  = $record->getPosition();
-        $values['property_parent']  = $record->getParent();
-        $values['hash']   = $record->getHash();
+        $values['parent_id']         = $record->getParent();
+        $values['position']          = $record->getPosition();
+        $values['property_position'] = $record->getPosition();
+        $values['property_parent']   = $record->getParent();
+        $values['hash']              = $record->getHash();
 
         $this->getDatabase()->insert($tableName, $values);
 
-
         $sql = 'INSERT INTO _update_ (repository, data_type, name, workspace, language, lastchange_timestamp) VALUES (? , "content", ? , ? , ? , ?) ON DUPLICATE KEY UPDATE lastchange_timestamp=?;';
-        $this->getDatabase()->execute($sql, [ $repositoryName, $contentTypeName, $dataDimensions->getWorkspace(),$dataDimensions->getLanguage(),$timeshiftTimestamp,$timeshiftTimestamp ]);
+        $this->getDatabase()->execute($sql, [
+            $repositoryName,
+            $contentTypeName,
+            $dataDimensions->getWorkspace(),
+            $dataDimensions->getLanguage(),
+            $timeshiftTimestamp,
+            $timeshiftTimestamp
+        ]);
 
         return $record->getId();
 
@@ -171,14 +178,12 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
     public function saveRecords(array $records, DataDimensions $dataDimensions = null)
     {
 
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $recordIds = [ ];
-        foreach ($records as $record)
-        {
+        $recordIds = [];
+        foreach ($records as $record) {
             $recordIds[] = $this->saveRecord($record, $dataDimensions);
         }
 
@@ -189,21 +194,16 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
     public function deleteRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-        $result = $recordId;
 
-        if ($contentTypeName == null)
-        {
+        if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
         $tableName = $this->getContentTypeTableName($contentTypeName);
-
-        $values = [ ];
 
         // get row of current revision
 
@@ -212,24 +212,34 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp($dataDimensions->getTimeShift());
 
         $rows = $this->getDatabase()
-                     ->fetchAllSQL($sql, [ $recordId, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timeshiftTimestamp, $timeshiftTimestamp ]);
+                     ->fetchAllSQL($sql, [
+                         $recordId,
+                         $dataDimensions->getWorkspace(),
+                         $dataDimensions->getLanguage(),
+                         $timeshiftTimestamp,
+                         $timeshiftTimestamp
+                     ]);
 
-        if (count($rows) == 1)
-        {
+        if (count($rows) == 1) {
             $values             = reset($rows);
             $values['revision'] = $values['revision'] + 1;
 
-        }
-        else
-        {
-            $result = false;
+        } else {
+            return false;
         }
 
         // invalidate current revision
 
         $sql = 'UPDATE ' . $tableName . ' SET validuntil_timestamp = ? WHERE id = ? AND workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <=? AND validuntil_timestamp >?';
         $this->getDatabase()
-             ->execute($sql, [ $timeshiftTimestamp, $recordId, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timeshiftTimestamp, $timeshiftTimestamp ]);
+             ->execute($sql, [
+                 $timeshiftTimestamp,
+                 $recordId,
+                 $dataDimensions->getWorkspace(),
+                 $dataDimensions->getLanguage(),
+                 $timeshiftTimestamp,
+                 $timeshiftTimestamp
+             ]);
 
         // copy last revision row and mark record as deleted
 
@@ -245,28 +255,32 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $this->getDatabase()->insert($tableName, $values);
 
         $sql = 'INSERT INTO _update_ (repository, data_type, name, workspace, language, lastchange_timestamp) VALUES (? , "content", ? , ? , ? , ?) ON DUPLICATE KEY UPDATE lastchange_timestamp=?;';
-        $this->getDatabase()->execute($sql, [ $this->getRepository()->getName(), $contentTypeName, $dataDimensions->getWorkspace(),$dataDimensions->getLanguage(),$timeshiftTimestamp,$timeshiftTimestamp ]);
 
-        return $result;
+        $this->getDatabase()->execute($sql, [
+            $this->getRepository()->getName(),
+            $contentTypeName,
+            $dataDimensions->getWorkspace(),
+            $dataDimensions->getLanguage(),
+            $timeshiftTimestamp,
+            $timeshiftTimestamp
+        ]);
+
+        return $recordId;
     }
 
 
     public function deleteRecords(array $recordsIds, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
-        if (!$contentTypeName)
-        {
+        if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
-        $recordIds = [ ];
-        foreach ($recordsIds as $recordId)
-        {
-            if ($this->deleteRecord($recordId, $contentTypeName, $dataDimensions))
-            {
+        $recordIds = [];
+        foreach ($recordsIds as $recordId) {
+            if ($this->deleteRecord($recordId, $contentTypeName, $dataDimensions)) {
                 $recordIds[] = $recordId;
             }
         }
@@ -278,22 +292,18 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
     public function deleteAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
-        if (!$contentTypeName)
-        {
+        if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
-        $recordIds = [ ];
+        $recordIds = [];
 
         $allRecords = $this->getAllRecords($contentTypeName, $dataDimensions);
 
-        foreach ($allRecords as $record)
-        {
-            if ($this->deleteRecord($record->getId(), $contentTypeName, $dataDimensions))
-            {
+        foreach ($allRecords as $record) {
+            if ($this->deleteRecord($record->getId(), $contentTypeName, $dataDimensions)) {
                 $recordIds[] = $record->getId();
             }
         }
@@ -304,18 +314,17 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
     public function saveConfig(Config $config, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $this->finalizeRecord($config,$dataDimensions);
+        $this->finalizeRecord($config, $dataDimensions);
 
         $configTypeName = $config->getConfigTypeName();
 
         $tableName = $this->getConfigTypeTableName();
 
-        $values = [ ];
+        $values = [];
 
         $values['id']        = $configTypeName;
         $values['revision']  = 1;
@@ -331,10 +340,15 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
 
         $rows = $this->getDatabase()
-                     ->fetchAllSQL($sql, [ $configTypeName, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timeshiftTimestamp, $timeshiftTimestamp ]);
+                     ->fetchAllSQL($sql, [
+                         $configTypeName,
+                         $dataDimensions->getWorkspace(),
+                         $dataDimensions->getLanguage(),
+                         $timeshiftTimestamp,
+                         $timeshiftTimestamp
+                     ]);
 
-        if (count($rows) == 1)
-        {
+        if (count($rows) == 1) {
             $values             = reset($rows);
             $values['revision'] = $values['revision'] + 1;
 
@@ -342,9 +356,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
             $properties = array_merge(json_decode($values['properties'], true), $config->getProperties());
 
-        }
-        else
-        {
+        } else {
             $properties = $config->getProperties();
         }
 
@@ -352,7 +364,14 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         $sql = 'UPDATE ' . $tableName . ' SET validuntil_timestamp = ? WHERE id = ? AND workspace = ? AND language = ? AND validfrom_timestamp <=? AND validuntil_timestamp >?';
         $this->getDatabase()
-             ->execute($sql, [ $timeshiftTimestamp, $configTypeName, $dataDimensions->getWorkspace(), $dataDimensions->getLanguage(), $timeshiftTimestamp, $timeshiftTimestamp ]);
+             ->execute($sql, [
+                 $timeshiftTimestamp,
+                 $configTypeName,
+                 $dataDimensions->getWorkspace(),
+                 $dataDimensions->getLanguage(),
+                 $timeshiftTimestamp,
+                 $timeshiftTimestamp
+             ]);
 
         $values['properties'] = json_encode($properties);
 
@@ -364,13 +383,19 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $values['validfrom_timestamp']  = $timeshiftTimestamp;
         $values['validuntil_timestamp'] = TimeShifter::getMaxTimestamp();
 
-        $values['hash']   = $config->getHash();
+        $values['hash'] = $config->getHash();
 
         $this->getDatabase()->insert($tableName, $values);
 
         $sql = 'INSERT INTO _update_ (repository, data_type, name, workspace, language, lastchange_timestamp) VALUES (? , "config", ? , ? , ? , ?) ON DUPLICATE KEY UPDATE lastchange_timestamp=?;';
-        $this->getDatabase()->execute($sql, [ $this->getRepository()->getName(), $configTypeName, $dataDimensions->getWorkspace(),$dataDimensions->getLanguage(),$timeshiftTimestamp,$timeshiftTimestamp ]);
-
+        $this->getDatabase()->execute($sql, [
+            $this->getRepository()->getName(),
+            $configTypeName,
+            $dataDimensions->getWorkspace(),
+            $dataDimensions->getLanguage(),
+            $timeshiftTimestamp,
+            $timeshiftTimestamp
+        ]);
 
         return true;
     }
@@ -380,33 +405,31 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
     {
         $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
 
-        if ($this->getConfiguration()->hasCMDLFolder())
-        {
+        if ($this->getConfiguration()->hasCMDLFolder()) {
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
             file_put_contents($path, $cmdl);
 
-        }
-        else
-        {
+        } else {
 
-            $data = [ 'repository'           => $this->getRepository()->getName(),
-                      'data_type'            => 'content',
-                      'name'                 => $contentTypeName,
-                      'cmdl'                 => $cmdl,
-                      'lastchange_timestamp' => $timeshiftTimestamp
+            $data = [
+                'repository'           => $this->getRepository()->getName(),
+                'data_type'            => 'content',
+                'name'                 => $contentTypeName,
+                'cmdl'                 => $cmdl,
+                'lastchange_timestamp' => $timeshiftTimestamp
             ];
 
             $this->getDatabase()->insert('_cmdl_', $data, $data);
 
         }
 
-        $this->getConfiguration()->addContentTypes([ $contentTypeName ]);
+        $this->getConfiguration()->addContentTypes([$contentTypeName]);
 
         $this->getCMDLCache()->flushAll();
 
         $sql = 'UPDATE _update_ SET lastchange_timestamp = ? WHERE data_type = "content" AND `name` = ?';
-        $this->getDatabase()->execute($sql, [$timeshiftTimestamp,$contentTypeName]);
+        $this->getDatabase()->execute($sql, [$timeshiftTimestamp, $contentTypeName]);
 
         return true;
     }
@@ -416,32 +439,30 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
     {
         $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
 
-        if ($this->getConfiguration()->hasCMDLFolder())
-        {
+        if ($this->getConfiguration()->hasCMDLFolder()) {
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
             file_put_contents($path, $cmdl);
 
-        }
-        else
-        {
+        } else {
 
-            $data = [ 'repository'           => $this->getRepository()->getName(),
-                      'data_type'            => 'config',
-                      'name'                 => $configTypeName,
-                      'cmdl'                 => $cmdl,
-                      'lastchange_timestamp' => $timeshiftTimestamp
+            $data = [
+                'repository'           => $this->getRepository()->getName(),
+                'data_type'            => 'config',
+                'name'                 => $configTypeName,
+                'cmdl'                 => $cmdl,
+                'lastchange_timestamp' => $timeshiftTimestamp
             ];
 
             $this->getDatabase()->insert('_cmdl_', $data, $data);
         }
 
-        $this->getConfiguration()->addConfigTypes([ $configTypeName ]);
+        $this->getConfiguration()->addConfigTypes([$configTypeName]);
 
         $this->getCMDLCache()->flushAll();
 
         $sql = 'UPDATE _update_ SET lastchange_timestamp = ? WHERE data_type = "config" AND `name` = ?';
-        $this->getDatabase()->execute($sql, [$timeshiftTimestamp,$configTypeName]);
+        $this->getDatabase()->execute($sql, [$timeshiftTimestamp, $configTypeName]);
 
         return true;
     }
@@ -449,19 +470,18 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
     public function deleteContentTypeCMDL($contentTypeName)
     {
-        if ($this->getConfiguration()->hasCMDLFolder())
-        {
+        if ($this->getConfiguration()->hasCMDLFolder()) {
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
 
             unlink($path);
 
-        }
-        else
-        {
+        } else {
             $this->getDatabase()
-                 ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"', [ $this->getRepository()
-                                                                                                                  ->getName(), $contentTypeName
+                 ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"', [
+                     $this->getRepository()
+                          ->getName(),
+                     $contentTypeName
                  ]);
         }
 
@@ -475,19 +495,18 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
     public function deleteConfigTypeCMDL($configTypeName)
     {
-        if ($this->getConfiguration()->hasCMDLFolder())
-        {
+        if ($this->getConfiguration()->hasCMDLFolder()) {
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
 
             unlink($path);
 
-        }
-        else
-        {
+        } else {
             $this->getDatabase()
-                 ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"', [ $this->getRepository()
-                                                                                                                 ->getName(), $configTypeName
+                 ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"', [
+                     $this->getRepository()
+                          ->getName(),
+                     $configTypeName
                  ]);
         }
 
