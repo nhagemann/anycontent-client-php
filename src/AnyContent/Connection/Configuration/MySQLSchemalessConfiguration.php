@@ -334,10 +334,20 @@ TEMPLATE_UPDATETABLE;
 
 
     /**
-     * Import content/config types from a cmdl folder into the _cmdl_ table
+     * Import content/config types from a repositories folder containing cmdl into the _cmdl_ table
+     *
      *
      * Will purge existing entries
      *
+     * e.g.:
+     *
+     * repository1
+     *    - content1.cmdl
+     *    - content2.cmdl
+     *    -- config
+     *       - config1.cmdl
+     * repository2
+     *  ...
      */
     public function importCMDL($path)
     {
@@ -370,7 +380,6 @@ TEMPLATE_UPDATETABLE;
             /** @var SplFileInfo $file */
             foreach ($finder2 as $file) {
                 $contentTypeName = $file->getBasename('.cmdl');
-
                 $cmdl = $file->getContents();
 
                 $sql  = 'INSERT INTO _cmdl_ (repository,data_type,name,cmdl,lastchange_timestamp) VALUES(?,"content",?,?,?)';

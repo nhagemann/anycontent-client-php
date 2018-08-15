@@ -4,6 +4,8 @@ namespace AnyContent\Connection;
 
 use AnyContent\Client\Record;
 
+use AnyContent\Client\Repository;
+use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
@@ -15,22 +17,47 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     public $connection;
 
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
+    public static function setUpBeforeClass()
+    {
+
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
+
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
+
+        $configuration = new MySQLSchemalessConfiguration();
+
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration->setRepositoryName('phpunit');
+
+        $configuration->importCMDL(__DIR__ . '/../../resources/RestLikeBasicConnectionTests');
+
+        $configuration->addContentTypes();
+
+        $connection = $configuration->createReadWriteConnection();
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+    }
+
+
     public function setUp()
     {
-        if (defined('PHPUNIT_CREDENTIALS_RESTLIKE_URL2'))
-        {
-            $configuration = new RestLikeConfiguration();
 
-            $configuration->setUri(PHPUNIT_CREDENTIALS_RESTLIKE_URL2);
-            $connection = $configuration->createReadWriteConnection();
+        $configuration = new RestLikeConfiguration();
 
-            $configuration->addContentTypes();
-            $configuration->addConfigTypes();
+        $configuration->setUri(getenv('PHPUNIT_RESTLIKE_URI'));
+        $connection = $configuration->createReadWriteConnection();
 
-            $this->connection = $connection;
+        $configuration->addContentTypes();
+        $configuration->addConfigTypes();
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        $this->connection = $connection;
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
 
     }
 
@@ -39,12 +66,7 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
-        $connection->selectContentType('profiles');
+        $connection->selectContentType('content1');
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'Agency 5');
         $record->setId(5);
 
@@ -64,11 +86,8 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     public function testSaveRecordNewConnection()
     {
         $connection = $this->connection;
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-        $connection->selectContentType('profiles');
+
+        $connection->selectContentType('content1');
 
         $record = $connection->getRecord(5);
 
@@ -80,11 +99,8 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     public function testAddRecord()
     {
         $connection = $this->connection;
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-        $connection->selectContentType('profiles');
+
+        $connection->selectContentType('content1');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
 
@@ -99,18 +115,14 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     public function testSaveRecordsSameConnection()
     {
         $connection = $this->connection;
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-        $connection->selectContentType('profiles');
+
+        $connection->selectContentType('content1');
 
         $c = $connection->countRecords();
 
-        $records = [ ];
+        $records = [];
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record    = new Record($connection->getCurrentContentTypeDefinition(), 'Test ' . $i);
             $records[] = $record;
         }
@@ -126,11 +138,8 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     {
 
         $connection = $this->connection;
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-        $connection->selectContentType('profiles');
+
+        $connection->selectContentType('content1');
 
         $c = $connection->countRecords();
 
@@ -150,13 +159,10 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     public function testDeleteRecords()
     {
         $connection = $this->connection;
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-        $connection->selectContentType('profiles');
 
-        $result = $connection->deleteRecords([ 6, 999 ]);
+        $connection->selectContentType('content1');
+
+        $result = $connection->deleteRecords([6, 999]);
 
         // No expectations, since the test does not yet have the necessary setup
         // $this->assertCount(1, $result);
@@ -168,11 +174,8 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     public function testDeleteAllRecords()
     {
         $connection = $this->connection;
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-        $connection->selectContentType('profiles');
+
+        $connection->selectContentType('content1');
 
         $result = $connection->deleteAllRecords();
 
@@ -185,38 +188,34 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
     public function testDeleteAllRecordsNewConnection()
     {
         $connection = $this->connection;
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-        $connection->selectContentType('profiles');
+
+        $connection->selectContentType('content1');
 
         $this->assertEquals(0, $connection->countRecords());
     }
 
+
     public function testProtectedProperties()
     {
+        echo 'ToDO';
+
+        return;
         KVMLogger::instance()->debug(__METHOD__);
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
-        $connection->selectContentType('profiles');
+        $connection->selectContentType('content5');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
 
-        $record->setProperty('ranking',1);
+        $record->setProperty('a', 1);
 
-        $this->assertEquals(1,$record->getProperty('ranking'));
+        $this->assertEquals(1, $record->getProperty('a'));
 
         $id = $connection->saveRecord($record);
 
         $record = $connection->getRecord($id);
 
-        $this->assertEquals('',$record->getProperty('ranking'));
+        $this->assertEquals('', $record->getProperty('a'));
     }
 }

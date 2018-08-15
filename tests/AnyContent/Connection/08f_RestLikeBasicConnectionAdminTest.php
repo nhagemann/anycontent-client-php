@@ -4,6 +4,7 @@ namespace AnyContent\Connection;
 
 use AnyContent\Client\Record;
 
+use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
@@ -15,56 +16,71 @@ class RestLikeBasicConnectionAdminTest extends \PHPUnit_Framework_TestCase
     public $connection;
 
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
+    public static function setUpBeforeClass()
+    {
+
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
+
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
+
+        $configuration = new MySQLSchemalessConfiguration();
+
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration->setRepositoryName('phpunit');
+
+        $configuration->importCMDL(__DIR__ . '/../../resources/RestLikeBasicConnectionTests');
+
+        $configuration->addContentTypes();
+
+        $connection = $configuration->createReadWriteConnection();
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+    }
+
+
     public function setUp()
     {
-        if (defined('PHPUNIT_CREDENTIALS_RESTLIKE_URL2')) {
-            $configuration = new RestLikeConfiguration();
 
-            $configuration->setUri(PHPUNIT_CREDENTIALS_RESTLIKE_URL2);
-            $connection = $configuration->createReadWriteConnection();
+        $configuration = new RestLikeConfiguration();
 
-            $configuration->addContentTypes();
-            $configuration->addConfigTypes();
+        $configuration->setUri(getenv('PHPUNIT_RESTLIKE_URI'));
+        $connection = $configuration->createReadWriteConnection();
 
-            $this->connection = $connection;
+        $configuration->addContentTypes();
+        $configuration->addConfigTypes();
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        $this->connection = $connection;
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
 
     }
 
 
     public function testNrOfContentTypes()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
 
         $this->connection->deleteContentTypeCMDL('add');
 
         $definitions = $this->connection->getContentTypeDefinitions();
 
-        $this->assertCount(2, $definitions);
+        $this->assertCount(5, $definitions);
 
         $this->connection->saveContentTypeCMDL('add', 'name');
 
         $definitions = $this->connection->getContentTypeDefinitions();
 
-        $this->assertCount(3, $definitions);
+        $this->assertCount(6, $definitions);
 
     }
 
 
     public function testChangedCMDLOfContentType()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
         $cmdl = $this->connection->getCMDLForContentType('add');
 
         $this->assertEquals('name', $cmdl);
@@ -79,54 +95,38 @@ class RestLikeBasicConnectionAdminTest extends \PHPUnit_Framework_TestCase
 
     public function testDeleteContentTypes()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
         $definitions = $this->connection->getContentTypeDefinitions();
 
-        $this->assertCount(3, $definitions);
+        $this->assertCount(6, $definitions);
 
         $this->connection->deleteContentTypeCMDL('add');
 
         $definitions = $this->connection->getContentTypeDefinitions();
 
-        $this->assertCount(2, $definitions);
+        $this->assertCount(5, $definitions);
     }
 
 
     public function testNrOfConfigTypes()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
 
         $this->connection->deleteConfigTypeCMDL('add');
 
         $definitions = $this->connection->getConfigTypeDefinitions();
 
-        $this->assertCount(1, $definitions);
+        $this->assertCount(4, $definitions);
 
         $this->connection->saveConfigTypeCMDL('add', 'name');
 
         $definitions = $this->connection->getConfigTypeDefinitions();
 
-        $this->assertCount(2, $definitions);
+        $this->assertCount(5, $definitions);
 
     }
 
 
     public function testChangedCMDLOfConfigType()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
 
         $cmdl = $this->connection->getCMDLForConfigType('add');
 
@@ -142,21 +142,16 @@ class RestLikeBasicConnectionAdminTest extends \PHPUnit_Framework_TestCase
 
     public function testDeleteConfigTypes()
     {
-        $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
 
         $definitions = $this->connection->getConfigTypeDefinitions();
 
-        $this->assertCount(2, $definitions);
+        $this->assertCount(5, $definitions);
 
         $this->connection->deleteConfigTypeCMDL('add');
 
         $definitions = $this->connection->getConfigTypeDefinitions();
 
-        $this->assertCount(1, $definitions);
+        $this->assertCount(4, $definitions);
     }
 
 }

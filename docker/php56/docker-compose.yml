@@ -9,6 +9,8 @@ services:
     volumes:
       - ./config/php/php.ini:/usr/local/etc/php/php.ini:cached
       - ../../:/application:cached
+    environment:
+      PHPUNIT_RESTLIKE_URI: http://anycontent-repository-service-php56/1/phpunit
     networks:
       - anycontent
   anycontent-client-phpunit-mysql:

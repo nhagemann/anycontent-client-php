@@ -2,6 +2,7 @@
 
 namespace AnyContent\Connection;
 
+use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 
 use KVMLogger\KVMLoggerFactory;
@@ -17,29 +18,49 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
     static $randomString2;
 
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public static function setUpBeforeClass()
     {
-        self::$randomString1 = md5(time());
-        self::$randomString2 = md5(time());
+        self::$randomString1 = md5(time() + 'string1');
+        self::$randomString2 = md5(time() + 'string2');
+
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
+
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
+
+        $configuration = new MySQLSchemalessConfiguration();
+
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration->setRepositoryName('phpunit');
+
+        $configuration->importCMDL(__DIR__ . '/../../resources/RestLikeBasicConnectionTests');
+
+        $configuration->addContentTypes();
+
+        $connection = $configuration->createReadWriteConnection();
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
     public function setUp()
     {
-        if (defined('PHPUNIT_CREDENTIALS_RESTLIKE_URL2'))
-        {
-            $configuration = new RestLikeConfiguration();
 
-            $configuration->setUri(PHPUNIT_CREDENTIALS_RESTLIKE_URL2);
-            $connection = $configuration->createReadWriteConnection();
+        $configuration = new RestLikeConfiguration();
 
-            $configuration->addContentTypes();
-            $configuration->addConfigTypes();
+        $configuration->setUri(getenv('PHPUNIT_RESTLIKE_URI'));
+        $connection = $configuration->createReadWriteConnection();
 
-            $this->connection = $connection;
+        $configuration->addContentTypes();
+        $configuration->addConfigTypes();
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        $this->connection = $connection;
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
 
     }
 
@@ -48,26 +69,21 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
-        $config = $connection->getConfig('config1');
+        $config = $connection->getConfig('config4');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
-        $this->assertTrue($config->hasProperty('city'));
+        $this->assertTrue($config->hasProperty('name'));
 
-        $config->setProperty('city', self::$randomString1);
+        $config->setProperty('name', self::$randomString1);
 
         $connection->saveConfig($config);
 
-        $config = $connection->getConfig('config1');
+        $config = $connection->getConfig('config4');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
-        $this->assertEquals(self::$randomString1, $config->getProperty('city'));
+        $this->assertEquals(self::$randomString1, $config->getProperty('name'));
     }
 
 
@@ -75,16 +91,11 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
-        $config = $connection->getConfig('config1');
+        $config = $connection->getConfig('config4');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
-        $this->assertEquals(self::$randomString1, $config->getProperty('city'));
+        $this->assertEquals(self::$randomString1, $config->getProperty('name'));
     }
 
 
@@ -92,61 +103,54 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
         $connection->selectView('test');
 
-        $config = $connection->getConfig('config1');
+        $config = $connection->getConfig('config4');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
-        $this->assertTrue($config->hasProperty('comment'));
+        $this->assertTrue($config->hasProperty('a'));
 
-        $config->setProperty('comment', self::$randomString2);
+        $config->setProperty('a', self::$randomString2);
 
         $connection->saveConfig($config);
 
-        $config = $connection->getConfig('config1');
+        $config = $connection->getConfig('config4');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
-        $this->assertEquals(self::$randomString2, $config->getProperty('comment'));
+        $this->assertEquals(self::$randomString2, $config->getProperty('a'));
 
         $connection->selectView('default');
 
-        $config = $connection->getConfig('config1');
+        $config = $connection->getConfig('config4');
 
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
-        $this->assertEquals(self::$randomString1, $config->getProperty('city'));
+        $this->assertEquals(self::$randomString1, $config->getProperty('name'));
 
     }
 
+
     public function testProtectedProperties()
     {
+        echo 'ToDo';
+        return;
         KVMLogger::instance()->debug(__METHOD__);
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
+        $config = $connection->getConfig('config4');
 
-        $config = $connection->getConfig('config1');
+        $config->setProperty('b', 1);
 
-        $config->setProperty('ranking',1);
-
-        $this->assertEquals(1,$config->getProperty('ranking'));
+        $this->assertEquals(1, $config->getProperty('b'));
 
         $connection->saveConfig($config);
 
-        $config = $connection->getConfig('config1');
+        $config = $connection->getConfig('config4');
 
-        $this->assertEquals('',$config->getProperty('ranking'));
+        $this->assertEquals('', $config->getProperty('b'));
     }
 
 }

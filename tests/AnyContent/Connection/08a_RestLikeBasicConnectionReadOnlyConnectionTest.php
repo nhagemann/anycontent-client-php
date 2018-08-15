@@ -3,6 +3,7 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Client\Repository;
+use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\RecordsFileReadOnlyConnection;
@@ -16,21 +17,66 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
     public $connection;
 
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
+    public static function setUpBeforeClass()
+    {
+
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
+
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
+
+        $configuration = new MySQLSchemalessConfiguration();
+
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration->setRepositoryName('phpunit');
+
+        $configuration->importCMDL(__DIR__ . '/../../resources/RestLikeBasicConnectionTests');
+
+        $configuration->addContentTypes();
+
+        $connection = $configuration->createReadWriteConnection();
+
+        $repository = new Repository('phpunit', $connection);
+        $repository->selectContentType('content1');
+
+        $record = $repository->createRecord('Agency 1', 1);
+        $repository->saveRecord($record);
+
+        $record = $repository->createRecord('Agency 2', 2);
+        $repository->saveRecord($record);
+
+        $record = $repository->createRecord('Agency 5', 5);
+        $repository->saveRecord($record);
+
+        $repository->selectWorkspace('live');
+
+        $record = $repository->createRecord('Agency 1', 1);
+        $repository->saveRecord($record);
+
+        $record = $repository->createRecord('Agency 2', 2);
+        $repository->saveRecord($record);
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+    }
+
+
     public function setUp()
     {
-        if (defined('PHPUNIT_CREDENTIALS_RESTLIKE_URL1'))
-        {
-            $configuration = new RestLikeConfiguration();
 
-            $configuration->setUri(PHPUNIT_CREDENTIALS_RESTLIKE_URL1);
-            $connection = $configuration->createReadOnlyConnection();
+        $configuration = new RestLikeConfiguration();
 
-            $configuration->addContentTypes();
+        $configuration->setUri(getenv('PHPUNIT_RESTLIKE_URI'));
+        $connection = $configuration->createReadOnlyConnection();
 
-            $this->connection = $connection;
+        $configuration->addContentTypes();
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-        }
+        $this->connection = $connection;
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
 
     }
 
@@ -40,11 +86,6 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
         KVMLogger::instance()->debug(__METHOD__);
 
         $connection = $this->connection;
-
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
 
         $this->setExpectedException('AnyContent\AnyContentClientException');
         $this->assertEquals(12, $connection->countRecords());
@@ -57,14 +98,9 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
         $contentTypeNames = $connection->getContentTypeNames();
 
-        $this->assertContains('dtag_searchresult_product', $contentTypeNames);
+        $this->assertContains('content1', $contentTypeNames);
     }
 
 
@@ -74,16 +110,11 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
         $contentTypes = $connection->getContentTypeDefinitions();
 
-        $this->assertArrayHasKey('dtag_searchresult_product', $contentTypes);
+        $this->assertArrayHasKey('content1', $contentTypes);
 
-        $contentType = $contentTypes['dtag_searchresult_product'];
+        $contentType = $contentTypes['content1'];
         $this->assertInstanceOf('CMDL\ContentTypeDefinition', $contentType);
     }
 
@@ -94,14 +125,9 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
+        $connection->selectContentType('content1');
 
-        $connection->selectContentType('dtag_searchresult_product');
-
-        $this->assertEquals(149, $connection->countRecords());
+        $this->assertEquals(3, $connection->countRecords());
 
     }
 
@@ -112,20 +138,15 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
+        $connection->selectContentType('content1');
 
-        $connection->selectContentType('dtag_searchresult_product');
-
-        $record = $connection->getRecord(98);
+        $record = $connection->getRecord(5);
 
         $this->assertInstanceOf('AnyContent\Client\Record', $record);
 
-        $this->assertEquals('Apple iPad Air', $record->getProperty('name'));
+        $this->assertEquals('Agency 5', $record->getProperty('name'));
 
-        $record = $connection->getRecord(1);
+        $record = $connection->getRecord(99);
 
         $this->assertFalse($record);
 
@@ -138,19 +159,13 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
-        $connection->selectContentType('dtag_searchresult_product');
+        $connection->selectContentType('content1');
 
         $records = $connection->getAllRecords();
 
-        $this->assertCount(149, $records);
+        $this->assertCount(3, $records);
 
-        foreach ($records as $record)
-        {
+        foreach ($records as $record) {
             $id          = $record->getId();
             $fetchRecord = $connection->getRecord($id);
             $this->assertEquals($id, $fetchRecord->getId());
@@ -162,11 +177,6 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-        
         $this->assertInternalType('string', $this->connection->getLastModifiedDate());
     }
 
@@ -177,23 +187,18 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        if (!$connection)
-        {
-            $this->markTestSkipped('RestLike Basic Connection credentials missing.');
-        }
-
-        $repository = new Repository('pidtag', $connection);
-        $connection->selectContentType('dtag_searchresult_product');
+        $repository = new Repository('phpunit', $connection);
+        $connection->selectContentType('content1');
 
         $records = $repository->getRecords();
 
-        $this->assertCount(149, $records);
+        $this->assertCount(3, $records);
 
-        $records = $repository->getRecords('name *= apple');
+        $records = $repository->getRecords('name *= Agency');
 
-        $this->assertCount(10, $records);
+        $this->assertCount(3, $records);
 
-        $records = $repository->getRecords('name = banana');
+        $records = $repository->getRecords('name = Bgency');
 
         $this->assertCount(0, $records);
     }
