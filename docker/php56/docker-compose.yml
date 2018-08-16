@@ -13,19 +13,7 @@ services:
       PHPUNIT_RESTLIKE_URI: http://anycontent-repository-service-php56/1/phpunit
     networks:
       - anycontent
-  anycontent-client-phpunit-mysql:
-    container_name: anycontent-client-phpunit-mysql
-    image: mysql:5.7
-    ports:
-      - "8199:3306"
-    expose:
-      - "3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    networks:
-     - anycontent
-
-
+  #anycontent-client-phpunit-mysql: see php70 docker setup
 networks:
   anycontent:
     driver: "bridge"

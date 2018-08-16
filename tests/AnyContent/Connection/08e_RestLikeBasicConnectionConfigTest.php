@@ -23,8 +23,8 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
      */
     public static function setUpBeforeClass()
     {
-        self::$randomString1 = md5(time() + 'string1');
-        self::$randomString2 = md5(time() + 'string2');
+        self::$randomString1 = md5(time() . 'string1');
+        self::$randomString2 = md5(time() . 'string2');
 
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');

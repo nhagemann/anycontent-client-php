@@ -1,6 +1,6 @@
 {
   "name": "nhagemann/anycontent-php",
-  "description": "Client library to work with AnyContent repositories. Provides connectors for different repository types (file based, mysql, rest).",
+  "description": "Client library to work with AnyContent repositories. Provides connectors for different repository types (file based, MySQL, restlike).",
   "type": "library",
   "homepage": "http://www.nilshagemann.de",
   "license": "MIT",
@@ -12,8 +12,8 @@
     }
   ],
   "require": {
-    "php": ">=5.6",
-    "nhagemann/cmdl-parser-php": "~3.0",
+    "php": ">=7.0",
+    "nhagemann/cmdl-parser-php": "~4.0",
     "psr/log": "1.*",
     "symfony/filesystem": "~2.3|~3.0",
     "symfony/finder": "~2.3|~3.0",

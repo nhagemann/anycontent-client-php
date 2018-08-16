@@ -1,0 +1,1 @@
+docker exec -it -w /application anycontent-client-php70 /bin/bash
