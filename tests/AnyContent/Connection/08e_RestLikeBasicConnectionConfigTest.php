@@ -134,8 +134,6 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testProtectedProperties()
     {
-        echo 'ToDo';
-        return;
         KVMLogger::instance()->debug(__METHOD__);
 
         $connection = $this->connection;

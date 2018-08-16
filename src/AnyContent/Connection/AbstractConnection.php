@@ -845,6 +845,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
         {
             unset ($properties[$property]);
         }
+
         $record->setProperties($properties);
 
         return $record;
