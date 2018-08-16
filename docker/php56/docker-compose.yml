@@ -16,6 +16,8 @@ services:
   anycontent-client-phpunit-mysql:
     container_name: anycontent-client-phpunit-mysql
     image: mysql:5.7
+    ports:
+      - "8199:3306"
     expose:
       - "3306"
     environment:

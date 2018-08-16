@@ -9,6 +9,7 @@ class Database
     /** @var  \PDO */
     protected $pdo;
 
+    protected $queryCounter = 0;
 
     public function __construct(\PDO $pdo)
     {
@@ -17,7 +18,7 @@ class Database
 
 
     /**
-     * @return \\PDO
+     * @return \PDO
      */
     public function getConnection()
     {
@@ -47,6 +48,8 @@ class Database
         $duration = $kvm->getDuration('anycontent-query-execution-time');
         $message  = $kvm->createLogMessage($this->debugQuery($sql, $params), [ 'duration' => $duration ]);
         $kvm->debug($message);
+        
+        $this->queryCounter++;
 
         return $stmt;
     }
@@ -192,5 +195,15 @@ class Database
 
         return $query;
     }
+
+
+    /**
+     * @return int
+     */
+    public function getQueryCounter()
+    {
+        return $this->queryCounter;
+    }
+
 
 }

@@ -34,7 +34,7 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
         $configuration->setRepositoryName('phpunit');
 
-        $configuration->importCMDL(__DIR__ . '/../../resources/RestLikeBasicConnectionTests');
+        $configuration->importCMDL(__DIR__.'/../../resources/RestLikeBasicConnectionTests');
 
         $configuration->addContentTypes();
 
@@ -60,7 +60,14 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
         $record = $repository->createRecord('Agency 2', 2);
         $repository->saveRecord($record);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        $repository->selectContentType('content5',true);
+
+        for ($i = 1; $i <= 15; $i++) {
+            $record = $repository->createRecord('New Record '.$i);
+            $repository->saveRecord($record);
+        }
+           
+        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
     }
 
 
@@ -76,7 +83,7 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
 
     }
 
@@ -201,5 +208,26 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
         $records = $repository->getRecords('name = Bgency');
 
         $this->assertCount(0, $records);
+    }
+
+
+    public function testGet10Records()
+    {
+        KVMLogger::instance()->debug(__METHOD__);
+
+        $connection = $this->connection;
+
+        $repository = new Repository('phpunit', $connection);
+
+        $repository->selectContentType('content5',true);
+
+        $records = $repository->getRecords();
+
+        $this->assertCount(15, $records);
+
+        $records = $repository->getRecords('','.id',1,10);
+
+        $this->assertCount(10, $records);
+
     }
 }

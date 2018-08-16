@@ -502,6 +502,11 @@ class Repository implements FileManager, \JsonSerializable
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
+        if (!is_array($order))
+        {
+            $order = [$order];
+        }
+
         if ($this->readConnection instanceof FilteringConnection) {
             $records = $this->readConnection->getRecords($this->getCurrentContentTypeName(), $dataDimensions, $filter,
                 $page, $count, $order);
