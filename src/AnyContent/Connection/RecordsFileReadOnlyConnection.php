@@ -150,6 +150,8 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
     protected function getMultiViewRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions)
     {
+        $recordId = (int)$recordId;
+        
         if ($contentTypeName == null)
         {
             $contentTypeName = $this->getCurrentContentTypeName();
