@@ -302,4 +302,37 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord($id);
         $this->assertEquals(3, $record->getRevision());
     }
+
+    public function testPartialUpdateRecord()
+    {
+        $connection = $this->connection;
+
+        $connection->selectContentType('profiles');
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+
+        $record->setProperty('twitter','https://www.twitter.com');
+        $id = $connection->saveRecord($record);
+        $this->assertEquals('https://www.twitter.com',$record->getProperty('twitter'));
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+        $record->setId($id);
+        $properties = $record->getProperties();
+        $this->assertCount(1,$properties);
+
+        $record->setProperty('facebook','https://www.facebook.com');
+        $this->assertEquals('https://www.facebook.com',$record->getProperty('facebook'));
+
+        $properties = $record->getProperties();
+        $this->assertCount(2,$properties);
+
+        $connection->saveRecord($record);
+
+        $record = $connection->getRecord($id);
+        $properties = $record->getProperties();
+        $this->assertCount(47,$properties);
+
+        $this->assertEquals('https://www.facebook.com',$record->getProperty('facebook'));
+        $record->setProperty('twitter','https://www.twitter.com');
+    }
 }
