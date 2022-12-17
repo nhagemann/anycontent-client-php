@@ -9,7 +9,6 @@ use CMDL\ViewDefinition;
 
 class Sequence implements \Iterator, \Countable
 {
-
     protected $position = 0;
 
     protected $dataTypeDefinition = null;
@@ -28,7 +27,6 @@ class Sequence implements \Iterator, \Countable
         $i = 0;
         if (is_array($values)) {
             foreach ($values as $item) {
-
                 $this->items[$i++] = array('type' => key($item), 'properties' => array_shift($item));
             }
         }
@@ -49,7 +47,6 @@ class Sequence implements \Iterator, \Countable
     {
         if (isset($this->items[$this->position])) {
             if (array_key_exists($property, $this->items[$this->position]['properties'])) {
-
                 if ($this->items[$this->position]['properties'][$property] === '') {
                     return $default;
                 }

@@ -10,7 +10,6 @@ use KVMLogger\KVMLogger;
 
 class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
@@ -56,7 +55,6 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
         $repository       = new Repository('phpunit', $connection);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -77,7 +75,6 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
         $record->setProperty('b', 'valueb');
         $this->setExpectedException('CMDL\CMDLParserException');
         $record->setProperty('c', 'valuec');
-
     }
 
 
@@ -96,7 +93,6 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
         $id = $connection->saveRecord($record);
 
         $this->assertEquals(1, $id);
-
     }
 
 
@@ -125,7 +121,6 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('c', $record->getProperties());
         $this->assertArrayHasKey('d', $record->getProperties());
         $this->assertArrayNotHasKey('a', $record->getProperties());
-
     }
 
 

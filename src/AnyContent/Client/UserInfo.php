@@ -4,7 +4,6 @@ namespace AnyContent\Client;
 
 class UserInfo implements \JsonSerializable
 {
-
     protected $username;
 
     protected $firstname;
@@ -67,12 +66,9 @@ class UserInfo implements \JsonSerializable
 
     public function userNameIsAnEmailAddress()
     {
-        if (filter_var($this->getUsername(), FILTER_VALIDATE_EMAIL))
-        {
+        if (filter_var($this->getUsername(), FILTER_VALIDATE_EMAIL)) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -81,8 +77,7 @@ class UserInfo implements \JsonSerializable
     public function getName()
     {
         $name = trim($this->getFirstname() . ' ' . $this->getLastname());
-        if ($name == '')
-        {
+        if ($name == '') {
             $name = $this->getUsername();
         }
 
@@ -113,7 +108,7 @@ class UserInfo implements \JsonSerializable
     }
 
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $userInfo              = [ ];
         $userInfo['timestamp'] = $this->getTimestamp();

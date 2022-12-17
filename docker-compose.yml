@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  anycontent-client-php81:
+    container_name: anycontent-client-php81
+    build:
+      context: ./docker/php81
+      dockerfile: Dockerfile
+    #image: anycontent-client-php72:1.0.0
+    volumes:
+      #- ./config/php/php.ini:/usr/local/etc/php/php.ini:cached
+      #- ../../:/application:cached
+      - ./:/var/www
+    #environment:
+      #PHPUNIT_RESTLIKE_URI: http://anycontent-repository-service-php72/1/phpunit
+    working_dir: /var/www/
+    networks:
+      - anycontent
+networks:
+  anycontent:
+    driver: "bridge"

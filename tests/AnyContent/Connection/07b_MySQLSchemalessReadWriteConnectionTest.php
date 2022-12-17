@@ -10,7 +10,6 @@ use KVMLogger\KVMLogger;
 
 class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
@@ -60,7 +59,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $repository       = new Repository('phpunit', $connection);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -82,7 +80,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord(5);
 
         $this->assertEquals('Agency 51', $record->getProperty('name'));
-
     }
 
 
@@ -95,7 +92,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord(5);
 
         $this->assertEquals('Agency 51', $record->getProperty('name'));
-
     }
 
 
@@ -111,7 +107,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(6, $record->getID());
         $this->assertEquals(6, $id);
-
     }
 
 
@@ -133,7 +128,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $connection->saveRecords($records);
 
         $this->assertEquals(7, $connection->countRecords());
-
     }
 
 
@@ -162,7 +156,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(false, $result);
         $this->assertEquals(6, $connection->countRecords());
-
     }
 
 
@@ -186,7 +179,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $result);
         $this->assertEquals(5, $connection->countRecords());
-
     }
 
 
@@ -210,7 +202,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(5, $result);
         $this->assertEquals(0, $connection->countRecords());
-
     }
 
 
@@ -271,7 +262,6 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord($id);
 
         $this->assertEquals('A', $record->getProperty('claim'));
-
     }
 
 
@@ -311,28 +301,28 @@ class MySQLSchemalessReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
 
-        $record->setProperty('twitter','https://www.twitter.com');
+        $record->setProperty('twitter', 'https://www.twitter.com');
         $id = $connection->saveRecord($record);
-        $this->assertEquals('https://www.twitter.com',$record->getProperty('twitter'));
+        $this->assertEquals('https://www.twitter.com', $record->getProperty('twitter'));
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
         $record->setId($id);
         $properties = $record->getProperties();
-        $this->assertCount(1,$properties);
+        $this->assertCount(1, $properties);
 
-        $record->setProperty('facebook','https://www.facebook.com');
-        $this->assertEquals('https://www.facebook.com',$record->getProperty('facebook'));
+        $record->setProperty('facebook', 'https://www.facebook.com');
+        $this->assertEquals('https://www.facebook.com', $record->getProperty('facebook'));
 
         $properties = $record->getProperties();
-        $this->assertCount(2,$properties);
+        $this->assertCount(2, $properties);
 
         $connection->saveRecord($record);
 
         $record = $connection->getRecord($id);
         $properties = $record->getProperties();
-        $this->assertCount(47,$properties);
+        $this->assertCount(47, $properties);
 
-        $this->assertEquals('https://www.facebook.com',$record->getProperty('facebook'));
-        $record->setProperty('twitter','https://www.twitter.com');
+        $this->assertEquals('https://www.facebook.com', $record->getProperty('facebook'));
+        $record->setProperty('twitter', 'https://www.twitter.com');
     }
 }

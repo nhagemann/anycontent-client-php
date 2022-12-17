@@ -12,7 +12,6 @@ use CMDL\ViewDefinition;
 
 class SequenceItem
 {
-
     use Properties;
 
     /** @var  ViewDefinition */
@@ -24,8 +23,7 @@ class SequenceItem
     public function __construct(DataTypeDefinition $definition, $property, $type)
     {
         $this->dataTypeDefinition = $definition;
-        if (!$definition->hasProperty($property))
-        {
+        if (!$definition->hasProperty($property)) {
             throw new AnyContentClientException('Unknown sequence property ' . $property . ' for data type ' . $definition->getName());
         }
 
@@ -37,12 +35,9 @@ class SequenceItem
     {
 
         $property = Util::generateValidIdentifier($property);
-        if ($this->dataTypeDefinition->getClippingDefinition($this->type)->hasProperty($property))
-        {
+        if ($this->dataTypeDefinition->getClippingDefinition($this->type)->hasProperty($property)) {
             $this->properties[$property] = $value;
-        }
-        else
-        {
+        } else {
             throw new CMDLParserException('Unknown property ' . $property, CMDLParserException::CMDL_UNKNOWN_PROPERTY);
         }
 
@@ -54,5 +49,4 @@ class SequenceItem
     {
         return $this->type;
     }
-
 }

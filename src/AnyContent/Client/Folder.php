@@ -4,7 +4,6 @@ namespace AnyContent\Client;
 
 class Folder implements \JsonSerializable
 {
-
     protected $path;
     protected $files = array();
     protected $subFolders = array();
@@ -26,7 +25,6 @@ class Folder implements \JsonSerializable
                 $file['timestamp_lastchange']
             );
             if ($file['type'] == 'image' && array_key_exists('width', $file) && array_key_exists('height', $file)) {
-
                 $this->files[$file['id']]->setWidth($file['width']);
                 $this->files[$file['id']]->setHeight($file['height']);
             }
@@ -81,7 +79,7 @@ class Folder implements \JsonSerializable
         return true;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $folder            = [];
         $folder['folders'] = array_values($this->listSubFolders());

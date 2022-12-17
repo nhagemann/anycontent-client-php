@@ -1,6 +1,6 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace AnyContent\Files;
 
 use AnyContent\Client\Repository;
 use AnyContent\Client\Util\ImageVersionCreator;
@@ -9,11 +9,11 @@ use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
 use AnyContent\Connection\Interfaces\FileManager;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
+class ImageVersionCreatorTest extends TestCase
 {
-
     /** @var  DirectoryBasedFilesAccess */
     protected $fileManager;
 
@@ -26,14 +26,17 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
     protected $basePath;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->basePath = __DIR__ . '/../../../tmp/imageversions';
 
         $configuration = new RecordsFileConfiguration();
 
-        $configuration->addContentType('profiles', __DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl',
-            __DIR__ . '/../../resources/RecordsFileExample/profiles.json');
+        $configuration->addContentType(
+            'profiles',
+            __DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl',
+            __DIR__ . '/../../resources/RecordsFileExample/profiles.json'
+        );
 
         $connection = $configuration->createReadOnlyConnection();
 
@@ -48,8 +51,11 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
 
-        $imageVersionCreator = new ImageVersionCreator($repository, $this->basePath,
-            'http://www.phpunit.test');
+        $imageVersionCreator = new ImageVersionCreator(
+            $repository,
+            $this->basePath,
+            'http://www.phpunit.test'
+        );
 
         $this->fileManager         = $fileManager;
         $this->repository          = $repository;
@@ -62,7 +68,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         }
 
         $fs->mkdir($this->basePath);
-
     }
 
 
@@ -100,7 +105,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(100, $height);
 
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_100x100c.jpg'));
-
     }
 
 
@@ -122,7 +126,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(256, $height);
 
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256c.jpg'));
-
     }
 
 
@@ -145,7 +148,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(256, $height);
 
         $this->assertEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256c.jpg'));
-
     }
 
 
@@ -168,7 +170,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(256, $height);
 
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_512x256f.jpg'));
-
     }
 
 
@@ -191,7 +192,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(256, $height);
 
         $this->assertEquals($file->getSize(), filesize($this->basePath . '/len_std_512x256f.jpg'));
-
     }
 
 
@@ -214,7 +214,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(256, $height);
 
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256r.jpg'));
-
     }
 
 
@@ -237,7 +236,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(256, $height);
 
         $this->assertEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256r.jpg'));
-
     }
 
 
@@ -260,7 +258,6 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(256, $height);
 
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256s.jpg'));
-
     }
 
 
@@ -285,7 +282,5 @@ class ImageVersionCreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(256, $height);
 
         $this->assertEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256s.jpg'));
-
     }
-
 }

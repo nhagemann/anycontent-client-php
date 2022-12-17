@@ -10,7 +10,6 @@ use KVMLogger\KVMLogger;
 
 class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
@@ -61,7 +60,6 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
         $repository       = new Repository('phpunit', $connection);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -129,7 +127,6 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
-
     }
 
     public function testProtectedProperties()
@@ -140,15 +137,14 @@ class MySQLSchemalessConfigTest extends \PHPUnit_Framework_TestCase
 
         $config = $connection->getConfig('config1');
 
-        $config->setProperty('ranking',1);
+        $config->setProperty('ranking', 1);
 
-        $this->assertEquals(1,$config->getProperty('ranking'));
+        $this->assertEquals(1, $config->getProperty('ranking'));
 
         $connection->saveConfig($config);
 
         $config = $connection->getConfig('config1');
 
-        $this->assertEquals('',$config->getProperty('ranking'));
+        $this->assertEquals('', $config->getProperty('ranking'));
     }
-
 }

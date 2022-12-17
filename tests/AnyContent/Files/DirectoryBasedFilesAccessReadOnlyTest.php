@@ -6,15 +6,15 @@ use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
 use AnyContent\Connection\Interfaces\FileManager;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 
-class DirectoryBasedFilesAccessReadOnlyTest extends \PHPUnit_Framework_TestCase
+class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
 {
-
     /** @var  DirectoryBasedFilesAccess */
     public $fileManager;
 
 
-    public function setUp()
+    public function setUp(): void
     {
 
         $fileManager = new DirectoryBasedFilesAccess(__DIR__ . '/../../resources/Files');
@@ -23,7 +23,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends \PHPUnit_Framework_TestCase
         $this->fileManager = $fileManager;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -67,7 +66,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $file = $fileManager->getFile('z.txt');
         $this->assertFalse($file);
-
     }
 
 
@@ -107,8 +105,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends \PHPUnit_Framework_TestCase
         $file        = $fileManager->getFile('a.txt');
         $binary = $fileManager->getBinary($file);
 
-        $this->assertEquals('a.txt',$binary);
-
+        $this->assertEquals('a.txt', $binary);
     }
-
 }

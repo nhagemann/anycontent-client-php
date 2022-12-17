@@ -3,9 +3,7 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-
 use AnyContent\Filter\ANDFilter;
 use AnyContent\Filter\ORFilter;
 use AnyContent\Filter\PropertyFilter;
@@ -14,7 +12,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -24,8 +21,8 @@ class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
-        $target = __DIR__.'/../../../tmp/ExampleContentArchive';
-        $source = __DIR__.'/../../resources/ContentArchiveExample2';
+        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
+        $source = __DIR__ . '/../../resources/ContentArchiveExample2';
 
         $fs = new Filesystem();
 
@@ -35,23 +32,22 @@ class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
 
         $fs->mirror($source, $target);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
     public static function tearDownAfterClass()
     {
-        $target = __DIR__.'/../../../tmp/ExampleContentArchive';
+        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $fs = new Filesystem();
         $fs->remove($target);
-
     }
 
 
     public function setUp()
     {
-        $target = __DIR__.'/../../../tmp/ExampleContentArchive';
+        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();
 
@@ -76,7 +72,6 @@ class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
         $record = $this->repository->createRecord('New Record 3');
         $record->setProperty('source', 'b');
         $this->repository->saveRecord($record);
-
     }
 
 
@@ -89,7 +84,6 @@ class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
 
         $records = $this->repository->getRecords('source = b');
         $this->assertCount(1, $records);
-
     }
 
     public function testGetFirstRecord()
@@ -97,14 +91,12 @@ class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
         $this->repository->selectContentType('example01');
 
         $record = $this->repository->getFirstRecord('source = a');
-        $this->assertInstanceOf('AnyContent\Client\Record',$record);
+        $this->assertInstanceOf('AnyContent\Client\Record', $record);
 
         $record = $this->repository->getFirstRecord('source = b');
-        $this->assertInstanceOf('AnyContent\Client\Record',$record);
+        $this->assertInstanceOf('AnyContent\Client\Record', $record);
 
         $record = $this->repository->getFirstRecord('source = c');
         $this->assertFalse($record);
     }
-
-
 }

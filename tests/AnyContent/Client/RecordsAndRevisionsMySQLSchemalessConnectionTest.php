@@ -3,10 +3,8 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-
 use AnyContent\Connection\MySQLSchemalessReadOnlyConnection;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
@@ -15,7 +13,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
@@ -90,7 +87,6 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends \PHPUni
         $this->repository = $repository;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -171,7 +167,7 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends \PHPUni
         $t1 = $repository->getLastModifiedDate('profiles');
 
         $this->assertFalse($repository->deleteRecord(99));
-        $this->assertTrue((boolean)$repository->deleteRecord(5));
+        $this->assertTrue((bool)$repository->deleteRecord(5));
 
         $t2 = $repository->getLastModifiedDate('profiles');
 

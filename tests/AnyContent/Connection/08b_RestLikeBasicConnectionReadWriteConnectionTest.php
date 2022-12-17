@@ -3,7 +3,6 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Client\Record;
-
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
@@ -12,7 +11,6 @@ use KVMLogger\KVMLogger;
 
 class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  RestLikeBasicReadWriteConnection */
     public $connection;
 
@@ -58,7 +56,6 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
         $this->connection = $connection;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -79,7 +76,6 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
         $record = $connection->getRecord(5);
 
         $this->assertEquals('Agency 51', $record->getProperty('name'));
-
     }
 
 
@@ -92,7 +88,6 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
         $record = $connection->getRecord(5);
 
         $this->assertEquals('Agency 51', $record->getProperty('name'));
-
     }
 
 
@@ -108,7 +103,6 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
 
         $this->assertTrue($id > 5);
         $this->assertEquals($id, $record->getID());
-
     }
 
 
@@ -130,7 +124,6 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
         $connection->saveRecords($records);
 
         $this->assertEquals($c + 5, $connection->countRecords());
-
     }
 
 
@@ -152,7 +145,6 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
 
         $this->assertEquals(false, $result);
         $this->assertEquals($c - 1, $connection->countRecords());
-
     }
 
 
@@ -167,7 +159,6 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
         // No expectations, since the test does not yet have the necessary setup
         // $this->assertCount(1, $result);
         // $this->assertEquals(5, $connection->countRecords());
-
     }
 
 
@@ -181,7 +172,6 @@ class RestLikeBasicConnectionReadWriteConnectionTest extends \PHPUnit_Framework_
 
         //$this->assertCount(5, $result);
         $this->assertEquals(0, $connection->countRecords());
-
     }
 
 

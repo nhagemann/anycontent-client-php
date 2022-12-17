@@ -11,7 +11,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class RecordsFileConfigTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  RecordsFileReadWriteConnection */
     public $connection;
 
@@ -23,15 +22,13 @@ class RecordsFileConfigTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -112,7 +109,6 @@ class RecordsFileConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
-
     }
 
     public function testProtectedProperties()
@@ -123,15 +119,14 @@ class RecordsFileConfigTest extends \PHPUnit_Framework_TestCase
 
         $config = $connection->getConfig('config1');
 
-        $config->setProperty('ranking',1);
+        $config->setProperty('ranking', 1);
 
-        $this->assertEquals(1,$config->getProperty('ranking'));
+        $this->assertEquals(1, $config->getProperty('ranking'));
 
         $connection->saveConfig($config);
 
         $config = $connection->getConfig('config1');
 
-        $this->assertEquals('',$config->getProperty('ranking'));
+        $this->assertEquals('', $config->getProperty('ranking'));
     }
-
 }

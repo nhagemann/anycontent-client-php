@@ -4,9 +4,7 @@ namespace AnyContent\Client;
 
 use AnyContent\Client\Util\MenuBuilder;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-
 use AnyContent\Filter\ANDFilter;
 use AnyContent\Filter\ORFilter;
 use AnyContent\Filter\PropertyFilter;
@@ -16,7 +14,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class SortingTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -31,8 +28,7 @@ class SortingTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
@@ -55,7 +51,6 @@ class SortingTest extends \PHPUnit_Framework_TestCase
         $this->connection = $connection;
 
         $this->repository = new Repository('phpunit', $this->connection);
-
     }
 
 
@@ -63,8 +58,7 @@ class SortingTest extends \PHPUnit_Framework_TestCase
     {
         $this->repository->selectContentType('example01');
 
-        for ($i = 1; $i <= 10; $i++)
-        {
+        for ($i = 1; $i <= 10; $i++) {
             $record = $this->repository->createRecord('New Record');
             $record->setPosition(11 - $i);
             $id = $this->repository->saveRecord($record);
@@ -73,7 +67,6 @@ class SortingTest extends \PHPUnit_Framework_TestCase
 
         $records = $this->repository->getSortedRecords(0);
         $this->assertEquals([ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ], array_keys($records));
-
     }
 
 
@@ -161,5 +154,4 @@ class SortingTest extends \PHPUnit_Framework_TestCase
         $records = MenuBuilder::getExpandedMenu($this->repository, 'example01', 4);
         $this->assertEquals([ 1, 2, 4, 8, 5, 6, 3, 7 ], array_keys($records));
     }
-
 }

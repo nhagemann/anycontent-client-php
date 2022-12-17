@@ -3,51 +3,42 @@
 namespace AnyContent\Files;
 
 use AnyContent\Client\File;
-
 use AnyContent\Connection\FileManager\S3FilesAccess;
-
 use KVMLogger\KVMLoggerFactory;
+use PHPUnit\Framework\TestCase;
 
-class S3Test extends \PHPUnit_Framework_TestCase
+class S3Test extends TestCase
 {
-
-
-
     /**
      * @var S3FilesAccess
      */
     public $fileManager;
 
-    static $randomString1;
-    static $randomString2;
+    private static $randomString1;
+    private static $randomString2;
 
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$randomString1 = md5(time());
         self::$randomString2 = md5(time());
     }
 
 
-    public function setUp()
+    public function setUp(): void
     {
-        if (defined('S3_KEY'))
-        {
-
-
-            $fileManager       = new S3FilesAccess(S3_KEY,S3_SECRET,S3_BUCKET,S3_BASEPATH,S3_REGION);
+        if (defined('S3_KEY')) {
+            $fileManager       = new S3FilesAccess(S3_KEY, S3_SECRET, S3_BUCKET, S3_BASEPATH, S3_REGION);
             $this->fileManager = $fileManager;
 
             KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
         }
-
     }
 
 
     public function testBasicFolderOperations()
     {
-        if (!$this->fileManager)
-        {
+        if (!$this->fileManager) {
             $this->markTestSkipped('S3 config missing.');
         }
 
@@ -64,8 +55,7 @@ class S3Test extends \PHPUnit_Framework_TestCase
 
     public function testBasicFileOperations()
     {
-        if (!$this->fileManager)
-        {
+        if (!$this->fileManager) {
             $this->markTestSkipped('S3 config missing.');
         }
 
@@ -83,8 +73,7 @@ class S3Test extends \PHPUnit_Framework_TestCase
 
     public function testCreateAndDeleteFolder()
     {
-        if (!$this->fileManager)
-        {
+        if (!$this->fileManager) {
             $this->markTestSkipped('S3 config missing.');
         }
 
@@ -101,8 +90,7 @@ class S3Test extends \PHPUnit_Framework_TestCase
 
     public function testSaveAndDelete()
     {
-        if (!$this->fileManager)
-        {
+        if (!$this->fileManager) {
             $this->markTestSkipped('S3 config missing.');
         }
 

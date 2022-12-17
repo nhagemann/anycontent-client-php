@@ -3,23 +3,19 @@
 namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
-
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
-
 use AnyContent\Client\UserInfo;
 use AnyContent\Client\Util\TimeShifter;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use AnyContent\Connection\Interfaces\RevisionConnection;
 use AnyContent\Connection\Util\Database;
-
 use CMDL\Util;
 use KVMLogger\KVMLogger;
 
 class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection, RevisionConnection
 {
-
     /** @var  Database */
     protected $database;
 
@@ -57,9 +53,8 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
                     return file_get_contents($path);
                 }
 
-                throw new AnyContentClientException ('Could not fetch cmdl for content type ' . $contentTypeName . ' from ' . $path);
-            }
-            else {
+                throw new AnyContentClientException('Could not fetch cmdl for content type ' . $contentTypeName . ' from ' . $path);
+            } else {
                 $sql = 'SELECT cmdl FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"';
 
                 $row = $this->getDatabase()->fetchOneSQL($sql, [$this->getRepository()->getName(), $contentTypeName]);
@@ -68,7 +63,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
             }
         }
 
-        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+        throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
     /**
@@ -86,9 +81,8 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
                     return file_get_contents($path);
                 }
 
-                throw new AnyContentClientException ('Could not fetch cmdl for config type ' . $configTypeName . ' from ' . $path);
-            }
-            else {
+                throw new AnyContentClientException('Could not fetch cmdl for config type ' . $configTypeName . ' from ' . $path);
+            } else {
                 $sql = 'SELECT cmdl FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"';
 
                 $row = $this->getDatabase()->fetchOneSQL($sql, [$this->getRepository()->getName(), $configTypeName]);
@@ -97,7 +91,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
             }
         }
 
-        throw new AnyContentClientException ('Unknown config type ' . $configTypeName);
+        throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
     protected function getContentTypeTableName($contentTypeName, $ensureContentTypeTableIsUpToDate = true)
@@ -107,7 +101,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
         $tableName = $repository->getName() . '$' . $contentTypeName;
 
         if ($tableName != Util::generateValidIdentifier($repository->getName()) . '$' . Util::generateValidIdentifier($contentTypeName)) {
-            throw new \Exception ('Invalid repository and/or content type name(s).');
+            throw new \Exception('Invalid repository and/or content type name(s).');
         }
 
         if ($ensureContentTypeTableIsUpToDate == true) {
@@ -133,7 +127,6 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
         $stmt->execute(array($tableName));
 
         if ($stmt->rowCount() == 0) {
-
             $sql = <<< TEMPLATE_CONTENTTABLE
 
         CREATE TABLE %s (
@@ -180,9 +173,7 @@ TEMPLATE_CONTENTTABLE;
 
             try {
                 $stmt->execute();
-            }
-            catch (\PDOException $e) {
-
+            } catch (\PDOException $e) {
                 throw new AnyContentClientException('Could not create table schema for content type ' . $contentTypeName);
             }
         }
@@ -207,13 +198,11 @@ TEMPLATE_CONTENTTABLE;
 
         if (count($newfields) != 0) {
             $sql  = sprintf('ALTER TABLE %s', $tableName);
-            $sql  .= ' ' . join($newfields, ',');
+            $sql  .= ' ' . join(',', $newfields);
             $stmt = $this->getDatabase()->getConnection()->prepare($sql);
             try {
                 $stmt->execute();
-            }
-            catch (\PDOException $e) {
-
+            } catch (\PDOException $e) {
                 throw new AnyContentClientException('Could not update table schema for content type ' . $contentTypeName);
             }
         }
@@ -232,7 +221,7 @@ TEMPLATE_CONTENTTABLE;
         $tableName = $repositoryName . '$$config';
 
         if ($tableName != Util::generateValidIdentifier($repositoryName) . '$$config') {
-            throw new AnyContentClientException ('Invalid repository name ' . $repositoryName);
+            throw new AnyContentClientException('Invalid repository name ' . $repositoryName);
         }
 
         if ($ensureConfigTypeTableIsPresent == true) {
@@ -256,7 +245,6 @@ TEMPLATE_CONTENTTABLE;
         $stmt->execute(array($tableName));
 
         if ($stmt->rowCount() == 0) {
-
             $sql = <<< TEMPLATE_CONFIGTABLE
 
         CREATE TABLE %s (
@@ -285,11 +273,8 @@ TEMPLATE_CONFIGTABLE;
             $stmt = $this->getDatabase()->getConnection()->prepare($sql);
 
             try {
-
                 $stmt->execute();
-            }
-            catch (\PDOException $e) {
-
+            } catch (\PDOException $e) {
                 throw new AnyContentClientException('Could not create table  for config types of repository ' . $this->getRepository()
                                                                                                                      ->getName());
             }
@@ -322,7 +307,7 @@ TEMPLATE_CONFIGTABLE;
         $record->setPosition($row['position']);
         $record->setPosition($row['property_position']);
         $record->setParent($row['property_parent']);
-        $record->setIsADeletedRevision((boolean)$row['deleted']);
+        $record->setIsADeletedRevision((bool)$row['deleted']);
 
         $userInfo = new UserInfo($row['creation_username'], $row['creation_firstname'], $row['creation_lastname'], $row['creation_timestamp']);
         $record->setCreationUserInfo($userInfo);
@@ -419,7 +404,7 @@ TEMPLATE_CONFIGTABLE;
      *
      * @return Record
      */
-    public function getRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
+    public function getRecord(string $recordId, ?string $contentTypeName, ?DataDimensions $dataDimensions = null)
     {
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
@@ -474,8 +459,7 @@ TEMPLATE_CONFIGTABLE;
         if (count($rows) == 1) {
             $row    = reset($rows);
             $config = $this->createConfigFromRow($row, $configTypeName, $dataDimensions);
-        }
-        else {
+        } else {
             $definition = $this->getConfigTypeDefinition($configTypeName);
             $config     = $this->getRecordFactory()->createConfig($definition);
 
@@ -530,11 +514,9 @@ TEMPLATE_CONFIGTABLE;
             $t = $row['T'];
 
             $t = max($this->getCMDLLastModifiedDate(), $t);
-        }
-        elseif ($contentTypeName != null) {
+        } elseif ($contentTypeName != null) {
             return $this->getLastModifedDateForContentType($contentTypeName, $dataDimensions);
-        }
-        elseif ($configTypeName != null) {
+        } elseif ($configTypeName != null) {
             return $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions);
         }
 
@@ -589,34 +571,29 @@ TEMPLATE_CONFIGTABLE;
                                 ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
                     $t   = max((int)@filemtime($uri), $t);
                 }
-            }
-            elseif ($contentTypeName != null) {
+            } elseif ($contentTypeName != null) {
                 $uri = $this->getConfiguration()
                             ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
                 $t   = max((int)@filemtime($uri), $t);
-            }
-            elseif ($configTypeName != null) {
+            } elseif ($configTypeName != null) {
                 $uri = $this->getConfiguration()
                             ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
                 $t   = max((int)@filemtime($uri), $t);
             }
-        }
-        else {
+        } else {
             if ($contentTypeName == null && $configTypeName == null) {
                 $sql = 'SELECT MAX(lastchange_timestamp) AS T FROM _cmdl_ WHERE repository = ?';
 
                 $row = $this->getDatabase()->fetchOneSQL($sql, [$this->getRepository()->getName()]);
 
                 $t = $row['T'];
-            }
-            elseif ($contentTypeName != null) {
+            } elseif ($contentTypeName != null) {
                 $sql = 'SELECT MAX(lastchange_timestamp) AS T FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"';
 
                 $row = $this->getDatabase()->fetchOneSQL($sql, [$this->getRepository()->getName(), $contentTypeName]);
 
                 $t = $row['T'];
-            }
-            elseif ($configTypeName != null) {
+            } elseif ($configTypeName != null) {
                 $sql = 'SELECT MAX(lastchange_timestamp) AS T FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"';
 
                 $row = $this->getDatabase()->fetchOneSQL($sql, [$this->getRepository()->getName(), $configTypeName]);
@@ -683,5 +660,4 @@ TEMPLATE_CONFIGTABLE;
 
         return false;
     }
-
 }

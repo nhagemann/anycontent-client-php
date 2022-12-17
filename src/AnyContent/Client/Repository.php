@@ -19,7 +19,6 @@ use KVMLogger\KVMLogger;
 
 class Repository implements FileManager, \JsonSerializable
 {
-
     /** @var  ReadOnlyConnection */
     protected $readConnection;
 
@@ -72,7 +71,7 @@ class Repository implements FileManager, \JsonSerializable
 
                 $this->writeConnection->apply($this);
             } else {
-                throw new AnyContentClientException ('Given connection is not a write connection');
+                throw new AnyContentClientException('Given connection is not a write connection');
             }
         } elseif ($readConnection instanceof WriteConnection) {
             $this->writeConnection = $readConnection;
@@ -125,7 +124,7 @@ class Repository implements FileManager, \JsonSerializable
      */
     public function hasFiles()
     {
-        return (boolean)$this->fileManager;
+        return (bool)$this->fileManager;
     }
 
 
@@ -190,7 +189,7 @@ class Repository implements FileManager, \JsonSerializable
      */
     public function hasPublicUrl()
     {
-        return (boolean)$this->getPublicUrl();
+        return (bool)$this->getPublicUrl();
     }
 
 
@@ -446,11 +445,16 @@ class Repository implements FileManager, \JsonSerializable
     {
 
         $record = $this->getRecordFactory()
-                       ->createRecord($this->getContentTypeDefinition(), [], $this->getCurrentDataDimensions()
+                       ->createRecord(
+                           $this->getContentTypeDefinition(),
+                           [],
+                           $this->getCurrentDataDimensions()
                                                                                   ->getViewName(),
                            $this->getCurrentDataDimensions()
-                                ->getWorkspace(), $this->getCurrentDataDimensions()
-                                                       ->getLanguage());
+                                ->getWorkspace(),
+                           $this->getCurrentDataDimensions()
+                           ->getLanguage()
+                       );
         $record->setId($recordId);
         $record->setName($name);
 
@@ -502,16 +506,20 @@ class Repository implements FileManager, \JsonSerializable
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        if (!is_array($order))
-        {
+        if (!is_array($order)) {
             $order = [$order];
         }
 
         if ($this->readConnection instanceof FilteringConnection) {
-            $records = $this->readConnection->getRecords($this->getCurrentContentTypeName(), $dataDimensions, $filter,
-                $page, $count, $order);
+            $records = $this->readConnection->getRecords(
+                $this->getCurrentContentTypeName(),
+                $dataDimensions,
+                $filter,
+                $page,
+                $count,
+                $order
+            );
         } else {
-
             $records = $this->getAllRecords($dataDimensions);
 
             if ($filter != '') {
@@ -587,7 +595,7 @@ class Repository implements FileManager, \JsonSerializable
     public function saveRecord(Record $record)
     {
         if (!$this->writeConnection) {
-            throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
+            throw new AnyContentClientException('Current connection(s) doesn\'t support write operations.');
         }
 
         $dataDimensions = $this->getCurrentDataDimensions();
@@ -606,7 +614,7 @@ class Repository implements FileManager, \JsonSerializable
     public function saveRecords($records)
     {
         if (!$this->writeConnection) {
-            throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
+            throw new AnyContentClientException('Current connection(s) doesn\'t support write operations.');
         }
 
         $dataDimensions = $this->getCurrentDataDimensions();
@@ -628,7 +636,7 @@ class Repository implements FileManager, \JsonSerializable
     public function deleteRecord($recordId)
     {
         if (!$this->writeConnection) {
-            throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
+            throw new AnyContentClientException('Current connection(s) doesn\'t support write operations.');
         }
 
         $contentTypeName = $this->getCurrentContentTypeName();
@@ -641,7 +649,7 @@ class Repository implements FileManager, \JsonSerializable
     public function deleteRecords($recordIds)
     {
         if (!$this->writeConnection) {
-            throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
+            throw new AnyContentClientException('Current connection(s) doesn\'t support write operations.');
         }
 
         $contentTypeName = $this->getCurrentContentTypeName();
@@ -659,7 +667,7 @@ class Repository implements FileManager, \JsonSerializable
     public function sortRecords(array $sorting)
     {
         if (!$this->writeConnection) {
-            throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
+            throw new AnyContentClientException('Current connection(s) doesn\'t support write operations.');
         }
 
         $records = $records = $this->getRecords();
@@ -685,7 +693,7 @@ class Repository implements FileManager, \JsonSerializable
     public function deleteAllRecords()
     {
         if (!$this->writeConnection) {
-            throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
+            throw new AnyContentClientException('Current connection(s) doesn\'t support write operations.');
         }
 
         $contentTypeName = $this->getCurrentContentTypeName();
@@ -706,7 +714,7 @@ class Repository implements FileManager, \JsonSerializable
     public function saveConfig(Config $config)
     {
         if (!$this->writeConnection) {
-            throw new AnyContentClientException ('Current connection(s) doesn\'t support write operations.');
+            throw new AnyContentClientException('Current connection(s) doesn\'t support write operations.');
         }
 
         $dataDimensions = $this->getCurrentDataDimensions();
@@ -852,7 +860,7 @@ class Repository implements FileManager, \JsonSerializable
     public function getRevisionsOfRecord($recordId, $contentTypeName = null)
     {
         if (!$this->readConnection instanceof RevisionConnection) {
-            throw new AnyContentClientException ('Current connection doesn\'t support revision operations.');
+            throw new AnyContentClientException('Current connection doesn\'t support revision operations.');
         }
 
         $contentTypeName = $this->getCurrentContentTypeName();
@@ -871,7 +879,7 @@ class Repository implements FileManager, \JsonSerializable
     public function getRevisionsOfConfig($configTypeName)
     {
         if (!$this->readConnection instanceof RevisionConnection) {
-            throw new AnyContentClientException ('Current connection doesn\'t support revision operations.');
+            throw new AnyContentClientException('Current connection doesn\'t support revision operations.');
         }
 
         $dataDimensions = $this->getCurrentDataDimensions();
@@ -899,7 +907,7 @@ class Repository implements FileManager, \JsonSerializable
 
     public function isWritable()
     {
-        return (boolean)$this->writeConnection;
+        return (bool)$this->writeConnection;
     }
 
 
@@ -923,7 +931,7 @@ class Repository implements FileManager, \JsonSerializable
     }
 
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $repository = [];
 
@@ -935,9 +943,8 @@ class Repository implements FileManager, \JsonSerializable
             // content type might have been deleted in the meantime
         }
 
-        $repository['content']=[];
+        $repository['content'] = [];
         foreach ($this->getContentTypeDefinitions() as $definition) {
-
             $contentTypeName = $definition->getName();
 
             $this->selectContentType($contentTypeName);
@@ -950,17 +957,20 @@ class Repository implements FileManager, \JsonSerializable
             $repository['content'][$contentTypeName]['description']        = $definition->getDescription();
         }
 
-        $repository['config']=[];
+        $repository['config'] = [];
         foreach ($this->getConfigTypeDefinitions() as $definition) {
-
             $configTypeName = $definition->getName();
 
             $repository['config'][$configTypeName]['title']              = $definition->getTitle();
-            $repository['config'][$configTypeName]['lastchange_content'] = $this->getLastModifiedDate(null,
-                $configTypeName);
+            $repository['config'][$configTypeName]['lastchange_content'] = $this->getLastModifiedDate(
+                null,
+                $configTypeName
+            );
             $repository['config'][$configTypeName]['lastchange_cmdl']    = $this->getReadConnection()
-                                                                                ->getCMDLLastModifiedDate(null,
-                                                                                    $configTypeName);
+                                                                                ->getCMDLLastModifiedDate(
+                                                                                    null,
+                                                                                    $configTypeName
+                                                                                );
             $repository['config'][$configTypeName]['description']        = $definition->getDescription();
         }
 
@@ -977,10 +987,8 @@ class Repository implements FileManager, \JsonSerializable
             } catch (AnyContentClientException $e) {
                 // content type might have been deleted in the meantime
             }
-
         }
 
         return $repository;
     }
-
 }

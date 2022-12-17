@@ -1,4 +1,5 @@
 <?php
+
 namespace AnyContent\Connection\Configuration;
 
 use AnyContent\AnyContentClientException;
@@ -7,7 +8,6 @@ use AnyContent\Connection\RestLikeBasicReadWriteConnection;
 
 class RestLikeConfiguration extends AbstractConfiguration
 {
-
     protected $timeout = 30;
 
     protected $uri;
@@ -18,8 +18,7 @@ class RestLikeConfiguration extends AbstractConfiguration
      */
     public function getUri()
     {
-        if (!$this->uri)
-        {
+        if (!$this->uri) {
             throw new AnyContentClientException('Basi uri not set.');
         }
 
@@ -34,8 +33,7 @@ class RestLikeConfiguration extends AbstractConfiguration
     {
         $uri = rtrim($uri, '/');
 
-        if (substr($uri, -5) == '/info')
-        {
+        if (substr($uri, -5) == '/info') {
             $uri = substr($uri, 0, -5);
         }
         $uri       = $uri . '/';
@@ -46,8 +44,7 @@ class RestLikeConfiguration extends AbstractConfiguration
     public function addContentTypes($contentTypeNames = false)
     {
 
-        if ($contentTypeNames===false)
-        {
+        if ($contentTypeNames === false) {
             /** @var RestLikeBasicReadOnlyConnection $connection */
             $connection = $this->getConnection();
             $info       = $connection->getRepositoryInfo();
@@ -63,14 +60,12 @@ class RestLikeConfiguration extends AbstractConfiguration
 
     public function addConfigTypes($configTypeNames = false)
     {
-        if ($configTypeNames===false)
-        {
+        if ($configTypeNames === false) {
             /** @var RestLikeBasicReadOnlyConnection $connection */
             $connection = $this->getConnection();
             $info       = $connection->getRepositoryInfo();
 
             $configTypeNames = array_keys($info['config']);
-
         }
         $this->configTypes = array_fill_keys($configTypeNames, [ ]);
 
@@ -108,5 +103,4 @@ class RestLikeConfiguration extends AbstractConfiguration
 
         return $this;
     }
-
 }

@@ -58,9 +58,7 @@ class RestLikeFilesAccess implements FileManager
     public function getClient()
     {
 
-        if (!$this->client)
-        {
-
+        if (!$this->client) {
             $client = new Client([ 'base_url' => $this->getConfiguration()->getUri(),
                                    'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ]
                                  ]);
@@ -69,8 +67,7 @@ class RestLikeFilesAccess implements FileManager
 
             $emitter = $client->getEmitter();
 
-            $emitter->on('end', function (EndEvent $event)
-            {
+            $emitter->on('end', function (EndEvent $event) {
 
                 $kvm = KVMLogger::instance('anycontent-connection');
 
@@ -88,7 +85,6 @@ class RestLikeFilesAccess implements FileManager
                 }
 
                 $kvm->debug($message);
-
             });
         }
 
@@ -110,7 +106,7 @@ class RestLikeFilesAccess implements FileManager
      */
     public function setPublicUrl($publicUrl)
     {
-        $this->publicUrl = rtrim($publicUrl,'/');
+        $this->publicUrl = rtrim($publicUrl, '/');
 
         return $this;
     }
@@ -122,8 +118,7 @@ class RestLikeFilesAccess implements FileManager
      */
     public function getFolder($path = '')
     {
-        if (!array_key_exists($path,$this->folders)) {
-
+        if (!array_key_exists($path, $this->folders)) {
             $this->folders[$path] = false;
 
             $url = 'files';
@@ -136,7 +131,6 @@ class RestLikeFilesAccess implements FileManager
             $json = $response->json();
 
             if ($json) {
-
                 if ($this->publicUrl != false) {
                     $files = [];
                     foreach ($json['files'] as $file) {
@@ -150,7 +144,6 @@ class RestLikeFilesAccess implements FileManager
 
                 $this->folders[$path] = $folder;
             }
-
         }
 
         return $this->folders[$path];
@@ -160,12 +153,10 @@ class RestLikeFilesAccess implements FileManager
     public function getFile($fileId)
     {
         $id = trim(trim($fileId, '/'));
-        if ($id != '')
-        {
+        if ($id != '') {
             $pathinfo = pathinfo($id);
             $folder   = $this->getFolder($pathinfo['dirname']);
-            if ($folder)
-            {
+            if ($folder) {
                 return $folder->getFile($id);
             }
         }
@@ -178,16 +169,12 @@ class RestLikeFilesAccess implements FileManager
     {
         $url = 'file/' . trim($file->getId(), '/');
 
-        try
-        {
+        try {
             $response = $this->getClient()->get($url);
 
             return $response->getBody()->getContents();
-        }
-        catch (ClientException $e)
-        {
-            if ($e->getResponse()->getStatusCode() == 404)
-            {
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() == 404) {
                 return false;
             }
             throw new ClientException($e->getMessage(), $e->getRequest(), $e->getResponse(), $e);
@@ -197,26 +184,24 @@ class RestLikeFilesAccess implements FileManager
 
     public function saveFile($fileId, $binary)
     {
-        $this->folders=[];
+        $this->folders = [];
 
         $url = 'file/' . trim($fileId, '/');
         $this->getClient()
              ->post($url, [ 'body' => $binary ]);
 
         return true;
-
     }
 
 
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
-        $this->folders=[];
+        $this->folders = [];
 
         $url = 'file/' . trim($fileId, '/');
         $this->getClient()->delete($url);
 
-        if ($deleteEmptyFolder)
-        {
+        if ($deleteEmptyFolder) {
             $dirName = pathinfo($fileId, PATHINFO_DIRNAME);
 
             return $this->deleteFolder($dirName);
@@ -232,22 +217,19 @@ class RestLikeFilesAccess implements FileManager
         $this->getClient()->post($url);
 
         return true;
-
     }
 
 
     public function deleteFolder($path, $deleteIfNotEmpty = false)
     {
         $folder = $this->getFolder($path);
-        if ($folder)
-        {
-            if ($folder->isEmpty() || $deleteIfNotEmpty)
-            {
+        if ($folder) {
+            if ($folder->isEmpty() || $deleteIfNotEmpty) {
                 $url = 'files/' . trim($path, '/');
 
                 $this->getClient()->delete($url);
 
-                $this->folders=[];
+                $this->folders = [];
 
                 return true;
             }
@@ -255,5 +237,4 @@ class RestLikeFilesAccess implements FileManager
 
         return false;
     }
-
 }

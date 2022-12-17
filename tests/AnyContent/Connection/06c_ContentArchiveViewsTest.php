@@ -13,7 +13,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ContentArchiveViewsTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -25,13 +24,11 @@ class ContentArchiveViewsTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
-
     }
 
 
@@ -50,7 +47,6 @@ class ContentArchiveViewsTest extends \PHPUnit_Framework_TestCase
 
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -63,17 +59,15 @@ class ContentArchiveViewsTest extends \PHPUnit_Framework_TestCase
 
         $definition = $connection->getCurrentContentTypeDefinition();
 
-        $this->assertContains('a',$definition->getProperties('default'));
-        $this->assertContains('b',$definition->getProperties('default'));
-        $this->assertNotContains('c',$definition->getProperties('default'));
+        $this->assertContains('a', $definition->getProperties('default'));
+        $this->assertContains('b', $definition->getProperties('default'));
+        $this->assertNotContains('c', $definition->getProperties('default'));
 
         $record = $connection->getRecordFactory()->createRecord($definition);
-        $record->setProperty('a','valuea');
-        $record->setProperty('b','valueb');
+        $record->setProperty('a', 'valuea');
+        $record->setProperty('b', 'valueb');
         $this->setExpectedException('CMDL\CMDLParserException');
-        $record->setProperty('c','valuec');
-
-
+        $record->setProperty('c', 'valuec');
     }
 
     public function testSaveRecordDefaultView()
@@ -85,13 +79,12 @@ class ContentArchiveViewsTest extends \PHPUnit_Framework_TestCase
         $definition = $connection->getCurrentContentTypeDefinition();
 
         $record = $connection->getRecordFactory()->createRecord($definition);
-        $record->setProperty('a','valuea');
-        $record->setProperty('b','valueb');
+        $record->setProperty('a', 'valuea');
+        $record->setProperty('b', 'valueb');
 
         $id = $connection->saveRecord($record);
 
-        $this->assertEquals(1,$id);
-
+        $this->assertEquals(1, $id);
     }
 
     public function testSaveRecordTestView()
@@ -102,24 +95,23 @@ class ContentArchiveViewsTest extends \PHPUnit_Framework_TestCase
 
         $definition = $connection->getCurrentContentTypeDefinition();
 
-        $record = $connection->getRecordFactory()->createRecord($definition,[],'test1');
-        $record->setProperty('c','valuec');
-        $record->setProperty('d','valued');
+        $record = $connection->getRecordFactory()->createRecord($definition, [], 'test1');
+        $record->setProperty('c', 'valuec');
+        $record->setProperty('d', 'valued');
         $record->setId(1);
 
         $dataDimensions = $connection->getCurrentDataDimensions();
         $dataDimensions->setViewName('test1');
 
         $id = $connection->saveRecord($record, $dataDimensions);
-        $this->assertEquals(1,$id);
-        $this->assertEquals(2,$record->getRevision());
-        $this->assertEquals('valuec',$record->getProperty('c'));
-        $this->assertEquals('valued',$record->getProperty('d'));
+        $this->assertEquals(1, $id);
+        $this->assertEquals(2, $record->getRevision());
+        $this->assertEquals('valuec', $record->getProperty('c'));
+        $this->assertEquals('valued', $record->getProperty('d'));
 
-        $this->assertArrayHasKey('c',$record->getProperties());
-        $this->assertArrayHasKey('d',$record->getProperties());
-        $this->assertArrayNotHasKey('a',$record->getProperties());
-
+        $this->assertArrayHasKey('c', $record->getProperties());
+        $this->assertArrayHasKey('d', $record->getProperties());
+        $this->assertArrayNotHasKey('a', $record->getProperties());
     }
 //
 //    public function testGetRecordDifferentViews()

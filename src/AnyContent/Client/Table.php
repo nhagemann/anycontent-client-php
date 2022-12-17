@@ -4,7 +4,6 @@ namespace AnyContent\Client;
 
 class Table implements \Iterator, \Countable
 {
-
     protected $position = 0;
 
     protected $columns = null;

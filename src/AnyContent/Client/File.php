@@ -4,7 +4,6 @@ namespace AnyContent\Client;
 
 class File implements \JsonSerializable
 {
-
     protected $folder;
 
     protected $id;
@@ -17,7 +16,7 @@ class File implements \JsonSerializable
     protected $height = null;
 
 
-    public function __construct($folder, $id, $name, $type = 'binary', $urls, $size = null, $timestampLastchange = null)
+    public function __construct($folder, $id, $name, $type, $urls, $size = null, $timestampLastchange = null)
     {
 
         $this->folder              = $folder;
@@ -27,7 +26,6 @@ class File implements \JsonSerializable
         $this->urls                = $urls;
         $this->size                = $size;
         $this->timestampLastChange = $timestampLastchange;
-
     }
 
 
@@ -93,8 +91,7 @@ class File implements \JsonSerializable
 
     public function isImage()
     {
-        if ($this->type == 'image')
-        {
+        if ($this->type == 'image') {
             return true;
         }
 
@@ -104,12 +101,10 @@ class File implements \JsonSerializable
 
     public function getUrl($type = 'default', $fallback = false)
     {
-        if (array_key_exists($type, $this->urls))
-        {
+        if (array_key_exists($type, $this->urls)) {
             return $this->urls[$type];
         }
-        if ($type != 'default' && $fallback == true)
-        {
+        if ($type != 'default' && $fallback == true) {
             return $this->getUrl('default');
         }
 
@@ -131,8 +126,7 @@ class File implements \JsonSerializable
 
     public function removeUrl($type)
     {
-        if (array_key_exists($type, $this->urls))
-        {
+        if (array_key_exists($type, $this->urls)) {
             unset($this->urls[$type]);
         }
     }
@@ -140,25 +134,23 @@ class File implements \JsonSerializable
 
     public function hasPublicUrl()
     {
-        return (boolean)$this->getUrl('default');
+        return (bool)$this->getUrl('default');
     }
 
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $file = [];
-        $file['id']=$this->getId();
-        $file['name']=$this->getName();
-        $file['urls']=$this->getUrls();
-        $file['type']=$this->getType();
-        $file['size']=$this->getSize();
-        $file['timestamp_lastchange']=$this->getTimestampLastChange();
-        if ($this->getType()=='image')
-        {
-            if ($this->getWidth()!=0&&$this->getHeight()!=0)
-            {
-                $file['width']=$this->getWidth();
-                $file['height']=$this->getHeight();
+        $file['id'] = $this->getId();
+        $file['name'] = $this->getName();
+        $file['urls'] = $this->getUrls();
+        $file['type'] = $this->getType();
+        $file['size'] = $this->getSize();
+        $file['timestamp_lastchange'] = $this->getTimestampLastChange();
+        if ($this->getType() == 'image') {
+            if ($this->getWidth() != 0 && $this->getHeight() != 0) {
+                $file['width'] = $this->getWidth();
+                $file['height'] = $this->getHeight();
             }
         }
         return $file;

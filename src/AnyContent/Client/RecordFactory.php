@@ -31,8 +31,7 @@ class RecordFactory
      */
     public static function instance($options = [ ])
     {
-        if (!self::$instance)
-        {
+        if (!self::$instance) {
             self::$instance = new RecordFactory();
         }
         self::$instance->options = array_merge(self::$instance->options, $options);
@@ -49,8 +48,7 @@ class RecordFactory
 
     public function getOption($option)
     {
-        if (array_key_exists($option, $this->options))
-        {
+        if (array_key_exists($option, $this->options)) {
             return $this->options[$option];
         }
         throw new AnyContentClientException('Missing option ' . $option . ' in RecordFactory');
@@ -66,11 +64,10 @@ class RecordFactory
         /** @var Record $record */
         $masterRecord = new $classname($contentTypeDefinition, '', $viewName, $workspace, $language);
 
-        foreach ($jsonRecords as $jsonRecord)
-        {
+        foreach ($jsonRecords as $jsonRecord) {
             $record = clone $masterRecord;
             $record->setID($jsonRecord['id']);
-            $record = $this->finishRecordCreationFromJSON($record,$jsonRecord);
+            $record = $this->finishRecordCreationFromJSON($record, $jsonRecord);
 
             $records[$record->getID()] = $record;
         }
@@ -93,24 +90,20 @@ class RecordFactory
     public function createRecordFromJSON(DataTypeDefinition $dataTypeDefinition, $jsonRecord, $viewName = "default", $workspace = "default", $language = "default")
     {
 
-        if ($dataTypeDefinition instanceof ConfigTypeDefinition)
-        {
+        if ($dataTypeDefinition instanceof ConfigTypeDefinition) {
             $classname = $this->getRecordClassForConfigType($dataTypeDefinition->getName());
 
             /** @var Config $record */
             $record = new $classname($dataTypeDefinition, $viewName, $workspace, $language);
-        }
-        else
-        {
+        } else {
             $classname = $this->getRecordClassForContentType($dataTypeDefinition->getName());
 
             /** @var Record $record */
             $record = new $classname($dataTypeDefinition, '', $viewName, $workspace, $language);
             $record->setID($jsonRecord['id']);
+        }
 
-        }                
-        
-        $record = $this->finishRecordCreationFromJSON($record,$jsonRecord);
+        $record = $this->finishRecordCreationFromJSON($record, $jsonRecord);
 
 
         return $record;
@@ -125,32 +118,24 @@ class RecordFactory
      * @return mixed
      * @throws AnyContentClientException
      */
-    protected function finishRecordCreationFromJSON(AbstractRecord $record,$jsonRecord)
+    protected function finishRecordCreationFromJSON(AbstractRecord $record, $jsonRecord)
     {
         $revision = isset($jsonRecord['info']['revision']) ? $jsonRecord['info']['revision'] : 1;
         $record->setRevision($revision);
 
-        if ($this->getOption('validateProperties') == true)
-        {
-            foreach ($jsonRecord['properties'] AS $property => $value)
-            {
+        if ($this->getOption('validateProperties') == true) {
+            foreach ($jsonRecord['properties'] as $property => $value) {
                 $record->setProperty($property, $value);
             }
-        }
-        else
-        {
+        } else {
             $record->setProperties($jsonRecord['properties']);
         }
 
-        if (isset($jsonRecord['info']))
-        {
-            if (isset($jsonRecord['info']['creation']))
-            {
+        if (isset($jsonRecord['info'])) {
+            if (isset($jsonRecord['info']['creation'])) {
                 $record->setCreationUserInfo(new UserInfo($jsonRecord['info']['creation']['username'], $jsonRecord['info']['creation']['firstname'], $jsonRecord['info']['creation']['lastname'], $jsonRecord['info']['creation']['timestamp']));
             }
-            if (isset($jsonRecord['info']['lastchange']))
-            {
-
+            if (isset($jsonRecord['info']['lastchange'])) {
                 $record->setLastChangeUserInfo(new UserInfo($jsonRecord['info']['lastchange']['username'], $jsonRecord['info']['lastchange']['firstname'], $jsonRecord['info']['lastchange']['lastname'], $jsonRecord['info']['lastchange']['timestamp']));
             }
         }
@@ -168,15 +153,11 @@ class RecordFactory
         $revision = isset($jsonRecord['revision']) ? $jsonRecord['revision'] : 0;
         $record->setRevision($revision);
 
-        if ($this->getOption('validateProperties') == true)
-        {
-            foreach ($properties AS $property => $value)
-            {
+        if ($this->getOption('validateProperties') == true) {
+            foreach ($properties as $property => $value) {
                 $record->setProperty($property, $value);
             }
-        }
-        else
-        {
+        } else {
             $record->setProperties($properties);
         }
 
@@ -194,15 +175,11 @@ class RecordFactory
         $revision = isset($jsonRecord['revision']) ? $jsonRecord['revision'] : 0;
         $record->setRevision($revision);
 
-        if ($this->getOption('validateProperties') == true)
-        {
-            foreach ($properties AS $property => $value)
-            {
+        if ($this->getOption('validateProperties') == true) {
+            foreach ($properties as $property => $value) {
                 $record->setProperty($property, $value);
             }
-        }
-        else
-        {
+        } else {
             $record->setProperties($properties);
         }
 
@@ -219,15 +196,11 @@ class RecordFactory
 
         $config->setRevision(0);
 
-        if ($this->getOption('validateProperties') == true)
-        {
-            foreach ($properties AS $property => $value)
-            {
+        if ($this->getOption('validateProperties') == true) {
+            foreach ($properties as $property => $value) {
                 $config->setProperty($property, $value);
             }
-        }
-        else
-        {
+        } else {
             $config->setProperties($properties);
         }
 
@@ -239,17 +212,14 @@ class RecordFactory
     {
 
         $this->contentRecordClassMap[$contentTypeName] = $classname;
-
     }
 
 
     public function getRecordClassForContentType($contentTypeName)
     {
 
-        if (array_key_exists($contentTypeName, $this->contentRecordClassMap))
-        {
+        if (array_key_exists($contentTypeName, $this->contentRecordClassMap)) {
             return $this->contentRecordClassMap[$contentTypeName];
-
         }
 
         return 'AnyContent\Client\Record';
@@ -260,20 +230,16 @@ class RecordFactory
     {
 
         $this->configRecordClassMap[$configTypeName] = $classname;
-
     }
 
 
     public function getRecordClassForConfigType($configTypeName)
     {
 
-        if (array_key_exists($configTypeName, $this->configRecordClassMap))
-        {
+        if (array_key_exists($configTypeName, $this->configRecordClassMap)) {
             return $this->configRecordClassMap[$configTypeName];
-
         }
 
         return 'AnyContent\Client\Config';
     }
 }
-

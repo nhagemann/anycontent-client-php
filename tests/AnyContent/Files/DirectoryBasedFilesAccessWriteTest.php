@@ -6,33 +6,31 @@ use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
 use AnyContent\Connection\Interfaces\FileManager;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class DirectoryBasedFilesAccessWriteTest extends \PHPUnit_Framework_TestCase
+class DirectoryBasedFilesAccessWriteTest extends TestCase
 {
-
     /** @var  DirectoryBasedFilesAccess */
     public $fileManager;
 
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/files';
         $source = __DIR__ . '/../../resources/Files';
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
-
     }
 
 
-    public function setUp()
+    public function setUp(): void
     {
 
         $fileManager = new DirectoryBasedFilesAccess(__DIR__ . '/../../../tmp/files');
@@ -41,7 +39,6 @@ class DirectoryBasedFilesAccessWriteTest extends \PHPUnit_Framework_TestCase
         $this->fileManager = $fileManager;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -56,7 +53,6 @@ class DirectoryBasedFilesAccessWriteTest extends \PHPUnit_Framework_TestCase
 
         $file = $fileManager->getFile('Test/test.txt');
         $this->assertEquals('test', $fileManager->getBinary($file));
-
     }
 
 
@@ -73,7 +69,6 @@ class DirectoryBasedFilesAccessWriteTest extends \PHPUnit_Framework_TestCase
         $file = $fileManager->getFile('Test/test.jpg');
         $this->assertEquals($binary, $fileManager->getBinary($file));
         $this->assertTrue($file->isImage());
-
     }
 
 
@@ -128,5 +123,4 @@ class DirectoryBasedFilesAccessWriteTest extends \PHPUnit_Framework_TestCase
         $folder = $fileManager->getFolder('Test');
         $this->assertFalse($folder);
     }
-
 }

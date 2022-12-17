@@ -1,4 +1,5 @@
 <?php
+
 namespace AnyContent\Connection\Configuration;
 
 use AnyContent\AnyContentClientException;
@@ -11,7 +12,6 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class ContentArchiveConfiguration extends AbstractConfiguration
 {
-
     protected $path;
 
 
@@ -19,7 +19,6 @@ class ContentArchiveConfiguration extends AbstractConfiguration
     {
         $path       = rtrim($path, '/');
         $this->path = realpath($path);
-
     }
 
 
@@ -43,29 +42,24 @@ class ContentArchiveConfiguration extends AbstractConfiguration
         $finder->in($uri)->depth(0);
 
         /** @var SplFileInfo $file */
-        foreach ($finder->files('*.cmdl') as $file)
-        {
+        foreach ($finder->files('*.cmdl') as $file) {
             $contentTypeName = $file->getBasename('.cmdl');
 
             $this->contentTypes[$contentTypeName] = [ ];
-
         }
 
         $finder = new Finder();
 
         $uri = 'file://' . $this->getContentArchiveFolder() . '/cmdl/config';
 
-        if (file_exists($uri))
-        {
+        if (file_exists($uri)) {
             $finder->in($uri)->depth(0);
 
             /** @var SplFileInfo $file */
-            foreach ($finder->files('*.cmdl') as $file)
-            {
+            foreach ($finder->files('*.cmdl') as $file) {
                 $configTypeName = $file->getBasename('.cmdl');
 
                 $this->configTypes[$configTypeName] = [ ];
-
             }
         }
     }
@@ -85,44 +79,41 @@ class ContentArchiveConfiguration extends AbstractConfiguration
 
     public function getUriCMDLForContentType($contentTypeName)
     {
-        if ($this->hasContentType($contentTypeName))
-        {
+        if ($this->hasContentType($contentTypeName)) {
             return $this->getContentArchiveFolder() . '/cmdl/' . $contentTypeName . '.cmdl';
         }
 
-        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+        throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
 
     public function getUriCMDLForConfigType($configTypeName)
     {
-        if ($this->hasConfigType($configTypeName))
-        {
+        if ($this->hasConfigType($configTypeName)) {
             return $this->getContentArchiveFolder() . '/cmdl/config/' . $configTypeName . '.cmdl';
         }
 
-        throw new AnyContentClientException ('Unknown config type ' . $configTypeName);
+        throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
 
     public function getFolderNameRecords($contentTypeName, DataDimensions $dataDimensions)
     {
-        if ($this->hasContentType($contentTypeName))
-        {
+        if ($this->hasContentType($contentTypeName)) {
             return $this->getContentArchiveFolder() . '/data/content/' . $contentTypeName . '/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getLanguage();
         }
 
-        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+        throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
 
     public function getUriConfig($configTypeName, DataDimensions $dataDimensions)
     {
-        if ($this->hasConfigType($configTypeName))
-        {
-            return $this->getContentArchiveFolder() . '/data/config/' . $configTypeName . '/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getLanguage().'/'.$configTypeName.'.json';
+        if ($this->hasConfigType($configTypeName)) {
+            return $this->getContentArchiveFolder() . '/data/config/' . $configTypeName . '/' .
+                $dataDimensions->getWorkspace() . '/' . $dataDimensions->getLanguage() . '/' . $configTypeName . '.json';
         }
 
-        throw new AnyContentClientException ('Unknown config type ' . $configTypeName);
+        throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 }

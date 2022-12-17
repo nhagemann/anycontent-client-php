@@ -3,16 +3,12 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-
 use KVMLogger\KVMLoggerFactory;
-
 use Symfony\Component\Filesystem\Filesystem;
 
 class SequenceTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -27,8 +23,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
@@ -44,7 +39,6 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
         $fs->remove($target);
-
     }
 
 
@@ -61,7 +55,6 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $this->connection = $connection;
 
         $this->repository = new Repository('phpunit', $this->connection);
-
     }
 
 
@@ -76,7 +69,6 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\Sequence', $sequence);
 
         $this->assertEquals(0, count($sequence));
-
     }
 
 
@@ -134,8 +126,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $sequence = $record->getSequence('standorte');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $item = new SequenceItem($record->getDataTypeDefinition(), 'standorte', 'standort');
             $item->setProperty('standort_name', 'Location ' . $i);
             $sequence->addItem($item);
@@ -143,8 +134,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         }
 
         $i = 0;
-        foreach ($sequence as $item)
-        {
+        foreach ($sequence as $item) {
             $i++;
 
             $this->assertEquals('Location ' . $i, $item->getProperty('standort_name'));
@@ -158,16 +148,14 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $this->repository->selectContentType('profiles');
 
         $values = [ ];
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $values[] = [ 'standort' => [ 'standort_name' => 'Location ' . $i ] ];
         }
 
         $sequence = new Sequence($this->repository->getCurrentContentTypeDefinition(), 'standorte', $values);
 
         $i = 0;
-        foreach ($sequence as $item)
-        {
+        foreach ($sequence as $item) {
             $i++;
 
             $this->assertEquals('Location ' . $i, $item->getProperty('standort_name'));
@@ -186,8 +174,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $sequence = $record->getSequence('standorte');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $item = new SequenceItem($record->getDataTypeDefinition(), 'standorte', 'standort');
             $item->setProperty('standort_name', 'Location ' . $i);
             $sequence->addItem($item);
@@ -195,8 +182,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         }
 
         $i = 0;
-        foreach ($sequence as $item)
-        {
+        foreach ($sequence as $item) {
             $i++;
 
             $this->assertEquals('Location ' . $i, $item->getProperty('standort_name'));
@@ -217,8 +203,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($sequence));
 
         $i = 0;
-        foreach ($sequence as $item)
-        {
+        foreach ($sequence as $item) {
             $i++;
         }
 
@@ -226,7 +211,6 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $sequence->getProperty('standort_name'));
 
         $this->assertEquals(0, $i);
-
     }
 
 
@@ -238,8 +222,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $sequence = $record->getSequence('standorte');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $item = new SequenceItem($record->getDataTypeDefinition(), 'standorte', 'standort');
             $item->setProperty('standort_name', 'Location ' . $i);
             $sequence->addItem($item);
@@ -247,8 +230,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         }
 
         $i = 0;
-        foreach ($sequence as $item)
-        {
+        foreach ($sequence as $item) {
             $i++;
             $this->assertInstanceOf('AnyContent\Client\SequenceItem', $item);
 
@@ -260,10 +242,8 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('Location ' . $i, $properties['standort_name']);
             $properties = $item->getProperties();
             $this->assertEquals('Location ' . $i, $properties['standort_name']);
-
         }
         $this->assertEquals(5, $i);
-
     }
 
 
@@ -275,8 +255,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $sequence = $record->getSequence('standorte');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $item = new SequenceItem($record->getDataTypeDefinition(), 'standorte', 'standort');
             $item->setProperty('standort_name', 'Location ' . $i);
             $sequence->addItem($item);
@@ -288,8 +267,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $sequence = $record->getSequence('standorte');
 
         $i = 0;
-        foreach ($sequence as $item)
-        {
+        foreach ($sequence as $item) {
             $i++;
 
             $this->assertEquals('Location ' . $i, $item->getProperty('standort_name'));
@@ -298,5 +276,4 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertEquals(5, $i);
     }
-
 }

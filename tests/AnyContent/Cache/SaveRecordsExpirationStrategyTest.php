@@ -4,17 +4,14 @@ namespace AnyContent\Cache;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-
 use AnyContent\Connection\RecordsFileReadWriteConnection;
 use Doctrine\Common\Cache\PhpFileCache;
-
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
 class SaveRecordsExpirationStrategyTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  CachingRepository */
     protected $repository;
 
@@ -28,15 +25,13 @@ class SaveRecordsExpirationStrategyTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -117,7 +112,7 @@ class SaveRecordsExpirationStrategyTest extends \PHPUnit_Framework_TestCase
         $record = $repository->getRecord(1);
         $this->assertEquals('UDG', $record->getName());
 
-        $nonCachingRepository = new Repository('phpunit',$this->connection);
+        $nonCachingRepository = new Repository('phpunit', $this->connection);
         $nonCachingRepository->selectContentType('profiles');
 
         $record = $nonCachingRepository->getRecord(1);
@@ -130,6 +125,4 @@ class SaveRecordsExpirationStrategyTest extends \PHPUnit_Framework_TestCase
         $record = $repository->getRecord(1);
         $this->assertEquals('UDG', $record->getName());
     }
-
-
 }

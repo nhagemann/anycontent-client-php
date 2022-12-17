@@ -10,7 +10,6 @@ use KVMLogger\KVMLogger;
 
 class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
@@ -79,7 +78,6 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
         $repository       = new Repository('phpunit', $connection);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -100,7 +98,6 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord(5);
 
         $this->assertEquals('dmc', $record->getProperty('name'));
-
     }
 
 
@@ -141,7 +138,6 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('live', $record->getWorkspace());
         $this->assertEquals('dmc', $record->getProperty('name'));
-
     }
 
 
@@ -157,7 +153,6 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(17, $record->getID());
         $this->assertEquals(17, $id);
-
     }
 
 
@@ -179,7 +174,6 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
         $connection->saveRecords($records);
 
         $this->assertEquals(7, $connection->countRecords());
-
     }
 
 
@@ -201,7 +195,7 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-       $connection->selectContentType('profiles')->selectWorkspace('live');
+        $connection->selectContentType('profiles')->selectWorkspace('live');
 
         $result = $connection->deleteRecord(5);
 
@@ -212,7 +206,6 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(false, $result);
         $this->assertEquals(6, $connection->countRecords());
-
     }
 
 
@@ -236,7 +229,6 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $result);
         $this->assertEquals(5, $connection->countRecords());
-
     }
 
 
@@ -260,7 +252,6 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(5, $result);
         $this->assertEquals(0, $connection->countRecords());
-
     }
 
 
@@ -282,5 +273,4 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, $connection->countRecords());
     }
-
 }

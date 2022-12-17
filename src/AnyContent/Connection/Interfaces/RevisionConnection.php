@@ -24,5 +24,4 @@ interface RevisionConnection extends ReadOnlyConnection
      * @return Config[]
      */
     public function getRevisionsOfConfig($configTypeName, DataDimensions $dataDimensions = null);
-
 }

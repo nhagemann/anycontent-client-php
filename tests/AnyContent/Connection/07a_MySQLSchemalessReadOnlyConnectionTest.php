@@ -8,7 +8,6 @@ use KVMLogger\KVMLoggerFactory;
 
 class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  MySQLSchemalessReadOnlyConnection */
     public $connection;
 
@@ -78,7 +77,6 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
         $repository       = new Repository('phpunit', $connection);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -123,7 +121,6 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
         $connection->selectContentType('profiles');
 
         $this->assertEquals(3, $connection->countRecords());
-
     }
 
 
@@ -138,7 +135,6 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\Record', $record);
 
         $this->assertEquals('Agency 5', $record->getProperty('name'));
-
     }
 
 

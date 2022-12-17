@@ -6,12 +6,10 @@ use AnyContent\Client\Record;
 
 interface Filter
 {
-
     /**
      * @param Record $record
      *
      * @return boolean
      */
     public function match(Record $record);
-
 }

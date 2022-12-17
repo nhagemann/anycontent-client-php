@@ -7,7 +7,6 @@ use AnyContent\Client\Folder;
 
 interface FileManager
 {
-
     /**
      * @param string $path
      *
@@ -44,7 +43,7 @@ interface FileManager
 
 
     public function getPublicUrl();
-    
+
 
     public function setPublicUrl($publicUrl);
 }

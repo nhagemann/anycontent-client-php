@@ -10,7 +10,6 @@ use Symfony\Component\Finder\Finder;
 
 class DirectoryBasedFilesAccess implements FileManager
 {
-
     /**
      * @var Filesystem null
      */
@@ -31,8 +30,7 @@ class DirectoryBasedFilesAccess implements FileManager
         $this->baseFolder = $baseFolder;
         $this->filesystem = new Filesystem();
 
-        if ($baseUrl)
-        {
+        if ($baseUrl) {
             $this->setPublicUrl($baseUrl);
         }
     }
@@ -68,7 +66,7 @@ class DirectoryBasedFilesAccess implements FileManager
      */
     public function setPublicUrl($publicUrl)
     {
-        $this->publicUrl = rtrim($publicUrl,'/');
+        $this->publicUrl = rtrim($publicUrl, '/');
 
         return $this;
     }
@@ -81,8 +79,7 @@ class DirectoryBasedFilesAccess implements FileManager
      */
     public function getFolder($path = '')
     {
-        if (!array_key_exists($path,$this->folders)) {
-
+        if (!array_key_exists($path, $this->folders)) {
             $this->folders[$path] = false;
             if (file_exists($this->baseFolder . '/' . $path)) {
                 $result = ['folders' => $this->listSubFolder($path), 'files' => $this->listFiles($path)];
@@ -90,24 +87,20 @@ class DirectoryBasedFilesAccess implements FileManager
                 $folder = new Folder($path, $result);
 
                 $this->folders[$path] = $folder;
-
             }
         }
 
         return $this->folders[$path];
-
     }
 
 
     public function getFile($fileId)
     {
         $id = trim(trim($fileId, '/'));
-        if ($id != '')
-        {
+        if ($id != '') {
             $pathinfo = pathinfo($id);
             $folder   = $this->getFolder($pathinfo['dirname']);
-            if ($folder)
-            {
+            if ($folder) {
                 return $folder->getFile($id);
             }
         }
@@ -122,11 +115,8 @@ class DirectoryBasedFilesAccess implements FileManager
 
         $fileName = pathinfo($id, PATHINFO_FILENAME);
 
-        if ($fileName != '') // No access to .xxx-files
-        {
-
+        if ($fileName != '') { // No access to .xxx-files
             return @file_get_contents($this->baseFolder . '/' . $id);
-
         }
 
         return false;
@@ -135,13 +125,12 @@ class DirectoryBasedFilesAccess implements FileManager
 
     public function saveFile($fileId, $binary)
     {
-        $this->folders=[];
+        $this->folders = [];
 
         $fileId       = trim($fileId, '/');
         $fileName = pathinfo($fileId, PATHINFO_FILENAME);
 
-        if ($fileName != '') // No writing of .xxx-files
-        {
+        if ($fileName != '') { // No writing of .xxx-files
             $this->filesystem->dumpFile($this->baseFolder . '/' . $fileId, $binary);
 
             return true;
@@ -153,25 +142,19 @@ class DirectoryBasedFilesAccess implements FileManager
 
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
-        $this->folders=[];
+        $this->folders = [];
 
-        try
-        {
-            if ($this->filesystem->exists($this->baseFolder . '/' . $fileId))
-            {
+        try {
+            if ($this->filesystem->exists($this->baseFolder . '/' . $fileId)) {
                 $this->filesystem->remove($this->baseFolder . '/' . $fileId);
             }
 
-            if ($deleteEmptyFolder)
-            {
+            if ($deleteEmptyFolder) {
                 $this->deleteFolder(pathinfo($fileId, PATHINFO_DIRNAME));
             }
 
             return true;
-        }
-        catch (\Exception $e)
-        {
-
+        } catch (\Exception $e) {
         }
 
         return false;
@@ -180,19 +163,15 @@ class DirectoryBasedFilesAccess implements FileManager
 
     public function createFolder($path)
     {
-        $this->folders=[];
+        $this->folders = [];
 
-        try
-        {
+        try {
             $path = trim($path, '/');
 
             $this->filesystem->mkdir($this->baseFolder . '/' . $path . '/');
 
             return true;
-        }
-        catch (\Exception $e)
-        {
-
+        } catch (\Exception $e) {
         }
 
         return false;
@@ -203,35 +182,26 @@ class DirectoryBasedFilesAccess implements FileManager
     {
 
         $folder = $this->getFolder($path);
-        if ($folder)
-        {
-            if ($folder->isEmpty() || $deleteIfNotEmpty)
-            {
+        if ($folder) {
+            if ($folder->isEmpty() || $deleteIfNotEmpty) {
                 $path = trim($path, '/');
 
                 $folder = $this->baseFolder . '/' . $path;
 
-                try
-                {
-                    if ($this->filesystem->exists($folder))
-                    {
+                try {
+                    if ($this->filesystem->exists($folder)) {
                         $this->filesystem->remove($folder);
-
                     }
 
-                    $this->folders=[];
-                    
-                    return true;
-                }
-                catch (\Exception $e)
-                {
+                    $this->folders = [];
 
+                    return true;
+                } catch (\Exception $e) {
                 }
             }
         }
 
         return false;
-
     }
 
 
@@ -243,21 +213,14 @@ class DirectoryBasedFilesAccess implements FileManager
 
         $finder->depth(0);
 
-        try
-        {
-
+        try {
             /* @var $file \SplFileInfo */
-            foreach ($finder->in($this->baseFolder . '/' . $path) as $file)
-            {
-                if ($file->isDir())
-                {
+            foreach ($finder->in($this->baseFolder . '/' . $path) as $file) {
+                if ($file->isDir()) {
                     $folders[] = $file->getFilename();
                 }
             }
-
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -275,13 +238,10 @@ class DirectoryBasedFilesAccess implements FileManager
 
         $finder->depth('==0');
 
-        try
-        {
+        try {
             /* @var $file \SplFileInfo */
-            foreach ($finder->in($this->baseFolder . '/' . $path) as $file)
-            {
-                if (!$file->isDir())
-                {
+            foreach ($finder->in($this->baseFolder . '/' . $path) as $file) {
+                if (!$file->isDir()) {
                     $item                         = array();
                     $item['id']                   = trim($path . '/' . $file->getFilename(), '/');
                     $item['name']                 = $file->getFilename();
@@ -292,45 +252,33 @@ class DirectoryBasedFilesAccess implements FileManager
 
                     $extension = strtolower($extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION)); // To be compatible with some older PHP 5.3 versions
 
-                    if (in_array($extension, array( 'gif', 'png', 'jpg', 'jpeg' )))
-                    {
+                    if (in_array($extension, array( 'gif', 'png', 'jpg', 'jpeg' ))) {
                         $item['type'] = 'image';
 
-                        if ($this->imagesize == true)
-                        {
-
+                        if ($this->imagesize == true) {
                             $content = $file->getContents();
 
-                            if (function_exists('imagecreatefromstring'))
-                            {
+                            if (function_exists('imagecreatefromstring')) {
                                 $image = @imagecreatefromstring($content);
-                                if ($image)
-                                {
-
+                                if ($image) {
                                     $item['width']  = imagesx($image);
                                     $item['height'] = imagesy($image);
                                 }
                             }
                         }
-
                     }
 
-                    if ($this->publicUrl != false)
-                    {
+                    if ($this->publicUrl != false) {
                         $item['url'] = $this->publicUrl . '/' . $item['id'];
                     }
 
                     $files[$file->getFilename()] = $item;
                 }
-
             }
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return false;
         }
 
         return $files;
     }
-
 }

@@ -14,7 +14,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection
 {
-
     /**
      * @return RecordsFileConfiguration
      */
@@ -59,21 +58,16 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
     public function getAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
 
-        if ($contentTypeName == null)
-        {
+        if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
-        if ($dataDimensions == null)
-        {
+        if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        if ($this->getConfiguration()->hasContentType($contentTypeName))
-        {
-
-            if ($this->hasStashedAllRecords($contentTypeName, $dataDimensions, $this->getRecordClassForContentType($contentTypeName)))
-            {
+        if ($this->getConfiguration()->hasContentType($contentTypeName)) {
+            if ($this->hasStashedAllRecords($contentTypeName, $dataDimensions, $this->getRecordClassForContentType($contentTypeName))) {
                 return $this->getStashedAllRecords($contentTypeName, $dataDimensions, $this->getRecordClassForContentType($contentTypeName));
             }
             $records = $this->getAllMultiViewRecords($contentTypeName, $dataDimensions);
@@ -85,8 +79,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             return $records;
         }
 
-        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
-
+        throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
 
@@ -96,13 +89,12 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
      * @return Record[]
      * @throws AnyContentClientException
      */
-    protected function getAllMultiViewRecords($contentTypeName = null, DataDimensions $dataDimensions)
+    protected function getAllMultiViewRecords($contentTypeName, DataDimensions $dataDimensions)
     {
 
         $data = $this->readRecords($this->getConfiguration()->getUriRecords($contentTypeName));
 
-        if ($data)
-        {
+        if ($data) {
             $data = json_decode($data, true);
 
             $data['records'] = array_filter($data['records']);
@@ -116,7 +108,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         }
 
         return [ ];
-
     }
 
 
@@ -125,18 +116,16 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
      *
      * @return Record
      */
-    public function getRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
+    public function getRecord(string $recordId, ?string $contentTypeName, ?DataDimensions $dataDimensions = null)
     {
 
-        if ($contentTypeName == null)
-        {
+        if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
         $records = $this->getAllRecords($contentTypeName, $dataDimensions);
 
-        if (array_key_exists($recordId, $records))
-        {
+        if (array_key_exists($recordId, $records)) {
             return $records[$recordId];
         }
 
@@ -144,23 +133,20 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
                  ->info('Record ' . $recordId . ' not found for content type ' . $this->getCurrentContentTypeName());
 
         return false;
-
     }
 
 
-    protected function getMultiViewRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions)
+    protected function getMultiViewRecord($recordId, $contentTypeName, DataDimensions $dataDimensions)
     {
         $recordId = (int)$recordId;
-        
-        if ($contentTypeName == null)
-        {
+
+        if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
         $records = $this->getAllMultiViewRecords($contentTypeName, $dataDimensions);
 
-        if (array_key_exists($recordId, $records))
-        {
+        if (array_key_exists($recordId, $records)) {
             return $records[$recordId];
         }
 
@@ -168,17 +154,14 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
                  ->info('Record ' . $recordId . ' not found for content type ' . $this->getCurrentContentTypeName());
 
         return false;
-
     }
 
 
     protected function mergeExistingRecord(Record $record, DataDimensions $dataDimensions)
     {
-        if ($record->getID() != '')
-        {
+        if ($record->getID() != '') {
             $existingRecord = $this->getMultiViewRecord($record->getId(), $record->getContentTypeName(), $dataDimensions);
-            if ($existingRecord)
-            {
+            if ($existingRecord) {
                 $record->setRevision($existingRecord->getRevision());
 
                 $existingProperties = $existingRecord->getProperties();
@@ -192,7 +175,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         }
 
         return $record;
-
     }
 
 
@@ -202,35 +184,28 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
      */
     public function getConfig($configTypeName = null, DataDimensions $dataDimensions = null)
     {
-        if ($dataDimensions == null)
-        {
+        if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        return $this->exportRecord($this->getMultiViewConfig($configTypeName, $dataDimensions),$dataDimensions);
-
+        return $this->exportRecord($this->getMultiViewConfig($configTypeName, $dataDimensions), $dataDimensions);
     }
 
 
-    protected function getMultiViewConfig($configTypeName = null, DataDimensions $dataDimensions)
+    protected function getMultiViewConfig($configTypeName, DataDimensions $dataDimensions)
     {
         $definition = $this->getConfigTypeDefinition($configTypeName);
 
         $data = $this->readConfig($this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions));
 
-        if ($data)
-        {
+        if ($data) {
             $data = json_decode($data, true);
 
             $config = $this->getRecordFactory()->createConfig($definition, $data['properties']);
-            if (isset($data['info']['revision']))
-            {
+            if (isset($data['info']['revision'])) {
                 $config->setRevision($data['info']['revision']);
             }
-
-        }
-        else
-        {
+        } else {
             $config = $this->getRecordFactory()->createConfig($definition);
 
             KVMLogger::instance('anycontent-connection')
@@ -238,7 +213,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         }
 
         return $config;
-
     }
 
 
@@ -247,8 +221,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         $configTypeName = $config->getConfigTypeName();
 
         $existingConfig = $this->getMultiViewConfig($configTypeName, $dataDimensions);
-        if ($existingConfig)
-        {
+        if ($existingConfig) {
             $config->setRevision($existingConfig->getRevision());
 
             $existingProperties = $existingConfig->getProperties();
@@ -261,7 +234,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         }
 
         return $config;
-
     }
 
 
@@ -273,8 +245,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
     protected function readData($fileName)
     {
-        if ($this->fileExists($fileName))
-        {
+        if ($this->fileExists($fileName)) {
             return file_get_contents($fileName);
         }
 
@@ -315,10 +286,8 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
         $configuration = $this->getConfiguration();
 
-        if ($contentTypeName == null && $configTypeName == null)
-        {
-            foreach ($configuration->getContentTypeNames() as $contentTypeName)
-            {
+        if ($contentTypeName == null && $configTypeName == null) {
+            foreach ($configuration->getContentTypeNames() as $contentTypeName) {
                 $uri = $configuration->getUriCMDLForContentType($contentTypeName);
 
                 $t = max((int)@filemtime($uri), $t);
@@ -327,8 +296,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
                 $t = max((int)@filemtime($uri), $t);
             }
-            foreach ($configuration->getConfigTypeNames() as $configTypeName)
-            {
+            foreach ($configuration->getConfigTypeNames() as $configTypeName) {
                 $uri = $configuration->getUriCMDLForConfigType($configTypeName);
 
                 $t = max((int)@filemtime($uri), $t);
@@ -337,9 +305,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
                 $t = max((int)@filemtime($uri), $t);
             }
-        }
-        elseif ($contentTypeName != null)
-        {
+        } elseif ($contentTypeName != null) {
             $uri = $configuration->getUriCMDLForContentType($contentTypeName);
 
             $t = max((int)@filemtime($uri), $t);
@@ -347,9 +313,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             $uri = $configuration->getUriRecords($contentTypeName);
 
             $t = max((int)@filemtime($uri), $t);
-        }
-        elseif ($configTypeName != null)
-        {
+        } elseif ($configTypeName != null) {
             $uri = $configuration->getUriCMDLForConfigType($configTypeName);
 
             $t = max((int)@filemtime($uri), $t);
@@ -360,7 +324,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         }
 
         return $t;
-
     }
 
 
@@ -370,39 +333,27 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
         $configuration = $this->getConfiguration();
 
-        if ($contentTypeName == null && $configTypeName == null)
-        {
-            foreach ($configuration->getContentTypeNames() as $contentTypeName)
-            {
+        if ($contentTypeName == null && $configTypeName == null) {
+            foreach ($configuration->getContentTypeNames() as $contentTypeName) {
                 $uri = $configuration->getUriCMDLForContentType($contentTypeName);
 
                 $t = max((int)@filemtime($uri), $t);
-
             }
-            foreach ($configuration->getConfigTypeNames() as $configTypeName)
-            {
+            foreach ($configuration->getConfigTypeNames() as $configTypeName) {
                 $uri = $configuration->getUriCMDLForConfigType($configTypeName);
 
                 $t = max((int)@filemtime($uri), $t);
-
             }
-        }
-        elseif ($contentTypeName != null)
-        {
+        } elseif ($contentTypeName != null) {
             $uri = $configuration->getUriCMDLForContentType($contentTypeName);
 
             $t = max((int)@filemtime($uri), $t);
-
-        }
-        elseif ($configTypeName != null)
-        {
+        } elseif ($configTypeName != null) {
             $uri = $configuration->getUriCMDLForConfigType($configTypeName);
 
             $t = max((int)@filemtime($uri), $t);
-
         }
 
         return $t;
     }
-
 }

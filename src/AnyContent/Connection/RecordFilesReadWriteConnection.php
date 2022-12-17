@@ -6,32 +6,26 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
-
 use AnyContent\Connection\Interfaces\WriteConnection;
 use Symfony\Component\Filesystem\Filesystem;
 
 class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection implements WriteConnection
 {
-
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null)
     {
 
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $this->finalizeRecord($record,$dataDimensions);
+        $this->finalizeRecord($record, $dataDimensions);
 
-        if ($record->getID() == '')
-        {
+        if ($record->getID() == '') {
             $record->setId($this->getNextId($record->getContentTypeName(), $dataDimensions));
             $record->setRevision(1);
 
             $toBeSavedRecord = $record;
-        }
-        else
-        {
+        } else {
             $mergedRecord = $this->mergeExistingRecord($record, $dataDimensions);
 
             $mergedRecord->setRevision($mergedRecord->getRevision() + 1);
@@ -51,8 +45,7 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
         $this->stashRecord($toBeSavedRecord, $dataDimensions);
 
-        if (!$this->writeData($filename, $data))
-        {
+        if (!$this->writeData($filename, $data)) {
             throw new AnyContentClientException('Error when saving record of content type ' . $record->getContentTypeName());
         }
 
@@ -66,8 +59,7 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         $allRecords = $this->getAllRecords($contentTypeName, $dataDimensions);
 
         $nextId = 1;
-        if (count($allRecords) > 0)
-        {
+        if (count($allRecords) > 0) {
             $nextId = max(array_keys($allRecords)) + 1;
         }
 
@@ -83,31 +75,26 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
      */
     public function saveRecords(array $records, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
         $recordIds = [ ];
-        foreach ($records as $record)
-        {
+        foreach ($records as $record) {
             $recordIds[] = $this->saveRecord($record, $dataDimensions);
         }
 
         return $recordIds;
-
     }
 
 
     public function deleteRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
 
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
-        if (!$contentTypeName)
-        {
+        if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
@@ -117,8 +104,7 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
         $this->unstashRecord($contentTypeName, $recordId, $dataDimensions);
 
-        if ($this->deleteData($filename))
-        {
+        if ($this->deleteData($filename)) {
             return $recordId;
         }
 
@@ -128,47 +114,38 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
     public function deleteRecords(array $recordsIds, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
-        if (!$contentTypeName)
-        {
+        if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
         $recordIds = [ ];
-        foreach ($recordsIds as $recordId)
-        {
-            if ($this->deleteRecord($recordId, $contentTypeName, $dataDimensions))
-            {
+        foreach ($recordsIds as $recordId) {
+            if ($this->deleteRecord($recordId, $contentTypeName, $dataDimensions)) {
                 $recordIds[] = $recordId;
             }
         }
 
         return $recordIds;
-
     }
 
 
     public function deleteAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
-        if (!$contentTypeName)
-        {
+        if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
         $recordIds = [ ];
 
         $allRecords = $this->getAllRecords($contentTypeName, $dataDimensions);
 
-        foreach ($allRecords as $record)
-        {
-            if ($this->deleteRecord($record->getId(), $contentTypeName, $dataDimensions))
-            {
+        foreach ($allRecords as $record) {
+            if ($this->deleteRecord($record->getId(), $contentTypeName, $dataDimensions)) {
                 $recordIds[] = $record->getId();
             }
         }
@@ -179,12 +156,11 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
     public function saveConfig(Config $config, DataDimensions $dataDimensions = null)
     {
-        if (!$dataDimensions)
-        {
+        if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $config = $this->finalizeRecord($config,$dataDimensions);
+        $config = $this->finalizeRecord($config, $dataDimensions);
 
         $configTypeName = $config->getConfigTypeName();
 
@@ -197,10 +173,8 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
         $data = json_encode($mergedConfig, JSON_PRETTY_PRINT);
 
-        if ($this->writeData($this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions), $data))
-        {
+        if ($this->writeData($this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions), $data)) {
             return true;
-
         }
         throw new AnyContentClientException('Error when saving record of config type ' . $configTypeName);
     }
@@ -211,8 +185,7 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         $fs = new Filesystem();
 
         $dir = pathinfo($fileName, PATHINFO_DIRNAME);
-        if (!file_exists($dir))
-        {
+        if (!file_exists($dir)) {
             $fs->mkdir($dir);
         }
 
@@ -222,8 +195,7 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
     protected function deleteData($fileName)
     {
-        if (file_exists($fileName))
-        {
+        if (file_exists($fileName)) {
             return (unlink($fileName));
         }
 

@@ -10,7 +10,6 @@ use KVMLogger\KVMLoggerFactory;
 
 class MySQLSchemalessReadOnlyRevisionConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
@@ -81,7 +80,6 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends \PHPUnit_Framework_T
         $repository       = new Repository('phpunit', $connection);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 

@@ -3,16 +3,13 @@
 namespace AnyContent\Cache;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-
 use Doctrine\Common\Cache\PhpFileCache;
-
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
 class CMDLCacheTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  CachingRepository */
     protected $repository;
 
@@ -57,9 +54,8 @@ class CMDLCacheTest extends \PHPUnit_Framework_TestCase
         $repository->getRecord(1);
         $repository->getRecord(1);
 
-        $this->assertEquals(2,$repository->getCacheProvider()->getMissCounter());
-        $this->assertEquals(1,$repository->getCacheProvider()->getHitCounter());
-
+        $this->assertEquals(2, $repository->getCacheProvider()->getMissCounter());
+        $this->assertEquals(1, $repository->getCacheProvider()->getHitCounter());
     }
 
     public function testGetRecordWithCMDLCache()
@@ -75,15 +71,12 @@ class CMDLCacheTest extends \PHPUnit_Framework_TestCase
         $repository->getRecord(1);
         $repository->getRecord(1);
 
-        $this->assertEquals(3,$repository->getCacheProvider()->getMissCounter());
-        $this->assertEquals(5,$repository->getCacheProvider()->getHitCounter());
+        $this->assertEquals(3, $repository->getCacheProvider()->getMissCounter());
+        $this->assertEquals(5, $repository->getCacheProvider()->getHitCounter());
 
         $definition = $repository->getContentTypeDefinition('profiles');
 
-        $this->assertEquals(3,$repository->getCacheProvider()->getMissCounter());
-        $this->assertEquals(7,$repository->getCacheProvider()->getHitCounter());
+        $this->assertEquals(3, $repository->getCacheProvider()->getMissCounter());
+        $this->assertEquals(7, $repository->getCacheProvider()->getHitCounter());
     }
-
-
-
 }

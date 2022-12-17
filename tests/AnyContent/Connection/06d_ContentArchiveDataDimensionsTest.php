@@ -10,7 +10,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -22,13 +21,11 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
-
     }
 
 
@@ -40,7 +37,6 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
         $fs->remove($target);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -55,7 +51,6 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
-
     }
 
 
@@ -76,9 +71,6 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord(5);
 
         $this->assertEquals('dmc', $record->getProperty('name'));
-
-
-
     }
 
     public function testWorkSpaceLive()
@@ -91,7 +83,7 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $record = $connection->getRecord(5);
 
-        $this->assertEquals('live',$record->getWorkspace());
+        $this->assertEquals('live', $record->getWorkspace());
 
 
         $record->setProperty('name', 'dmc');
@@ -118,9 +110,8 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $record = $connection->getRecord(5);
 
-        $this->assertEquals('live',$record->getWorkspace());
+        $this->assertEquals('live', $record->getWorkspace());
         $this->assertEquals('dmc', $record->getProperty('name'));
-
     }
 
 
@@ -136,7 +127,6 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(17, $record->getID());
         $this->assertEquals(17, $id);
-
     }
 
 
@@ -150,8 +140,7 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $records = [ ];
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record    = new Record($connection->getCurrentContentTypeDefinition(), 'Test ' . $i);
             $records[] = $record;
         }
@@ -159,7 +148,6 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
         $connection->saveRecords($records);
 
         $this->assertEquals(8, $connection->countRecords());
-
     }
 
 
@@ -185,14 +173,13 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $result = $connection->deleteRecord(5);
 
-        $this->assertEquals(5,$result);
+        $this->assertEquals(5, $result);
         $this->assertEquals(7, $connection->countRecords());
 
         $result = $connection->deleteRecord(999);
 
         $this->assertEquals(false, $result);
         $this->assertEquals(7, $connection->countRecords());
-
     }
 
 
@@ -216,7 +203,6 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $result);
         $this->assertEquals(6, $connection->countRecords());
-
     }
 
 
@@ -240,7 +226,6 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(6, $result);
         $this->assertEquals(0, $connection->countRecords());
-
     }
 
 
@@ -261,5 +246,4 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, $connection->countRecords());
     }
-
 }

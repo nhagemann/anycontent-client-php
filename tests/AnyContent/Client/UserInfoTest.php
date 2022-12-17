@@ -10,7 +10,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class UserInfoTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -25,13 +24,11 @@ class UserInfoTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
-
     }
 
 
@@ -47,11 +44,9 @@ class UserInfoTest extends \PHPUnit_Framework_TestCase
 
         $this->connection = $connection;
 
-        $this->repository = new Repository('phpunit',$this->connection);
+        $this->repository = new Repository('phpunit', $this->connection);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
-
-
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -76,7 +71,6 @@ class UserInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('John', $userinfo->getFirstname());
         $this->assertEquals('Doe', $userinfo->getLastname());
         $this->assertTrue($userinfo->userNameIsAnEmailAddress());
-
     }
 
 
@@ -125,6 +119,5 @@ class UserInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('John', $userinfo->getFirstname());
         $this->assertEquals('Tester', $userinfo->getLastname());
         $this->assertTrue($userinfo->userNameIsAnEmailAddress());
-
     }
 }

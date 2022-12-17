@@ -12,7 +12,6 @@ use KVMLogger\KVMLogger;
 
 class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  RestLikeBasicReadOnlyConnection */
     public $connection;
 
@@ -34,7 +33,7 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
         $configuration->setRepositoryName('phpunit');
 
-        $configuration->importCMDL(__DIR__.'/../../resources/RestLikeBasicConnectionTests');
+        $configuration->importCMDL(__DIR__ . '/../../resources/RestLikeBasicConnectionTests');
 
         $configuration->addContentTypes();
 
@@ -60,14 +59,14 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
         $record = $repository->createRecord('Agency 2', 2);
         $repository->saveRecord($record);
 
-        $repository->selectContentType('content5',true);
+        $repository->selectContentType('content5', true);
 
         for ($i = 1; $i <= 15; $i++) {
-            $record = $repository->createRecord('New Record '.$i);
+            $record = $repository->createRecord('New Record ' . $i);
             $repository->saveRecord($record);
         }
-           
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -83,8 +82,7 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
-
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -135,7 +133,6 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
         $connection->selectContentType('content1');
 
         $this->assertEquals(3, $connection->countRecords());
-
     }
 
 
@@ -156,7 +153,6 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord(99);
 
         $this->assertFalse($record);
-
     }
 
 
@@ -219,15 +215,14 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $repository = new Repository('phpunit', $connection);
 
-        $repository->selectContentType('content5',true);
+        $repository->selectContentType('content5', true);
 
         $records = $repository->getRecords();
 
         $this->assertCount(15, $records);
 
-        $records = $repository->getRecords('','.id',1,10);
+        $records = $repository->getRecords('', '.id', 1, 10);
 
         $this->assertCount(10, $records);
-
     }
 }

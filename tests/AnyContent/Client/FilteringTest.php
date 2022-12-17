@@ -3,9 +3,7 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-
 use AnyContent\Filter\ANDFilter;
 use AnyContent\Filter\ORFilter;
 use AnyContent\Filter\PropertyFilter;
@@ -15,7 +13,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class FilteringTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -30,14 +27,13 @@ class FilteringTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -47,7 +43,6 @@ class FilteringTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
         $fs->remove($target);
-
     }
 
 
@@ -63,8 +58,7 @@ class FilteringTest extends \PHPUnit_Framework_TestCase
 
         $this->connection = $connection;
 
-        $this->repository = new Repository('phpunit',$this->connection);
-
+        $this->repository = new Repository('phpunit', $this->connection);
     }
 
 
@@ -91,7 +85,7 @@ class FilteringTest extends \PHPUnit_Framework_TestCase
 
 
         $records = $this->repository->getRecords('name = New Record');
-        $this->assertCount(2,$records);
+        $this->assertCount(2, $records);
 
         $filter1 = new PropertyFilter('name = New Record');
         $filter2 = new PropertyFilter('name = Differing Name');
@@ -102,14 +96,14 @@ class FilteringTest extends \PHPUnit_Framework_TestCase
 
 
         $records = $this->repository->getRecords('source > b');
-        $this->assertCount(1,$records);
+        $this->assertCount(1, $records);
 
 
         $filter1 = new PropertyFilter('source > a');
         $filter2 = new PropertyFilter('name = Differing Name');
         $andFilter = new ANDFilter([$filter1,$filter2]);
         $records = $this->repository->getRecords($andFilter);
-        $this->assertCount(1,$records);
+        $this->assertCount(1, $records);
     }
 
 
@@ -167,5 +161,4 @@ class FilteringTest extends \PHPUnit_Framework_TestCase
 //
 //        $this->assertEquals('source > a + name = Differing Name', $filter->getSimpleQuery());
 //    }
-
 }

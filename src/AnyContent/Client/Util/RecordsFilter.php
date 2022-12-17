@@ -7,7 +7,6 @@ use AnyContent\Filter\PropertyFilter;
 
 class RecordsFilter
 {
-
     /**
      * @param Record[]      $records
      * @param string|Filter $filter
@@ -16,16 +15,13 @@ class RecordsFilter
      */
     public static function filterRecords(array $records, $filter)
     {
-        if (is_string($filter))
-        {
+        if (is_string($filter)) {
             $filter = new PropertyFilter($filter);
         }
 
         $result = [ ];
-        foreach ($records as $record)
-        {
-            if ($filter->match($record))
-            {
+        foreach ($records as $record) {
+            if ($filter->match($record)) {
                 $result[$record->getId()] = $record;
             }
         }
@@ -33,6 +29,3 @@ class RecordsFilter
         return $result;
     }
 }
-
-
-

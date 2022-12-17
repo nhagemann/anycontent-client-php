@@ -7,7 +7,6 @@ use AnyContent\Client\Repository;
 
 class MenuBuilder
 {
-
     public static function getBreadcrumb(Repository $repository, $contentTypeName, $recordId)
     {
         $repository->selectContentType($contentTypeName);
@@ -41,11 +40,10 @@ class MenuBuilder
          * @var Record $record
          */
         foreach ($path as $id => $record) {
-
             $i++;
             $expand = true;
 
-            if (array_key_exists('levels',$options)) {
+            if (array_key_exists('levels', $options)) {
                 $expand = false;
                 if (in_array($i, $options['levels'])) {
                     $expand = true;
@@ -57,13 +55,10 @@ class MenuBuilder
                 $records = $repository->getSortedRecords($record->getParent(), false, 1);
                 foreach ($records as $record) {
                     $result[$record->getId()] = $record;
-
                 }
             } else {
                 $result[$record->getId()] = $record;
             }
-
-
         }
 
         // Add children
@@ -79,6 +74,5 @@ class MenuBuilder
 
 
         return RecordsSorter::sortRecords($result);
-
     }
 }

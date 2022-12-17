@@ -3,7 +3,6 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Client\Record;
-
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use KVMLogger\KVMLoggerFactory;
@@ -11,7 +10,6 @@ use KVMLogger\KVMLogger;
 
 class RestLikeBasicConnectionAdminTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  RestLikeBasicReadWriteConnection */
     public $connection;
 
@@ -57,7 +55,6 @@ class RestLikeBasicConnectionAdminTest extends \PHPUnit_Framework_TestCase
         $this->connection = $connection;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -75,7 +72,6 @@ class RestLikeBasicConnectionAdminTest extends \PHPUnit_Framework_TestCase
         $definitions = $this->connection->getContentTypeDefinitions();
 
         $this->assertCount(6, $definitions);
-
     }
 
 
@@ -121,7 +117,6 @@ class RestLikeBasicConnectionAdminTest extends \PHPUnit_Framework_TestCase
         $definitions = $this->connection->getConfigTypeDefinitions();
 
         $this->assertCount(5, $definitions);
-
     }
 
 
@@ -153,5 +148,4 @@ class RestLikeBasicConnectionAdminTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(4, $definitions);
     }
-
 }

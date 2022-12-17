@@ -9,7 +9,6 @@ use AnyContent\Client\UserInfo;
 
 interface WriteConnection extends ReadOnlyConnection
 {
-
     /**
      * @param $userInfo
      *
@@ -66,6 +65,4 @@ interface WriteConnection extends ReadOnlyConnection
      * @return bool
      */
     public function saveConfig(Config $config, DataDimensions $dataDimensions = null);
-
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace AnyContent\Client\Traits;
 
 use AnyContent\Client\Sequence;
@@ -9,7 +10,6 @@ use CMDL\Util;
 
 trait Properties
 {
-
     /** @var  DataTypeDefinition */
     protected $dataTypeDefinition;
 
@@ -36,8 +36,7 @@ trait Properties
             }
 
             return $this->properties[$property];
-        }
-        else {
+        } else {
             return $default;
         }
     }
@@ -54,7 +53,7 @@ trait Properties
 
     public function setBoolProperty($property, $value)
     {
-        $value = (int)(boolean)$value;
+        $value = (int)(bool)$value;
         $this->setProperty($property, $value);
     }
 
@@ -96,8 +95,7 @@ trait Properties
         $property = Util::generateValidIdentifier($property);
         if ($this->dataTypeDefinition->hasProperty($property, $this->view)) {
             $this->properties[$property] = (string)$value;
-        }
-        else {
+        } else {
             throw new CMDLParserException('Unknown property ' . $property, CMDLParserException::CMDL_UNKNOWN_PROPERTY);
         }
 
@@ -133,5 +131,4 @@ trait Properties
     {
         return $this->properties;
     }
-
 }

@@ -2,17 +2,14 @@
 
 namespace AnyContent\Connection;
 
-
 use AnyContent\Client\DataDimensions;
 use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
 class RecordsFileHttpReadOnlyConnection extends RecordsFileReadOnlyConnection implements ReadOnlyConnection
 {
-
     /**
      * @return RecordsFileHttpConfiguration
      */

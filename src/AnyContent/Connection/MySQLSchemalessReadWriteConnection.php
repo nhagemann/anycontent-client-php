@@ -3,18 +3,15 @@
 namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
-
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
-
 use AnyContent\Client\Util\TimeShifter;
 use AnyContent\Connection\Interfaces\AdminConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
 
 class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnection implements WriteConnection, AdminConnection
 {
-
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null)
     {
 
@@ -101,7 +98,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
                 $sql = 'INSERT INTO _counter_ (repository,content_type,counter) VALUES (? , ? ,?) ON DUPLICATE KEY UPDATE counter=?;';
                 $this->getDatabase()->execute($sql, [$repositoryName, $contentTypeName, $nextId, $nextId]);
-
             }
         }
 
@@ -112,7 +108,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         if ($mode == 'update') {
             // invalidate current revision
 
-            $sql      = 'UPDATE ' . $tableName . ' SET validuntil_timestamp = ? WHERE id = ? AND workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <=? AND validuntil_timestamp >?';
+            $sql = 'UPDATE ' . $tableName . ' SET validuntil_timestamp = ? WHERE id = ? AND workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <=? AND validuntil_timestamp >?';
             $params   = array();
             $params[] = $timeshiftTimestamp;
             $params[] = $record->getId();
@@ -122,7 +118,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $params[] = $timeshiftTimestamp;
 
             $this->getDatabase()->execute($sql, $params);
-
         }
 
         if ($mode == 'insert') {
@@ -165,7 +160,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         ]);
 
         return $record->getId();
-
     }
 
 
@@ -188,7 +182,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         }
 
         return $recordIds;
-
     }
 
 
@@ -223,7 +216,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         if (count($rows) == 1) {
             $values             = reset($rows);
             $values['revision'] = $values['revision'] + 1;
-
         } else {
             return false;
         }
@@ -286,7 +278,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         }
 
         return $recordIds;
-
     }
 
 
@@ -355,7 +346,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $config->setRevision($values['revision']);
 
             $properties = array_merge(json_decode($values['properties'], true), $config->getProperties());
-
         } else {
             $properties = $config->getProperties();
         }
@@ -409,9 +399,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
             file_put_contents($path, $cmdl);
-
         } else {
-
             $data = [
                 'repository'           => $this->getRepository()->getName(),
                 'data_type'            => 'content',
@@ -421,7 +409,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             ];
 
             $this->getDatabase()->insert('_cmdl_', $data, $data);
-
         }
 
         $this->getConfiguration()->addContentTypes([$contentTypeName]);
@@ -443,9 +430,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
             file_put_contents($path, $cmdl);
-
         } else {
-
             $data = [
                 'repository'           => $this->getRepository()->getName(),
                 'data_type'            => 'config',
@@ -475,7 +460,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                          ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
 
             unlink($path);
-
         } else {
             $this->getDatabase()
                  ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"', [
@@ -500,7 +484,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                          ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
 
             unlink($path);
-
         } else {
             $this->getDatabase()
                  ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"', [

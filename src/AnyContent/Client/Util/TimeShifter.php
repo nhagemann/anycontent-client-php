@@ -4,7 +4,6 @@ namespace AnyContent\Client\Util;
 
 class TimeShifter
 {
-
     public static function getMaxTimestamp()
     {
         //19.01.2038
@@ -22,8 +21,7 @@ class TimeShifter
 
     public static function getTimeshiftTimestamp($timeshift = 0)
     {
-        if ($timeshift < self::getMaxTimeshift())
-        {
+        if ($timeshift < self::getMaxTimeshift()) {
             return number_format(microtime(true) - $timeshift, 4, '.', '');
         }
 

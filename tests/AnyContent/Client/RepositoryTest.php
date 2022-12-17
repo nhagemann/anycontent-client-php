@@ -11,7 +11,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class LanguagesAndWorkspacesText extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -28,7 +27,6 @@ class LanguagesAndWorkspacesText extends \PHPUnit_Framework_TestCase
         }
 
         $fs->mirror($source, $target);
-
     }
 
 
@@ -74,7 +72,6 @@ class LanguagesAndWorkspacesText extends \PHPUnit_Framework_TestCase
 
     public function testLastModified()
     {
-
     }
 
     public function testRecordCanAccessRepository()
@@ -88,7 +85,7 @@ class LanguagesAndWorkspacesText extends \PHPUnit_Framework_TestCase
         $records = [];
 
         for ($i = 1; $i <= 5; $i++) {
-            $record = new Record($definition, 'Test ' . $i);        
+            $record = new Record($definition, 'Test ' . $i);
             $records[] = $record;
         }
 
@@ -103,5 +100,4 @@ class LanguagesAndWorkspacesText extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('AnyContent\Client\Repository', $record->getRepository());
     }
-
 }

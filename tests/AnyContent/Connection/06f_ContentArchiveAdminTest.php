@@ -10,7 +10,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ContentArchiveAdminTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -27,7 +26,6 @@ class ContentArchiveAdminTest extends \PHPUnit_Framework_TestCase
         }
 
         $fs->mirror($source, $target);
-
     }
 
 
@@ -44,7 +42,6 @@ class ContentArchiveAdminTest extends \PHPUnit_Framework_TestCase
         $this->connection = $connection;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -59,7 +56,6 @@ class ContentArchiveAdminTest extends \PHPUnit_Framework_TestCase
         $definitions = $this->connection->getContentTypeDefinitions();
 
         $this->assertCount(3, $definitions);
-
     }
 
 
@@ -102,7 +98,6 @@ class ContentArchiveAdminTest extends \PHPUnit_Framework_TestCase
         $definitions = $this->connection->getConfigTypeDefinitions();
 
         $this->assertCount(2, $definitions);
-
     }
 
 
@@ -132,5 +127,4 @@ class ContentArchiveAdminTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $definitions);
     }
-
 }

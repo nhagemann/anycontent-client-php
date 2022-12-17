@@ -9,7 +9,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class AbstractRecordTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 

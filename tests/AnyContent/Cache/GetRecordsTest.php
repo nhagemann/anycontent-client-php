@@ -3,16 +3,13 @@
 namespace AnyContent\Cache;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-
 use Doctrine\Common\Cache\PhpFileCache;
-
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
 class GetRecordsTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  CachingRepository */
     protected $repository;
 
@@ -60,9 +57,8 @@ class GetRecordsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(608, $records);
 
-        $this->assertEquals(3,$repository->getCacheProvider()->getMissCounter());
-        $this->assertEquals(1,$repository->getCacheProvider()->getHitCounter());
-
+        $this->assertEquals(3, $repository->getCacheProvider()->getMissCounter());
+        $this->assertEquals(1, $repository->getCacheProvider()->getHitCounter());
     }
 
 
@@ -76,9 +72,8 @@ class GetRecordsTest extends \PHPUnit_Framework_TestCase
         $repository->getRecord(1);
         $repository->getRecord(1);
 
-        $this->assertEquals(2,$repository->getCacheProvider()->getMissCounter());
-        $this->assertEquals(1,$repository->getCacheProvider()->getHitCounter());
-
+        $this->assertEquals(2, $repository->getCacheProvider()->getMissCounter());
+        $this->assertEquals(1, $repository->getCacheProvider()->getHitCounter());
     }
 
     public function testQueryRecords()
@@ -88,16 +83,16 @@ class GetRecordsTest extends \PHPUnit_Framework_TestCase
 
         $repository->selectContentType('profiles');
 
-        $records = $repository->getRecords('',['.id'],1,10);
+        $records = $repository->getRecords('', ['.id'], 1, 10);
 
         $this->assertCount(10, $records);
 
-        $records = $repository->getRecords('',['.id'],1,10);
+        $records = $repository->getRecords('', ['.id'], 1, 10);
 
         $this->assertCount(10, $records);
 
-        $this->assertEquals(2,$repository->getCacheProvider()->getMissCounter());
-        $this->assertEquals(1,$repository->getCacheProvider()->getHitCounter());
+        $this->assertEquals(2, $repository->getCacheProvider()->getMissCounter());
+        $this->assertEquals(1, $repository->getCacheProvider()->getHitCounter());
     }
 
     public function testGetRecordWithIdNull()
@@ -117,8 +112,5 @@ class GetRecordsTest extends \PHPUnit_Framework_TestCase
 
         $record = $repository->getRecord(null);
         $this->assertFalse($record);
-
     }
-
-
 }

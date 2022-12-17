@@ -4,17 +4,14 @@ namespace AnyContent\Cache;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-
 use AnyContent\Connection\RecordsFileReadWriteConnection;
 use Doctrine\Common\Cache\PhpFileCache;
-
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
 class SaveRecordsLastModifiedStategyTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  CachingRepository */
     protected $repository;
 
@@ -29,15 +26,13 @@ class SaveRecordsLastModifiedStategyTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -102,5 +97,4 @@ class SaveRecordsLastModifiedStategyTest extends \PHPUnit_Framework_TestCase
         $record = $repository->getRecord(1);
         $this->assertEquals('UDG', $record->getName());
     }
-
 }

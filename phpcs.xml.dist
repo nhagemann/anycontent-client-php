@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="phpcs.xsd">
+    <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility/PHPCompatibility" />
+    <file>src</file>
+    <file>tests</file>
+
+    <!-- ignore warnings and display ERRORS only -->
+    <!--<arg  value="np"/>-->
+
+    <!-- Our base rule: set to PSR12-->
+    <rule  ref="PSR12"/>
+
+    <!-- extend line length from 120 to 300 // needs to be reduces to 200 -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="300"/>
+            <property name="absoluteLineLimit" value="0"/>
+        </properties>
+    </rule>
+
+    <rule ref="PHPCompatibility"/>
+    <config name="testVersion" value="8.0"/>
+</ruleset>

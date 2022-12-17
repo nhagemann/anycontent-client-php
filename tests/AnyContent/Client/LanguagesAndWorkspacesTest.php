@@ -3,16 +3,13 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
 class LanguagesAndWorkspacesTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -27,13 +24,11 @@ class LanguagesAndWorkspacesTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
-
     }
 
 
@@ -52,10 +47,9 @@ class LanguagesAndWorkspacesTest extends \PHPUnit_Framework_TestCase
 
         $this->connection = $connection;
 
-        $this->repository = new Repository('phpunit',$this->connection);
+        $this->repository = new Repository('phpunit', $this->connection);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
-
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -63,8 +57,7 @@ class LanguagesAndWorkspacesTest extends \PHPUnit_Framework_TestCase
     {
         $this->repository->selectContentType('example01');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record = $this->repository->createRecord('New Record ' . $i);
             $record->setProperty('article', 'Test ' . $i);
             $id = $this->repository->saveRecord($record);
@@ -73,8 +66,7 @@ class LanguagesAndWorkspacesTest extends \PHPUnit_Framework_TestCase
 
         $this->repository->selectLanguage('es');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record = $this->repository->createRecord('New Record ' . (5 + $i));
             $record->setProperty('article', 'Test ' . (5 + $i));
             $id = $this->repository->saveRecord($record);
@@ -83,8 +75,7 @@ class LanguagesAndWorkspacesTest extends \PHPUnit_Framework_TestCase
 
         $this->repository->selectWorkspace('live');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record = $this->repository->createRecord('New Record ' . (10 + $i));
             $record->setProperty('article', 'Test ' . (10 + $i));
             $id = $this->repository->saveRecord($record);
@@ -106,7 +97,7 @@ class LanguagesAndWorkspacesTest extends \PHPUnit_Framework_TestCase
 
         $this->repository->selectLanguage('default');
         $c = $this->repository->countRecords();
-        $this->assertEquals(0, $c);;
+        $this->assertEquals(0, $c);
+        ;
     }
-
 }

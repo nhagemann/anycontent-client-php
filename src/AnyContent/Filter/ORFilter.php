@@ -9,7 +9,6 @@ use CMDL\Util;
 
 class ORFilter implements Filter
 {
-
     /**
      * @var array Filter
      */
@@ -22,17 +21,14 @@ class ORFilter implements Filter
     public function __construct(array $terms)
     {
         $this->terms = $terms;
-
     }
 
 
     public function match(Record $record)
     {
         /** @var PropertyFilter $term */
-        foreach ($this->terms as $term)
-        {
-            if ($term->match($record))
-            {
+        foreach ($this->terms as $term) {
+            if ($term->match($record)) {
                 return true;
             }
         }

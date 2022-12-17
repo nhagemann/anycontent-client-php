@@ -9,7 +9,6 @@ use KVMLogger\KVMLogger;
 
 class RecordsFileHttpReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  RecordsFileHttpReadOnlyConnection */
     public $connection;
 
@@ -24,7 +23,7 @@ class RecordsFileHttpReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -67,7 +66,6 @@ class RecordsFileHttpReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
         $connection->selectContentType('profiles');
 
         $this->assertEquals(608, $connection->countRecords());
-
     }
 
 
@@ -82,7 +80,6 @@ class RecordsFileHttpReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\Record', $record);
 
         $this->assertEquals('UDG United Digital Group', $record->getProperty('name'));
-
     }
 
 
@@ -96,8 +93,7 @@ class RecordsFileHttpReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(608, $records);
 
-        foreach ($records as $record)
-        {
+        foreach ($records as $record) {
             $id          = $record->getID();
             $fetchRecord = $connection->getRecord($id);
             $this->assertEquals($id, $fetchRecord->getID());
@@ -106,6 +102,6 @@ class RecordsFileHttpReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModified()
     {
-        $this->assertInternalType('int',$this->connection->getLastModifiedDate());
+        $this->assertInternalType('int', $this->connection->getLastModifiedDate());
     }
 }

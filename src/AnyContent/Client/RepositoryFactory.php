@@ -13,7 +13,6 @@ use AnyContent\Connection\FileManager\RestLikeFilesAccess;
 
 class RepositoryFactory
 {
-
     use Options;
 
     /**
@@ -74,7 +73,6 @@ class RepositoryFactory
         $repository = null;
 
         if ($this->getOption('type') == 'archive') {
-
             if (!$this->hasOption('folder')) {
                 throw new AnyContentClientException('Invalid config array. Could not find mandatory key folder for repository named ' . $name);
             }
@@ -82,12 +80,15 @@ class RepositoryFactory
             $options          = [];
             $options['files'] = $this->getOption('files', true);
 
-            $repository = $this->createContentArchiveRepository($name, $this->getOption('folder'), $options,
-                $cache);
+            $repository = $this->createContentArchiveRepository(
+                $name,
+                $this->getOption('folder'),
+                $options,
+                $cache
+            );
         }
 
         if ($this->getOption('type') == 'restlike') {
-
             if (!$this->hasOption('url')) {
                 throw new AnyContentClientException('Invalid config array. Could not find mandatory key url for repository named ' . $name);
             }
@@ -104,12 +105,16 @@ class RepositoryFactory
 
             $files = $this->getOption('files', true);
 
-            $repository = $this->createRestLikeRepository($name, $this->getOption('url'), $options,
-                $cache, $files);
+            $repository = $this->createRestLikeRepository(
+                $name,
+                $this->getOption('url'),
+                $options,
+                $cache,
+                $files
+            );
         }
 
         if ($this->getOption('type') == 'mysqlschemaless') {
-
             $this->requireOptions(['host', 'dbname', 'user', 'password']);
 
             $options             = [];
@@ -131,7 +136,6 @@ class RepositoryFactory
                 $fileManager = null;
 
                 if ($this->getOption('type') == 'restlike') {
-
                     $this->requireOption('repository_url');
                     $configuration = new RestLikeConfiguration();
                     $configuration->setUri($this->getOption('repository_url'));
@@ -139,7 +143,6 @@ class RepositoryFactory
                 }
 
                 if ($this->getOption('type') == 'directory') {
-
                     $this->requireOption('path');
                     $fileManager = new DirectoryBasedFilesAccess($this->getOption('path'));
                     $fileManager->disableImageSizeCalculation();
@@ -183,8 +186,13 @@ class RepositoryFactory
             }
         }
 
-        $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-            $cache);
+        $repository = $this->createRepository(
+            $name,
+            $connection,
+            $fileManager,
+            $this->getOption('title', null),
+            $cache
+        );
 
         return $repository;
     }
@@ -199,8 +207,13 @@ class RepositoryFactory
         $this->options = $options['database'];
 
         $this->requireOptions(['host', 'dbname', 'user', 'password']);
-        $configuration->initDatabase($this->getOption('host'), $this->getOption('dbname'), $this->getOption('user'),
-            $this->getOption('password'), $this->getOption('port', 3306));
+        $configuration->initDatabase(
+            $this->getOption('host'),
+            $this->getOption('dbname'),
+            $this->getOption('user'),
+            $this->getOption('password'),
+            $this->getOption('port', 3306)
+        );
         $this->options = $options;
 
         if ($this->hasOption('cmdlFolder')) {
@@ -219,8 +232,13 @@ class RepositoryFactory
             $fileManager = new DirectoryBasedFilesAccess($this->getOption('filesFolder'));
         }
 
-        $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-            $cache);
+        $repository = $this->createRepository(
+            $name,
+            $connection,
+            $fileManager,
+            $this->getOption('title', null),
+            $cache
+        );
 
         return $repository;
     }
@@ -252,8 +270,13 @@ class RepositoryFactory
             $fileManager = new RestLikeFilesAccess($configuration);
         }
 
-        $repository = $this->createRepository($name, $connection, $fileManager, $this->getOption('title', null),
-            $cache);
+        $repository = $this->createRepository(
+            $name,
+            $connection,
+            $fileManager,
+            $this->getOption('title', null),
+            $cache
+        );
 
         $repository->setPublicUrl($baseUrl);
 
@@ -269,8 +292,7 @@ class RepositoryFactory
             $repository->enableAllContentRecordsCaching(60);
             $repository->enableContentQueryRecordsCaching(60);
             $repository->enableCmdlCaching(60);
-        }
-        else {
+        } else {
             $repository = new Repository($name, $connection, $fileManager);
         }
 

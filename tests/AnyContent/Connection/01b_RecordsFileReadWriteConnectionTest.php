@@ -11,7 +11,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  RecordsFileReadWriteConnection */
     public $connection;
 
@@ -23,15 +22,13 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
-
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -67,7 +64,6 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord(1);
 
         $this->assertEquals('UDG', $record->getProperty('name'));
-
     }
 
 
@@ -82,7 +78,6 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecord(1);
 
         $this->assertEquals('UDG', $record->getProperty('name'));
-
     }
 
 
@@ -100,7 +95,6 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(629, $record->getID());
         $this->assertEquals(629, $id);
-
     }
 
 
@@ -116,8 +110,7 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $records = [ ];
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record    = new Record($connection->getCurrentContentTypeDefinition(), 'Test ' . $i);
             $records[] = $record;
         }
@@ -125,7 +118,6 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
         $connection->saveRecords($records);
 
         $this->assertEquals(614, $connection->countRecords());
-
     }
 
 
@@ -158,7 +150,6 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(false, $result);
         $this->assertEquals(613, $connection->countRecords());
-
     }
 
 
@@ -186,7 +177,6 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(2, $result);
         $this->assertEquals(611, $connection->countRecords());
-
     }
 
 
@@ -214,7 +204,6 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(611, $result);
         $this->assertEquals(0, $connection->countRecords());
-
     }
 
 
@@ -239,15 +228,15 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
 
-        $record->setProperty('ranking',1);
+        $record->setProperty('ranking', 1);
 
-        $this->assertEquals(1,$record->getProperty('ranking'));
+        $this->assertEquals(1, $record->getProperty('ranking'));
 
         $id = $connection->saveRecord($record);
 
         $record = $connection->getRecord($id);
 
-        $this->assertEquals('',$record->getProperty('ranking'));
+        $this->assertEquals('', $record->getProperty('ranking'));
     }
 
 
@@ -259,29 +248,28 @@ class RecordsFileReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
 
-        $record->setProperty('twitter','https://www.twitter.com');
+        $record->setProperty('twitter', 'https://www.twitter.com');
         $id = $connection->saveRecord($record);
-        $this->assertEquals('https://www.twitter.com',$record->getProperty('twitter'));
+        $this->assertEquals('https://www.twitter.com', $record->getProperty('twitter'));
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
         $record->setId($id);
         $properties = $record->getProperties();
-        $this->assertCount(1,$properties);
+        $this->assertCount(1, $properties);
 
-        $record->setProperty('facebook','https://www.facebook.com');
-        $this->assertEquals('https://www.facebook.com',$record->getProperty('facebook'));
+        $record->setProperty('facebook', 'https://www.facebook.com');
+        $this->assertEquals('https://www.facebook.com', $record->getProperty('facebook'));
 
         $properties = $record->getProperties();
-        $this->assertCount(2,$properties);
+        $this->assertCount(2, $properties);
 
         $connection->saveRecord($record);
 
         $record = $connection->getRecord($id);
         $properties = $record->getProperties();
-        $this->assertCount(3,$properties);
+        $this->assertCount(3, $properties);
 
-        $this->assertEquals('https://www.facebook.com',$record->getProperty('facebook'));
-        $record->setProperty('twitter','https://www.twitter.com');
+        $this->assertEquals('https://www.facebook.com', $record->getProperty('facebook'));
+        $record->setProperty('twitter', 'https://www.twitter.com');
     }
-
 }

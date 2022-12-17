@@ -6,10 +6,11 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Cache\CachingRepository;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\CacheProvider;
+use Doctrine\Common\Cache\Psr6\DoctrineProvider;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 class Client
 {
-
     /**
      * @var UserInfo
      */
@@ -23,12 +24,10 @@ class Client
 
     public function __construct(UserInfo $userInfo = null, CacheProvider $cacheProvider = null)
     {
-        if ($userInfo != null)
-        {
+        if ($userInfo != null) {
             $this->userInfo = $userInfo;
         }
-        if ($cacheProvider != null)
-        {
+        if ($cacheProvider != null) {
             $this->cacheProvider = $cacheProvider;
         }
     }
@@ -57,9 +56,9 @@ class Client
      */
     public function getCacheProvider()
     {
-        if (!$this->cacheProvider)
-        {
-            $this->cacheProvider = new ArrayCache();
+        if (!$this->cacheProvider) {
+            // https://stackoverflow.com/questions/68166221/class-doctrine-common-cache-arraycache-does-not-exist-when-installing-a-symfon
+            $this->cacheProvider =  DoctrineProvider::wrap(new ArrayAdapter());
         }
 
         return $this->cacheProvider;
@@ -73,10 +72,8 @@ class Client
     {
         $this->cacheProvider = $cacheProvider;
 
-        foreach ($this->getRepositories() as $repository)
-        {
-            if ($repository instanceof CachingRepository)
-            {
+        foreach ($this->getRepositories() as $repository) {
+            if ($repository instanceof CachingRepository) {
                 $repository->setCacheProvider($this->getCacheProvider());
             }
         }
@@ -94,14 +91,12 @@ class Client
 
     public function addRepository(Repository $repository)
     {
-        if ($repository->getName() == '')
-        {
+        if ($repository->getName() == '') {
             throw new AnyContentClientException('Cannot add repository without name');
         }
         $this->repositories[$repository->getName()] = $repository;
 
-        if ($repository instanceof CachingRepository)
-        {
+        if ($repository instanceof CachingRepository) {
             $repository->setCacheProvider($this->getCacheProvider());
         }
 
@@ -117,12 +112,10 @@ class Client
      */
     public function getRepository($repositoryName)
     {
-        if (array_key_exists($repositoryName, $this->repositories))
-        {
+        if (array_key_exists($repositoryName, $this->repositories)) {
             return $this->repositories[$repositoryName];
         }
 
         throw new AnyContentClientException('Unknown repository ' . $repositoryName);
     }
-
 }

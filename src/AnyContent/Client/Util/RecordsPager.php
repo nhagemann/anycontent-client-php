@@ -4,7 +4,6 @@ namespace AnyContent\Client\Util;
 
 class RecordsPager
 {
-
     public static function sliceRecords(array $records, $page, $count)
     {
 
@@ -14,8 +13,4 @@ class RecordsPager
 
         return $result;
     }
-
 }
-
-
-

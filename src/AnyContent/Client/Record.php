@@ -7,7 +7,6 @@ use CMDL\ContentTypeDefinition;
 
 class Record extends AbstractRecord implements \JsonSerializable
 {
-
     public $id = null;
 
     /** @var ContentTypeDefinition */
@@ -30,7 +29,6 @@ class Record extends AbstractRecord implements \JsonSerializable
         $this->language  = $language;
         $this->setCreationUserInfo(new UserInfo());
         $this->setLastChangeUserInfo(new UserInfo());
-
     }
 
     public function getId()
@@ -62,8 +60,7 @@ class Record extends AbstractRecord implements \JsonSerializable
     public function getPosition()
     {
         $position = $this->getProperty('position');
-        if ($position !== null)
-        {
+        if ($position !== null) {
             return (int)$position;
         }
         return null;
@@ -72,8 +69,7 @@ class Record extends AbstractRecord implements \JsonSerializable
 
     public function setPosition($value)
     {
-        if ($this->getParent() === null)
-        {
+        if ($this->getParent() === null) {
             $this->setParent(0);
         }
 
@@ -84,8 +80,7 @@ class Record extends AbstractRecord implements \JsonSerializable
     public function getParent()
     {
         $parent = $this->getProperty('parent');
-        if ($parent !== null)
-        {
+        if ($parent !== null) {
             return (int)$parent;
         }
         return null;
@@ -152,13 +147,10 @@ class Record extends AbstractRecord implements \JsonSerializable
     public function getStatusLabel()
     {
         $statusList = $this->dataTypeDefinition->getStatusList();
-        if ($statusList)
-        {
-            if (array_key_exists($this->getProperty('status'), $statusList))
-            {
+        if ($statusList) {
+            if (array_key_exists($this->getProperty('status'), $statusList)) {
                 return $statusList[$this->getProperty('status')];
             }
-
         }
 
         return null;
@@ -174,13 +166,10 @@ class Record extends AbstractRecord implements \JsonSerializable
     public function getSubtypeLabel()
     {
         $subtypesList = $this->dataTypeDefinition->getSubtypes();
-        if ($subtypesList)
-        {
-            if (array_key_exists($this->getProperty('subtype'), $subtypesList))
-            {
+        if ($subtypesList) {
+            if (array_key_exists($this->getProperty('subtype'), $subtypesList)) {
                 return $subtypesList[$this->getProperty('subtype')];
             }
-
         }
 
         return null;
@@ -217,7 +206,7 @@ class Record extends AbstractRecord implements \JsonSerializable
     }
 
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $record                       = [ ];
         $record['id']                 = $this->getId();

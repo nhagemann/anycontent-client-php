@@ -6,7 +6,6 @@ use CMDL\ConfigTypeDefinition;
 
 class Config extends AbstractRecord implements \JsonSerializable
 {
-
     /**
      * @var ConfigTypeDefinition
      */
@@ -41,7 +40,7 @@ class Config extends AbstractRecord implements \JsonSerializable
     }
 
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $record                       = [ ];
         $record['properties']         = $this->getProperties();

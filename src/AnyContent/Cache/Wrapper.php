@@ -1,4 +1,5 @@
 <?php
+
 namespace AnyContent\Cache;
 
 use Doctrine\Common\Cache\CacheProvider;
@@ -6,7 +7,6 @@ use KVMLogger\KVMLogger;
 
 class Wrapper extends CacheProvider
 {
-
     /** @var  CacheProvider */
     protected $cacheProvider;
 
@@ -78,21 +78,17 @@ class Wrapper extends CacheProvider
 
         $data = $this->getCacheProvider()->doFetch($md5Key);
 
-        if ($data)
-        {
+        if ($data) {
             $this->hit++;
             $message = $kvm->createLogMessage('Cache hit', [ 'key' => $id, 'md5' => md5($id), 'doctrine-namespace' => $this->getNamespace() ]);
             $kvm->debug($message);
-        }
-        else
-        {
+        } else {
             $this->miss++;
             $message = $kvm->createLogMessage('Cache miss', [ 'key' => $id, 'md5' => md5($id), 'doctrine-namespace' => $this->getNamespace() ]);
             $kvm->debug($message);
         }
 
         return $data;
-
     }
 
 
@@ -112,14 +108,11 @@ class Wrapper extends CacheProvider
 
         $hit = $this->getCacheProvider()->doContains($md5Key);
 
-        if ($hit)
-        {
+        if ($hit) {
             $this->hit++;
             $message = $kvm->createLogMessage('Cache hit', [ 'key' => $id, 'md5' => $md5Key, 'namespace' => $this->getNamespace() ]);
             $kvm->debug($message);
-        }
-        else
-        {
+        } else {
             $this->miss++;
             $message = $kvm->createLogMessage('Cache miss', [ 'key' => $id, 'namespace' => $this->getNamespace() ]);
             $kvm->debug($message);

@@ -9,7 +9,6 @@ use KVMLogger\KVMLogger;
 
 class RecordsFileReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  RecordsFileReadOnlyConnection */
     public $connection;
 
@@ -18,14 +17,13 @@ class RecordsFileReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $configuration = new RecordsFileConfiguration();
 
-        $configuration->addContentType('profiles',__DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../resources/RecordsFileExample/profiles.json');
+        $configuration->addContentType('profiles', __DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../resources/RecordsFileExample/profiles.json');
 
         $connection = $configuration->createReadOnlyConnection();
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
-
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -76,7 +74,6 @@ class RecordsFileReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
         $connection->selectContentType('profiles');
 
         $this->assertEquals(608, $connection->countRecords());
-
     }
 
 
@@ -93,7 +90,6 @@ class RecordsFileReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\Record', $record);
 
         $this->assertEquals('UDG United Digital Group', $record->getProperty('name'));
-
     }
 
 
@@ -109,8 +105,7 @@ class RecordsFileReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(608, $records);
 
-        foreach ($records as $record)
-        {
+        foreach ($records as $record) {
             $id          = $record->getId();
             $fetchRecord = $connection->getRecord($id);
             $this->assertEquals($id, $fetchRecord->getId());
@@ -119,7 +114,6 @@ class RecordsFileReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModified()
     {
-        $this->assertInternalType('int',$this->connection->getLastModifiedDate());
+        $this->assertInternalType('int', $this->connection->getLastModifiedDate());
     }
-
 }

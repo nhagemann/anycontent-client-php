@@ -1,11 +1,11 @@
 <?php
+
 namespace AnyContent\Connection\Util;
 
 use KVMLogger\KVMLogger;
 
 class Database
 {
-
     /** @var  \PDO */
     protected $pdo;
 
@@ -48,7 +48,7 @@ class Database
         $duration = $kvm->getDuration('anycontent-query-execution-time');
         $message  = $kvm->createLogMessage($this->debugQuery($sql, $params), [ 'duration' => $duration ]);
         $kvm->debug($message);
-        
+
         $this->queryCounter++;
 
         return $stmt;
@@ -66,8 +66,7 @@ class Database
 
         $values = array_values($insert);
 
-        if ($update)
-        {
+        if ($update) {
             $sql .= ' ON DUPLICATE KEY UPDATE `' . join('` = ? , `', array_keys($update)) . '` = ?';
             $values = array_merge($values, array_values($update));
         }
@@ -85,8 +84,7 @@ class Database
         $sql = ' UPDATE `' . $tableName;
         $sql .= '` SET `' . join('` = ? , `', array_keys($update)) . '` = ?';
 
-        if ($where)
-        {
+        if ($where) {
             $sql .= ' WHERE `' . join('` = ? AND `', array_keys($where)) . '` = ?';
             $values = array_merge($values, array_values($where));
         }
@@ -107,7 +105,6 @@ class Database
         $stmt = $this->execute($sql, $params);
 
         return $stmt->fetch();
-
     }
 
 
@@ -128,7 +125,6 @@ class Database
         $stmt = $this->execute($sql, $params);
 
         return $stmt->fetchColumn($column);
-
     }
 
 
@@ -138,7 +134,6 @@ class Database
         $stmt = $this->execute($sql, $params);
 
         return $stmt->fetchColumn($column);
-
     }
 
 
@@ -154,7 +149,6 @@ class Database
         $rows = $stmt->fetchAll();
 
         return $rows;
-
     }
 
 
@@ -166,7 +160,6 @@ class Database
         $rows = $stmt->fetchAll();
 
         return $rows;
-
     }
 
 
@@ -178,14 +171,10 @@ class Database
         $keys = array();
 
         # build a regular expression for each parameter
-        foreach ($params as $key => &$value)
-        {
-            if (is_string($key))
-            {
+        foreach ($params as $key => &$value) {
+            if (is_string($key)) {
                 $keys[] = '/:' . $key . '/';
-            }
-            else
-            {
+            } else {
                 $keys[] = '/[?]/';
             }
             $value = '[#' . $value . '#]';
@@ -204,6 +193,4 @@ class Database
     {
         return $this->queryCounter;
     }
-
-
 }

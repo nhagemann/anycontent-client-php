@@ -1,4 +1,5 @@
 <?php
+
 namespace AnyContent\Connection\Configuration;
 
 use AnyContent\AnyContentClientException;
@@ -10,22 +11,19 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class RecordFilesConfiguration extends AbstractConfiguration
 {
-
     /**
      * @return RecordFilesConfiguration
      * @throws AnyContentClientException
      */
-    public function addContentType($contentTypeName = null, $filenameCMDL, $folderRecords)
+    public function addContentType($contentTypeName, $filenameCMDL, $folderRecords)
     {
         $fs = new Filesystem();
 
-        if (!$fs->exists($filenameCMDL))
-        {
+        if (!$fs->exists($filenameCMDL)) {
             throw new AnyContentClientException('File ' . $filenameCMDL . ' not found.');
         }
 
-        if (!$fs->exists($folderRecords))
-        {
+        if (!$fs->exists($folderRecords)) {
             KVMLogger::instance('anycontent')->warning('Folder ' . $folderRecords . ' not found.');
         }
 
@@ -44,14 +42,11 @@ class RecordFilesConfiguration extends AbstractConfiguration
     {
         $fs = new Filesystem();
 
-        if (!$fs->exists($filenameCMDL))
-        {
+        if (!$fs->exists($filenameCMDL)) {
             KVMLogger::instance('anycontent-connection')->info('File ' . $filenameCMDL . ' not found.');
-
         }
 
-        if (!$fs->exists($filenameRecord))
-        {
+        if (!$fs->exists($filenameRecord)) {
             KVMLogger::instance('anycontent-connection')->info('File ' . $filenameRecord . ' not found.');
         }
 
@@ -63,45 +58,41 @@ class RecordFilesConfiguration extends AbstractConfiguration
 
     public function getUriCMDLForContentType($contentTypeName)
     {
-        if ($this->hasContentType($contentTypeName))
-        {
+        if ($this->hasContentType($contentTypeName)) {
             return $this->contentTypes[$contentTypeName]['cmdl'];
         }
 
-        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+        throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
 
     public function getUriCMDLForConfigType($configTypeName)
     {
-        if ($this->hasConfigType($configTypeName))
-        {
+        if ($this->hasConfigType($configTypeName)) {
             return $this->configTypes[$configTypeName]['cmdl'];
         }
 
-        throw new AnyContentClientException ('Unknown config type ' . $configTypeName);
+        throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
 
     public function getFolderNameRecords($contentTypeName, DataDimensions $dataDimensions)
     {
-        if ($this->hasContentType($contentTypeName))
-        {
+        if ($this->hasContentType($contentTypeName)) {
             return $this->contentTypes[$contentTypeName]['records'];
         }
 
-        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+        throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
 
     public function getUriConfig($configTypeName, DataDimensions $dataDimensions)
     {
-        if ($this->hasConfigType($configTypeName))
-        {
+        if ($this->hasConfigType($configTypeName)) {
             return $this->configTypes[$configTypeName]['record'];
         }
 
-        throw new AnyContentClientException ('Unknown config type ' . $configTypeName);
+        throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
 
@@ -115,5 +106,4 @@ class RecordFilesConfiguration extends AbstractConfiguration
     {
         return new RecordFilesReadWriteConnection($this);
     }
-
 }

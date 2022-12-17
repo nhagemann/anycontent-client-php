@@ -4,7 +4,6 @@ namespace AnyContent\Client;
 
 use AnyContent\Client\Util\RecordsSorter;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
@@ -12,7 +11,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -27,8 +25,7 @@ class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
@@ -50,8 +47,7 @@ class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
 
         $this->connection = $connection;
 
-        $this->repository = new Repository('phpunit',$this->connection);
-
+        $this->repository = new Repository('phpunit', $this->connection);
     }
 
 
@@ -61,16 +57,14 @@ class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
 
         $this->repository->selectContentType('example01');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record = $this->repository->createRecord('New Record');
             $record->setId($i);
             $record->setProperty('source', $i);
             $record->setProperty('article', 'A');
             $records[$i] = $record;
         }
-        for ($i = 6; $i <= 10; $i++)
-        {
+        for ($i = 6; $i <= 10; $i++) {
             $record = $this->repository->createRecord('New Record');
             $record->setId($i);
             $record->setProperty('source', $i);
@@ -85,22 +79,18 @@ class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ], array_keys($records));
 
         $records = RecordsSorter::orderRecords($records, 'article+');
-        foreach (array_slice($records, 0, 5) as $record)
-        {
+        foreach (array_slice($records, 0, 5) as $record) {
             $this->assertEquals($record->getProperty('article'), 'A');
         }
-        foreach (array_slice($records, 5, 5) as $record)
-        {
+        foreach (array_slice($records, 5, 5) as $record) {
             $this->assertEquals($record->getProperty('article'), 'B');
         }
 
         $records = RecordsSorter::orderRecords($records, 'article-');
-        foreach (array_slice($records, 0, 5) as $record)
-        {
+        foreach (array_slice($records, 0, 5) as $record) {
             $this->assertEquals($record->getProperty('article'), 'B');
         }
-        foreach (array_slice($records, 5, 5) as $record)
-        {
+        foreach (array_slice($records, 5, 5) as $record) {
             $this->assertEquals($record->getProperty('article'), 'A');
         }
 
@@ -113,7 +103,6 @@ class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
 
         $records = RecordsSorter::orderRecords($records, [ '.id-' ]);
         $this->assertEquals([ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ], array_keys($records));
-
     }
 
 

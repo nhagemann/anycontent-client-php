@@ -6,7 +6,6 @@ use AnyContent\Client\Record;
 
 interface UniqueConnection
 {
-
     public function isUniqueConnection();
 
 
@@ -16,6 +15,4 @@ interface UniqueConnection
      * @return UniqueConnection
      */
     public function setUniqueConnection($confidence = 60);
-
-
 }

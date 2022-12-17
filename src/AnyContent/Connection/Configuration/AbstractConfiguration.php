@@ -1,4 +1,5 @@
 <?php
+
 namespace AnyContent\Connection\Configuration;
 
 use AnyContent\AnyContentClientException;
@@ -6,7 +7,6 @@ use AnyContent\Connection\AbstractConnection;
 
 class AbstractConfiguration
 {
-
     protected $contentTypes = [ ];
 
     protected $configTypes = [ ];
@@ -50,12 +50,10 @@ class AbstractConfiguration
      */
     protected function getConnection()
     {
-        if (!$this->connection)
-        {
-            throw new AnyContentClientException ('You need to create a connection first.');
+        if (!$this->connection) {
+            throw new AnyContentClientException('You need to create a connection first.');
         }
 
         return $this->connection;
     }
-
 }

@@ -9,7 +9,6 @@ use KVMLogger\KVMLogger;
 
 class ContentArchiveConnectionTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadOnlyConnection */
     public $connection;
 
@@ -67,7 +66,6 @@ class ContentArchiveConnectionTest extends \PHPUnit_Framework_TestCase
         $connection->selectContentType('profiles');
 
         $this->assertEquals(3, $connection->countRecords());
-
     }
 
 
@@ -82,7 +80,6 @@ class ContentArchiveConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\Record', $record);
 
         $this->assertEquals('dmc digital media center', $record->getProperty('name'));
-
     }
 
 
@@ -96,8 +93,7 @@ class ContentArchiveConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(3, $records);
 
-        foreach ($records as $record)
-        {
+        foreach ($records as $record) {
             $id          = $record->getID();
             $fetchRecord = $connection->getRecord($id);
             $this->assertEquals($id, $fetchRecord->getID());
@@ -120,7 +116,6 @@ class ContentArchiveConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModified()
     {
-        $this->assertInternalType('int',$this->connection->getLastModifiedDate());
+        $this->assertInternalType('int', $this->connection->getLastModifiedDate());
     }
-
 }

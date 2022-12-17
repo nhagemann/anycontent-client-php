@@ -1,11 +1,11 @@
 <?php
+
 namespace AnyContent\Client\Traits;
 
 use AnyContent\AnyContentClientException;
 
 trait Options
 {
-
     protected $options = [ ];
 
 
@@ -23,8 +23,7 @@ trait Options
 
     public function hasOption($option)
     {
-        if (array_key_exists($option, $this->options))
-        {
+        if (array_key_exists($option, $this->options)) {
             return true;
         }
 
@@ -34,20 +33,17 @@ trait Options
 
     public function getOption($option, $default = null)
     {
-        if (array_key_exists($option, $this->options))
-        {
+        if (array_key_exists($option, $this->options)) {
             return $this->options[$option];
         }
 
         return $default;
-
     }
 
 
     public function requireOption($option)
     {
-        if ($this->hasOption($option))
-        {
+        if ($this->hasOption($option)) {
             return true;
         }
         throw new AnyContentClientException('Missing required option ' . $option);
@@ -56,8 +52,7 @@ trait Options
 
     public function requireOptions($options)
     {
-        foreach ($options as $option)
-        {
+        foreach ($options as $option) {
             $this->requireOption($option);
         }
     }

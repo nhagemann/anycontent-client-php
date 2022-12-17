@@ -10,7 +10,6 @@ use CMDL\Util;
 
 class PropertyFilter implements Filter
 {
-
     protected $term;
 
 
@@ -31,7 +30,7 @@ class PropertyFilter implements Filter
 
         $operator = $this->term['operator'];
         if ($this->term['property'] == '.id') {
-            $recordValue =$record->getId();
+            $recordValue = $record->getId();
         } else {
             $property = Util::generateValidIdentifier($this->term['property']);
             $recordValue = strtolower($record->getProperty($property));
@@ -66,7 +65,6 @@ class PropertyFilter implements Filter
         }
 
         return false;
-
     }
 
 
@@ -114,10 +112,8 @@ class PropertyFilter implements Filter
 
         // remove surrounding quotes
         if (substr($s, 0, 1) == '"') {
-
             $s = trim($s, '"');
         } else {
-
             $s = trim($s, "'");
         }
 

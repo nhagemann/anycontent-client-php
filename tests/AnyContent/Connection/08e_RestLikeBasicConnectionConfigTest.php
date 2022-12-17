@@ -4,24 +4,22 @@ namespace AnyContent\Connection;
 
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
-
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 
 class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  RestLikeBasicReadWriteConnection */
     public $connection;
 
-    static $randomString1;
-    static $randomString2;
+    private static $randomString1;
+    private static $randomString2;
 
 
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$randomString1 = md5(time() . 'string1');
         self::$randomString2 = md5(time() . 'string2');
@@ -47,7 +45,7 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
+    public function setUp(): void
     {
 
         $configuration = new RestLikeConfiguration();
@@ -61,7 +59,6 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
         $this->connection = $connection;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -128,7 +125,6 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('AnyContent\Client\Config', $config);
 
         $this->assertEquals(self::$randomString1, $config->getProperty('name'));
-
     }
 
 
@@ -150,5 +146,4 @@ class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('', $config->getProperty('b'));
     }
-
 }

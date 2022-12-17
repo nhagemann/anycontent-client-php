@@ -6,15 +6,16 @@ use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
+use AnyContent\Connection\AlternateRecordClass;
 
-class RecordStashTest extends \PHPUnit_Framework_TestCase
+class RecordStashTest extends TestCase
 {
-
     /** @var  RecordsFileReadOnlyConnection */
     public $connection;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $configuration = new RecordsFileConfiguration();
 
@@ -52,7 +53,6 @@ class RecordStashTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
 
         $this->invokeMethod($this->connection, 'unStashRecord', [ 'profiles', 1, $dataDimensions ]);
-
     }
 
 
@@ -77,7 +77,6 @@ class RecordStashTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->invokeMethod($this->connection, 'hasStashedRecord', [ 'profiles', 1, $dataDimensions ]);
         $this->assertTrue($result);
-
     }
 
 
@@ -179,12 +178,3 @@ class RecordStashTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-
-class AlternateRecordClass extends Record
-{
-
-    public function getArticle()
-    {
-        return $this->getProperty('article');
-    }
-}

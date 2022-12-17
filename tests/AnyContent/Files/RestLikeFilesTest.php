@@ -4,14 +4,13 @@ namespace AnyContent\Files;
 
 use AnyContent\Client\File;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
-
 use AnyContent\Connection\FileManager\RestLikeFilesAccess;
 use AnyContent\Connection\RestLikeBasicReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
+use PHPUnit\Framework\TestCase;
 
-class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
+class RestLikeFilesTest extends TestCase
 {
-
     /** @var  RestLikeBasicReadWriteConnection */
     public $connection;
 
@@ -20,21 +19,20 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
      */
     public $fileManager;
 
-    static $randomString1;
-    static $randomString2;
+    private static $randomString1;
+    private static $randomString2;
 
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$randomString1 = md5(time());
         self::$randomString2 = md5(time());
     }
 
 
-    public function setUp()
+    public function setUp(): void
     {
-        if (defined('PHPUNIT_CREDENTIALS_RESTLIKE_URL2'))
-        {
+        if (defined('PHPUNIT_CREDENTIALS_RESTLIKE_URL2')) {
             $configuration = new RestLikeConfiguration();
 
             $configuration->setUri(PHPUNIT_CREDENTIALS_RESTLIKE_URL2);
@@ -50,14 +48,12 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
 
             KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
         }
-
     }
 
 
     public function testBasicFolderOperations()
     {
-        if (!$this->fileManager)
-        {
+        if (!$this->fileManager) {
             $this->markTestSkipped('RestLike Basic Connection credentials missing.');
         }
 
@@ -74,8 +70,7 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
 
     public function testBasicFileOperations()
     {
-        if (!$this->fileManager)
-        {
+        if (!$this->fileManager) {
             $this->markTestSkipped('RestLike Basic Connection credentials missing.');
         }
 
@@ -98,8 +93,7 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateAndDeleteFolder()
     {
-        if (!$this->fileManager)
-        {
+        if (!$this->fileManager) {
             $this->markTestSkipped('RestLike Basic Connection credentials missing.');
         }
 
@@ -116,8 +110,7 @@ class RestLikeFilesTest extends \PHPUnit_Framework_TestCase
 
     public function testSaveAndDelete()
     {
-        if (!$this->fileManager)
-        {
+        if (!$this->fileManager) {
             $this->markTestSkipped('RestLike Basic Connection credentials missing.');
         }
 

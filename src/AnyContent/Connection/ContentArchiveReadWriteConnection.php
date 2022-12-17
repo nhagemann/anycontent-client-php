@@ -13,7 +13,6 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection implements ReadOnlyConnection, AdminConnection
 {
-
     /**
      * @var ContentArchiveConfiguration
      */
@@ -26,7 +25,6 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         $path   = $this->configuration->getContentArchiveFolder() . '/data/content/' . $contentTypeName;
         $path   = realpath($path);
         if ($path) {
-
             $finder->in($path);
             $finder->files()->name('*.json');
 
@@ -35,7 +33,6 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
             foreach ($finder as $file) {
                 // Sorting by name won't help here
                 $next = max($next, (int)($file->getBasename('.json')));
-
             }
 
             return ++$next;
@@ -98,7 +95,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         $sf->remove($uri);
 
         $this->getCMDLCache()->flushAll();
-        
+
         $this->getConfiguration()->apply($this);
 
         return true;

@@ -17,7 +17,6 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class AdminTestMySQLSchemaless1Test extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
@@ -84,7 +83,6 @@ class AdminTestMySQLSchemaless1Test extends \PHPUnit_Framework_TestCase
         $this->repository = $repository;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 

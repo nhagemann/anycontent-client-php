@@ -10,7 +10,6 @@ use CMDL\Util;
 
 abstract class AbstractRecord
 {
-
     use Properties;
 
     protected $view = 'default';
@@ -106,8 +105,7 @@ abstract class AbstractRecord
 
     public function getLastChangeUserInfo()
     {
-        if ($this->lastChangeUserInfo == null)
-        {
+        if ($this->lastChangeUserInfo == null) {
             $this->lastChangeUserInfo = new UserInfo();
         }
 
@@ -118,7 +116,7 @@ abstract class AbstractRecord
     {
         $properties = $this->getProperties();
         ksort($properties);
-        return md5(json_encode($properties,true));
+        return md5(json_encode($properties, true));
     }
 
     public function reduceProperties($viewName)
@@ -137,8 +135,7 @@ abstract class AbstractRecord
      */
     public function getRepository()
     {
-        if (!$this->repository)
-        {
+        if (!$this->repository) {
             throw new AnyContentClientException('Record does not know it\'s repository.');
         }
         return $this->repository;
@@ -151,5 +148,4 @@ abstract class AbstractRecord
     {
         $this->repository = $repository;
     }
-
 }

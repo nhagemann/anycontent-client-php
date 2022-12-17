@@ -4,7 +4,6 @@ namespace AnyContent\Client;
 
 class DataDimensions
 {
-
     protected $viewName = 'default';
 
     protected $workspace = 'default';
@@ -13,7 +12,7 @@ class DataDimensions
 
     protected $timeShift = 0;
 
-    const MAX_TIMESHIFT = 315532800; // roundabout 10 years, equals to 1.1.1980
+    public const MAX_TIMESHIFT = 315532800; // roundabout 10 years, equals to 1.1.1980
 
 
     /**
@@ -50,7 +49,6 @@ class DataDimensions
     {
 
         $this->workspace = $workspace;
-
     }
 
 
@@ -70,7 +68,6 @@ class DataDimensions
     {
 
         $this->language = $language;
-
     }
 
 
@@ -94,8 +91,7 @@ class DataDimensions
 
     public function hasRelativeTimeShift()
     {
-        if ($this->timeShift != 0 & $this->timeShift < self::MAX_TIMESHIFT)
-        {
+        if ($this->timeShift != 0 & $this->timeShift < self::MAX_TIMESHIFT) {
             return true;
         }
 

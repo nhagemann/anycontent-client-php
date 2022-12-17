@@ -9,7 +9,6 @@ use CMDL\Util;
 
 class ANDFilter implements Filter
 {
-
     /**
      * @var array Filter
      */
@@ -22,20 +21,16 @@ class ANDFilter implements Filter
     public function __construct(array $terms)
     {
         $this->terms = $terms;
-
     }
 
 
     public function match(Record $record)
     {
         /** @var PropertyFilter $term */
-        foreach ($this->terms as $term)
-        {
-            if (!$term->match($record))
-            {
+        foreach ($this->terms as $term) {
+            if (!$term->match($record)) {
                 return false;
             }
-
         }
 
         return true;

@@ -4,7 +4,6 @@ namespace AnyContent\Connection\Interfaces;
 
 interface AdminConnection extends WriteConnection
 {
-
     /**
      * @param $contentTypeName
      * @param $cmdl
@@ -37,5 +36,4 @@ interface AdminConnection extends WriteConnection
      * @return boolean
      */
     public function deleteConfigTypeCMDL($configTypeName);
-
 }

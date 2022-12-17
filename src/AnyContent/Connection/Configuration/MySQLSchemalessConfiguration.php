@@ -15,7 +15,6 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class MySQLSchemalessConfiguration extends AbstractConfiguration
 {
-
     /** @var  Database */
     protected $database;
 
@@ -29,8 +28,12 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
     public function initDatabase($host, $dbName, $username, $password, $port = 3306)
     {
         // http://stackoverflow.com/questions/18683471/pdo-setting-pdomysql-attr-found-rows-fails
-        $pdo = new \PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName, $username, $password,
-            array(\PDO::MYSQL_ATTR_FOUND_ROWS => true));
+        $pdo = new \PDO(
+            'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName,
+            $username,
+            $password,
+            array(\PDO::MYSQL_ATTR_FOUND_ROWS => true)
+        );
 
         $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -104,7 +107,6 @@ TEMPLATE_CMDLTABLE;
             } catch (\PDOException $e) {
                 throw new AnyContentClientException('Could not create mandatory table _cmdl_');
             }
-
         }
 
         $sql = "Show Tables Like '_counter_'";
@@ -159,7 +161,6 @@ TEMPLATE_UPDATETABLE;
                 throw new AnyContentClientException('Could not create mandatory table _update_');
             }
         }
-
     }
 
 
@@ -170,9 +171,7 @@ TEMPLATE_UPDATETABLE;
             throw new AnyContentClientException('Database must be initalized first.');
         }
         if ($contentTypes == null) {
-            if ($this->pathCMDLFolderForContentTypes != null) // file based content/config types definition
-            {
-
+            if ($this->pathCMDLFolderForContentTypes != null) { // file based content/config types definition
                 $finder = new Finder();
 
                 $uri = 'file://' . $this->pathCMDLFolderForContentTypes;
@@ -184,9 +183,7 @@ TEMPLATE_UPDATETABLE;
                     $contentTypeName = $file->getBasename('.cmdl');
 
                     $this->contentTypes[$contentTypeName] = [];
-
                 }
-
             } else // database based content/config types definition
             {
                 $repositoryName = $this->getRepositoryName();
@@ -212,7 +209,7 @@ TEMPLATE_UPDATETABLE;
 
     public function removeContentType($contentTypeName)
     {
-        unset ($this->contentTypes[$contentTypeName]);
+        unset($this->contentTypes[$contentTypeName]);
     }
 
 
@@ -222,15 +219,12 @@ TEMPLATE_UPDATETABLE;
             throw new AnyContentClientException('Database must be initalized first.');
         }
         if ($configTypes == null) {
-            if ($this->pathCMDLFolderForConfigTypes != null) // file based content/config types definition
-            {
-
+            if ($this->pathCMDLFolderForConfigTypes != null) { // file based content/config types definition
                 $finder = new Finder();
 
                 $uri = 'file://' . $this->pathCMDLFolderForConfigTypes;
 
                 if (file_exists($uri)) {
-
                     $finder->in($uri)->depth(0);
 
                     /** @var SplFileInfo $file */
@@ -238,10 +232,8 @@ TEMPLATE_UPDATETABLE;
                         $configTypeName = $file->getBasename('.cmdl');
 
                         $this->configTypes[$configTypeName] = [];
-
                     }
                 }
-
             } else // database based content/config types definition
             {
                 $repositoryName = $this->getRepositoryName();
@@ -267,7 +259,7 @@ TEMPLATE_UPDATETABLE;
 
     public function removeConfigType($configTypeName)
     {
-        unset ($this->configTypes[$configTypeName]);
+        unset($this->configTypes[$configTypeName]);
     }
 
 
@@ -291,7 +283,7 @@ TEMPLATE_UPDATETABLE;
 
     public function hasCMDLFolder()
     {
-        return (boolean)($this->pathCMDLFolderForContentTypes || $this->pathCMDLFolderForConfigTypes);
+        return (bool)($this->pathCMDLFolderForContentTypes || $this->pathCMDLFolderForConfigTypes);
     }
 
 
@@ -361,7 +353,6 @@ TEMPLATE_UPDATETABLE;
 
         /** @var SplFileInfo $directory */
         foreach ($directories as $directory) {
-
             $repositoryName = $directory->getFilename();
 
             $sql  = 'DELETE FROM _cmdl_ WHERE repository = ?';
@@ -406,7 +397,5 @@ TEMPLATE_UPDATETABLE;
                 }
             }
         }
-
     }
-
 }

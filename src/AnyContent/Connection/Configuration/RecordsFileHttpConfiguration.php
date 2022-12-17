@@ -1,4 +1,5 @@
 <?php
+
 namespace AnyContent\Connection\Configuration;
 
 use AnyContent\AnyContentClientException;
@@ -6,7 +7,6 @@ use AnyContent\Connection\RecordsFileHttpReadOnlyConnection;
 
 class RecordsFileHttpConfiguration extends AbstractConfiguration
 {
-
     protected $timeout = 30;
 
 
@@ -27,23 +27,21 @@ class RecordsFileHttpConfiguration extends AbstractConfiguration
 
     public function getUriCMDLForContentType($contentTypeName)
     {
-        if ($this->hasContentType($contentTypeName))
-        {
+        if ($this->hasContentType($contentTypeName)) {
             return $this->contentTypes[$contentTypeName]['cmdl'];
         }
 
-        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+        throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
 
     public function getUriRecords($contentTypeName)
     {
-        if ($this->hasContentType($contentTypeName))
-        {
+        if ($this->hasContentType($contentTypeName)) {
             return $this->contentTypes[$contentTypeName]['uri'];
         }
 
-        throw new AnyContentClientException ('Unknown content type ' . $contentTypeName);
+        throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
 
@@ -65,5 +63,4 @@ class RecordsFileHttpConfiguration extends AbstractConfiguration
 
         return $this;
     }
-
 }

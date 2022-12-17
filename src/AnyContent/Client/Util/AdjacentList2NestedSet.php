@@ -8,7 +8,6 @@ namespace AnyContent\Client\Util;
  */
 class AdjacentList2NestedSet
 {
-
     protected $links = array();
     protected $parentIds = array();
     protected $count = 1;
@@ -21,13 +20,10 @@ class AdjacentList2NestedSet
 
         $link      = array();
         $parentIds = array();
-        foreach ($list as $record)
-        {
-
+        foreach ($list as $record) {
             $parent = $record['parentId'];
             $child  = $record['id'];
-            if (!array_key_exists($parent, $link))
-            {
+            if (!array_key_exists($parent, $link)) {
                 $link[$parent] = array();
             }
             $link[$parent][]   = $child;
@@ -48,17 +44,14 @@ class AdjacentList2NestedSet
     {
 
         $lft = $this->count;
-        if ($id != 0)
-        {
+        if ($id != 0) {
             $this->count++;
         }
 
         $kid = $this->getChildren($id);
-        if ($kid)
-        {
+        if ($kid) {
             $this->level++;
-            foreach ($kid as $c)
-            {
+            foreach ($kid as $c) {
                 $this->traverse($c);
             }
             $this->level--;
@@ -66,9 +59,7 @@ class AdjacentList2NestedSet
         $rgt = $this->count;
         $this->count++;
 
-        if ($id != 0)
-        {
-
+        if ($id != 0) {
             $this->nestedSet[$id] = array( 'left' => $lft, 'right' => $rgt, 'level' => $this->level, 'parentId' => $this->parentIds[$id] );
         }
     }
@@ -76,12 +67,9 @@ class AdjacentList2NestedSet
 
     public function getChildren($id)
     {
-        if (array_key_exists($id, $this->links))
-        {
+        if (array_key_exists($id, $this->links)) {
             return $this->links[$id];
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -94,5 +82,4 @@ class AdjacentList2NestedSet
 
         return $this->nestedSet;
     }
-
 }

@@ -8,12 +8,10 @@ use AnyContent\Connection\Interfaces\FileManager;
 use Dflydev\ApacheMimeTypes\JsonRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-
 use Aws\S3\S3Client;
 
 class S3FilesAccess implements FileManager
 {
-
     /** @var S3Client */
     protected $client;
 
@@ -44,14 +42,12 @@ class S3FilesAccess implements FileManager
      */
     public function connect()
     {
-        if (!$this->client)
-        {
+        if (!$this->client) {
             // Create an Amazon S3 client object
             $this->client = S3Client::factory(array( 'key' => $this->key, 'secret' => $this->secret ));
 
 
-            if ($this->region)
-            {
+            if ($this->region) {
                 $this->client->setRegion($this->region);
             }
 
@@ -60,17 +56,13 @@ class S3FilesAccess implements FileManager
 
             $this->scheme = 's3://' . $this->bucketName;
 
-            if (file_exists($this->scheme))
-            {
+            if (file_exists($this->scheme)) {
                 $this->scheme .= '/' . $this->baseFolder;
-                if (!file_exists($this->scheme))
-                {
+                if (!file_exists($this->scheme)) {
                     $this->filesystem->mkdir($this->scheme);
                 }
-            }
-            else
-            {
-                throw new \Exception ('Bucket ' . $this->bucketName . ' missing.');
+            } else {
+                throw new \Exception('Bucket ' . $this->bucketName . ' missing.');
             }
         }
 
@@ -94,9 +86,6 @@ class S3FilesAccess implements FileManager
         $this->bucketName = $bucketName;
 
         $this->baseFolder = $baseFolder;
-
-
-
     }
 
 
@@ -130,7 +119,7 @@ class S3FilesAccess implements FileManager
      */
     public function setPublicUrl($publicUrl)
     {
-        $this->publicUrl = rtrim($publicUrl,'/');
+        $this->publicUrl = rtrim($publicUrl, '/');
 
         return $this;
     }
@@ -147,9 +136,7 @@ class S3FilesAccess implements FileManager
 
         $path = trim($path, '/');
 
-        if (file_exists($this->scheme . '/' . $path))
-        {
-
+        if (file_exists($this->scheme . '/' . $path)) {
             $result = [ 'folders' => $this->listSubFolder($path), 'files' => $this->listFiles($path) ];
 
             $folder = new Folder($path, $result);
@@ -171,19 +158,14 @@ class S3FilesAccess implements FileManager
         $this->connect();
 
         $fileId = trim(trim($fileId, '/'));
-        if ($fileId != '')
-        {
-            if (strpos($fileId, '/') === false)
-            {
+        if ($fileId != '') {
+            if (strpos($fileId, '/') === false) {
                 $folder = $this->getFolder();
-            }
-            else
-            {
+            } else {
                 $pathinfo = pathinfo($fileId);
                 $folder   = $this->getFolder($pathinfo['dirname']);
             }
-            if ($folder)
-            {
+            if ($folder) {
                 return $folder->getFile($fileId);
             }
         }
@@ -196,13 +178,11 @@ class S3FilesAccess implements FileManager
     {
         $this->connect();
 
-        if (file_exists($this->scheme . '/' . $file->getId()))
-        {
+        if (file_exists($this->scheme . '/' . $file->getId())) {
             return @file_get_contents($this->scheme . '/' . $file->getId());
         }
 
         return false;
-
     }
 
 
@@ -213,17 +193,14 @@ class S3FilesAccess implements FileManager
         $fileId   = trim($fileId, '/');
         $fileName = pathinfo($fileId, PATHINFO_FILENAME);
 
-        if ($fileName != '') // No writing of .xxx-files
-        {
+        if ($fileName != '') { // No writing of .xxx-files
             $mimeTypeRepository = new JsonRepository();
             $contentType        = $mimeTypeRepository->findType(pathinfo($fileId, PATHINFO_EXTENSION));
 
-            if (!$contentType)
-            {
+            if (!$contentType) {
                 $contentType = 'binary/octet-stream';
             }
-            try
-            {
+            try {
                 $client->putObject(array(
                                        'Bucket'      => $this->bucketName,
                                        'Key'         => $this->baseFolder . '/' . $fileId,
@@ -233,12 +210,8 @@ class S3FilesAccess implements FileManager
                                    ));
 
                 return true;
+            } catch (\Exception $e) {
             }
-            catch (\Exception $e)
-            {
-
-            }
-
         }
 
         return false;
@@ -249,27 +222,20 @@ class S3FilesAccess implements FileManager
     {
         $this->connect();
 
-        try
-        {
-            if ($this->filesystem->exists($this->scheme . '/' . $fileId))
-            {
+        try {
+            if ($this->filesystem->exists($this->scheme . '/' . $fileId)) {
                 $this->filesystem->remove($this->scheme . '/' . $fileId);
 
-                if ($deleteEmptyFolder)
-                {
+                if ($deleteEmptyFolder) {
                     $this->deleteFolder(pathinfo($fileId, PATHINFO_DIRNAME));
                 }
 
                 return true;
             }
-        }
-        catch (\Exception $e)
-        {
-
+        } catch (\Exception $e) {
         }
 
         return false;
-
     }
 
 
@@ -293,10 +259,8 @@ class S3FilesAccess implements FileManager
 
         $folder = $this->getFolder($path);
 
-        if ($folder)
-        {
-            if (count($folder->getFiles()) > 0 && $deleteIfNotEmpty == false)
-            {
+        if ($folder) {
+            if (count($folder->getFiles()) > 0 && $deleteIfNotEmpty == false) {
                 return false;
             }
 
@@ -305,8 +269,7 @@ class S3FilesAccess implements FileManager
 
             $nr = $client->deleteMatchingObjects($this->bucketName, $path);
 
-            if ($nr > 1)
-            {
+            if ($nr > 1) {
                 return true;
             }
         }
@@ -319,12 +282,9 @@ class S3FilesAccess implements FileManager
     {
         $this->connect();
 
-        if ($path != '')
-        {
+        if ($path != '') {
             $path = $this->scheme . '/' . trim($path, '/');
-        }
-        else
-        {
+        } else {
             $path = $this->scheme;
         }
         $folders = array();
@@ -332,29 +292,18 @@ class S3FilesAccess implements FileManager
 
         $finder->depth('==0');
 
-        try
-        {
+        try {
             /* @var $file \SplFileInfo */
-            foreach ($finder->in($path) as $file)
-            {
-
-                if ($file->isDir())
-                {
-
+            foreach ($finder->in($path) as $file) {
+                if ($file->isDir()) {
                     $folders[] = $file->getFilename();
-
                 }
             }
-
-        }
-        catch (\Exception $e)
-        {
-
+        } catch (\Exception $e) {
             return false;
         }
 
         return $folders;
-
     }
 
 
@@ -362,12 +311,9 @@ class S3FilesAccess implements FileManager
     {
         $this->connect();
 
-        if ($path != '')
-        {
+        if ($path != '') {
             $dir = $this->scheme . '/' . trim($path, '/');
-        }
-        else
-        {
+        } else {
             $dir = $this->scheme;
         }
 
@@ -376,14 +322,10 @@ class S3FilesAccess implements FileManager
 
         $finder->depth('==0');
 
-        try
-        {
+        try {
             /* @var $file \SplFileInfo */
-            foreach ($finder->in($dir) as $file)
-            {
-
-                if (!$file->isDir())
-                {
+            foreach ($finder->in($dir) as $file) {
+                if (!$file->isDir()) {
                     $item         = array();
                     $item['id']   = trim($path . '/' . $file->getFilename(), '/');
                     $item['name'] = $file->getFilename();
@@ -393,45 +335,33 @@ class S3FilesAccess implements FileManager
 
                     $extension = strtolower($extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION)); // To be compatible with some older PHP 5.3 versions
 
-                    if (in_array($extension, array( 'gif', 'png', 'jpg', 'jpeg' )))
-                    {
+                    if (in_array($extension, array( 'gif', 'png', 'jpg', 'jpeg' ))) {
                         $item['type'] = 'image';
-                        if ($this->imagesize == true)
-                        {
-
+                        if ($this->imagesize == true) {
                             $content = $file->getContents();
 
-                            if (function_exists('imagecreatefromstring'))
-                            {
+                            if (function_exists('imagecreatefromstring')) {
                                 $image = @imagecreatefromstring($content);
-                                if ($image)
-                                {
-
+                                if ($image) {
                                     $item['width']  = imagesx($image);
                                     $item['height'] = imagesy($image);
                                 }
                             }
                         }
-
                     }
                     $item['timestamp_lastchange'] = $file->getMTime();
 
-                    if ($this->publicUrl != false)
-                    {
+                    if ($this->publicUrl != false) {
                         $item['url'] = $this->publicUrl . '/' . $item['id'];
                     }
 
                     $files[$file->getFilename()] = $item;
                 }
-
             }
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return false;
         }
 
         return $files;
     }
-
 }

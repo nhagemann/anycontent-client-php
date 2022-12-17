@@ -3,16 +3,13 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
 class RepositoryRecordsAndRevisionsTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -27,15 +24,13 @@ class RepositoryRecordsAndRevisionsTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__.'/../../../tmp');
-
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
 
@@ -52,8 +47,7 @@ class RepositoryRecordsAndRevisionsTest extends \PHPUnit_Framework_TestCase
 
         $this->connection = $connection;
 
-        $this->repository = new Repository('phpunit',$this->connection);
-
+        $this->repository = new Repository('phpunit', $this->connection);
     }
 
 
@@ -61,16 +55,14 @@ class RepositoryRecordsAndRevisionsTest extends \PHPUnit_Framework_TestCase
     {
         $this->repository->selectContentType('example01');
 
-        for ($i = 1; $i <= 5; $i++)
-        {
+        for ($i = 1; $i <= 5; $i++) {
             $record = $this->repository->createRecord('New Record ' . $i);
             $record->setProperty('article', 'Test ' . $i);
             $id = $this->repository->saveRecord($record);
             $this->assertEquals($i, $id);
         }
 
-        for ($i = 2; $i <= 5; $i++)
-        {
+        for ($i = 2; $i <= 5; $i++) {
             $record = $this->repository->createRecord('New Record 1 - Revision ' . $i);
             $record->setId(1);
             $id = $this->repository->saveRecord($record);
@@ -82,8 +74,8 @@ class RepositoryRecordsAndRevisionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $record->getRevision());
 
         $records = $this->repository->getRecords();
-        $this->assertCount(5,$records);
-        $this->assertEquals(5,$this->repository->countRecords());
+        $this->assertCount(5, $records);
+        $this->assertEquals(5, $this->repository->countRecords());
 
         $record = $this->repository->getRecord(99);
         $this->assertFalse($record);
@@ -103,10 +95,8 @@ class RepositoryRecordsAndRevisionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Test 1', $record->getProperty('article'));
 
         $records = $this->repository->getRecords();
-        $this->assertCount(5,$records);
-        $this->assertEquals(5,$this->repository->countRecords());
-
-
+        $this->assertCount(5, $records);
+        $this->assertEquals(5, $this->repository->countRecords());
     }
 
 

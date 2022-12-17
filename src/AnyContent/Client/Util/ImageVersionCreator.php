@@ -4,12 +4,10 @@ namespace AnyContent\Client\Util;
 
 use AnyContent\Client\File;
 use AnyContent\Client\Repository;
-
 use Imagine\Filter\Basic\Crop;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
-
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
@@ -26,7 +24,6 @@ use Symfony\Component\Finder\Finder;
  */
 class ImageVersionCreator
 {
-
     /**
      * @var Repository
      */
@@ -206,11 +203,9 @@ class ImageVersionCreator
         }
         if ($this->repository) {
             if ($file->isImage()) {
-
                 $filename = $this->determineFileName($file, $width, $height, 'f', $filename);
 
                 if ($this->mustBuildImage($file, $filename)) {
-
                     $binary = $this->getBinary($file);
 
                     if ($binary) {
@@ -364,7 +359,6 @@ class ImageVersionCreator
                     $quality = $this->determineQuality($quality);
                     $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
                 }
-
             } else {
                 return false;
             }
@@ -402,7 +396,6 @@ class ImageVersionCreator
 
         if ($this->repository) {
             if ($file->isImage()) {
-
                 $filename = $this->determineFileName($file, $width, $height, 'c', $filename);
 
                 if ($this->mustBuildImage($file, $filename)) {
@@ -433,9 +426,8 @@ class ImageVersionCreator
 
                             $upperLeft = new Point($start, 0);
 
-                            $image->crop($upperLeft, new Box ($width, $height));
+                            $image->crop($upperLeft, new Box($width, $height));
                         } else {
-
                             // create image that has the desired width and an oversize height to crop from
                             $x = $width;
                             $y = $size->getHeight() * ($x / $size->getWidth());
@@ -447,7 +439,7 @@ class ImageVersionCreator
 
                             $upperLeft = new Point(0, $start);
 
-                            $image->crop($upperLeft, new Box ($width, $height));
+                            $image->crop($upperLeft, new Box($width, $height));
                         }
 
                         $quality = $this->determineQuality($quality);
@@ -596,7 +588,6 @@ class ImageVersionCreator
         $info = new \SplFileInfo($this->basePath . '/' . $filename);
 
         if ($file->getTimestampLastChange() > $info->getCTime()) {
-
             return true;
         }
 

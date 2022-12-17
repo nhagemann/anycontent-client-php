@@ -10,7 +10,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class FilterTest extends \PHPUnit_Framework_TestCase
 {
-
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
@@ -25,13 +24,11 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $fs = new Filesystem();
 
-        if (file_exists($target))
-        {
+        if (file_exists($target)) {
             $fs->remove($target);
         }
 
         $fs->mirror($source, $target);
-
     }
 
 
@@ -49,7 +46,6 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->repository = new Repository('phpunit', $connection);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
-
     }
 
 
@@ -72,7 +68,6 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $filter = new PropertyFilter('name = New Record');
         $this->assertFalse($filter->match($record2));
-
     }
 
 
@@ -99,7 +94,6 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($andFilter->match($record1));
         $this->assertFalse($andFilter->match($record2));
-
     }
 
 
@@ -126,7 +120,6 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($orFilter->match($record1));
         $this->assertTrue($orFilter->match($record2));
-
     }
 
 
@@ -228,7 +221,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     public function testFilterAsString()
     {
         $filter = new PropertyFilter('source < 111');
-        $this->assertEquals('source < 111',(string)$filter);
+        $this->assertEquals('source < 111', (string)$filter);
 
         $filter1 = new PropertyFilter('name = New Record');
         $filter2 = new PropertyFilter('source = a');
@@ -238,8 +231,8 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $orFilter = new ORFilter([ $andFilter, $filter3 ]);
 
-        $this->assertEquals('(name = New Record AND source = a)',(string)$andFilter);
-        $this->assertEquals('((name = New Record AND source = a) OR source = b)',(string)$orFilter);
+        $this->assertEquals('(name = New Record AND source = a)', (string)$andFilter);
+        $this->assertEquals('((name = New Record AND source = a) OR source = b)', (string)$orFilter);
     }
 
 
@@ -297,5 +290,4 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 //
 //        $this->assertEquals('source > a + name = Differing Name', $filter->getSimpleQuery());
 //    }
-
 }

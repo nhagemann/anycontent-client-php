@@ -7,7 +7,6 @@ use KVMLogger\KVMLogger;
 
 class RecordsSorter
 {
-
     /**
      * @param Record[] $records
      *
@@ -16,43 +15,35 @@ class RecordsSorter
     public static function orderRecords(array $records, $order)
     {
 
-        if (!is_array($order))
-        {
+        if (!is_array($order)) {
             $order = [ $order ];
         }
 
         $instructions = [ ];
-        foreach ($order as $property)
-        {
+        foreach ($order as $property) {
             $property  = trim($property);
             $sortorder = substr($property, -1);
 
-            switch ($sortorder)
-            {
-                case '-';
+            switch ($sortorder) {
+                case '-':
                 case '+':
                     $property = substr($property, 0, -1);
                     break;
                 default:
                     $sortorder = '+';
                     break;
-
             }
 
             $instructions[] = [ 'property' => $property, 'order' => $sortorder ];
-
         }
 
-        uasort($records, function (Record $a, Record $b) use ($instructions)
-        {
+        uasort($records, function (Record $a, Record $b) use ($instructions) {
 
-            foreach ($instructions as $instruction)
-            {
+            foreach ($instructions as $instruction) {
                 $property = $instruction['property'];
                 $order    = $instruction['order'];
 
-                switch ($property)
-                {
+                switch ($property) {
                     case '.id':
                         $valueA = $a->getId();
                         $valueB = $b->getId();
@@ -95,31 +86,22 @@ class RecordsSorter
                         break;
                 }
 
-                if ($order == '+')
-                {
-                    if ($valueA < $valueB)
-                    {
+                if ($order == '+') {
+                    if ($valueA < $valueB) {
                         return -1;
                     }
-                    if ($valueA > $valueB)
-                    {
+                    if ($valueA > $valueB) {
+                        return 1;
+                    }
+                } else {
+                    if ($valueA > $valueB) {
+                        return -1;
+                    }
+                    if ($valueA < $valueB) {
                         return 1;
                     }
                 }
-                else
-                {
-                    if ($valueA > $valueB)
-                    {
-                        return -1;
-                    }
-                    if ($valueA < $valueB)
-                    {
-                        return 1;
-                    }
-                }
-
             }
-
         });
 
         return $records;
@@ -138,10 +120,8 @@ class RecordsSorter
 
         $records = self::orderRecords($records, 'position');
 
-        foreach ($records as $record)
-        {
-            if ($record->getParent() === 0 || $record->getParent() > 0) // include 0 and numbers, exclude null and ''
-            {
+        foreach ($records as $record) {
+            if ($record->getParent() === 0 || $record->getParent() > 0) { // include 0 and numbers, exclude null and ''
                 $map[$record->getId()] = $record;
                 $list[]                = [ 'id' => $record->getId(), 'parentId' => $record->getParent() ];
             }
@@ -152,50 +132,37 @@ class RecordsSorter
 
         $root = false;
 
-        if ($parentId != 0)
-        {
-            if (array_key_exists($parentId,$nestedSet)) {
+        if ($parentId != 0) {
+            if (array_key_exists($parentId, $nestedSet)) {
                 $root = $nestedSet[$parentId];
-            }
-            else
-            {
+            } else {
                 return [];
             }
         }
 
         $result = [ ];
 
-        if ($height != 0 && $root)
-        {
-            foreach ($nestedSet as $id => $positioning)
-            {
-                if ($root['left'] > $positioning['left'] && $root['right'] < $positioning['right'])
-                {
+        if ($height != 0 && $root) {
+            foreach ($nestedSet as $id => $positioning) {
+                if ($root['left'] > $positioning['left'] && $root['right'] < $positioning['right']) {
                     $result[$id] = $map[$id];
                     $result[$id]->setLevel($positioning['level']);
                 }
             }
         }
 
-        if ($includeParent && $root)
-        {
+        if ($includeParent && $root) {
             $result[$parentId] = $map[$parentId];
             $result[$parentId]->setLevel($root['level']);
-
         }
 
-        if ($depth != null)
-        {
+        if ($depth != null) {
             $depth = $depth + $root['level'];
         }
 
-        foreach ($nestedSet as $id => $positioning)
-        {
-
-            if ($depth === null || $positioning['level'] <= $depth)
-            {
-                if ($parentId == 0 || ($positioning['left'] > $root['left'] && $positioning['right'] < $root['right']))
-                {
+        foreach ($nestedSet as $id => $positioning) {
+            if ($depth === null || $positioning['level'] <= $depth) {
+                if ($parentId == 0 || ($positioning['left'] > $root['left'] && $positioning['right'] < $root['right'])) {
                     $result[$id] = $map[$id];
                     $result[$id]->setLevel($positioning['level']);
                 }
@@ -203,10 +170,5 @@ class RecordsSorter
         }
 
         return $result;
-
     }
-
 }
-
-
-

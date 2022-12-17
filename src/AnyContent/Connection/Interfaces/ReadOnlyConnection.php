@@ -12,7 +12,6 @@ use Doctrine\Common\Cache\CacheProvider;
 
 interface ReadOnlyConnection
 {
-
     /**
      * @return string[]
      */
@@ -128,7 +127,7 @@ interface ReadOnlyConnection
      *
      * @return Record
      */
-    public function getRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null);
+    public function getRecord(string $recordId, ?string $contentTypeName, ?DataDimensions $dataDimensions = null);
 
 
     public function getRecordClassForContentType($contentTypeName);
@@ -189,5 +188,4 @@ interface ReadOnlyConnection
      * @param null $configTypeName
      */
     public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null);
-
 }
