@@ -15,7 +15,8 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
     public $connection;
 
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample1';
 
@@ -29,7 +30,8 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
     }
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

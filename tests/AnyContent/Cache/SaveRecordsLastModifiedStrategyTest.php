@@ -22,7 +22,8 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
     protected $connection;
 
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
         $source = __DIR__ . '/../../resources/RecordsFileExample';
 
@@ -38,7 +39,8 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
     }
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
 
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
 
@@ -57,7 +59,7 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
         $fs->remove(__DIR__ . '/../../../tmp/phpfilecache');
         $fs->mkdir(__DIR__ . '/../../../tmp/phpfilecache');
 
-        $cache = DoctrineProvider::wrap(new FilesystemAdapter('',0,__DIR__ . '/../../../tmp/phpfilecache'));
+        $cache = DoctrineProvider::wrap(new FilesystemAdapter('', 0, __DIR__ . '/../../../tmp/phpfilecache'));
 
         $repository->setCacheProvider($cache);
         $this->repository = $repository;

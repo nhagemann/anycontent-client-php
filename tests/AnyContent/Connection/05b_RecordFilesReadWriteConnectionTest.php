@@ -14,7 +14,8 @@ class RecordFilesReadWriteConnectionTest extends TestCase
     /** @var  RecordFilesReadWriteConnection */
     public $connection;
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $source = __DIR__ . '/../..//resources/RecordFilesExample';
         $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
 
@@ -28,7 +29,8 @@ class RecordFilesReadWriteConnectionTest extends TestCase
     }
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
 
         $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
 

@@ -22,7 +22,8 @@ class SortingTest extends TestCase
     public $repository;
 
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample2';
 
@@ -38,7 +39,8 @@ class SortingTest extends TestCase
     }
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

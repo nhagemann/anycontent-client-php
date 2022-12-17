@@ -64,7 +64,7 @@ class AdminTestMySQLSchemaless1Test extends TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public function setUp():void
+    public function setUp(): void
     {
         $target = __DIR__ . '/../../../tmp/MySqlSchemaLessCMDL';
 

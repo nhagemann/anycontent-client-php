@@ -17,7 +17,8 @@ class RecordsFileRepositoryTest extends TestCase
     /** @var  RecordFilesReadWriteConnection */
     public $connection;
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $fs = new Filesystem();
         $fs->copy(__DIR__ . '/../../resources/RecordsFileExample/profiles.json', __DIR__ . '/../../resources/RecordsFileExample/temp.json', true);
         $fs->copy(__DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../resources/RecordsFileExample/temp.cmdl', true);
@@ -25,7 +26,8 @@ class RecordsFileRepositoryTest extends TestCase
 
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $configuration = new RecordsFileConfiguration();
 
         $configuration->addContentType('temp', __DIR__ . '/../../resources/RecordsFileExample/temp.cmdl', __DIR__ . '/../../resources/RecordsFileExample/temp.json');

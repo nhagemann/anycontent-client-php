@@ -16,7 +16,8 @@ class RecordsFileConfigTest extends TestCase
     public $connection;
 
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
         $source = __DIR__ . '/../../resources/RecordsFileExample';
 
@@ -32,7 +33,8 @@ class RecordsFileConfigTest extends TestCase
     }
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $configuration = new RecordsFileConfiguration();
 
         $configuration->addContentType('profiles', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.json');

@@ -20,7 +20,8 @@ class RestLikeBasicConnectionReadOnlyTest extends TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
 
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
@@ -70,7 +71,8 @@ class RestLikeBasicConnectionReadOnlyTest extends TestCase
     }
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
 
         $configuration = new RestLikeConfiguration();
 
@@ -179,7 +181,7 @@ class RestLikeBasicConnectionReadOnlyTest extends TestCase
     {
         $connection = $this->connection;
 
-        $this->assertInternalType('string', $this->connection->getLastModifiedDate());
+        $this->assertIsString( $this->connection->getLastModifiedDate());
     }
 
 

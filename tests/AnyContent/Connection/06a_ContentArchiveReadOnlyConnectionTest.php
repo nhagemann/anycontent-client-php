@@ -14,7 +14,8 @@ class ContentArchiveConnectionTest extends TestCase
     public $connection;
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $configuration = new ContentArchiveConfiguration();
 
         $configuration->setContentArchiveFolder(__DIR__ . '/../../resources/ContentArchiveExample1');
@@ -116,6 +117,6 @@ class ContentArchiveConnectionTest extends TestCase
 
     public function testLastModified()
     {
-        $this->assertInternalType('int', $this->connection->getLastModifiedDate());
+        $this->assertIsInt( $this->connection->getLastModifiedDate());
     }
 }

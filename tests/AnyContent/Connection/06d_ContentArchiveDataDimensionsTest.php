@@ -15,7 +15,8 @@ class ContentArchiveDataDimensionsTest extends TestCase
     public $connection;
 
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $target = __DIR__ . '/../../../tmp/TestContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample1';
 
@@ -40,7 +41,8 @@ class ContentArchiveDataDimensionsTest extends TestCase
     }
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $target = __DIR__ . '/../../../tmp/TestContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

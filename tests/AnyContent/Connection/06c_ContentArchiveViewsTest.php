@@ -12,14 +12,14 @@ use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 
-
 class ContentArchiveViewsTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample1';
 
@@ -34,7 +34,8 @@ class ContentArchiveViewsTest extends TestCase
 
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

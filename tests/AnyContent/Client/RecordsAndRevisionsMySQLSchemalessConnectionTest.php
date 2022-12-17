@@ -24,7 +24,8 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
 
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
@@ -67,7 +68,8 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public function setUp(): void    {
+    public function setUp(): void
+    {
 
         $configuration = new MySQLSchemalessConfiguration();
 

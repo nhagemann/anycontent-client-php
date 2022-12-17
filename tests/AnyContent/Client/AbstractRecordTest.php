@@ -16,7 +16,8 @@ class AbstractRecordTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-    public static function setUpBeforeClass(): void    {
+    public static function setUpBeforeClass(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample2';
 
@@ -31,7 +32,8 @@ class AbstractRecordTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

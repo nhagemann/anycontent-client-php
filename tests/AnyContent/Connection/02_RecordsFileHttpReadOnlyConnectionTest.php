@@ -14,7 +14,8 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
     public $connection;
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $configuration = new RecordsFileHttpConfiguration();
 
         $configuration->addContentType('profiles', 'https://s3-eu-west-1.amazonaws.com/backup01.contentbox.io/da08517dc866617a075c0c2d38c5fb95/profiles.default.default.json', 'https://s3-eu-west-1.amazonaws.com/backup01.contentbox.io/da08517dc866617a075c0c2d38c5fb95/profiles.cmdl');
@@ -102,6 +103,6 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 
     public function testLastModified()
     {
-        $this->assertInternalType('int', $this->connection->getLastModifiedDate());
+        $this->assertIsInt( $this->connection->getLastModifiedDate());
     }
 }

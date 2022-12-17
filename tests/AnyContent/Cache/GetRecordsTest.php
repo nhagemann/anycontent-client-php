@@ -18,7 +18,8 @@ class GetRecordsTest extends TestCase
 
 
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
 
         $configuration = new RecordsFileConfiguration();
 
@@ -34,7 +35,7 @@ class GetRecordsTest extends TestCase
         $fs->remove(__DIR__ . '/../../../tmp/phpfilecache');
         $fs->mkdir(__DIR__ . '/../../../tmp/phpfilecache');
 
-        $cache = DoctrineProvider::wrap(new FilesystemAdapter('',0,__DIR__ . '/../../../tmp/phpfilecache'));
+        $cache = DoctrineProvider::wrap(new FilesystemAdapter('', 0, __DIR__ . '/../../../tmp/phpfilecache'));
 
         $repository->setCacheProvider($cache);
         $this->repository = $repository;
