@@ -6,6 +6,7 @@ use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -15,7 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @package AnyContent\Admin
  */
-class AdminTestMySQLSchemaless2Test extends \PHPUnit_Framework_TestCase
+class AdminTestMySQLSchemaless2Test extends TestCase
 {
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
@@ -27,7 +28,7 @@ class AdminTestMySQLSchemaless2Test extends \PHPUnit_Framework_TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
 
         // drop & create database
@@ -51,7 +52,7 @@ class AdminTestMySQLSchemaless2Test extends \PHPUnit_Framework_TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public function setUp()
+    public function setUp(): void
     {
         $configuration = new MySQLSchemalessConfiguration();
 
@@ -108,7 +109,7 @@ class AdminTestMySQLSchemaless2Test extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(0, $connection->getContentTypeNames());
 
-        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $this->expectException('AnyContent\AnyContentClientException');
         $connection->getCMDLForContentType('neu');
     }
 
@@ -139,7 +140,7 @@ class AdminTestMySQLSchemaless2Test extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(0, $connection->getConfigTypeNames());
 
-        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $this->expectException('AnyContent\AnyContentClientException');
         $connection->getCMDLForConfigType('neu');
     }
 }

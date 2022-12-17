@@ -9,8 +9,9 @@ use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\RecordsFileReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 
-class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
+class RestLikeBasicConnectionReadOnlyTest extends TestCase
 {
     /** @var  RestLikeBasicReadOnlyConnection */
     public $connection;
@@ -19,8 +20,7 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
 
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
@@ -70,8 +70,7 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
 
         $configuration = new RestLikeConfiguration();
 
@@ -92,7 +91,7 @@ class RestLikeBasicConnectionReadOnlyTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->connection;
 
-        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $this->expectException('AnyContent\AnyContentClientException');
         $this->assertEquals(12, $connection->countRecords());
     }
 

@@ -6,8 +6,9 @@ use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class SequenceTest extends \PHPUnit_Framework_TestCase
+class SequenceTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
@@ -16,8 +17,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     public $repository;
 
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample1';
 
@@ -33,7 +33,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
@@ -42,8 +42,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();
@@ -78,7 +77,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $record = $this->repository->getRecord(5);
 
-        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $this->expectException('AnyContent\AnyContentClientException');
 
         $item = new SequenceItem($record->getDataTypeDefinition(), 'wrong', 'test');
     }
@@ -91,7 +90,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $record = $this->repository->getRecord(5);
 
-        $this->setExpectedException('CMDL\CMDLParserException');
+        $this->expectException('CMDL\CMDLParserException');
 
         $item = new SequenceItem($record->getDataTypeDefinition(), 'standorte', 'standort');
 

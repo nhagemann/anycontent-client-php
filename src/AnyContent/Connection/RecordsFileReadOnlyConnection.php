@@ -116,7 +116,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
      *
      * @return Record
      */
-    public function getRecord(string $recordId, ?string $contentTypeName, ?DataDimensions $dataDimensions = null)
+    public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
     {
 
         if ($contentTypeName == null) {

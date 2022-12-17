@@ -6,15 +6,15 @@ use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
 use AnyContent\Connection\RecordsFileHttpReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 
-class RecordsFileHttpReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
+class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 {
     /** @var  RecordsFileHttpReadOnlyConnection */
     public $connection;
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $configuration = new RecordsFileHttpConfiguration();
 
         $configuration->addContentType('profiles', 'https://s3-eu-west-1.amazonaws.com/backup01.contentbox.io/da08517dc866617a075c0c2d38c5fb95/profiles.default.default.json', 'https://s3-eu-west-1.amazonaws.com/backup01.contentbox.io/da08517dc866617a075c0c2d38c5fb95/profiles.cmdl');
@@ -31,7 +31,7 @@ class RecordsFileHttpReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $this->expectException('AnyContent\AnyContentClientException');
         $this->assertEquals(12, $connection->countRecords());
     }
 

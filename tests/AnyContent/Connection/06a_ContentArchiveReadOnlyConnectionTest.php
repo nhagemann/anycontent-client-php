@@ -6,15 +6,15 @@ use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 
-class ContentArchiveConnectionTest extends \PHPUnit_Framework_TestCase
+class ContentArchiveConnectionTest extends TestCase
 {
     /** @var  ContentArchiveReadOnlyConnection */
     public $connection;
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $configuration = new ContentArchiveConfiguration();
 
         $configuration->setContentArchiveFolder(__DIR__ . '/../../resources/ContentArchiveExample1');
@@ -31,7 +31,7 @@ class ContentArchiveConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $this->expectException('AnyContent\AnyContentClientException');
         $this->assertEquals(12, $connection->countRecords());
     }
 

@@ -6,11 +6,14 @@ use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordsFileReadWriteConnection;
 use Doctrine\Common\Cache\PhpFileCache;
+use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class SaveRecordsLastModifiedStategyTest extends \PHPUnit_Framework_TestCase
+class SaveRecordsLastModifiedStategyTest extends TestCase
 {
     /** @var  CachingRepository */
     protected $repository;
@@ -19,8 +22,7 @@ class SaveRecordsLastModifiedStategyTest extends \PHPUnit_Framework_TestCase
     protected $connection;
 
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
         $source = __DIR__ . '/../../resources/RecordsFileExample';
 
@@ -36,8 +38,7 @@ class SaveRecordsLastModifiedStategyTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
 
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
 
@@ -56,7 +57,7 @@ class SaveRecordsLastModifiedStategyTest extends \PHPUnit_Framework_TestCase
         $fs->remove(__DIR__ . '/../../../tmp/phpfilecache');
         $fs->mkdir(__DIR__ . '/../../../tmp/phpfilecache');
 
-        $cache = new PhpFileCache(__DIR__ . '/../../../tmp/phpfilecache');
+        $cache = DoctrineProvider::wrap(new FilesystemAdapter('',0,__DIR__ . '/../../../tmp/phpfilecache'));
 
         $repository->setCacheProvider($cache);
         $this->repository = $repository;

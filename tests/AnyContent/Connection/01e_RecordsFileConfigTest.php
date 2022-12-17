@@ -8,15 +8,15 @@ use AnyContent\Connection\RecordsFileReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class RecordsFileConfigTest extends \PHPUnit_Framework_TestCase
+class RecordsFileConfigTest extends TestCase
 {
     /** @var  RecordsFileReadWriteConnection */
     public $connection;
 
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
         $source = __DIR__ . '/../../resources/RecordsFileExample';
 
@@ -32,8 +32,7 @@ class RecordsFileConfigTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $configuration = new RecordsFileConfiguration();
 
         $configuration->addContentType('profiles', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.json');

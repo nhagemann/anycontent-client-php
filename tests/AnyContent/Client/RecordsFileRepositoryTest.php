@@ -10,14 +10,14 @@ use CMDL\Parser;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class RecordsFileRepositoryTest extends \PHPUnit_Framework_TestCase
+class RecordsFileRepositoryTest extends TestCase
 {
     /** @var  RecordFilesReadWriteConnection */
     public $connection;
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $fs = new Filesystem();
         $fs->copy(__DIR__ . '/../../resources/RecordsFileExample/profiles.json', __DIR__ . '/../../resources/RecordsFileExample/temp.json', true);
         $fs->copy(__DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../resources/RecordsFileExample/temp.cmdl', true);
@@ -25,8 +25,7 @@ class RecordsFileRepositoryTest extends \PHPUnit_Framework_TestCase
 
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $configuration = new RecordsFileConfiguration();
 
         $configuration->addContentType('temp', __DIR__ . '/../../resources/RecordsFileExample/temp.cmdl', __DIR__ . '/../../resources/RecordsFileExample/temp.json');

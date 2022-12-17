@@ -8,8 +8,9 @@ use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
+class RecordsSorterUtilTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
@@ -18,8 +19,7 @@ class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
     public $repository;
 
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample2';
 
@@ -35,8 +35,7 @@ class RecordsSorterUtilTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

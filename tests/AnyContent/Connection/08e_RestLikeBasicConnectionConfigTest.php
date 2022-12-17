@@ -6,8 +6,9 @@ use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 
-class RestLikeBasicConnectionConfigTest extends \PHPUnit_Framework_TestCase
+class RestLikeBasicConnectionConfigTest extends TestCase
 {
     /** @var  RestLikeBasicReadWriteConnection */
     public $connection;

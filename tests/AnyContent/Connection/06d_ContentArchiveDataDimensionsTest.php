@@ -6,16 +6,16 @@ use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
+class ContentArchiveDataDimensionsTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $target = __DIR__ . '/../../../tmp/TestContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample1';
 
@@ -29,7 +29,7 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         $target = __DIR__ . '/../../../tmp/TestContentArchive';
 
@@ -40,8 +40,7 @@ class ContentArchiveDataDimensionsTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $target = __DIR__ . '/../../../tmp/TestContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

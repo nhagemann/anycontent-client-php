@@ -9,15 +9,15 @@ use AnyContent\Connection\RecordsFileReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class RecordFilesViewsTest extends \PHPUnit_Framework_TestCase
+class RecordFilesViewsTest extends TestCase
 {
     /** @var  RecordFilesReadWriteConnection */
     public $connection;
 
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $source = __DIR__ . '/../..//resources/RecordFilesExample';
         $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
 
@@ -31,8 +31,7 @@ class RecordFilesViewsTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
 
         $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
 
@@ -68,7 +67,7 @@ class RecordFilesViewsTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecordFactory()->createRecord($definition);
         $record->setProperty('a', 'valuea');
         $record->setProperty('b', 'valueb');
-        $this->setExpectedException('CMDL\CMDLParserException');
+        $this->expectException('CMDL\CMDLParserException');
         $record->setProperty('c', 'valuec');
     }
 

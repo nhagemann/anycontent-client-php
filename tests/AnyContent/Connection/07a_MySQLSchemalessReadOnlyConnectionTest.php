@@ -5,8 +5,9 @@ namespace AnyContent\Connection;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use KVMLogger\KVMLoggerFactory;
+use PHPUnit\Framework\TestCase;
 
-class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
+class MySQLSchemalessConnectionTest extends TestCase
 {
     /** @var  MySQLSchemalessReadOnlyConnection */
     public $connection;
@@ -15,8 +16,7 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
 
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
@@ -60,8 +60,7 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public function setUp()
-    {
+    public function setUp(): void    {
 
         $configuration = new MySQLSchemalessConfiguration();
 
@@ -84,7 +83,7 @@ class MySQLSchemalessConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $this->expectException('AnyContent\AnyContentClientException');
         $this->assertEquals(12, $connection->countRecords());
     }
 

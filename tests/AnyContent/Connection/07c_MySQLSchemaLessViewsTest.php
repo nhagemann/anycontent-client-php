@@ -7,14 +7,14 @@ use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 
-class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
+class MySQLSchemalessViewsTest extends TestCase
 {
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
 
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
@@ -38,8 +38,7 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public function setUp()
-    {
+    public function setUp(): void    {
 
         $configuration = new MySQLSchemalessConfiguration();
 
@@ -73,7 +72,7 @@ class MySQLSchemalessViewsTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecordFactory()->createRecord($definition);
         $record->setProperty('a', 'valuea');
         $record->setProperty('b', 'valueb');
-        $this->setExpectedException('CMDL\CMDLParserException');
+        $this->expectException('CMDL\CMDLParserException');
         $record->setProperty('c', 'valuec');
     }
 

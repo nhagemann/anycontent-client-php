@@ -6,8 +6,9 @@ use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class AbstractRecordTest extends \PHPUnit_Framework_TestCase
+class AbstractRecordTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
@@ -15,8 +16,7 @@ class AbstractRecordTest extends \PHPUnit_Framework_TestCase
     /** @var  Repository */
     public $repository;
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample2';
 
@@ -31,8 +31,7 @@ class AbstractRecordTest extends \PHPUnit_Framework_TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

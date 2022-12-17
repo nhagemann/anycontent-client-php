@@ -156,7 +156,7 @@ class RecordsSorter
             $result[$parentId]->setLevel($root['level']);
         }
 
-        if ($depth != null) {
+        if ($depth != null && isset($root['level'])) {
             $depth = $depth + $root['level'];
         }
 

@@ -8,15 +8,15 @@ use AnyContent\Connection\RecordsFileReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class RecordsFileViewsTest extends \PHPUnit_Framework_TestCase
+class RecordsFileViewsTest extends TestCase
 {
     /** @var  RecordsFileReadWriteConnection */
     public $connection;
 
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
         $source = __DIR__ . '/../../resources/RecordsFileExample';
 
@@ -30,8 +30,7 @@ class RecordsFileViewsTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $configuration = new RecordsFileConfiguration();
 
         $configuration->addContentType('profiles', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.json');
@@ -62,7 +61,7 @@ class RecordsFileViewsTest extends \PHPUnit_Framework_TestCase
         $record = $connection->getRecordFactory()->createRecord($definition);
         $record->setProperty('a', 'valuea');
         $record->setProperty('b', 'valueb');
-        $this->setExpectedException('CMDL\CMDLParserException');
+        $this->expectException('CMDL\CMDLParserException');
         $record->setProperty('c', 'valuec');
     }
 

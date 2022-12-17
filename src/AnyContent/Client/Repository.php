@@ -472,8 +472,11 @@ class Repository implements FileManager, \JsonSerializable
      *
      * @return Record
      */
-    public function getRecord($recordId, $dataDimensions = null)
+    public function getRecord(?string $recordId, $dataDimensions = null)
     {
+        if ($recordId===null){
+            return false;
+        }
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }

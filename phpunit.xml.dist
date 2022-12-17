@@ -6,7 +6,7 @@
     </include>
   </coverage>
   <testsuites>
-    <testsuite name="AnyContent Repository Test Suite">
+    <testsuite name="AnyContent Client Test Suite">
       <directory>tests/AnyContent</directory>
     </testsuite>
   </testsuites>

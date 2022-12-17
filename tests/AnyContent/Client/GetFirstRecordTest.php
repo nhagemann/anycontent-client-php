@@ -9,8 +9,9 @@ use AnyContent\Filter\ORFilter;
 use AnyContent\Filter\PropertyFilter;
 use KVMLogger\KVMLoggerFactory;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
+class GetFirstRecordTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
@@ -19,8 +20,7 @@ class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
     public $repository;
 
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
         $source = __DIR__ . '/../../resources/ContentArchiveExample2';
 
@@ -36,7 +36,7 @@ class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
@@ -45,8 +45,7 @@ class GetFirstRecordTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

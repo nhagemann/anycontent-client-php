@@ -255,7 +255,7 @@ class CachingRepository extends Repository
      *
      * @return Record
      */
-    public function getRecord($recordId, $dataDimensions = null)
+    public function getRecord(?string $recordId, $dataDimensions = null)
     {
 
         if ($dataDimensions == null) {

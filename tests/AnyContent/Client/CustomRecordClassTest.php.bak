@@ -9,7 +9,7 @@ use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 
-class CustomRecordClassTest extends \PHPUnit_Framework_TestCase
+class CustomRecordClassTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
@@ -30,8 +30,7 @@ class CustomRecordClassTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();

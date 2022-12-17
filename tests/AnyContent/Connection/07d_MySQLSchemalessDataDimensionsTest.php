@@ -7,8 +7,9 @@ use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 
-class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
+class MySQLSchemalessDataDimensionsTest extends TestCase
 {
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
@@ -17,8 +18,7 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
 
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
@@ -61,8 +61,7 @@ class MySQLSchemalessDataDimensionsTest extends \PHPUnit_Framework_TestCase
     /**
      * @throws \AnyContent\AnyContentClientException
      */
-    public function setUp()
-    {
+    public function setUp(): void    {
 
         $configuration = new MySQLSchemalessConfiguration();
 

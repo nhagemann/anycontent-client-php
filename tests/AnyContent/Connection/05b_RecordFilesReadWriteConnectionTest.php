@@ -7,14 +7,14 @@ use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class RecordFilesReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
+class RecordFilesReadWriteConnectionTest extends TestCase
 {
     /** @var  RecordFilesReadWriteConnection */
     public $connection;
 
-    public static function setUpBeforeClass()
-    {
+    public static function setUpBeforeClass(): void    {
         $source = __DIR__ . '/../..//resources/RecordFilesExample';
         $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
 
@@ -28,8 +28,7 @@ class RecordFilesReadWriteConnectionTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
 
         $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
 

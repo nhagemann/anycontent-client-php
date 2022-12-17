@@ -6,15 +6,15 @@ use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\RecordFilesReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 
-class RecordFilesReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
+class RecordFilesReadOnlyConnectionTest extends TestCase
 {
     /** @var  RecordFilesReadOnlyConnection */
     public $connection;
 
 
-    public function setUp()
-    {
+    public function setUp(): void    {
         $configuration = new RecordFilesConfiguration();
 
         $configuration->addContentType('profiles', __DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../..//resources/RecordFilesExample/records/profiles');
@@ -31,7 +31,7 @@ class RecordFilesReadOnlyConnectionTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->connection;
 
-        $this->setExpectedException('AnyContent\AnyContentClientException');
+        $this->expectException('AnyContent\AnyContentClientException');
         $this->assertEquals(12, $connection->countRecords());
     }
 

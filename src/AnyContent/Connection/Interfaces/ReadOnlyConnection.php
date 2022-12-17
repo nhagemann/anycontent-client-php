@@ -127,7 +127,7 @@ interface ReadOnlyConnection
      *
      * @return Record
      */
-    public function getRecord(string $recordId, ?string $contentTypeName, ?DataDimensions $dataDimensions = null);
+    public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null);
 
 
     public function getRecordClassForContentType($contentTypeName);
