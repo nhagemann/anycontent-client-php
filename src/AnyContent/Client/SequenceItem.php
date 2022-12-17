@@ -13,7 +13,7 @@ class SequenceItem
 {
     use Properties;
 
-    protected ViewDefinition $viewDefinition;
+    //protected ViewDefinition $viewDefinition;
 
     protected $type;
 

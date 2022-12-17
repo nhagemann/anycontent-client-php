@@ -57,36 +57,36 @@ class RestLikeFilesAccess implements FileManager
      */
     public function getClient()
     {
-
-        if (!$this->client) {
-            $client = new Client([ 'base_url' => $this->getConfiguration()->getUri(),
-                                   'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ],
-                                 ]);
-
-            $this->client = $client;
-
-            $emitter = $client->getEmitter();
-
-            $emitter->on('end', function (EndEvent $event) {
-
-                $kvm = KVMLogger::instance('anycontent-connection');
-
-                $response = $event->getResponse();
-
-                $duration = (int)($event->getTransferInfo('total_time') * 1000);
-
-                $message = new LogMessage();
-                $message->addLogValue('method', $event->getRequest()->getMethod());
-                $message->addLogValue('duration', $duration);
-
-                if ($response) {
-                    $message->addLogValue('code', $response->getStatusCode());
-                    $message->addLogValue('url', $response->getEffectiveUrl());
-                }
-
-                $kvm->debug($message);
-            });
-        }
+//
+//        if (!$this->client) {
+//            $client = new Client([ 'base_url' => $this->getConfiguration()->getUri(),
+//                                   'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ],
+//                                 ]);
+//
+//            $this->client = $client;
+//
+//            $emitter = $client->getEmitter();
+//
+//            $emitter->on('end', function (EndEvent $event) {
+//
+//                $kvm = KVMLogger::instance('anycontent-connection');
+//
+//                $response = $event->getResponse();
+//
+//                $duration = (int)($event->getTransferInfo('total_time') * 1000);
+//
+//                $message = new LogMessage();
+//                $message->addLogValue('method', $event->getRequest()->getMethod());
+//                $message->addLogValue('duration', $duration);
+//
+//                if ($response) {
+//                    $message->addLogValue('code', $response->getStatusCode());
+//                    $message->addLogValue('url', $response->getEffectiveUrl());
+//                }
+//
+//                $kvm->debug($message);
+//            });
+//        }
 
         return $this->client;
     }

@@ -133,13 +133,10 @@ abstract class AbstractConnection implements ReadOnlyConnection
     }
 
 
-    /**
-     * @return Wrapper | CacheProvider
-     */
-    public function getCacheProvider()
+    public function getCacheProvider(): CacheProvider
     {
         if (!$this->cacheProvider) {
-            $this->cacheProvider = new ArrayCache();
+            $this->cacheProvider = DoctrineProvider::wrap(new ArrayAdapter());
         }
 
         return $this->cacheProvider;

@@ -4,6 +4,7 @@ namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
 use AnyContent\Client\DataDimensions;
+use AnyContent\Client\Record;
 use AnyContent\Client\UserInfo;
 use AnyContent\Client\Util\TimeShifter;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
@@ -102,7 +103,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
         }
 
         if ($ensureContentTypeTableIsUpToDate == true) {
-            $this->ensureContentTypeTableIsUpToDate($contentTypeName, false);
+            $this->ensureContentTypeTableIsUpToDate($contentTypeName);
         }
 
         return $tableName;
@@ -399,7 +400,7 @@ TEMPLATE_CONFIGTABLE;
     /**
      * @param $recordId
      *
-     * @return Record
+     * @return Record|false
      */
     public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
     {

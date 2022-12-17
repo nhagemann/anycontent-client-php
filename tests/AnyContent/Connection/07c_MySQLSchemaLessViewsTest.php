@@ -9,6 +9,8 @@ use PHPUnit\Framework\TestCase;
 
 class MySQLSchemalessViewsTest extends TestCase
 {
+    private MySQLSchemalessReadWriteConnection $connection;
+
     /**
      * @throws \AnyContent\AnyContentClientException
      */
@@ -28,7 +30,7 @@ class MySQLSchemalessViewsTest extends TestCase
         $configuration->setRepositoryName('phpunit');
         $configuration->addContentTypes();
 
-        $connection = $configuration->createReadWriteConnection();
+        $configuration->createReadWriteConnection();
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }

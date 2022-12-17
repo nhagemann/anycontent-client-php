@@ -10,9 +10,13 @@ use CMDL\Util;
 
 trait Properties
 {
+    protected $view = 'default';
+    protected $workspace = 'default';
+    protected $language = 'default';
+
     protected ?DataTypeDefinition $dataTypeDefinition;
 
-    public $properties = array();
+    public $properties = [];
 
     public function getDataTypeName(): string
     {

@@ -35,6 +35,7 @@ class MenuBuilder
         // Add all same level pages within path
 
         $i = 0;
+        $id = null;
         /**
          * @var int $id
          * @var Record $record
@@ -63,9 +64,11 @@ class MenuBuilder
 
         // Add children
 
-        $records = $repository->getSortedRecords($id, false, 1);
-        foreach ($records as $record) {
-            $result[$record->getId()] = $record;
+        if ($id!==null) {
+            $records = $repository->getSortedRecords($id, false, 1);
+            foreach ($records as $record) {
+                $result[$record->getId()] = $record;
+            }
         }
 
         foreach ($result as $record) {

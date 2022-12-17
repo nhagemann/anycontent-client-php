@@ -1,6 +1,6 @@
 <?php
 
-namespace AnyContent\Filter\Util;
+namespace AnyContent\Client\Util;
 
 // @rodneyrehm
 // http://stackoverflow.com/a/7917979/99923
@@ -12,6 +12,7 @@ class ParensParser
     protected $current = null;
     // input string to parse
     protected $string = null;
+    protected $length = null;
     // current character offset in string
     protected $position = null;
     // start of text-buffer
