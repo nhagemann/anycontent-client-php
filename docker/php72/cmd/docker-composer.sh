@@ -1,1 +1,0 @@
-docker exec -w /application anycontent-client-php72 php /composer.phar $@

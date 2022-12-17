@@ -1,1 +1,0 @@
-docker exec anycontent-client-php72 php -v

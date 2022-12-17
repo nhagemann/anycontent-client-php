@@ -1,1 +1,0 @@
-docker exec -it -w /application anycontent-client-php56 /bin/bash
