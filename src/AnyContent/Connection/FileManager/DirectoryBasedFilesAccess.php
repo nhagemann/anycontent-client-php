@@ -258,7 +258,7 @@ class DirectoryBasedFilesAccess implements FileManager
                         if ($this->imagesize == true) {
                             $content = $file->getContents();
 
-                            if (function_exists('imagecreatefromstring')) {
+                             if (function_exists('imagecreatefromstring')) {
                                 $image = @imagecreatefromstring($content);
                                 if ($image) {
                                     $item['width']  = imagesx($image);
