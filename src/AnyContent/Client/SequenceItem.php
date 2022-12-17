@@ -6,9 +6,7 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Traits\Properties;
 use CMDL\CMDLParserException;
 use CMDL\DataTypeDefinition;
-use CMDL\FormElementDefinitions\SequenceFormElementDefinition;
 use CMDL\Util;
-use CMDL\ViewDefinition;
 
 class SequenceItem
 {

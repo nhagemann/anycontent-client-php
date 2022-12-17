@@ -2,10 +2,7 @@
 
 namespace AnyContent\Client;
 
-use AnyContent\AnyContentClientException;
 use CMDL\DataTypeDefinition;
-use CMDL\FormElementDefinitions\SequenceFormElementDefinition;
-use CMDL\ViewDefinition;
 
 class Sequence implements \Iterator, \Countable
 {
@@ -92,7 +89,7 @@ class Sequence implements \Iterator, \Countable
     }
 
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
@@ -101,7 +98,7 @@ class Sequence implements \Iterator, \Countable
     /**
      * @return Sequence
      */
-    public function current()
+    public function current(): mixed
     {
 
         $item = new SequenceItem($this->dataTypeDefinition, $this->property, $this->items[$this->position]['type']);
@@ -111,25 +108,25 @@ class Sequence implements \Iterator, \Countable
     }
 
 
-    public function key()
+    public function key(): mixed
     {
         return $this->position;
     }
 
 
-    public function next()
+    public function next(): void
     {
         ++$this->position;
     }
 
 
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->items[$this->position]);
     }
 
 
-    public function count()
+    public function count(): int
     {
         return (count($this->items));
     }

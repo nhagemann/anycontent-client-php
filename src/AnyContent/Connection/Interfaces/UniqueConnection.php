@@ -2,8 +2,6 @@
 
 namespace AnyContent\Connection\Interfaces;
 
-use AnyContent\Client\Record;
-
 interface UniqueConnection
 {
     public function isUniqueConnection();

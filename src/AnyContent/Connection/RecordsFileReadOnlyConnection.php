@@ -3,14 +3,11 @@
 namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
-use AnyContent\Client\AbstractRecord;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
-use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use KVMLogger\KVMLogger;
-use Symfony\Component\Filesystem\Filesystem;
 
 class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection
 {
@@ -101,10 +98,8 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
             $definition = $this->getContentTypeDefinition($contentTypeName);
 
-            $records = $this->getRecordFactory()
+            return $this->getRecordFactory()
                             ->createRecordsFromJSONRecordsArray($definition, $data['records']);
-
-            return $records;
         }
 
         return [ ];

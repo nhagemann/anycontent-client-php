@@ -3,14 +3,11 @@
 namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
-use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
-use AnyContent\Client\Record;
 use AnyContent\Client\UserInfo;
 use AnyContent\Client\Util\TimeShifter;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use AnyContent\Connection\Interfaces\RevisionConnection;
-use AnyContent\Connection\Util\Database;
 use CMDL\Util;
 use KVMLogger\KVMLogger;
 

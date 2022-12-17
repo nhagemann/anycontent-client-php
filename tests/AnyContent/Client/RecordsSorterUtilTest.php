@@ -4,9 +4,7 @@ namespace AnyContent\Client;
 
 use AnyContent\Client\Util\RecordsSorter;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 

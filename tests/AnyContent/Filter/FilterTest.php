@@ -5,7 +5,6 @@ namespace AnyContent\Filter;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 

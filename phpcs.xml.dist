@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="phpcs.xsd">
-    <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility/PHPCompatibility" />
+    <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility/PHPCompatibility,vendor/slevomat/coding-standard" />
     <file>src</file>
     <file>tests</file>
 
@@ -20,4 +20,14 @@
 
     <rule ref="PHPCompatibility"/>
     <config name="testVersion" value="8.0"/>
+
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
+    <rule ref="SlevomatCodingStandard.Commenting.UselessFunctionDocComment"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UseDoesNotStartWithBackslash"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UselessAlias"/>
+    <rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
+    <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
+    <rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>
+
 </ruleset>

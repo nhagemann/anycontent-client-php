@@ -23,9 +23,7 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
             $data            = [ ];
             $data['files']   = [ ];
             $data['folders'] = [ 'Public', 'Protected' ];
-            $folder          = new Folder('', $data);
-
-            return $folder;
+            return new Folder('', $data);
         }
 
         if (!$this->isValidPath($path)) {
@@ -38,9 +36,7 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
             $data            = [ ];
             $data['files']   = [ ];
             $data['folders'] = [ ];
-            $folder          = new Folder('', $data);
-
-            return $folder;
+            return new Folder('', $data);
         }
 
         return $folder;

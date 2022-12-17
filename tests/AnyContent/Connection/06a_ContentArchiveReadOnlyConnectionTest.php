@@ -3,9 +3,7 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-use AnyContent\Connection\ContentArchiveReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use PHPUnit\Framework\TestCase;
 
 class ContentArchiveConnectionTest extends TestCase
@@ -117,6 +115,6 @@ class ContentArchiveConnectionTest extends TestCase
 
     public function testLastModified()
     {
-        $this->assertIsInt( $this->connection->getLastModifiedDate());
+        $this->assertIsInt($this->connection->getLastModifiedDate());
     }
 }

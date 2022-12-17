@@ -3,15 +3,9 @@
 namespace AnyContent\Cache;
 
 use AnyContent\Client\Config;
-use AnyContent\Client\File;
-use AnyContent\Client\Folder;
 use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Client\Util\RecordsSorter;
-use AnyContent\Filter\Interfaces\Filter;
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Cache\CacheProvider;
-use Doctrine\Common\Cache\ChainCache;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 

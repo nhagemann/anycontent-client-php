@@ -12,9 +12,6 @@ use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use AnyContent\Connection\Interfaces\RevisionConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
-use AnyContent\Filter\Interfaces\Filter;
-use CMDL\ConfigTypeDefinition;
-use CMDL\ContentTypeDefinition;
 use KVMLogger\KVMLogger;
 
 class Repository implements FileManager, \JsonSerializable

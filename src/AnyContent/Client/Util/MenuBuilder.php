@@ -2,7 +2,6 @@
 
 namespace AnyContent\Client\Util;
 
-use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 
 class MenuBuilder

@@ -9,8 +9,6 @@ class RecordsPager
 
         $offset = $count * ($page - 1);
 
-        $result = array_slice($records, $offset, $count, true);
-
-        return $result;
+        return array_slice($records, $offset, $count, true);
     }
 }

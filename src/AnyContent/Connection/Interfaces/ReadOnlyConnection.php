@@ -2,12 +2,8 @@
 
 namespace AnyContent\Connection\Interfaces;
 
-use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
-use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
-use CMDL\ConfigTypeDefinition;
-use CMDL\ContentTypeDefinition;
 use Doctrine\Common\Cache\CacheProvider;
 
 interface ReadOnlyConnection
@@ -143,9 +139,6 @@ interface ReadOnlyConnection
     public function getRecordClassForConfigType($configTypeName);
 
 
-    /**
-     * @param Repository $repository
-     */
     public function apply(Repository $repository);
 
 

@@ -4,7 +4,6 @@ namespace AnyContent\Client;
 
 use AnyContent\AnyContentClientException;
 use AnyContent\Cache\CachingRepository;
-use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;

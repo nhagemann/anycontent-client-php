@@ -2,7 +2,6 @@
 
 namespace AnyContent\Client;
 
-use AnyContent\AnyContentClientException;
 use CMDL\ContentTypeDefinition;
 
 class Record extends AbstractRecord implements \JsonSerializable

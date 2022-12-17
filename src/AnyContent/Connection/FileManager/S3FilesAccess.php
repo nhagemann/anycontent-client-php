@@ -139,9 +139,7 @@ class S3FilesAccess implements FileManager
         if (file_exists($this->scheme . '/' . $path)) {
             $result = [ 'folders' => $this->listSubFolder($path), 'files' => $this->listFiles($path) ];
 
-            $folder = new Folder($path, $result);
-
-            return $folder;
+            return new Folder($path, $result);
         }
 
         return false;

@@ -5,7 +5,6 @@ namespace AnyContent\Client\Traits;
 use AnyContent\Client\Sequence;
 use AnyContent\Client\Table;
 use CMDL\CMDLParserException;
-use CMDL\DataTypeDefinition;
 use CMDL\Util;
 
 trait Properties
@@ -111,7 +110,7 @@ trait Properties
 
     public function getSequence($property)
     {
-        $values = json_decode($this->getProperty($property), true);
+        $values = json_decode((string)$this->getProperty($property), true);
 
         if (!is_array($values)) {
             $values = array();

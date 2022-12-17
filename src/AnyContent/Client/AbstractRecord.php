@@ -4,9 +4,6 @@ namespace AnyContent\Client;
 
 use AnyContent\AnyContentClientException;
 use AnyContent\Client\Traits\Properties;
-use CMDL\CMDLParserException;
-use CMDL\DataTypeDefinition;
-use CMDL\Util;
 
 abstract class AbstractRecord
 {

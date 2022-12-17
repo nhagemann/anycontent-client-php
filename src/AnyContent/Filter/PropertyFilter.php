@@ -5,7 +5,6 @@ namespace AnyContent\Filter;
 use AnyContent\AnyContentClientException;
 use AnyContent\Client\Record;
 use AnyContent\Filter\Interfaces\Filter;
-use AnyContent\Filter\Util\ParensParser;
 use CMDL\Util;
 
 class PropertyFilter implements Filter

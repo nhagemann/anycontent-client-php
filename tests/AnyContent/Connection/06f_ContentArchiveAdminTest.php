@@ -2,10 +2,8 @@
 
 namespace AnyContent\Connection;
 
-use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 

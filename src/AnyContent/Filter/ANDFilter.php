@@ -4,8 +4,6 @@ namespace AnyContent\Filter;
 
 use AnyContent\Client\Record;
 use AnyContent\Filter\Interfaces\Filter;
-use AnyContent\Filter\Util\ParensParser;
-use CMDL\Util;
 
 class ANDFilter implements Filter
 {

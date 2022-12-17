@@ -4,14 +4,10 @@ namespace AnyContent\Connection\Configuration;
 
 use AnyContent\AnyContentClientException;
 use AnyContent\Connection\Util\Database;
-use AnyContent\Client\DataDimensions;
 use AnyContent\Connection\AbstractConnection;
-use AnyContent\Connection\ContentArchiveReadOnlyConnection;
-use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use AnyContent\Connection\MySQLSchemalessReadOnlyConnection;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 class MySQLSchemalessConfiguration extends AbstractConfiguration
 {

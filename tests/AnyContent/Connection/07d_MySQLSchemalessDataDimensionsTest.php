@@ -6,7 +6,6 @@ use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use PHPUnit\Framework\TestCase;
 
 class MySQLSchemalessDataDimensionsTest extends TestCase

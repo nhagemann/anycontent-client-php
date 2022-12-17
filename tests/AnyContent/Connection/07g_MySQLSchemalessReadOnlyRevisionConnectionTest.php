@@ -2,8 +2,6 @@
 
 namespace AnyContent\Connection;
 
-use AnyContent\Client\Config;
-use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use KVMLogger\KVMLoggerFactory;

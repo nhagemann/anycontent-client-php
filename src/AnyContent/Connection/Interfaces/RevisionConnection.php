@@ -2,9 +2,7 @@
 
 namespace AnyContent\Connection\Interfaces;
 
-use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
-use AnyContent\Client\Record;
 
 interface RevisionConnection extends ReadOnlyConnection
 {

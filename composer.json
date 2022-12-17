@@ -31,7 +31,8 @@
     "phpstan/phpstan": "^1.9",
     "phpmd/phpmd": "^2.13",
     "aws/aws-sdk-php": "~2.8",
-    "dflydev/apache-mime-types": "~1.0"
+    "dflydev/apache-mime-types": "~1.0",
+    "slevomat/coding-standard": "^8.7"
   },
   "scripts": {
     "phpunit" : "vendor/bin/phpunit",
@@ -54,5 +55,10 @@
     }
   ],
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
 }

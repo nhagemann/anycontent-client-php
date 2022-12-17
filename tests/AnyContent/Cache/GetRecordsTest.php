@@ -3,10 +3,8 @@
 namespace AnyContent\Cache;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-use Doctrine\Common\Cache\PhpFileCache;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;

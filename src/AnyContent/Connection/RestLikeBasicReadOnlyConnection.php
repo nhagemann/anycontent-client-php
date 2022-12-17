@@ -3,18 +3,12 @@
 namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
-use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
-use AnyContent\Client\Record;
-use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
-use AnyContent\Filter\PropertyFilter;
 use GuzzleHttp\Client;
-use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Event\EndEvent;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Message\Response;
 use KVMLogger\KVMLogger;
 use KVMLogger\LogMessage;
 
@@ -252,9 +246,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         }
 
         if ($this->hasContentType($contentTypeName)) {
-            $records = $this->requestRecords($contentTypeName, $dataDimensions, $filter, $page, $count, $order);
-
-            return $records;
+            return $this->requestRecords($contentTypeName, $dataDimensions, $filter, $page, $count, $order);
         }
 
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
@@ -292,10 +284,8 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         $json = $response->json();
 
-        $records = $this->getRecordFactory()
+        return $this->getRecordFactory()
             ->createRecordsFromJSONRecordsArray($this->getContentTypeDefinition($contentTypeName), $json['records']);
-
-        return $records;
     }
 
 
@@ -304,8 +294,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
      *
      * @return Record
      */
-    public function getRecord(string $recordId, ?string $contentTypeName = null , ?DataDimensions $dataDimensions = null)
-
+    public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
     {
 
         if ($contentTypeName == null) {
@@ -383,10 +372,8 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
                 return $config;
             } catch (ClientException $e) {
                 if ($e->getCode() == 404) {
-                    $config = $this->getRecordFactory()
+                    return $this->getRecordFactory()
                         ->createConfig($this->getConfigTypeDefinition($configTypeName), [], $dataDimensions->getViewName(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage());
-
-                    return $config;
                 }
                 throw new AnyContentClientException($e->getMessage());
             }

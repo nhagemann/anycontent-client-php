@@ -2,10 +2,7 @@
 
 namespace AnyContent\Connection;
 
-use AnyContent\AnyContentClientException;
 use AnyContent\Client\DataDimensions;
-use AnyContent\Client\Record;
-use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use KVMLogger\KVMLogger;
 use Symfony\Component\Finder\Finder;
@@ -116,10 +113,8 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
 
             $definition = $this->getContentTypeDefinition($contentTypeName);
 
-            $records = $this->getRecordFactory()
+            return $this->getRecordFactory()
                             ->createRecordsFromJSONRecordsArray($definition, $data);
-
-            return $records;
         }
 
         return [ ];
@@ -170,7 +165,8 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             );
 
             $iterator = $finder->getIterator();
-            $file     = reset($iterator);
+            //$file     = reset($iterator);
+            $file     = $iterator->current();
 
             if ($file) {
                 $t = max($t, (int)$file->getMTime());

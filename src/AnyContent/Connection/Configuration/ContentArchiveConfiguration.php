@@ -8,7 +8,6 @@ use AnyContent\Connection\AbstractConnection;
 use AnyContent\Connection\ContentArchiveReadOnlyConnection;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 class ContentArchiveConfiguration extends AbstractConfiguration
 {

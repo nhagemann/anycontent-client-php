@@ -2,7 +2,6 @@
 
 namespace AnyContent\Connection;
 
-use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;

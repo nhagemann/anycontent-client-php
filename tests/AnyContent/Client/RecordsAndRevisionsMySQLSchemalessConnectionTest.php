@@ -2,14 +2,8 @@
 
 namespace AnyContent\Client;
 
-use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
-use AnyContent\Connection\ContentArchiveReadWriteConnection;
-use AnyContent\Connection\MySQLSchemalessReadOnlyConnection;
-use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
-use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 
 class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCase

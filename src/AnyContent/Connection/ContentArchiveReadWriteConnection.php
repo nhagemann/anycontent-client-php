@@ -2,14 +2,10 @@
 
 namespace AnyContent\Connection;
 
-use AnyContent\Client\DataDimensions;
-use AnyContent\Client\Record;
-use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\Interfaces\AdminConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection implements ReadOnlyConnection, AdminConnection
 {

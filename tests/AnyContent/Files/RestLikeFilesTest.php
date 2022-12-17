@@ -5,7 +5,6 @@ namespace AnyContent\Files;
 use AnyContent\Client\File;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\FileManager\RestLikeFilesAccess;
-use AnyContent\Connection\RestLikeBasicReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 

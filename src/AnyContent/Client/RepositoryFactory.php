@@ -186,15 +186,13 @@ class RepositoryFactory
             }
         }
 
-        $repository = $this->createRepository(
+        return $this->createRepository(
             $name,
             $connection,
             $fileManager,
             $this->getOption('title', null),
             $cache
         );
-
-        return $repository;
     }
 
     public function createMySQLSchemalessRepository($name, $options = [], $cache = true)
@@ -232,15 +230,13 @@ class RepositoryFactory
             $fileManager = new DirectoryBasedFilesAccess($this->getOption('filesFolder'));
         }
 
-        $repository = $this->createRepository(
+        return $this->createRepository(
             $name,
             $connection,
             $fileManager,
             $this->getOption('title', null),
             $cache
         );
-
-        return $repository;
     }
 
     public function createRestLikeRepository($name, $baseUrl, $options = [], $cache = true, $files = true)

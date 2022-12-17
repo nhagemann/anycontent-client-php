@@ -71,9 +71,7 @@ class Database
             $values = array_merge($values, array_values($update));
         }
 
-        $stmt = $this->execute($sql, $values);
-
-        return $stmt;
+        return $this->execute($sql, $values);
     }
 
 
@@ -89,9 +87,7 @@ class Database
             $values = array_merge($values, array_values($where));
         }
 
-        $stmt = $this->execute($sql, $values);
-
-        return $stmt;
+        return $this->execute($sql, $values);
     }
 
 
@@ -146,9 +142,7 @@ class Database
 
         $stmt = $this->execute($sql, $params);
 
-        $rows = $stmt->fetchAll();
-
-        return $rows;
+        return $stmt->fetchAll();
     }
 
 
@@ -157,9 +151,7 @@ class Database
 
         $stmt = $this->execute($sql, $params);
 
-        $rows = $stmt->fetchAll();
-
-        return $rows;
+        return $stmt->fetchAll();
     }
 
 
@@ -180,9 +172,7 @@ class Database
             $value = '[#' . $value . '#]';
         }
 
-        $query = preg_replace($keys, $params, $sql, 1, $count);
-
-        return $query;
+        return preg_replace($keys, $params, $sql, 1, $count);
     }
 
 

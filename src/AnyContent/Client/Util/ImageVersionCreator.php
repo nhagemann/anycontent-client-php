@@ -3,13 +3,10 @@
 namespace AnyContent\Client\Util;
 
 use AnyContent\Client\File;
-use AnyContent\Client\Repository;
-use Imagine\Filter\Basic\Crop;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
 
 /**

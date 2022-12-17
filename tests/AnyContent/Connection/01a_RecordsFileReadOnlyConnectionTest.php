@@ -3,7 +3,6 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-use AnyContent\Connection\RecordsFileReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
 use PHPUnit\Framework\TestCase;

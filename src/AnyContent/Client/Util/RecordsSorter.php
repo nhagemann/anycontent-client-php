@@ -3,7 +3,6 @@
 namespace AnyContent\Client\Util;
 
 use AnyContent\Client\Record;
-use KVMLogger\KVMLogger;
 
 class RecordsSorter
 {

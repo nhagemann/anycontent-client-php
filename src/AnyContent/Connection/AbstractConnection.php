@@ -3,7 +3,6 @@
 namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
-use AnyContent\Cache\Wrapper;
 use AnyContent\Client\AbstractRecord;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
@@ -13,8 +12,6 @@ use AnyContent\Client\Repository;
 use AnyContent\Client\UserInfo;
 use AnyContent\Connection\Configuration\AbstractConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
-use CMDL\ConfigTypeDefinition;
-use CMDL\ContentTypeDefinition;
 use CMDL\Parser;
 use CMDL\Util;
 use Doctrine\Common\Cache\ArrayCache;
@@ -149,9 +146,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
     }
 
 
-    /**
-     * @param CacheProvider $cacheProvider
-     */
     public function setCacheProvider(CacheProvider $cacheProvider)
     {
         $this->cacheProvider = $cacheProvider;

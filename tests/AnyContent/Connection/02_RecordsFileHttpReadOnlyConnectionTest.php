@@ -3,9 +3,7 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
-use AnyContent\Connection\RecordsFileHttpReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use PHPUnit\Framework\TestCase;
 
 class RecordsFileHttpReadOnlyConnectionTest extends TestCase
@@ -103,6 +101,6 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 
     public function testLastModified()
     {
-        $this->assertIsInt( $this->connection->getLastModifiedDate());
+        $this->assertIsInt($this->connection->getLastModifiedDate());
     }
 }

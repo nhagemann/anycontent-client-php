@@ -4,12 +4,7 @@ namespace AnyContent\Client;
 
 use AnyContent\Client\Util\MenuBuilder;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-use AnyContent\Connection\ContentArchiveReadWriteConnection;
-use AnyContent\Filter\ANDFilter;
-use AnyContent\Filter\ORFilter;
-use AnyContent\Filter\PropertyFilter;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 

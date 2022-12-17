@@ -3,7 +3,6 @@
 namespace AnyContent\Connection\Interfaces;
 
 use AnyContent\Client\File;
-use AnyContent\Client\Folder;
 
 interface FileManager
 {
