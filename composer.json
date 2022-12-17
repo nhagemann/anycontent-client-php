@@ -38,9 +38,12 @@
     "phpunit" : "vendor/bin/phpunit",
     "phpcs": "vendor/bin/phpcs",
     "phpcbf": "vendor/bin/phpcbf",
+    "phpstan1": "vendor/bin/phpstan --memory-limit=-1 analyze --level 1 src tests",
+    "phpstan2": "vendor/bin/phpstan --memory-limit=-1 analyze --level 2 src tests",
+    "phpstan3": "vendor/bin/phpstan --memory-limit=-1 analyze --level 3 src tests",
     "phpstan4": "vendor/bin/phpstan --memory-limit=-1 analyze --level 4 src tests",
-    "phpstan5": "vendor/bin/phpstan analyze --level 5 src tests",
-    "phpstan": "vendor/bin/phpstan analyze --level max src tests",
+    "phpstan5": "vendor/bin/phpstan --memory-limit=-1 analyze --level 5 src tests",
+    "phpstan": "vendor/bin/phpstan --memory-limit=-1 analyze --level max src tests",
     "phpmd": "vendor/bin/phpmd src ansi phpmd.xml"
   },
   "autoload": {

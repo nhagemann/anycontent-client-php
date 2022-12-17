@@ -7,13 +7,13 @@ use AnyContent\Client\Traits\Properties;
 use CMDL\CMDLParserException;
 use CMDL\DataTypeDefinition;
 use CMDL\Util;
+use CMDL\ViewDefinition;
 
 class SequenceItem
 {
     use Properties;
 
-    /** @var  ViewDefinition */
-    protected $viewDefinition;
+    protected ViewDefinition $viewDefinition;
 
     protected $type;
 
@@ -25,7 +25,7 @@ class SequenceItem
             throw new AnyContentClientException('Unknown sequence property ' . $property . ' for data type ' . $definition->getName());
         }
 
-        $this->type            = $type;
+        $this->type = $type;
     }
 
 

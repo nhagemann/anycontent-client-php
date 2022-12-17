@@ -22,7 +22,7 @@ abstract class AbstractRecord
     /**
      * @var Repository
      */
-    protected $repository;
+    protected ?Repository $repository = null;
 
     /**
      * Check if a property is allowed by definition

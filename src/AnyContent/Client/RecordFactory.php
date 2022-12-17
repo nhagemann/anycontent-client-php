@@ -150,8 +150,7 @@ class RecordFactory
         /** @var Record $record */
         $record = new $classname($contentTypeDefinition, '', $viewName, $workspace, $language);
 
-        $revision = isset($jsonRecord['revision']) ? $jsonRecord['revision'] : 0;
-        $record->setRevision($revision);
+        $record->setRevision(0);
 
         if ($this->getOption('validateProperties') == true) {
             foreach ($properties as $property => $value) {
@@ -172,8 +171,7 @@ class RecordFactory
         /** @var Record $record */
         $record = new Record($contentTypeDefinition, '', $viewName, $workspace, $language);
 
-        $revision = isset($jsonRecord['revision']) ? $jsonRecord['revision'] : 0;
-        $record->setRevision($revision);
+        $record->setRevision(0);
 
         if ($this->getOption('validateProperties') == true) {
             foreach ($properties as $property => $value) {

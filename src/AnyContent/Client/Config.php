@@ -3,13 +3,11 @@
 namespace AnyContent\Client;
 
 use CMDL\ConfigTypeDefinition;
+use CMDL\DataTypeDefinition;
 
 class Config extends AbstractRecord implements \JsonSerializable
 {
-    /**
-     * @var ConfigTypeDefinition
-     */
-    protected $dataTypeDefinition = null;
+    protected ?DataTypeDefinition $dataTypeDefinition = null;
 
 
     public function __construct(ConfigTypeDefinition $configTypeDefinition, $view = 'default', $workspace = 'default', $language = 'default')
@@ -34,7 +32,7 @@ class Config extends AbstractRecord implements \JsonSerializable
     }
 
 
-    public function getConfigTypeDefinition()
+    public function getConfigTypeDefinition(): ConfigTypeDefinition
     {
         return $this->dataTypeDefinition;
     }

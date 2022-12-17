@@ -4,11 +4,8 @@
     <file>src</file>
     <file>tests</file>
 
-    <!-- ignore warnings and display ERRORS only -->
-    <!--<arg  value="np"/>-->
-
     <!-- Our base rule: set to PSR12-->
-    <rule  ref="PSR12"/>
+    <rule ref="PSR12"/>
 
     <!-- extend line length from 120 to 300 // needs to be reduces to 200 -->
     <rule ref="Generic.Files.LineLength">

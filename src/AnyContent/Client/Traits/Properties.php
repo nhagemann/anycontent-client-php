@@ -5,26 +5,26 @@ namespace AnyContent\Client\Traits;
 use AnyContent\Client\Sequence;
 use AnyContent\Client\Table;
 use CMDL\CMDLParserException;
+use CMDL\DataTypeDefinition;
 use CMDL\Util;
 
 trait Properties
 {
-    /** @var  DataTypeDefinition */
-    protected $dataTypeDefinition;
+    protected ?DataTypeDefinition $dataTypeDefinition;
 
     public $properties = array();
 
-    public function getDataTypeName()
+    public function getDataTypeName(): string
     {
         return $this->dataTypeDefinition->getName();
     }
 
-    public function getDataTypeDefinition()
+    public function getDataTypeDefinition(): DataTypeDefinition
     {
         return $this->dataTypeDefinition;
     }
 
-    public function getProperty($property, $default = null)
+    public function getProperty($property, $default = null): mixed
     {
         if (array_key_exists($property, $this->properties)) {
             if ($this->properties[$property] === '') {

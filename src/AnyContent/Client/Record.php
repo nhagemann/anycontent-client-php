@@ -8,9 +8,6 @@ class Record extends AbstractRecord implements \JsonSerializable
 {
     public $id = null;
 
-    /** @var ContentTypeDefinition */
-    protected $dataTypeDefinition = null;
-
     protected $level = null;
 
     /** @var  UserInfo */
@@ -131,7 +128,7 @@ class Record extends AbstractRecord implements \JsonSerializable
     }
 
 
-    public function getContentTypeDefinition()
+    public function getContentTypeDefinition(): ?ContentTypeDefinition
     {
         return $this->dataTypeDefinition;
     }

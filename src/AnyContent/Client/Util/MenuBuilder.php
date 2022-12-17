@@ -2,11 +2,12 @@
 
 namespace AnyContent\Client\Util;
 
+use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 
 class MenuBuilder
 {
-    public static function getBreadcrumb(Repository $repository, $contentTypeName, $recordId)
+    public static function getBreadcrumb(Repository $repository, $contentTypeName, $recordId): array
     {
         $repository->selectContentType($contentTypeName);
 

@@ -9,6 +9,7 @@ class File implements \JsonSerializable
     protected $id;
     protected $name;
     protected $type;
+    protected $urls;
     protected $size;
     protected $timestampLastChange;
 
