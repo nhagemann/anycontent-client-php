@@ -199,7 +199,7 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
         $connection->selectContentType('profiles')->selectWorkspace('live');
 
-        $result = $connection->deleteRecords([ 6, 999 ]);
+        $result = $connection->deleteRecords([6, 999]);
 
         $this->assertCount(1, $result);
         $this->assertEquals(6, $connection->countRecords());

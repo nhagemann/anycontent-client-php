@@ -13,7 +13,7 @@ class RecordsFileHttpConfiguration extends AbstractConfiguration
     public function addContentType($contentTypeName, $uriRecords, $urlCMDL)
     {
 
-        $this->contentTypes[$contentTypeName] = [ 'uri' => $uriRecords, 'cmdl' => $urlCMDL ];
+        $this->contentTypes[$contentTypeName] = ['uri' => $uriRecords, 'cmdl' => $urlCMDL];
 
         return $this;
     }

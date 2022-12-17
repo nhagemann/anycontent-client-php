@@ -15,7 +15,7 @@ class RecordsSorter
     {
 
         if (!is_array($order)) {
-            $order = [ $order ];
+            $order = [$order];
         }
 
         $instructions = [ ];
@@ -33,7 +33,7 @@ class RecordsSorter
                     break;
             }
 
-            $instructions[] = [ 'property' => $property, 'order' => $sortorder ];
+            $instructions[] = ['property' => $property, 'order' => $sortorder];
         }
 
         uasort($records, function (Record $a, Record $b) use ($instructions) {
@@ -122,7 +122,7 @@ class RecordsSorter
         foreach ($records as $record) {
             if ($record->getParent() === 0 || $record->getParent() > 0) { // include 0 and numbers, exclude null and ''
                 $map[$record->getId()] = $record;
-                $list[]                = [ 'id' => $record->getId(), 'parentId' => $record->getParent() ];
+                $list[]                = ['id' => $record->getId(), 'parentId' => $record->getParent()];
             }
         }
 

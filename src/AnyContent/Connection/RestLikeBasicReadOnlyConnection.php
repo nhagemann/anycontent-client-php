@@ -41,7 +41,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         if (!$this->client) {
             $client = new Client(['base_url' => $this->getConfiguration()->getUri(),
-                'defaults' => ['timeout' => $this->getConfiguration()->getTimeout()]
+                'defaults' => ['timeout' => $this->getConfiguration()->getTimeout()],
             ]);
 
             $this->client = $client;

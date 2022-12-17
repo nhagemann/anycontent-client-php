@@ -17,7 +17,7 @@ class RecordFactory
      */
     private static $instance = null;
 
-    protected $options = [ 'validateProperties' => true ];
+    protected $options = ['validateProperties' => true];
 
     protected $contentRecordClassMap = array();
 

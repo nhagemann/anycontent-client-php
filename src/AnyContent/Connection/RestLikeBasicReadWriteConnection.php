@@ -31,8 +31,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                 'userinfo' => [
                     'username'  => $this->userInfo->getUsername(),
                     'firstname' => $this->userInfo->getFirstname(),
-                    'lastname'  => $this->userInfo->getLastname()
-                ]
+                    'lastname'  => $this->userInfo->getLastname(),
+                ],
             ]
         );
 
@@ -40,8 +40,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
             ->post($url, [
                 'body' => [
                     'record'   => json_encode($record),
-                    'language' => $dataDimensions->getLanguage()
-                ]
+                    'language' => $dataDimensions->getLanguage(),
+                ],
             ]);
 
         $id = $response->json();
@@ -83,8 +83,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                     'userinfo' => [
                         'username'  => $this->userInfo->getUsername(),
                         'firstname' => $this->userInfo->getFirstname(),
-                        'lastname'  => $this->userInfo->getLastname()
-                    ]
+                        'lastname'  => $this->userInfo->getLastname(),
+                    ],
                 ]
             );
 
@@ -92,8 +92,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                 ->post($url, [
                     'body' => [
                         'records'  => json_encode($records),
-                        'language' => $dataDimensions->getLanguage()
-                    ]
+                        'language' => $dataDimensions->getLanguage(),
+                    ],
                 ]);
 
             return $response->json();
@@ -124,8 +124,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                 'userinfo' => [
                     'username'  => $this->userInfo->getUsername(),
                     'firstname' => $this->userInfo->getFirstname(),
-                    'lastname'  => $this->userInfo->getLastname()
-                ]
+                    'lastname'  => $this->userInfo->getLastname(),
+                ],
             ]
         );
 
@@ -182,8 +182,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                 'userinfo' => [
                     'username'  => $this->userInfo->getUsername(),
                     'firstname' => $this->userInfo->getFirstname(),
-                    'lastname'  => $this->userInfo->getLastname()
-                ]
+                    'lastname'  => $this->userInfo->getLastname(),
+                ],
             ]
         );
 
@@ -212,8 +212,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                 'userinfo' => [
                     'username'  => $this->userInfo->getUsername(),
                     'firstname' => $this->userInfo->getFirstname(),
-                    'lastname'  => $this->userInfo->getLastname()
-                ]
+                    'lastname'  => $this->userInfo->getLastname(),
+                ],
             ]
         );
 
@@ -261,8 +261,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                 'userinfo' => [
                     'username'  => $this->userInfo->getUsername(),
                     'firstname' => $this->userInfo->getFirstname(),
-                    'lastname'  => $this->userInfo->getLastname()
-                ]
+                    'lastname'  => $this->userInfo->getLastname(),
+                ],
             ]
         );
 
@@ -298,8 +298,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                 'userinfo' => [
                     'username'  => $this->userInfo->getUsername(),
                     'firstname' => $this->userInfo->getFirstname(),
-                    'lastname'  => $this->userInfo->getLastname()
-                ]
+                    'lastname'  => $this->userInfo->getLastname(),
+                ],
             ]
         );
 
@@ -337,8 +337,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                     'userinfo' => [
                         'username'  => $this->userInfo->getUsername(),
                         'firstname' => $this->userInfo->getFirstname(),
-                        'lastname'  => $this->userInfo->getLastname()
-                    ]
+                        'lastname'  => $this->userInfo->getLastname(),
+                    ],
                 ]
             );
 
@@ -381,8 +381,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
                     'userinfo' => [
                         'username'  => $this->userInfo->getUsername(),
                         'firstname' => $this->userInfo->getFirstname(),
-                        'lastname'  => $this->userInfo->getLastname()
-                    ]
+                        'lastname'  => $this->userInfo->getLastname(),
+                    ],
                 ]
             );
 

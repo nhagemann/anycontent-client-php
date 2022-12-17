@@ -60,7 +60,7 @@ class RestLikeFilesAccess implements FileManager
 
         if (!$this->client) {
             $client = new Client([ 'base_url' => $this->getConfiguration()->getUri(),
-                                   'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ]
+                                   'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ],
                                  ]);
 
             $this->client = $client;
@@ -188,7 +188,7 @@ class RestLikeFilesAccess implements FileManager
 
         $url = 'file/' . trim($fileId, '/');
         $this->getClient()
-             ->post($url, [ 'body' => $binary ]);
+             ->post($url, ['body' => $binary]);
 
         return true;
     }

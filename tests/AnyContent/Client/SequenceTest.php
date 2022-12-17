@@ -149,7 +149,7 @@ class SequenceTest extends TestCase
 
         $values = [ ];
         for ($i = 1; $i <= 5; $i++) {
-            $values[] = [ 'standort' => [ 'standort_name' => 'Location ' . $i ] ];
+            $values[] = ['standort' => ['standort_name' => 'Location ' . $i]];
         }
 
         $sequence = new Sequence($this->repository->getCurrentContentTypeDefinition(), 'standorte', $values);

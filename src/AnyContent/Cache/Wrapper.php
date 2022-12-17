@@ -80,11 +80,11 @@ class Wrapper extends CacheProvider
 
         if ($data) {
             $this->hit++;
-            $message = $kvm->createLogMessage('Cache hit', [ 'key' => $id, 'md5' => md5($id), 'doctrine-namespace' => $this->getNamespace() ]);
+            $message = $kvm->createLogMessage('Cache hit', ['key' => $id, 'md5' => md5($id), 'doctrine-namespace' => $this->getNamespace()]);
             $kvm->debug($message);
         } else {
             $this->miss++;
-            $message = $kvm->createLogMessage('Cache miss', [ 'key' => $id, 'md5' => md5($id), 'doctrine-namespace' => $this->getNamespace() ]);
+            $message = $kvm->createLogMessage('Cache miss', ['key' => $id, 'md5' => md5($id), 'doctrine-namespace' => $this->getNamespace()]);
             $kvm->debug($message);
         }
 
@@ -110,11 +110,11 @@ class Wrapper extends CacheProvider
 
         if ($hit) {
             $this->hit++;
-            $message = $kvm->createLogMessage('Cache hit', [ 'key' => $id, 'md5' => $md5Key, 'namespace' => $this->getNamespace() ]);
+            $message = $kvm->createLogMessage('Cache hit', ['key' => $id, 'md5' => $md5Key, 'namespace' => $this->getNamespace()]);
             $kvm->debug($message);
         } else {
             $this->miss++;
-            $message = $kvm->createLogMessage('Cache miss', [ 'key' => $id, 'namespace' => $this->getNamespace() ]);
+            $message = $kvm->createLogMessage('Cache miss', ['key' => $id, 'namespace' => $this->getNamespace()]);
             $kvm->debug($message);
         }
 

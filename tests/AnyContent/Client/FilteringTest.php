@@ -88,7 +88,7 @@ class FilteringTest extends TestCase
 
         $filter1 = new PropertyFilter('name = New Record');
         $filter2 = new PropertyFilter('name = Differing Name');
-        $orFilter = new ORFilter([$filter1,$filter2]);
+        $orFilter = new ORFilter([$filter1, $filter2]);
 
         $records = $this->repository->getRecords($orFilter);
         $this->assertCount(3, $records);
@@ -100,7 +100,7 @@ class FilteringTest extends TestCase
 
         $filter1 = new PropertyFilter('source > a');
         $filter2 = new PropertyFilter('name = Differing Name');
-        $andFilter = new ANDFilter([$filter1,$filter2]);
+        $andFilter = new ANDFilter([$filter1, $filter2]);
         $records = $this->repository->getRecords($andFilter);
         $this->assertCount(1, $records);
     }

@@ -83,11 +83,11 @@ class PagingTest extends TestCase
         $records = $this->repository->getRecords('source > 3', 'source', 1, 5);
         $this->assertCount(5, $records);
 
-        $this->assertEquals([ 4, 5, 6, 7, 8 ], array_keys($records));
+        $this->assertEquals([4, 5, 6, 7, 8], array_keys($records));
 
         $records = $this->repository->getRecords('source > 3', 'source', 2, 5);
         $this->assertCount(2, $records);
 
-        $this->assertEquals([ 9, 10 ], array_keys($records));
+        $this->assertEquals([9, 10], array_keys($records));
     }
 }

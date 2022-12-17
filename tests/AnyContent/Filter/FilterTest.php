@@ -85,12 +85,12 @@ class FilterTest extends TestCase
         $filter2 = new PropertyFilter('source = a');
         $filter3 = new PropertyFilter('source = b');
 
-        $andFilter = new ANDFilter([ $filter1, $filter2 ]);
+        $andFilter = new ANDFilter([$filter1, $filter2]);
 
         $this->assertTrue($andFilter->match($record1));
         $this->assertFalse($andFilter->match($record2));
 
-        $andFilter = new ANDFilter([ $filter1, $filter3 ]);
+        $andFilter = new ANDFilter([$filter1, $filter3]);
 
         $this->assertFalse($andFilter->match($record1));
         $this->assertFalse($andFilter->match($record2));
@@ -111,12 +111,12 @@ class FilterTest extends TestCase
         $filter2 = new PropertyFilter('source = a');
         $filter3 = new PropertyFilter('source = b');
 
-        $orFilter = new ORFilter([ $filter1, $filter2 ]);
+        $orFilter = new ORFilter([$filter1, $filter2]);
 
         $this->assertTrue($orFilter->match($record1));
         $this->assertFalse($orFilter->match($record2));
 
-        $orFilter = new ORFilter([ $filter1, $filter3 ]);
+        $orFilter = new ORFilter([$filter1, $filter3]);
 
         $this->assertTrue($orFilter->match($record1));
         $this->assertTrue($orFilter->match($record2));
@@ -137,9 +137,9 @@ class FilterTest extends TestCase
         $filter2 = new PropertyFilter('source = a');
         $filter3 = new PropertyFilter('source = b');
 
-        $andFilter = new ANDFilter([ $filter1, $filter2 ]);
+        $andFilter = new ANDFilter([$filter1, $filter2]);
 
-        $orFilter = new ORFilter([ $andFilter, $filter3 ]);
+        $orFilter = new ORFilter([$andFilter, $filter3]);
 
         $this->assertTrue($orFilter->match($record1));
         $this->assertTrue($orFilter->match($record2));
@@ -227,9 +227,9 @@ class FilterTest extends TestCase
         $filter2 = new PropertyFilter('source = a');
         $filter3 = new PropertyFilter('source = b');
 
-        $andFilter = new ANDFilter([ $filter1, $filter2 ]);
+        $andFilter = new ANDFilter([$filter1, $filter2]);
 
-        $orFilter = new ORFilter([ $andFilter, $filter3 ]);
+        $orFilter = new ORFilter([$andFilter, $filter3]);
 
         $this->assertEquals('(name = New Record AND source = a)', (string)$andFilter);
         $this->assertEquals('((name = New Record AND source = a) OR source = b)', (string)$orFilter);

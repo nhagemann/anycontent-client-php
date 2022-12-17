@@ -34,7 +34,7 @@ class RecordsFileConfiguration extends AbstractConfiguration
             throw new AnyContentClientException('File ' . $filenameRecords . ' not found.');
         }*/
 
-        $this->contentTypes[$contentTypeName] = [ 'records' => $filenameRecords, 'cmdl' => $filenameCMDL ];
+        $this->contentTypes[$contentTypeName] = ['records' => $filenameRecords, 'cmdl' => $filenameCMDL];
 
         return $this;
     }
@@ -57,7 +57,7 @@ class RecordsFileConfiguration extends AbstractConfiguration
             KVMLogger::instance('anycontent-connection')->info('File ' . $filenameRecord . ' not found.');
         }
 
-        $this->configTypes[$configTypeName] = [ 'record' => $filenameRecord, 'cmdl' => $filenameCMDL ];
+        $this->configTypes[$configTypeName] = ['record' => $filenameRecord, 'cmdl' => $filenameCMDL];
 
         return $this;
     }

@@ -194,7 +194,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
             return $this->getRepository()->getRecordFactory();
         }
         if (!$this->recordFactory) {
-            $this->recordFactory = new RecordFactory([ 'validateProperties' => false ]);
+            $this->recordFactory = new RecordFactory(['validateProperties' => false]);
         }
 
         return $this->recordFactory;

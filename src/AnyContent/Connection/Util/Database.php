@@ -46,7 +46,7 @@ class Database
         $stmt->execute($params);
 
         $duration = $kvm->getDuration('anycontent-query-execution-time');
-        $message  = $kvm->createLogMessage($this->debugQuery($sql, $params), [ 'duration' => $duration ]);
+        $message  = $kvm->createLogMessage($this->debugQuery($sql, $params), ['duration' => $duration]);
         $kvm->debug($message);
 
         $this->queryCounter++;

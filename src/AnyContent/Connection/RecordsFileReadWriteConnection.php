@@ -16,7 +16,7 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $records = [ $record ];
+        $records = [$record];
 
         $recordIds = $this->saveRecords($records, $dataDimensions);
 
@@ -66,7 +66,7 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
                 $recordIds[]                        = $mergedRecord->getID();
             }
 
-            $data = json_encode([ 'records' => $allRecords ], JSON_PRETTY_PRINT);
+            $data = json_encode(['records' => $allRecords], JSON_PRETTY_PRINT);
 
             if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
                 $this->stashAllRecords($allRecords, $dataDimensions);
@@ -89,7 +89,7 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
-        $recordIds = $this->deleteRecords([ $recordId ], $contentTypeName, $dataDimensions);
+        $recordIds = $this->deleteRecords([$recordId], $contentTypeName, $dataDimensions);
         if (count($recordIds) == 1) {
             return array_shift($recordIds);
         }
@@ -120,7 +120,7 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         }
 
         if (count($result) > 0) {
-            $data = json_encode([ 'records' => $allRecords ]);
+            $data = json_encode(['records' => $allRecords]);
 
             if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
                 $this->stashAllRecords($allRecords, $dataDimensions);
@@ -145,7 +145,7 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
 
         $allRecords = $this->getAllRecords($contentTypeName, $dataDimensions);
 
-        $data = json_encode([ 'records' => [ ] ]);
+        $data = json_encode(['records' => [ ]]);
 
         if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
             $this->unstashAllRecords($contentTypeName, $dataDimensions, $this->getRecordClassForContentType($this->getCurrentContentTypeName()));

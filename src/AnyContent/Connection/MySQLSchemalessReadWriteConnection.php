@@ -48,7 +48,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                              $dataDimensions->getWorkspace(),
                              $dataDimensions->getLanguage(),
                              $timestamp,
-                             $timestamp
+                             $timestamp,
                          ]);
 
             if (count($rows) == 1) {
@@ -67,7 +67,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                              $dataDimensions->getWorkspace(),
                              $dataDimensions->getLanguage(),
                              $timestamp,
-                             $timestamp
+                             $timestamp,
                          ]);
             if (count($rows) == 1) {
                 $row                = reset($rows);
@@ -155,7 +155,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $dataDimensions->getWorkspace(),
             $dataDimensions->getLanguage(),
             $timeshiftTimestamp,
-            $timeshiftTimestamp
+            $timeshiftTimestamp,
         ]);
 
         return $record->getId();
@@ -209,7 +209,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                          $dataDimensions->getWorkspace(),
                          $dataDimensions->getLanguage(),
                          $timeshiftTimestamp,
-                         $timeshiftTimestamp
+                         $timeshiftTimestamp,
                      ]);
 
         if (count($rows) == 1) {
@@ -229,7 +229,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                  $dataDimensions->getWorkspace(),
                  $dataDimensions->getLanguage(),
                  $timeshiftTimestamp,
-                 $timeshiftTimestamp
+                 $timeshiftTimestamp,
              ]);
 
         // copy last revision row and mark record as deleted
@@ -253,7 +253,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $dataDimensions->getWorkspace(),
             $dataDimensions->getLanguage(),
             $timeshiftTimestamp,
-            $timeshiftTimestamp
+            $timeshiftTimestamp,
         ]);
 
         return $recordId;
@@ -335,7 +335,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                          $dataDimensions->getWorkspace(),
                          $dataDimensions->getLanguage(),
                          $timeshiftTimestamp,
-                         $timeshiftTimestamp
+                         $timeshiftTimestamp,
                      ]);
 
         if (count($rows) == 1) {
@@ -359,7 +359,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                  $dataDimensions->getWorkspace(),
                  $dataDimensions->getLanguage(),
                  $timeshiftTimestamp,
-                 $timeshiftTimestamp
+                 $timeshiftTimestamp,
              ]);
 
         $values['properties'] = json_encode($properties);
@@ -383,7 +383,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             $dataDimensions->getWorkspace(),
             $dataDimensions->getLanguage(),
             $timeshiftTimestamp,
-            $timeshiftTimestamp
+            $timeshiftTimestamp,
         ]);
 
         return true;
@@ -404,7 +404,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                 'data_type'            => 'content',
                 'name'                 => $contentTypeName,
                 'cmdl'                 => $cmdl,
-                'lastchange_timestamp' => $timeshiftTimestamp
+                'lastchange_timestamp' => $timeshiftTimestamp,
             ];
 
             $this->getDatabase()->insert('_cmdl_', $data, $data);
@@ -435,7 +435,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                 'data_type'            => 'config',
                 'name'                 => $configTypeName,
                 'cmdl'                 => $cmdl,
-                'lastchange_timestamp' => $timeshiftTimestamp
+                'lastchange_timestamp' => $timeshiftTimestamp,
             ];
 
             $this->getDatabase()->insert('_cmdl_', $data, $data);
@@ -464,7 +464,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                  ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="content"', [
                      $this->getRepository()
                           ->getName(),
-                     $contentTypeName
+                     $contentTypeName,
                  ]);
         }
 
@@ -488,7 +488,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                  ->execute('DELETE FROM _cmdl_ WHERE repository = ? AND name = ? AND data_type="config"', [
                      $this->getRepository()
                           ->getName(),
-                     $configTypeName
+                     $configTypeName,
                  ]);
         }
 

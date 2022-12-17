@@ -161,7 +161,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $connection->selectContentType('profiles');
 
-        $result = $connection->deleteRecords([ 6, 999 ]);
+        $result = $connection->deleteRecords([6, 999]);
 
         $this->assertCount(1, $result);
         $this->assertEquals(7, $connection->countRecords());

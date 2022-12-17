@@ -9,5 +9,5 @@ interface FilteringConnection
     /**
      * @return Record[]
      */
-    public function getRecords($contentTypeName, DataDimensions $dataDimensions, $filter, $page = 1, $count = null, $order = [ '.id' ]);
+    public function getRecords($contentTypeName, DataDimensions $dataDimensions, $filter, $page = 1, $count = null, $order = ['.id']);
 }

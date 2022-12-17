@@ -22,7 +22,7 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
         if ($this->isRootPath($path)) {
             $data            = [ ];
             $data['files']   = [ ];
-            $data['folders'] = [ 'Public', 'Protected' ];
+            $data['folders'] = ['Public', 'Protected'];
             return new Folder('', $data);
         }
 

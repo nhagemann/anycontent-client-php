@@ -26,7 +26,7 @@ class RecordsFileHttpReadOnlyConnection extends RecordsFileReadOnlyConnection im
      */
     protected function readData($fileName)
     {
-        $client   = new Client([ 'defaults' => [ 'timeout' => $this->getConfiguration()->getTimeout() ] ]);
+        $client   = new Client(['defaults' => ['timeout' => $this->getConfiguration()->getTimeout()]]);
         $response = $client->get($fileName);
 
         return $response->getBody();
