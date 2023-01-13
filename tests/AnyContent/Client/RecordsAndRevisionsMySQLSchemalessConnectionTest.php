@@ -3,6 +3,7 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
+use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 

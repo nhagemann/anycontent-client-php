@@ -3,6 +3,7 @@
 namespace AnyContent\Cache;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
+use AnyContent\Connection\RecordsFileReadWriteConnection;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;

@@ -3,13 +3,15 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 class LanguagesAndWorkspacesTest extends TestCase
 {
-    /** @var  ContentArchiveReadWriteConnection */
+    /** @var  ContentArchiveReadWriteConnection
+     */
     public $connection;
 
     /** @var  Repository */

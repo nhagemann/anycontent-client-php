@@ -3,6 +3,7 @@
 namespace AnyContent\Client;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
+use AnyContent\Connection\RecordFilesReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
