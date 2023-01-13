@@ -15,13 +15,12 @@ use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use CMDL\ContentTypeDefinition;
 use CMDL\Parser;
 use CMDL\Util;
-use Doctrine\Common\Cache\CacheProvider;
-use Doctrine\Common\Cache\Psr6\DoctrineProvider;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 abstract class AbstractConnection implements ReadOnlyConnection
 {
-    protected $precalculations = [ ];
+    protected $precalculations = [];
 
     /**
      * @var AbstractConfiguration
@@ -29,7 +28,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
     protected $configuration;
 
     /** @var  ContentTypeDefinition[] */
-    protected $contentTypeDefinitions = [ ];
+    protected $contentTypeDefinitions = [];
 
     protected $currentContentTypeName = null;
 
@@ -45,20 +44,17 @@ abstract class AbstractConnection implements ReadOnlyConnection
     /** @var  UserInfo */
     protected $userInfo;
 
-    protected $recordsStash = [ ];
+    protected $recordsStash = [];
 
-    protected $configStash = [ ];
+    protected $configStash = [];
 
-    protected $hasStashedAllRecords = [ ];
+    protected $hasStashedAllRecords = [];
 
     /** @var  Repository */
     protected $repository;
 
-    /** @var  CacheProvider */
-    protected $cacheProvider;
 
-    /** @var  ArrayCache - Fallback local definition cache */
-    protected $arrayCache;
+    protected AdapterInterface $cacheAdapter;
 
     protected $cmdlCaching = false;
 
@@ -68,8 +64,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
     {
         $this->configuration = $configuration;
         $this->configuration->apply($this);
-        $this->userInfo   = new UserInfo();
-        $this->arrayCache = DoctrineProvider::wrap(new ArrayAdapter());
+        $this->userInfo = new UserInfo();
     }
 
     /**
@@ -121,34 +116,30 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
     public function enableCMDLCaching($duration = 60, $checkLastModifiedDate = false)
     {
-        $this->cmdlCaching                      = $duration;
+        $this->cmdlCaching = $duration;
         $this->cmdlCachingCheckLastModifiedDate = $checkLastModifiedDate;
     }
 
-    public function getCacheProvider(): CacheProvider
+    public function getCacheAdapter(): AdapterInterface
     {
-        if (!$this->cacheProvider) {
-            $this->cacheProvider = DoctrineProvider::wrap(new ArrayAdapter());
+        if (!isset($this->cacheAdapter)) {
+            $this->cacheAdapter = new ArrayAdapter();
         }
-
-        return $this->cacheProvider;
+        return $this->cacheAdapter;
     }
 
-    public function setCacheProvider(CacheProvider $cacheProvider)
+    public function setCacheAdapter(AdapterInterface $cacheAdapter): void
     {
-        $this->cacheProvider = $cacheProvider;
+        $this->cacheAdapter = $cacheAdapter;
     }
 
-    /**
-     * @return CacheProvider
-     */
-    protected function getCMDLCache()
+    protected function getCMDLCache(): AdapterInterface
     {
         if ($this->cmdlCaching) {
-            return $this->getCacheProvider();
+            return $this->getCacheAdapter();
         }
 
-        return $this->arrayCache;
+        return new ArrayAdapter();
     }
 
     public function getParser()
@@ -220,8 +211,9 @@ abstract class AbstractConnection implements ReadOnlyConnection
                 $cacheKey .= '[' . $this->getCMDLLastModifiedDate($contentTypeName) . ']';
             }
 
-            if ($this->getCMDLCache()->contains($cacheKey)) {
-                return unserialize($this->getCMDLCache()->fetch($cacheKey));
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            if ($cacheItem->isHit()) {
+                return unserialize($cacheItem->get());
             }
 
             $cmdl = $this->getCMDLForContentType($contentTypeName);
@@ -233,7 +225,8 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
                 if ($definition) {
                     $this->contentTypeDefinitions[$contentTypeName]['definition'] = $definition;
-                    $this->getCMDLCache()->save($cacheKey, serialize($definition), (int)$this->cmdlCaching);
+                    $cacheItem->set(serialize($definition));
+                    $this->getCMDLCache()->save($cacheItem);
 
                     return $definition;
                 }
@@ -262,8 +255,9 @@ abstract class AbstractConnection implements ReadOnlyConnection
                 $cacheKey .= '[' . $this->getCMDLLastModifiedDate(null, $configTypeName) . ']';
             }
 
-            if ($this->getCMDLCache()->contains($cacheKey)) {
-                return unserialize($this->getCMDLCache()->fetch($cacheKey));
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            if ($cacheItem->isHit()) {
+                return unserialize($cacheItem->get());
             }
 
             $cmdl = $this->getCMDLForConfigType($configTypeName);
@@ -274,8 +268,8 @@ abstract class AbstractConnection implements ReadOnlyConnection
                 $definition = $parser->parseCMDLString($cmdl, $configTypeName, null, 'config');
 
                 if ($definition) {
-                    $this->getCMDLCache()->save($cacheKey, serialize($definition), (int)$this->cmdlCaching);
-
+                    $cacheItem->set(serialize($definition));
+                    $this->getCMDLCache()->save($cacheItem);
                     return $definition;
                 }
             }
@@ -305,7 +299,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
      */
     public function getContentTypeList()
     {
-        $result = [ ];
+        $result = [];
         foreach ($this->getContentTypeDefinitions() as $contentType) {
             $title = $contentType->getTitle();
             if ($title == '') {
@@ -322,7 +316,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
      */
     public function getConfigTypeList()
     {
-        $result = [ ];
+        $result = [];
         foreach ($this->getConfigTypeDefinitions() as $configType) {
             $title = $configType->getTitle();
             if ($title == '') {
@@ -340,9 +334,9 @@ abstract class AbstractConnection implements ReadOnlyConnection
      */
     public function getContentTypeDefinitions()
     {
-        $contentTypes = [ ];
+        $contentTypes = [];
         foreach ($this->getConfiguration()->getContentTypeNames() as $contentTypeName) {
-            $definition                           = $this->getContentTypeDefinition($contentTypeName);
+            $definition = $this->getContentTypeDefinition($contentTypeName);
             $contentTypes[$definition->getName()] = $definition;
         }
 
@@ -355,9 +349,9 @@ abstract class AbstractConnection implements ReadOnlyConnection
      */
     public function getConfigTypeDefinitions()
     {
-        $configTypes = [ ];
+        $configTypes = [];
         foreach ($this->getConfiguration()->getConfigTypeNames() as $configTypeName) {
-            $definition                          = $this->getConfigTypeDefinition($configTypeName);
+            $definition = $this->getConfigTypeDefinition($configTypeName);
             $configTypes[$definition->getName()] = $definition;
         }
 
@@ -393,7 +387,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
         $definition = $this->getContentTypeDefinition($contentTypeName);
 
         $this->currentContentTypeDefinition = $definition;
-        $this->currentContentTypeName       = $definition->getName();
+        $this->currentContentTypeName = $definition->getName();
 
         return $this;
     }
@@ -512,7 +506,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
     protected function stashRecord(Record $record, DataDimensions $dataDimensions)
     {
         if (!$dataDimensions->hasRelativeTimeShift()) {
-            $hash                                        = md5($record->getContentTypeName() . $dataDimensions . get_class($record));
+            $hash = md5($record->getContentTypeName() . $dataDimensions . get_class($record));
             $this->recordsStash[$hash][$record->getID()] = $record;
         }
     }
@@ -522,7 +516,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
         $tempDataDimensions = $dataDimensions;
         foreach (
             $this->getContentTypeDefinition($contentTypeName)
-                      ->getViewDefinitions() as $viewDefinition
+                ->getViewDefinitions() as $viewDefinition
         ) { // make sure all eventually related views are deleted
             $tempDataDimensions->setViewName($viewDefinition->getName());
             $hash = md5($contentTypeName . $tempDataDimensions . $recordClass);
@@ -578,7 +572,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
         if (!$dataDimensions->hasRelativeTimeShift()) {
             $tempDataDimensions = $dataDimensions;
             /* @phpcs:ignore */
-            foreach (                $this->getContentTypeDefinition($contentTypeName)                          ->getViewDefinitions() as $viewDefinition
+            foreach ($this->getContentTypeDefinition($contentTypeName)->getViewDefinitions() as $viewDefinition
             ) { // make sure all eventually related views are deleted
                 $hash = md5($contentTypeName . $tempDataDimensions . $recordClass);
 
@@ -591,7 +585,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
     protected function stashConfig(Config $config, DataDimensions $dataDimensions)
     {
         if (!$dataDimensions->hasRelativeTimeShift()) {
-            $hash                     = md5($config->getConfigTypeName() . $dataDimensions . get_class($config));
+            $hash = md5($config->getConfigTypeName() . $dataDimensions . get_class($config));
             $this->configStash[$hash] = $config;
         }
     }
@@ -600,7 +594,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
     {
         $tempDataDimensions = $dataDimensions;
         /* @phpcs:ignore */
-        foreach (            $this->getConfigTypeDefinition($configTypeName)                      ->getViewDefinitions() as $viewDefinition
+        foreach ($this->getConfigTypeDefinition($configTypeName)->getViewDefinitions() as $viewDefinition
         ) { // make sure all eventually related views are deleted
             $hash = md5($configTypeName . $tempDataDimensions . $recordClass);
             unset($this->configStash[$hash]);
@@ -644,9 +638,9 @@ abstract class AbstractConnection implements ReadOnlyConnection
      */
     protected function exportRecord(AbstractRecord $record, DataDimensions $dataDimensions)
     {
-        $precalculate      = $this->precalculateExportRecord($record, $dataDimensions);
+        $precalculate = $this->precalculateExportRecord($record, $dataDimensions);
         $allowedProperties = array_intersect_key($record->getProperties(), $precalculate['allowedProperties']);
-        $record            = clone $record;
+        $record = clone $record;
         $record->setProperties($allowedProperties);
 
         return $record;
@@ -658,12 +652,12 @@ abstract class AbstractConnection implements ReadOnlyConnection
         if (array_key_exists($key, $this->precalculations)) {
             $precalculate = $this->precalculations[$key];
         } else {
-            $definition        = $record->getDataTypeDefinition();
+            $definition = $record->getDataTypeDefinition();
             $allowedProperties = $definition->getProperties($dataDimensions->getViewName());
 
             $allowedProperties = array_combine($allowedProperties, $allowedProperties);
 
-            $precalculate                      = [ ];
+            $precalculate = [];
             $precalculate['allowedProperties'] = $allowedProperties;
 
             $this->precalculations[$key] = $precalculate;
@@ -674,7 +668,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
     protected function exportRecords($records, DataDimensions $dataDimensions)
     {
-        $result = [ ];
+        $result = [];
         foreach ($records as $record) {
             $result[$record->getId()] = $this->exportRecord($record, $dataDimensions);
         }
@@ -693,7 +687,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
             // Apply @name annotation
             if ($record->getDataTypeDefinition()->hasNamingPattern()) {
                 $record->setName(Util::applyNamingPattern($record->getProperties(), $record->getDataTypeDefinition()
-                                                                                           ->getNamingPattern()));
+                    ->getNamingPattern()));
             }
         }
 

@@ -403,7 +403,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         $this->getConfiguration()->addContentTypes([$contentTypeName]);
 
-        $this->getCMDLCache()->flushAll();
+        $this->getCMDLCache()->clear();
 
         $sql = 'UPDATE _update_ SET lastchange_timestamp = ? WHERE data_type = "content" AND `name` = ?';
         $this->getDatabase()->execute($sql, [$timeshiftTimestamp, $contentTypeName]);
@@ -433,7 +433,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         $this->getConfiguration()->addConfigTypes([$configTypeName]);
 
-        $this->getCMDLCache()->flushAll();
+        $this->getCMDLCache()->clear();
 
         $sql = 'UPDATE _update_ SET lastchange_timestamp = ? WHERE data_type = "config" AND `name` = ?';
         $this->getDatabase()->execute($sql, [$timeshiftTimestamp, $configTypeName]);
@@ -459,7 +459,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         $this->getConfiguration()->removeContentType($contentTypeName);
 
-        $this->getCMDLCache()->flushAll();
+        $this->getCMDLCache()->clear();
 
         return true;
     }
@@ -482,7 +482,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         $this->getConfiguration()->removeConfigType($configTypeName);
 
-        $this->getCMDLCache()->flushAll();
+        $this->getCMDLCache()->clear();
 
         return true;
     }

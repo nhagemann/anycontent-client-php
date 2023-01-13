@@ -13,6 +13,8 @@ RUN docker-php-ext-install pdo_mysql gd intl
 
 RUN docker-php-ext-configure gd
 
+RUN apt-get install zip unzip
+
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

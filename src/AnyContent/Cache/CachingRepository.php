@@ -9,10 +9,8 @@ use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Client\Util\RecordsSorter;
 use AnyContent\Filter\Interfaces\Filter;
-use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 class CachingRepository extends Repository
 {
@@ -48,7 +46,7 @@ class CachingRepository extends Repository
     public function getCacheAdapter(): AdapterInterface
     {
         if (!isset($this->cacheAdapter)) {
-            $this->cacheAdapter = new FilesystemAdapter();
+            $this->cacheAdapter = new ArrayAdapter();
         }
         return $this->cacheAdapter;
     }
@@ -57,7 +55,6 @@ class CachingRepository extends Repository
     {
         $this->cacheAdapter = $cacheAdapter;
     }
-
 
     public function selectExpirationCacheStrategy($duration = 300)
     {
@@ -136,7 +133,8 @@ class CachingRepository extends Repository
         $this->singleContentRecordCaching = $duration;
     }
 
-    public function disableSingleContentRecordCaching(): void{
+    public function disableSingleContentRecordCaching(): void
+    {
         $this->singleContentRecordCaching = false;
     }
 
@@ -156,7 +154,8 @@ class CachingRepository extends Repository
         $this->allContentRecordsCaching = $duration;
     }
 
-    public function disableAllContentsRecordsCaching(): void{
+    public function disableAllContentsRecordsCaching(): void
+    {
         $this->allContentRecordsCaching = false;
     }
 
@@ -176,16 +175,17 @@ class CachingRepository extends Repository
         $this->contentQueryRecordsCaching = $duration;
     }
 
-    public function disableContentQueryRecordsCaching(): void{
+    public function disableContentQueryRecordsCaching(): void
+    {
         $this->contentQueryRecordsCaching = false;
     }
 
     protected function createCacheKey($realm, array $params, $dataDimensions)
     {
         $cacheKey = '[' . $this->getName() . '][' . $realm . '][' . join(
-                ';',
-                $params
-            ) . '][' . (string)$dataDimensions . ']';
+            ';',
+            $params
+        ) . '][' . (string)$dataDimensions . ']';
 
         $cacheKey = str_replace(':', '>', $cacheKey);
 

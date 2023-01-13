@@ -2,9 +2,13 @@
 
 namespace AnyContent\Connection\Interfaces;
 
+use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
+use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
-use Doctrine\Common\Cache\CacheProvider;
+use CMDL\ConfigTypeDefinition;
+use CMDL\ContentTypeDefinition;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 interface ReadOnlyConnection
 {
@@ -136,7 +140,7 @@ interface ReadOnlyConnection
      */
     public function hasRepository();
 
-    public function setCacheProvider(CacheProvider $cacheProvider);
+    public function setCacheAdapter(AdapterInterface $cacheAdapter);
 
     public function enableCMDLCaching($duration = 60, $checkLastModifiedDate = false);
 

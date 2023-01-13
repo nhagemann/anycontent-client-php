@@ -4,8 +4,7 @@ namespace AnyContent\Client;
 
 use AnyContent\AnyContentClientException;
 use AnyContent\Cache\CachingRepository;
-use Doctrine\Common\Cache\CacheProvider;
-use Doctrine\Common\Cache\Psr6\DoctrineProvider;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 class Client
@@ -15,18 +14,17 @@ class Client
      */
     protected $userInfo;
 
-    /** @var  CacheProvider */
-    protected $cacheProvider;
+    protected AdapterInterface $cacheAdapter;
 
     protected $repositories = [ ];
 
-    public function __construct(UserInfo $userInfo = null, CacheProvider $cacheProvider = null)
+    public function __construct(UserInfo $userInfo = null, AdapterInterface $cacheAdapter = null)
     {
         if ($userInfo != null) {
             $this->userInfo = $userInfo;
         }
-        if ($cacheProvider != null) {
-            $this->cacheProvider = $cacheProvider;
+        if ($cacheAdapter != null) {
+            $this->$cacheAdapter = $cacheAdapter;
         }
     }
 
@@ -46,29 +44,20 @@ class Client
         $this->userInfo = $userInfo;
     }
 
-    /**
-     * @return CacheProvider
-     */
-    public function getCacheProvider()
+    public function getCacheAdapter(): AdapterInterface
     {
-        if (!$this->cacheProvider) {
-            // https://stackoverflow.com/questions/68166221/class-doctrine-common-cache-arraycache-does-not-exist-when-installing-a-symfon
-            $this->cacheProvider =  DoctrineProvider::wrap(new ArrayAdapter());
+        if (!isset($this->cacheAdapter)) {
+            $this->cacheAdapter = new ArrayAdapter();
         }
-
-        return $this->cacheProvider;
+        return $this->cacheAdapter;
     }
 
-    /**
-     * @param CacheProvider $cache
-     */
-    public function setCacheProvider($cacheProvider)
+    public function setCacheAdapter(AdapterInterface $cacheAdapter): void
     {
-        $this->cacheProvider = $cacheProvider;
-
+        $this->cacheAdapter = $cacheAdapter;
         foreach ($this->getRepositories() as $repository) {
             if ($repository instanceof CachingRepository) {
-                $repository->setCacheProvider($this->getCacheProvider());
+                $repository->setCacheAdapter($this->getCacheAdapter());
             }
         }
     }
@@ -89,7 +78,7 @@ class Client
         $this->repositories[$repository->getName()] = $repository;
 
         if ($repository instanceof CachingRepository) {
-            $repository->setCacheProvider($this->getCacheProvider());
+            $repository->setCacheAdapter($this->getCacheAdapter());
         }
 
         return $repository;

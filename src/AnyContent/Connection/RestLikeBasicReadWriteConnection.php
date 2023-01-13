@@ -267,7 +267,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         $this->getConfiguration()->addContentTypes($contentTypeNames);
 
-        $this->getCMDLCache()->flushAll();
+        $this->getCMDLCache()->clear();
 
         return true;
     }
@@ -303,7 +303,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         $this->getConfiguration()->addConfigTypes($configTypeNames);
 
-        $this->getCMDLCache()->flushAll();
+        $this->getCMDLCache()->clear();
 
         return true;
     }
@@ -317,7 +317,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
     {
         $this->repositoryInfo = [];
 
-        $this->getCMDLCache()->flushAll();
+        $this->getCMDLCache()->clear();
 
         try {
             $url = 'content/' . $contentTypeName;
@@ -343,7 +343,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
             $this->getConfiguration()->addContentTypes($contentTypeNames);
 
-            $this->getCMDLCache()->flushAll();
+            $this->getCMDLCache()->clear();
 
             return true;
         } catch (ClientException $e) {
@@ -360,7 +360,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
     {
         $this->repositoryInfo = [];
 
-        $this->getCMDLCache()->flushAll();
+        $this->getCMDLCache()->clear();
 
         try {
             $url = 'config/' . $configTypeName;
@@ -386,7 +386,7 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
             $this->getConfiguration()->addConfigTypes($configTypeNames);
 
-            $this->getCMDLCache()->flushAll();
+            $this->getCMDLCache()->clear();
 
             return true;
         } catch (ClientException $e) {
