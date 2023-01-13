@@ -3,15 +3,14 @@
 namespace AnyContent\Client;
 
 use CMDL\ContentTypeDefinition;
+use CMDL\DataTypeDefinition;
+use function PHPUnit\Framework\assertInstanceOf;
 
 class Record extends AbstractRecord implements \JsonSerializable
 {
     public $id = null;
 
     protected $level = null;
-
-    /** @var  UserInfo */
-    public $creationUserInfo = null;
 
     protected $isADeletedRevision = false;
 
@@ -122,11 +121,15 @@ class Record extends AbstractRecord implements \JsonSerializable
 
     public function getStatus()
     {
+        assert($this->dataTypeDefinition instanceof ContentTypeDefinition);
+
         return $this->getProperty('status');
     }
 
     public function getStatusLabel()
     {
+        assert($this->dataTypeDefinition instanceof ContentTypeDefinition);
+
         $statusList = $this->dataTypeDefinition->getStatusList();
         if ($statusList) {
             if (array_key_exists($this->getProperty('status'), $statusList)) {
@@ -139,11 +142,15 @@ class Record extends AbstractRecord implements \JsonSerializable
 
     public function getSubtype()
     {
+        assert($this->dataTypeDefinition instanceof ContentTypeDefinition);
+
         return $this->getProperty('subtype');
     }
 
     public function getSubtypeLabel()
     {
+        assert($this->dataTypeDefinition instanceof ContentTypeDefinition);
+
         $subtypesList = $this->dataTypeDefinition->getSubtypes();
         if ($subtypesList) {
             if (array_key_exists($this->getProperty('subtype'), $subtypesList)) {
@@ -152,18 +159,6 @@ class Record extends AbstractRecord implements \JsonSerializable
         }
 
         return null;
-    }
-
-    public function setCreationUserInfo(UserInfo $creationUserInfo)
-    {
-        $this->creationUserInfo = clone $creationUserInfo;
-
-        return $this;
-    }
-
-    public function getCreationUserInfo()
-    {
-        return $this->creationUserInfo;
     }
 
     /**

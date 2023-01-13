@@ -12,10 +12,7 @@ class RecordFactory
 {
     protected $precalculations = [ ];
 
-    /**
-     * @var RecordFactory
-     */
-    private static $instance = null;
+    private static ?RecordFactory $instance = null;
 
     protected $options = ['validateProperties' => true];
 
@@ -23,12 +20,7 @@ class RecordFactory
 
     protected $configRecordClassMap = array();
 
-    /**
-     * @param string $realm
-     *
-     * @return RecordFactory
-     */
-    public static function instance($options = [ ])
+    public static function instance($options = [ ]): RecordFactory
     {
         if (!self::$instance) {
             self::$instance = new RecordFactory();
@@ -57,7 +49,7 @@ class RecordFactory
 
         $classname = $this->getRecordClassForContentType($contentTypeDefinition->getName());
 
-        /** @var Record $record */
+        /** @var Record $masterRecord */
         $masterRecord = new $classname($contentTypeDefinition, '', $viewName, $workspace, $language);
 
         foreach ($jsonRecords as $jsonRecord) {

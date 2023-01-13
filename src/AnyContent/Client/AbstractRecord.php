@@ -9,19 +9,16 @@ abstract class AbstractRecord
 {
     use Properties;
 
-    protected $view = 'default';
-    protected $workspace = 'default';
-    protected $language = 'default';
+    protected string $view = 'default';
+    protected string $workspace = 'default';
+    protected string $language = 'default';
 
-    public $revision = 0;
+    public int $revision = 0;
 
-    /** @var UserInfo */
-    public $lastChangeUserInfo = null;
+    public ?UserInfo $lastChangeUserInfo = null;
 
+    public ?UserInfo $creationUserInfo = null;
 
-    /**
-     * @var Repository
-     */
     protected ?Repository $repository = null;
 
     /**
@@ -97,6 +94,18 @@ abstract class AbstractRecord
         }
 
         return $this->lastChangeUserInfo;
+    }
+
+    public function setCreationUserInfo(UserInfo $creationUserInfo)
+    {
+        $this->creationUserInfo = clone $creationUserInfo;
+
+        return $this;
+    }
+
+    public function getCreationUserInfo()
+    {
+        return $this->creationUserInfo;
     }
 
     public function getHash()
