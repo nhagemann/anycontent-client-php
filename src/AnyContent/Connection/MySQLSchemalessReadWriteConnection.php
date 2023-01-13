@@ -2,10 +2,12 @@
 
 namespace AnyContent\Connection;
 
+use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
 use AnyContent\Client\Util\TimeShifter;
+use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Interfaces\AdminConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
 
@@ -385,6 +387,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
     {
         $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
 
+        assert ( $this->getConfiguration() instanceof MySQLSchemalessConfiguration);
         if ($this->getConfiguration()->hasCMDLFolder()) {
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
@@ -415,6 +418,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
     {
         $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
 
+        assert ( $this->getConfiguration() instanceof MySQLSchemalessConfiguration);
         if ($this->getConfiguration()->hasCMDLFolder()) {
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';
@@ -443,6 +447,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
     public function deleteContentTypeCMDL($contentTypeName)
     {
+        assert ( $this->getConfiguration() instanceof MySQLSchemalessConfiguration);
         if ($this->getConfiguration()->hasCMDLFolder()) {
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
@@ -466,6 +471,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
     public function deleteConfigTypeCMDL($configTypeName)
     {
+        assert ( $this->getConfiguration() instanceof MySQLSchemalessConfiguration);
         if ($this->getConfiguration()->hasCMDLFolder()) {
             $path = $this->getConfiguration()
                          ->getPathCMDLFolderForConfigTypes() . '/' . $configTypeName . '.cmdl';

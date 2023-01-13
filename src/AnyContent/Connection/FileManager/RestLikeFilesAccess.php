@@ -120,6 +120,7 @@ class RestLikeFilesAccess implements FileManager
             }
 
             $response = $this->getClient()->get($url);
+            /** @phpstan-ignore-next-line */
             $json = $response->json();
 
             if ($json) {

@@ -4,6 +4,7 @@ namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
 use AnyContent\Client\DataDimensions;
+use AnyContent\Client\Record;
 use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use GuzzleHttp\Client;

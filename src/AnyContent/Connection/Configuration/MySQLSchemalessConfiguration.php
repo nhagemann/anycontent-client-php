@@ -8,7 +8,6 @@ use AnyContent\Connection\MySQLSchemalessReadOnlyConnection;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use AnyContent\Connection\Util\Database;
 use PDO;
-use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 class MySQLSchemalessConfiguration extends AbstractConfiguration
@@ -169,7 +168,6 @@ TEMPLATE_UPDATETABLE;
 
                 $finder->in($uri)->depth(0);
 
-                /** @var SplFileInfo $file */
                 foreach ($finder->files()->name('*.cmdl') as $file) {
                     $contentTypeName = $file->getBasename('.cmdl');
 
@@ -216,7 +214,6 @@ TEMPLATE_UPDATETABLE;
                 if (file_exists($uri)) {
                     $finder->in($uri)->depth(0);
 
-                    /** @var SplFileInfo $file */
                     foreach ($finder->files()->name('*.cmdl') as $file) {
                         $configTypeName = $file->getBasename('.cmdl');
 
@@ -332,7 +329,6 @@ TEMPLATE_UPDATETABLE;
         $finder1->depth(0);
         $directories = $finder1->directories()->in($path);
 
-        /** @var SplFileInfo $directory */
         foreach ($directories as $directory) {
             $repositoryName = $directory->getFilename();
 
@@ -349,7 +345,7 @@ TEMPLATE_UPDATETABLE;
 
             $finder2->files()->name('*.cmdl')->in($path);
 
-            /** @var SplFileInfo $file */
+
             foreach ($finder2 as $file) {
                 $contentTypeName = $file->getBasename('.cmdl');
                 $cmdl = $file->getContents();
@@ -366,7 +362,6 @@ TEMPLATE_UPDATETABLE;
                 $finder3->depth(0);
                 $finder3->files()->name('*.cmdl')->in($path . '/config');
 
-                /** @var SplFileInfo $file */
                 foreach ($finder3 as $file) {
                     $configTypeName = $file->getBasename('.cmdl');
 

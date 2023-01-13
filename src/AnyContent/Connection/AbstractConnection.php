@@ -632,7 +632,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
     }
 
     /**
-     * Make sure the returned record is a new instance an does only contain properties of it's
+     * Make sure the returned record is a new instance and does only contain properties of it's
      * current view
      *
      * @param AbstractRecord $record - multi view record !

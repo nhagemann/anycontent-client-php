@@ -3,6 +3,7 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Client\DataDimensions;
+use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use GuzzleHttp\Client;
 
@@ -19,7 +20,7 @@ class RecordsFileHttpReadOnlyConnection extends RecordsFileReadOnlyConnection im
     /**
      * @param $fileName
      *
-     * @return \GuzzleHttp\Stream\StreamInterface|null
+     * @return \GuzzleHttp\Stream\StreamInterfa|null
      * @throws ClientException
      */
     protected function readData($fileName)
