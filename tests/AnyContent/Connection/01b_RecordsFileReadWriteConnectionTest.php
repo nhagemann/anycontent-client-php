@@ -14,7 +14,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
     /** @var  RecordsFileReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
@@ -31,7 +30,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function setUp(): void
     {
         $configuration = new RecordsFileConfiguration();
@@ -43,7 +41,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
         $this->connection = $connection;
     }
-
 
     public function testSaveRecordSameConnection()
     {
@@ -66,7 +63,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
         $this->assertEquals('UDG', $record->getProperty('name'));
     }
 
-
     public function testSaveRecordNewConnection()
     {
         KVMLogger::instance()->debug(__METHOD__);
@@ -79,7 +75,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
         $this->assertEquals('UDG', $record->getProperty('name'));
     }
-
 
     public function testAddRecord()
     {
@@ -96,7 +91,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
         $this->assertEquals(629, $record->getID());
         $this->assertEquals(629, $id);
     }
-
 
     public function testSaveRecordsSameConnection()
     {
@@ -120,7 +114,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
         $this->assertEquals(614, $connection->countRecords());
     }
 
-
     public function testSaveRecordsNewConnection()
     {
         KVMLogger::instance()->debug(__METHOD__);
@@ -131,7 +124,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(614, $connection->countRecords());
     }
-
 
     public function testDeleteRecord()
     {
@@ -152,7 +144,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
         $this->assertEquals(613, $connection->countRecords());
     }
 
-
     public function testDeleteRecordNewConnection()
     {
         KVMLogger::instance()->debug(__METHOD__);
@@ -163,7 +154,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(613, $connection->countRecords());
     }
-
 
     public function testDeleteRecords()
     {
@@ -179,7 +169,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
         $this->assertEquals(611, $connection->countRecords());
     }
 
-
     public function testDeleteRecordsNewConnection()
     {
         KVMLogger::instance()->debug(__METHOD__);
@@ -190,7 +179,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(611, $connection->countRecords());
     }
-
 
     public function testDeleteAllRecords()
     {
@@ -205,7 +193,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
         $this->assertCount(611, $result);
         $this->assertEquals(0, $connection->countRecords());
     }
-
 
     public function testDeleteAllRecordsNewConnection()
     {
@@ -238,7 +225,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
         $this->assertEquals('', $record->getProperty('ranking'));
     }
-
 
     public function testPartialUpdateRecord()
     {

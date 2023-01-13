@@ -17,7 +17,6 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
     /** @var  RecordsFileReadWriteConnection */
     protected $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
@@ -34,10 +33,8 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function setUp(): void
     {
-
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
 
         $configuration = new RecordsFileConfiguration();
@@ -63,7 +60,6 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testChangeRecord()
     {
         $repository = $this->repository;
@@ -80,7 +76,6 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
         $record = $repository->getRecord(1);
         $this->assertEquals('UDG', $record->getName());
     }
-
 
     public function testChangedRecord()
     {

@@ -13,7 +13,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 {
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null)
     {
-
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
@@ -161,7 +160,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         return $record->getId();
     }
 
-
     /**
      * @param Record[] $records
      *
@@ -170,7 +168,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
      */
     public function saveRecords(array $records, DataDimensions $dataDimensions = null)
     {
-
         if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
@@ -183,10 +180,8 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         return $recordIds;
     }
 
-
     public function deleteRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
@@ -259,7 +254,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         return $recordId;
     }
 
-
     public function deleteRecords(array $recordsIds, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
         if (!$dataDimensions) {
@@ -278,7 +272,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         return $recordIds;
     }
-
 
     public function deleteAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
@@ -300,7 +293,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         return $recordIds;
     }
-
 
     public function saveConfig(Config $config, DataDimensions $dataDimensions = null)
     {
@@ -389,7 +381,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         return true;
     }
 
-
     public function saveContentTypeCMDL($contentTypeName, $cmdl)
     {
         $timeshiftTimestamp = TimeShifter::getTimeshiftTimestamp();
@@ -419,7 +410,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         return true;
     }
-
 
     public function saveConfigTypeCMDL($configTypeName, $cmdl)
     {
@@ -451,7 +441,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         return true;
     }
 
-
     public function deleteContentTypeCMDL($contentTypeName)
     {
         if ($this->getConfiguration()->hasCMDLFolder()) {
@@ -474,7 +463,6 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
 
         return true;
     }
-
 
     public function deleteConfigTypeCMDL($configTypeName)
     {

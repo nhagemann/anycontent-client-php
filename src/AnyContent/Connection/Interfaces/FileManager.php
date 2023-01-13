@@ -13,7 +13,6 @@ interface FileManager
      */
     public function getFolder($path = '');
 
-
     /**
      * @param $id
      *
@@ -21,28 +20,21 @@ interface FileManager
      */
     public function getFile($fileId);
 
-
     /**
      * @param File $file
      * @return File|bool
      */
     public function getBinary(File $file);
 
-
     public function saveFile($fileId, $binary);
-
 
     public function deleteFile($fileId, $deleteEmptyFolder = true);
 
-
     public function createFolder($path);
-
 
     public function deleteFolder($path, $deleteIfNotEmpty = false);
 
-
     public function getPublicUrl();
-
 
     public function setPublicUrl($publicUrl);
 }

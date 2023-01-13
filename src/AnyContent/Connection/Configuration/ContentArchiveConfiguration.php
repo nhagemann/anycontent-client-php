@@ -13,19 +13,16 @@ class ContentArchiveConfiguration extends AbstractConfiguration
 {
     protected $path;
 
-
     public function setContentArchiveFolder($path)
     {
         $path       = rtrim($path, '/');
         $this->path = realpath($path);
     }
 
-
     public function getContentArchiveFolder()
     {
         return $this->path;
     }
-
 
     public function apply(AbstractConnection $connection)
     {
@@ -63,18 +60,15 @@ class ContentArchiveConfiguration extends AbstractConfiguration
         }
     }
 
-
     public function createReadOnlyConnection()
     {
         return new ContentArchiveReadOnlyConnection($this);
     }
 
-
     public function createReadWriteConnection()
     {
         return new ContentArchiveReadWriteConnection($this);
     }
-
 
     public function getUriCMDLForContentType($contentTypeName)
     {
@@ -85,7 +79,6 @@ class ContentArchiveConfiguration extends AbstractConfiguration
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-
     public function getUriCMDLForConfigType($configTypeName)
     {
         if ($this->hasConfigType($configTypeName)) {
@@ -95,7 +88,6 @@ class ContentArchiveConfiguration extends AbstractConfiguration
         throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
-
     public function getFolderNameRecords($contentTypeName, DataDimensions $dataDimensions)
     {
         if ($this->hasContentType($contentTypeName)) {
@@ -104,7 +96,6 @@ class ContentArchiveConfiguration extends AbstractConfiguration
 
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
-
 
     public function getUriConfig($configTypeName, DataDimensions $dataDimensions)
     {

@@ -443,7 +443,6 @@ TEMPLATE_CONFIGTABLE;
 
     protected function getMultiViewConfig($configTypeName, DataDimensions $dataDimensions)
     {
-
         $tableName = $this->getConfigTypeTableName();
 
         $database = $this->getDatabase();
@@ -496,7 +495,6 @@ TEMPLATE_CONFIGTABLE;
 
     public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
     {
-
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
@@ -523,7 +521,6 @@ TEMPLATE_CONFIGTABLE;
 
     protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
     {
-
         $sql = 'SELECT lastchange_timestamp AS T FROM _update_ WHERE data_type = "content" AND name = ? AND workspace = ? AND language = ?';
 
         $row = $this->getDatabase()
@@ -538,8 +535,6 @@ TEMPLATE_CONFIGTABLE;
 
     protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions)
     {
-
-
         $sql = 'SELECT lastchange_timestamp AS T FROM _update_ WHERE data_type = "config" AND name = ? AND workspace = ? AND language = ?';
 
         $row = $this->getDatabase()
@@ -605,7 +600,6 @@ TEMPLATE_CONFIGTABLE;
 
     public function getRevisionsOfRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
@@ -635,7 +629,6 @@ TEMPLATE_CONFIGTABLE;
 
     public function getRevisionsOfConfig($configTypeName, DataDimensions $dataDimensions = null)
     {
-
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }

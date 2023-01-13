@@ -15,7 +15,6 @@ class UserInfoTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -29,7 +28,6 @@ class UserInfoTest extends TestCase
 
         $fs->mirror($source, $target);
     }
-
 
     public function setUp(): void
     {
@@ -47,7 +45,6 @@ class UserInfoTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testUserInfo()
     {
@@ -72,10 +69,8 @@ class UserInfoTest extends TestCase
         $this->assertTrue($userinfo->userNameIsAnEmailAddress());
     }
 
-
     public function testUserNewConnectionInfo()
     {
-
         $this->repository->selectContentType('example01');
 
         $record = $this->repository->getRecord(1);
@@ -91,7 +86,6 @@ class UserInfoTest extends TestCase
         $this->assertEquals('Doe', $userinfo->getLastname());
         $this->assertTrue($userinfo->userNameIsAnEmailAddress());
     }
-
 
     public function testChangeUserInfo()
     {

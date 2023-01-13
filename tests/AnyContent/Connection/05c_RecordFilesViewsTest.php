@@ -12,7 +12,6 @@ class RecordFilesViewsTest extends TestCase
     /** @var  RecordFilesReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $source = __DIR__ . '/../..//resources/RecordFilesExample';
@@ -27,12 +26,9 @@ class RecordFilesViewsTest extends TestCase
         $fs->mirror($source, $target);
     }
 
-
     public function setUp(): void
     {
-
         $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
-
 
         $configuration = new RecordFilesConfiguration();
 
@@ -43,12 +39,8 @@ class RecordFilesViewsTest extends TestCase
 
         $this->connection = $connection;
 
-
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
-
-
 
     public function testDefinition()
     {
@@ -155,7 +147,6 @@ class RecordFilesViewsTest extends TestCase
         $this->assertArrayNotHasKey('c', $record->getProperties());
 
         $dataDimensions->setViewName('test1');
-
 
         $records = $connection->getAllRecords(null, $dataDimensions);
 

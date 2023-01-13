@@ -15,7 +15,6 @@ class PagingTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -32,7 +31,6 @@ class PagingTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function setUp(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -47,7 +45,6 @@ class PagingTest extends TestCase
 
         $this->repository = new Repository('phpunit', $this->connection);
     }
-
 
     public function testSliceRecords()
     {
@@ -74,7 +71,6 @@ class PagingTest extends TestCase
         $records = $this->repository->getRecords('', ['.id'], 2, 6);
         $this->assertCount(4, $records);
     }
-
 
     public function testSliceFilteredRecords()
     {

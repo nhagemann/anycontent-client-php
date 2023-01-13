@@ -23,7 +23,6 @@ class RecordFactory
 
     protected $configRecordClassMap = array();
 
-
     /**
      * @param string $realm
      *
@@ -39,12 +38,10 @@ class RecordFactory
         return self::$instance;
     }
 
-
     public function __construct($options = [ ])
     {
         $this->options = array_merge($this->options, $options);
     }
-
 
     public function getOption($option)
     {
@@ -53,7 +50,6 @@ class RecordFactory
         }
         throw new AnyContentClientException('Missing option ' . $option . ' in RecordFactory');
     }
-
 
     public function createRecordsFromJSONRecordsArray(ContentTypeDefinition $contentTypeDefinition, $jsonRecords, $viewName = "default", $workspace = "default", $language = "default")
     {
@@ -75,7 +71,6 @@ class RecordFactory
         return $records;
     }
 
-
     /**
      * Creates record object from (array) decoded JSON record (json_decode($json,true))
      *
@@ -89,7 +84,6 @@ class RecordFactory
      */
     public function createRecordFromJSON(DataTypeDefinition $dataTypeDefinition, $jsonRecord, $viewName = "default", $workspace = "default", $language = "default")
     {
-
         if ($dataTypeDefinition instanceof ConfigTypeDefinition) {
             $classname = $this->getRecordClassForConfigType($dataTypeDefinition->getName());
 
@@ -105,10 +99,8 @@ class RecordFactory
 
         $record = $this->finishRecordCreationFromJSON($record, $jsonRecord);
 
-
         return $record;
     }
-
 
     /**
      *
@@ -163,7 +155,6 @@ class RecordFactory
         return $record;
     }
 
-
     public function createRecordFromCMDL($cmdl, $properties = [ ], $viewName = "default", $workspace = "default", $language = "default")
     {
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
@@ -183,7 +174,6 @@ class RecordFactory
 
         return $record;
     }
-
 
     public function createConfig(ConfigTypeDefinition $configTypeDefinition, $properties = [ ], $viewName = "default", $workspace = "default", $language = "default")
     {
@@ -205,17 +195,13 @@ class RecordFactory
         return $config;
     }
 
-
     public function registerRecordClassForContentType($contentTypeName, $classname)
     {
-
         $this->contentRecordClassMap[$contentTypeName] = $classname;
     }
 
-
     public function getRecordClassForContentType($contentTypeName)
     {
-
         if (array_key_exists($contentTypeName, $this->contentRecordClassMap)) {
             return $this->contentRecordClassMap[$contentTypeName];
         }
@@ -223,17 +209,13 @@ class RecordFactory
         return 'AnyContent\Client\Record';
     }
 
-
     public function registerRecordClassForConfigType($configTypeName, $classname)
     {
-
         $this->configRecordClassMap[$configTypeName] = $classname;
     }
 
-
     public function getRecordClassForConfigType($configTypeName)
     {
-
         if (array_key_exists($configTypeName, $this->configRecordClassMap)) {
             return $this->configRecordClassMap[$configTypeName];
         }

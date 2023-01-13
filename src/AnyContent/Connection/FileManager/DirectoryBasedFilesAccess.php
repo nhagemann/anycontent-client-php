@@ -24,7 +24,6 @@ class DirectoryBasedFilesAccess implements FileManager
 
     protected $folders = [];
 
-
     public function __construct($baseFolder, $baseUrl = false)
     {
         $this->baseFolder = $baseFolder;
@@ -35,14 +34,12 @@ class DirectoryBasedFilesAccess implements FileManager
         }
     }
 
-
     public function enableImageSizeCalculation()
     {
         $this->imagesize = true;
 
         return $this;
     }
-
 
     public function disableImageSizeCalculation()
     {
@@ -51,7 +48,6 @@ class DirectoryBasedFilesAccess implements FileManager
         return $this;
     }
 
-
     /**
      * @return boolean
      */
@@ -59,7 +55,6 @@ class DirectoryBasedFilesAccess implements FileManager
     {
         return $this->publicUrl;
     }
-
 
     /**
      * @param boolean $publicUrl
@@ -70,7 +65,6 @@ class DirectoryBasedFilesAccess implements FileManager
 
         return $this;
     }
-
 
     /**
      * @param string $path
@@ -93,7 +87,6 @@ class DirectoryBasedFilesAccess implements FileManager
         return $this->folders[$path];
     }
 
-
     public function getFile($fileId)
     {
         $id = trim(trim($fileId, '/'));
@@ -108,7 +101,6 @@ class DirectoryBasedFilesAccess implements FileManager
         return false;
     }
 
-
     public function getBinary(File $file)
     {
         $id = trim($file->getId(), '/');
@@ -121,7 +113,6 @@ class DirectoryBasedFilesAccess implements FileManager
 
         return false;
     }
-
 
     public function saveFile($fileId, $binary)
     {
@@ -138,7 +129,6 @@ class DirectoryBasedFilesAccess implements FileManager
 
         return false;
     }
-
 
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
@@ -160,7 +150,6 @@ class DirectoryBasedFilesAccess implements FileManager
         return false;
     }
 
-
     public function createFolder($path)
     {
         $this->folders = [];
@@ -177,10 +166,8 @@ class DirectoryBasedFilesAccess implements FileManager
         return false;
     }
 
-
     public function deleteFolder($path, $deleteIfNotEmpty = false)
     {
-
         $folder = $this->getFolder($path);
         if ($folder) {
             if ($folder->isEmpty() || $deleteIfNotEmpty) {
@@ -204,7 +191,6 @@ class DirectoryBasedFilesAccess implements FileManager
         return false;
     }
 
-
     public function listSubFolder($path)
     {
         $path    = trim($path, '/');
@@ -227,10 +213,8 @@ class DirectoryBasedFilesAccess implements FileManager
         return $folders;
     }
 
-
     protected function listFiles($path)
     {
-
         $path = trim($path, '/');
 
         $files  = array();

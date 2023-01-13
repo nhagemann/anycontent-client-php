@@ -13,7 +13,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/TestContentArchive';
@@ -28,7 +27,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
         $fs->mirror($source, $target);
     }
 
-
     public static function tearDownAfterClass(): void
     {
         $target = __DIR__ . '/../../../tmp/TestContentArchive';
@@ -38,7 +36,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function setUp(): void
     {
@@ -52,7 +49,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
         $this->connection = $connection;
     }
-
 
     public function testSaveRecordSameConnection()
     {
@@ -85,7 +81,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
         $this->assertEquals('live', $record->getWorkspace());
 
-
         $record->setProperty('name', 'dmc');
 
         $connection->saveRecord($record);
@@ -93,7 +88,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
         $record = $connection->getRecord(5);
 
         $this->assertEquals('dmc', $record->getProperty('name'));
-
 
         $record = $connection->getRecord(99);
 
@@ -107,13 +101,11 @@ class ContentArchiveDataDimensionsTest extends TestCase
         $connection->selectContentType('profiles');
         $connection->selectWorkspace('live');
 
-
         $record = $connection->getRecord(5);
 
         $this->assertEquals('live', $record->getWorkspace());
         $this->assertEquals('dmc', $record->getProperty('name'));
     }
-
 
     public function testAddRecord()
     {
@@ -128,7 +120,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
         $this->assertEquals(17, $record->getID());
         $this->assertEquals(17, $id);
     }
-
 
     public function testSaveRecordsSameConnection()
     {
@@ -150,7 +141,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
         $this->assertEquals(8, $connection->countRecords());
     }
 
-
     public function testSaveRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -163,7 +153,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
         $this->assertEquals(8, $connection->countRecords());
     }
-
 
     public function testDeleteRecord()
     {
@@ -182,7 +171,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
         $this->assertEquals(7, $connection->countRecords());
     }
 
-
     public function testDeleteRecordNewConnection()
     {
         $connection = $this->connection;
@@ -191,7 +179,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
         $this->assertEquals(7, $connection->countRecords());
     }
-
 
     public function testDeleteRecords()
     {
@@ -205,7 +192,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
         $this->assertEquals(6, $connection->countRecords());
     }
 
-
     public function testDeleteRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -214,7 +200,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
         $this->assertEquals(6, $connection->countRecords());
     }
-
 
     public function testDeleteAllRecords()
     {
@@ -227,7 +212,6 @@ class ContentArchiveDataDimensionsTest extends TestCase
         $this->assertCount(6, $result);
         $this->assertEquals(0, $connection->countRecords());
     }
-
 
     public function testDeleteAllRecordsNewConnection()
     {

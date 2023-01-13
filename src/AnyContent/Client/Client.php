@@ -20,7 +20,6 @@ class Client
 
     protected $repositories = [ ];
 
-
     public function __construct(UserInfo $userInfo = null, CacheProvider $cacheProvider = null)
     {
         if ($userInfo != null) {
@@ -31,7 +30,6 @@ class Client
         }
     }
 
-
     /**
      * @return UserInfo
      */
@@ -40,7 +38,6 @@ class Client
         return $this->userInfo;
     }
 
-
     /**
      * @param UserInfo $userInfo
      */
@@ -48,7 +45,6 @@ class Client
     {
         $this->userInfo = $userInfo;
     }
-
 
     /**
      * @return CacheProvider
@@ -62,7 +58,6 @@ class Client
 
         return $this->cacheProvider;
     }
-
 
     /**
      * @param CacheProvider $cache
@@ -78,7 +73,6 @@ class Client
         }
     }
 
-
     /**
      * @return array
      */
@@ -86,7 +80,6 @@ class Client
     {
         return $this->repositories;
     }
-
 
     public function addRepository(Repository $repository)
     {
@@ -101,7 +94,6 @@ class Client
 
         return $repository;
     }
-
 
     /**
      * @param $repositoryName

@@ -14,11 +14,8 @@ class GetRecordsTest extends TestCase
     /** @var  CachingRepository */
     protected $repository;
 
-
-
     public function setUp(): void
     {
-
         $configuration = new RecordsFileConfiguration();
 
         $configuration->addContentType('profiles', __DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../resources/RecordsFileExample/profiles.json');
@@ -41,12 +38,10 @@ class GetRecordsTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testGetRecords()
     {
         $repository = $this->repository;
         $repository->enableAllContentRecordsCaching(60);
-
 
         $repository->selectContentType('profiles');
 
@@ -61,7 +56,6 @@ class GetRecordsTest extends TestCase
 //        $this->assertEquals(3, $repository->getCacheProvider()->getMissCounter());
 //        $this->assertEquals(1, $repository->getCacheProvider()->getHitCounter());
     }
-
 
     public function testGetRecord()
     {

@@ -16,7 +16,6 @@ class SequenceItem
 
     protected $type;
 
-
     public function __construct(DataTypeDefinition $definition, $property, $type)
     {
         $this->dataTypeDefinition = $definition;
@@ -27,10 +26,8 @@ class SequenceItem
         $this->type = $type;
     }
 
-
     public function setProperty($property, $value)
     {
-
         $property = Util::generateValidIdentifier($property);
         if ($this->dataTypeDefinition->getClippingDefinition($this->type)->hasProperty($property)) {
             $this->properties[$property] = $value;
@@ -40,7 +37,6 @@ class SequenceItem
 
         return $this;
     }
-
 
     public function getItemType()
     {

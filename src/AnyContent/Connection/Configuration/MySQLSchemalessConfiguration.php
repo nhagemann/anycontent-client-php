@@ -8,8 +8,8 @@ use AnyContent\Connection\MySQLSchemalessReadOnlyConnection;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use AnyContent\Connection\Util\Database;
 use PDO;
-use Symfony\Component\Finder\Finder;
 use SplFileInfo;
+use Symfony\Component\Finder\Finder;
 
 class MySQLSchemalessConfiguration extends AbstractConfiguration
 {
@@ -21,7 +21,6 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
     protected $pathCMDLFolderForConfigTypes = null;
 
     protected $repositoryName = null;
-
 
     public function initDatabase($host, $dbName, $username, $password, $port = 3306)
     {
@@ -43,7 +42,6 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
         $this->ensureInfoTablesArePresent();
     }
 
-
     public function setCMDLFolder($pathContentTypes, $pathConfigTypes = null)
     {
         $this->pathCMDLFolderForContentTypes = $pathContentTypes;
@@ -54,7 +52,6 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
             $this->pathCMDLFolderForConfigTypes = $pathContentTypes . '/config';
         }
     }
-
 
     /**
      * @return null
@@ -68,7 +65,6 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
         return $this->repositoryName;
     }
 
-
     /**
      * @param null $repositoryName
      */
@@ -76,7 +72,6 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
     {
         $this->repositoryName = $repositoryName;
     }
-
 
     protected function ensureInfoTablesArePresent()
     {
@@ -161,10 +156,8 @@ TEMPLATE_UPDATETABLE;
         }
     }
 
-
     public function addContentTypes($contentTypes = null)
     {
-
         if (!$this->getDatabase()) {
             throw new AnyContentClientException('Database must be initalized first.');
         }
@@ -204,12 +197,10 @@ TEMPLATE_UPDATETABLE;
         }
     }
 
-
     public function removeContentType($contentTypeName)
     {
         unset($this->contentTypes[$contentTypeName]);
     }
-
 
     public function addConfigTypes($configTypes = null)
     {
@@ -254,12 +245,10 @@ TEMPLATE_UPDATETABLE;
         }
     }
 
-
     public function removeConfigType($configTypeName)
     {
         unset($this->configTypes[$configTypeName]);
     }
-
 
     /**
      * @return Database
@@ -269,7 +258,6 @@ TEMPLATE_UPDATETABLE;
         return $this->database;
     }
 
-
     /**
      * @param Database $database
      */
@@ -278,12 +266,10 @@ TEMPLATE_UPDATETABLE;
         $this->database = $database;
     }
 
-
     public function hasCMDLFolder()
     {
         return (bool)($this->pathCMDLFolderForContentTypes || $this->pathCMDLFolderForConfigTypes);
     }
-
 
     /**
      * @return null
@@ -293,7 +279,6 @@ TEMPLATE_UPDATETABLE;
         return $this->pathCMDLFolderForContentTypes;
     }
 
-
     /**
      * @return null
      */
@@ -302,7 +287,6 @@ TEMPLATE_UPDATETABLE;
         return $this->pathCMDLFolderForConfigTypes;
     }
 
-
     public function apply(AbstractConnection $connection)
     {
         parent::apply($connection);
@@ -310,18 +294,15 @@ TEMPLATE_UPDATETABLE;
         $connection->setDatabase($this->getDatabase());
     }
 
-
     public function createReadOnlyConnection()
     {
         return new MySQLSchemalessReadOnlyConnection($this);
     }
 
-
     public function createReadWriteConnection()
     {
         return new MySQLSchemalessReadWriteConnection($this);
     }
-
 
     /**
      * Import content/config types from a repositories folder containing cmdl into the _cmdl_ table

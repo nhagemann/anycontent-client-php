@@ -14,7 +14,6 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
      */
     protected $configuration;
 
-
     protected function getNextId($contentTypeName, $dataDimensions)
     {
         $finder = new Finder();
@@ -37,7 +36,6 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         }
     }
 
-
     public function saveContentTypeCMDL($contentTypeName, $cmdl)
     {
         $uri = 'file://' . $this->configuration->getContentArchiveFolder() . '/cmdl/' . $contentTypeName . '.cmdl';
@@ -51,7 +49,6 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
         return true;
     }
-
 
     public function saveConfigTypeCMDL($configTypeName, $cmdl)
     {
@@ -67,7 +64,6 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
         return true;
     }
 
-
     public function deleteContentTypeCMDL($contentTypeName)
     {
         $uri = 'file://' . $this->configuration->getContentArchiveFolder() . '/cmdl/' . $contentTypeName . '.cmdl';
@@ -81,7 +77,6 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
         return true;
     }
-
 
     public function deleteConfigTypeCMDL($configTypeName)
     {

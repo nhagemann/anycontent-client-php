@@ -14,7 +14,6 @@ class DataDimensions
 
     public const MAX_TIMESHIFT = 315532800; // roundabout 10 years, equals to 1.1.1980
 
-
     /**
      * @return null
      */
@@ -22,7 +21,6 @@ class DataDimensions
     {
         return $this->viewName;
     }
-
 
     /**
      * @param null $viewName
@@ -32,7 +30,6 @@ class DataDimensions
         $this->viewName = $viewName;
     }
 
-
     /**
      * @return null
      */
@@ -41,16 +38,13 @@ class DataDimensions
         return $this->workspace;
     }
 
-
     /**
      * @param null $workspace
      */
     public function setWorkspace($workspace)
     {
-
         $this->workspace = $workspace;
     }
-
 
     /**
      * @return null
@@ -60,16 +54,13 @@ class DataDimensions
         return $this->language;
     }
 
-
     /**
      * @param null $language
      */
     public function setLanguage($language)
     {
-
         $this->language = $language;
     }
-
 
     /**
      * @return null
@@ -79,7 +70,6 @@ class DataDimensions
         return $this->timeShift;
     }
 
-
     /**
      * @param null $timeShift
      */
@@ -87,7 +77,6 @@ class DataDimensions
     {
         $this->timeShift = $timeShift;
     }
-
 
     public function hasRelativeTimeShift()
     {
@@ -97,7 +86,6 @@ class DataDimensions
 
         return false;
     }
-
 
     public function __toString()
     {

@@ -16,8 +16,6 @@ class RecordsFileHttpReadOnlyConnection extends RecordsFileReadOnlyConnection im
         return $this->configuration;
     }
 
-
-
     /**
      * @param $fileName
      *

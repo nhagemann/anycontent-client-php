@@ -37,18 +37,15 @@ abstract class AbstractRecord
         return $this->dataTypeDefinition->hasProperty($property, $viewName);
     }
 
-
     public function setRevision($revision)
     {
         $this->revision = $revision;
     }
 
-
     public function getRevision()
     {
         return $this->revision;
     }
-
 
     public function setLanguage($language)
     {
@@ -57,12 +54,10 @@ abstract class AbstractRecord
         return $this;
     }
 
-
     public function getLanguage()
     {
         return $this->language;
     }
-
 
     public function setWorkspace($workspace)
     {
@@ -71,12 +66,10 @@ abstract class AbstractRecord
         return $this;
     }
 
-
     public function getWorkspace()
     {
         return $this->workspace;
     }
-
 
     public function setViewName($view)
     {
@@ -85,12 +78,10 @@ abstract class AbstractRecord
         return $this;
     }
 
-
     public function getViewName()
     {
         return $this->view;
     }
-
 
     public function setLastChangeUserInfo(UserInfo $lastChangeUserInfo)
     {
@@ -98,7 +89,6 @@ abstract class AbstractRecord
 
         return $this;
     }
-
 
     public function getLastChangeUserInfo()
     {

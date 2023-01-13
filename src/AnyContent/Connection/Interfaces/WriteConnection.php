@@ -15,7 +15,6 @@ interface WriteConnection extends ReadOnlyConnection
      */
     public function setUserInfo($userInfo);
 
-
     /**
      * @param Record              $record
      * @param DataDimensions|null $dataDimensions
@@ -24,7 +23,6 @@ interface WriteConnection extends ReadOnlyConnection
      */
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null);
 
-
     /**
      * @param array               $records
      * @param DataDimensions|null $dataDimensions
@@ -32,7 +30,6 @@ interface WriteConnection extends ReadOnlyConnection
      * @return int[]
      */
     public function saveRecords(array $records, DataDimensions $dataDimensions = null);
-
 
     /**
      * @param                     $recordId
@@ -43,7 +40,6 @@ interface WriteConnection extends ReadOnlyConnection
      */
     public function deleteRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null);
 
-
     /**
      * @param array               $recordIds
      * @param null                $contentTypeName
@@ -53,9 +49,7 @@ interface WriteConnection extends ReadOnlyConnection
      */
     public function deleteRecords(array $recordIds, $contentTypeName = null, DataDimensions $dataDimensions = null);
 
-
     public function deleteAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null);
-
 
     /**
      * @param Config              $config

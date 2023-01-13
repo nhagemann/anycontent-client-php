@@ -17,12 +17,10 @@ class Database
         $this->pdo = $pdo;
     }
 
-
     public function getConnection(): PDO
     {
         return $this->pdo;
     }
-
 
     public function execute(string $sql, array $params = []): PDOStatement
     {
@@ -45,10 +43,8 @@ class Database
         return $stmt;
     }
 
-
     public function insert($tableName, $insert, $update = false)
     {
-
         $sql = 'INSERT INTO `' . $tableName;
         $sql .= '` (`' . join('`,`', array_keys($insert)) . '`)';
         $sql .= ' VALUES ( ?';
@@ -65,7 +61,6 @@ class Database
         return $this->execute($sql, $values);
     }
 
-
     public function update($tableName, $update, $where = false)
     {
         $values = array_values($update);
@@ -81,10 +76,8 @@ class Database
         return $this->execute($sql, $values);
     }
 
-
     public function fetchOne($tableName, $where = array())
     {
-
         $sql = 'SELECT * FROM `' . $tableName;
         $sql .= '` WHERE `' . join('` = ? AND `', array_keys($where)) . '` = ?';
         $params = array_values($where);
@@ -94,14 +87,12 @@ class Database
         return $stmt->fetch();
     }
 
-
     public function fetchOneSQL($sql, $params = array())
     {
         $stmt = $this->execute($sql, $params);
 
         return $stmt->fetch();
     }
-
 
     public function fetchColumn($tableName, $column, $where = array())
     {
@@ -114,19 +105,15 @@ class Database
         return $stmt->fetchColumn($column);
     }
 
-
     public function fetchColumnSQL($sql, $column, $params = array())
     {
-
         $stmt = $this->execute($sql, $params);
 
         return $stmt->fetchColumn($column);
     }
 
-
     public function fetchAll($tableName, $where = array())
     {
-
         $sql = 'SELECT * FROM `' . $tableName;
         $sql .= '` WHERE `' . join('` = ? AND , `', array_keys($where)) . '` = ?';
         $params = array_values($where);
@@ -136,15 +123,12 @@ class Database
         return $stmt->fetchAll();
     }
 
-
     public function fetchAllSQL($sql, $params = array())
     {
-
         $stmt = $this->execute($sql, $params);
 
         return $stmt->fetchAll();
     }
-
 
     /**
      * http://stackoverflow.com/questions/210564/getting-raw-sql-query-string-from-\PDO-prepared-statements
@@ -165,7 +149,6 @@ class Database
 
         return preg_replace($keys, $params, $sql, 1, $count);
     }
-
 
     /**
      * @return int

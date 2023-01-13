@@ -16,10 +16,8 @@ class File implements \JsonSerializable
     protected $width = null;
     protected $height = null;
 
-
     public function __construct($folder, $id, $name, $type, $urls, $size = null, $timestampLastchange = null)
     {
-
         $this->folder              = $folder;
         $this->id                  = $id;
         $this->name                = $name;
@@ -29,66 +27,55 @@ class File implements \JsonSerializable
         $this->timestampLastChange = $timestampLastchange;
     }
 
-
     public function getFolder()
     {
         return $this->folder;
     }
-
 
     public function getId()
     {
         return $this->id;
     }
 
-
     public function getName()
     {
         return $this->name;
     }
-
 
     public function getSize()
     {
         return $this->size;
     }
 
-
     public function getTimestampLastChange()
     {
         return $this->timestampLastChange;
     }
-
 
     public function getType()
     {
         return $this->type;
     }
 
-
     public function setHeight($height)
     {
         $this->height = $height;
     }
-
 
     public function getHeight()
     {
         return $this->height;
     }
 
-
     public function setWidth($width)
     {
         $this->width = $width;
     }
 
-
     public function getWidth()
     {
         return $this->width;
     }
-
 
     public function isImage()
     {
@@ -98,7 +85,6 @@ class File implements \JsonSerializable
 
         return false;
     }
-
 
     public function getUrl($type = 'default', $fallback = false)
     {
@@ -112,18 +98,15 @@ class File implements \JsonSerializable
         return false;
     }
 
-
     public function getUrls()
     {
         return $this->urls;
     }
 
-
     public function addUrl($type, $url)
     {
         $this->urls[$type] = $url;
     }
-
 
     public function removeUrl($type)
     {
@@ -132,12 +115,10 @@ class File implements \JsonSerializable
         }
     }
 
-
     public function hasPublicUrl()
     {
         return (bool)$this->getUrl('default');
     }
-
 
     public function jsonSerialize(): array
     {

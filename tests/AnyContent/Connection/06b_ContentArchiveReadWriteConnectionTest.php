@@ -14,7 +14,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -28,7 +27,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
         $fs->mirror($source, $target);
     }
-
 
     public function setUp(): void
     {
@@ -44,7 +42,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testSaveRecordSameConnection()
     {
@@ -65,7 +62,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
         $this->assertEquals('dmc', $record->getProperty('name'));
     }
 
-
     public function testSaveRecordNewConnection()
     {
         $connection = $this->connection;
@@ -76,7 +72,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
         $this->assertEquals('dmc', $record->getProperty('name'));
     }
-
 
     public function testAddRecord()
     {
@@ -91,7 +86,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
         $this->assertEquals(17, $record->getID());
         $this->assertEquals(17, $id);
     }
-
 
     public function testSaveRecordsSameConnection()
     {
@@ -113,7 +107,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
         $this->assertEquals(9, $connection->countRecords());
     }
 
-
     public function testSaveRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -122,7 +115,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(9, $connection->countRecords());
     }
-
 
     public function testDeleteRecord()
     {
@@ -141,7 +133,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
         $this->assertEquals(8, $connection->countRecords());
     }
 
-
     public function testDeleteRecordNewConnection()
     {
         $connection = $this->connection;
@@ -150,7 +141,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(8, $connection->countRecords());
     }
-
 
     public function testDeleteRecords()
     {
@@ -164,7 +154,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
         $this->assertEquals(7, $connection->countRecords());
     }
 
-
     public function testDeleteRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -173,7 +162,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(7, $connection->countRecords());
     }
-
 
     public function testDeleteAllRecords()
     {
@@ -186,7 +174,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
         $this->assertCount(7, $result);
         $this->assertEquals(0, $connection->countRecords());
     }
-
 
     public function testDeleteAllRecordsNewConnection()
     {
@@ -217,7 +204,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
         $this->assertEquals('', $record->getProperty('ranking'));
     }
-
 
     public function testPartialUpdateRecord()
     {

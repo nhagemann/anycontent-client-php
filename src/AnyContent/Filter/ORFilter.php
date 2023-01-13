@@ -12,7 +12,6 @@ class ORFilter implements Filter
      */
     protected $terms;
 
-
     /**
      * @param array $terms
      */
@@ -20,7 +19,6 @@ class ORFilter implements Filter
     {
         $this->terms = $terms;
     }
-
 
     public function match(Record $record)
     {
@@ -33,7 +31,6 @@ class ORFilter implements Filter
 
         return false;
     }
-
 
     public function __toString()
     {

@@ -23,7 +23,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
     /** @var  RestLikeConfiguration */
     protected $configuration;
 
-
     /**
      * @return RestLikeConfiguration
      */
@@ -37,7 +36,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
      */
     public function getClient()
     {
-
         if (!$this->client) {
             $client = new Client(['base_url' => $this->getConfiguration()->getUri(),
                 'defaults' => ['timeout' => $this->getConfiguration()->getTimeout()],
@@ -48,7 +46,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             $emitter = $client->getEmitter();
 
             $emitter->on('end', function (EndEvent $event) {
-
                 $kvm = KVMLogger::instance('anycontent-connection');
 
                 $message = new LogMessage();
@@ -75,13 +72,11 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         return $this->client;
     }
 
-
     public function getRepositoryInfo(DataDimensions $dataDimensions = null)
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
-
 
         if (!array_key_exists((string)$dataDimensions, $this->repositoryInfo)) {
             $url = 'info/' . $dataDimensions->getWorkspace() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
@@ -94,7 +89,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         return $this->repositoryInfo[(string)$dataDimensions];
     }
-
 
     /**
      * @return array[]
@@ -117,7 +111,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         return $result;
     }
 
-
     /**
      * @return array[]
      */
@@ -138,7 +131,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         return $result;
     }
 
-
     /**
      * @param $contentTypeName
      *
@@ -158,7 +150,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-
     /**
      * @param $configTypeName
      *
@@ -175,7 +166,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
-
 
     /**
      * @param null $contentTypeName
@@ -200,7 +190,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
-
 
     /**
      * @param null $contentTypeName
@@ -232,10 +221,8 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-
     public function getRecords($contentTypeName, DataDimensions $dataDimensions, $filter, $page = 1, $count = null, $order = ['.id'])
     {
-
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
@@ -251,10 +238,8 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-
     protected function requestRecords($contentTypeName, DataDimensions $dataDimensions, $filter, $page = 1, $count = null, $order = ['.id'])
     {
-
         $url = 'content/' . $contentTypeName . '/records/' . $dataDimensions->getWorkspace() . '/' . $dataDimensions->getViewName() . '?language=' . $dataDimensions->getLanguage() . '&view=' . $dataDimensions->getViewName() . '&timeshift=' . $dataDimensions->getTimeShift();
 
         if ($count != null) {
@@ -271,7 +256,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         $map = ['.id' => 'id', '.id-' => 'id-', 'position' => 'pos', 'position-' => 'pos-', '.info.creation.timestamp' => 'creation', '.info.creation.timestamp-' => 'creation-', '.info.lastchange.timestamp' => 'change', '.info.lastchange.timestamp-' => 'change-'];
 
-
         $first = reset($order);
         if (array_key_exists($first, $map)) {
             $url .= '&order=' . $map[$first];
@@ -287,7 +271,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             ->createRecordsFromJSONRecordsArray($this->getContentTypeDefinition($contentTypeName), $json['records']);
     }
 
-
     /**
      * @param $recordId
      *
@@ -295,7 +278,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
      */
     public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
     {
-
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
@@ -332,7 +314,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
-
 
     /**
      *
@@ -382,7 +363,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
-
     public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
     {
         if ($dataDimensions == null) {
@@ -410,7 +390,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         return $t;
     }
 
-
     protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
     {
         $t = 0;
@@ -427,7 +406,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
         return $t;
     }
-
 
     protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions)
     {
@@ -446,10 +424,8 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         return $t;
     }
 
-
     public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
     {
-
         $t = 0;
 
         $info = $this->getRepositoryInfo();

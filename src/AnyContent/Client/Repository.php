@@ -49,7 +49,6 @@ class Repository implements FileManager, \JsonSerializable
     /** @var  RecordFactory */
     protected $recordFactory;
 
-
     public function __construct(
         $name,
         ReadOnlyConnection $readConnection,
@@ -79,7 +78,6 @@ class Repository implements FileManager, \JsonSerializable
         $this->fileManager = $fileManager;
     }
 
-
     /**
      * @return ReadOnlyConnection
      */
@@ -87,7 +85,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         return $this->readConnection;
     }
-
 
     /**
      * @param ReadOnlyConnection $readConnection
@@ -97,7 +94,6 @@ class Repository implements FileManager, \JsonSerializable
         $this->readConnection = $readConnection;
     }
 
-
     /**
      * @return
      */
@@ -105,7 +101,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         return $this->writeConnection;
     }
-
 
     /**
      * @param boolean $writeConnection
@@ -115,7 +110,6 @@ class Repository implements FileManager, \JsonSerializable
         $this->writeConnection = $writeConnection;
     }
 
-
     /**
      * @return bool
      */
@@ -123,7 +117,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         return (bool)$this->fileManager;
     }
-
 
     /**
      * @return FileManager
@@ -133,7 +126,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->fileManager;
     }
 
-
     /**
      * @param FileManager $fileManager
      */
@@ -141,7 +133,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         $this->fileManager = $fileManager;
     }
-
 
     /**
      * @return mixed
@@ -151,7 +142,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->name;
     }
 
-
     /**
      * @param mixed $name
      */
@@ -160,7 +150,6 @@ class Repository implements FileManager, \JsonSerializable
         $this->name = $name;
     }
 
-
     /**
      * @return string
      */
@@ -168,7 +157,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         return $this->title;
     }
-
 
     /**
      * @param string $title
@@ -180,7 +168,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this;
     }
 
-
     /**
      * @return bool
      */
@@ -188,7 +175,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         return (bool)$this->getPublicUrl();
     }
-
 
     /**
      * @return string
@@ -198,7 +184,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->publicUrl;
     }
 
-
     /**
      * @param string $publicUrl
      */
@@ -207,18 +192,15 @@ class Repository implements FileManager, \JsonSerializable
         $this->publicUrl = $publicUrl;
     }
 
-
     public function getContentTypeNames()
     {
         return $this->readConnection->getContentTypeNames();
     }
 
-
     public function getConfigTypeNames()
     {
         return $this->readConnection->getConfigTypeNames();
     }
-
 
     /**
      * @return \CMDL\ContentTypeDefinition[]
@@ -228,7 +210,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->getContentTypeDefinitions();
     }
 
-
     /**
      * @return \CMDL\ConfigTypeDefinition[]
      */
@@ -236,7 +217,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         return $this->readConnection->getConfigTypeDefinitions();
     }
-
 
     /**
      * allows to access content type titles without need to parse cmdl definition - if connection supports it
@@ -248,7 +228,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->getContentTypeList();
     }
 
-
     /**
      *  allows to access config type titles without need to parse cmdl definition - if connection supports it
      *
@@ -258,7 +237,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         return $this->readConnection->getConfigTypeList();
     }
-
 
     /**
      * @param $contentTypeName
@@ -270,7 +248,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->hasContentType($contentTypeName);
     }
 
-
     /**
      * @param $configTypeName
      *
@@ -281,7 +258,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->hasConfigType($configTypeName);
     }
 
-
     /**
      * @param null $contentTypeName
      *
@@ -290,14 +266,12 @@ class Repository implements FileManager, \JsonSerializable
      */
     public function getContentTypeDefinition($contentTypeName = null)
     {
-
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
 
         return $this->readConnection->getContentTypeDefinition($contentTypeName);
     }
-
 
     /**
      * @param $configTypeName
@@ -307,10 +281,8 @@ class Repository implements FileManager, \JsonSerializable
      */
     public function getConfigTypeDefinition($configTypeName)
     {
-
         return $this->readConnection->getConfigTypeDefinition($configTypeName);
     }
-
 
     /**
      *
@@ -322,12 +294,10 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->getCurrentContentTypeDefinition();
     }
 
-
     public function getCurrentContentTypeName()
     {
         return $this->readConnection->getCurrentContentTypeName();
     }
-
 
     public function selectContentType($contentTypeName, $resetDataDimensions = false)
     {
@@ -340,7 +310,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this;
     }
 
-
     public function selectView($viewName)
     {
         $this->getCurrentDataDimensions()->setViewName($viewName);
@@ -348,14 +317,12 @@ class Repository implements FileManager, \JsonSerializable
         return $this;
     }
 
-
     public function setDataDimensions(DataDimensions $dataDimensions)
     {
         $this->dataDimensions = $dataDimensions;
 
         return $this;
     }
-
 
     public function selectDataDimensions($workspace, $language = null, $timeshift = null)
     {
@@ -372,14 +339,12 @@ class Repository implements FileManager, \JsonSerializable
         return $this;
     }
 
-
     public function selectWorkspace($workspace)
     {
         $this->getCurrentDataDimensions()->setWorkspace($workspace);
 
         return $this;
     }
-
 
     public function selectLanguage($language)
     {
@@ -388,14 +353,12 @@ class Repository implements FileManager, \JsonSerializable
         return $this;
     }
 
-
     public function setTimeShift($timeshift)
     {
         $this->getCurrentDataDimensions()->setTimeShift($timeshift);
 
         return $this;
     }
-
 
     /**
      * Reset data dimensions to default values (workspace: default, language: default, view: default, no timeshift)
@@ -404,12 +367,10 @@ class Repository implements FileManager, \JsonSerializable
      */
     public function reset()
     {
-
         $this->dataDimensions = new DataDimensions();
 
         return $this;
     }
-
 
     public function getCurrentDataDimensions($decoupled = false)
     {
@@ -424,7 +385,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->dataDimensions;
     }
 
-
     /**
      * @return RecordFactory
      */
@@ -437,10 +397,8 @@ class Repository implements FileManager, \JsonSerializable
         return $this->recordFactory;
     }
 
-
     public function createRecord($name = '', $recordId = null)
     {
-
         $record = $this->getRecordFactory()
                        ->createRecord(
                            $this->getContentTypeDefinition(),
@@ -462,7 +420,6 @@ class Repository implements FileManager, \JsonSerializable
 
         return $record;
     }
-
 
     /**
      * @param      $recordId
@@ -487,11 +444,11 @@ class Repository implements FileManager, \JsonSerializable
         return $record;
     }
 
-
     /**
      *
      * @return Record[]
      */
+
     /**
      * @param string|Filter $filter
      * @param int           $page
@@ -540,7 +497,6 @@ class Repository implements FileManager, \JsonSerializable
         return $records;
     }
 
-
     /**
      * @param                $filter
      * @param                $order
@@ -560,7 +516,6 @@ class Repository implements FileManager, \JsonSerializable
         return false;
     }
 
-
     protected function getAllRecords($dataDimensions = null)
     {
         if ($dataDimensions == null) {
@@ -570,10 +525,8 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->getAllRecords($this->getCurrentContentTypeName(), $dataDimensions);
     }
 
-
     public function countRecords($filter = '')
     {
-
         if ($filter == '') {
             $dataDimensions = $this->getCurrentDataDimensions();
 
@@ -583,14 +536,12 @@ class Repository implements FileManager, \JsonSerializable
         return count($this->getRecords($filter));
     }
 
-
     public function getSortedRecords($parentId, $includeParent = false, $depth = null, $height = 0)
     {
         $records = $this->getRecords();
 
         return RecordsSorter::sortRecords($records, $parentId, $includeParent, $depth, $height);
     }
-
 
     public function saveRecord(Record $record)
     {
@@ -609,7 +560,6 @@ class Repository implements FileManager, \JsonSerializable
 
         return $result;
     }
-
 
     public function saveRecords($records)
     {
@@ -632,7 +582,6 @@ class Repository implements FileManager, \JsonSerializable
         return $result;
     }
 
-
     public function deleteRecord($recordId)
     {
         if (!$this->writeConnection) {
@@ -645,7 +594,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->writeConnection->deleteRecord($recordId, $contentTypeName, $dataDimensions);
     }
 
-
     public function deleteRecords($recordIds)
     {
         if (!$this->writeConnection) {
@@ -657,7 +605,6 @@ class Repository implements FileManager, \JsonSerializable
 
         return $this->writeConnection->deleteRecords($recordIds, $contentTypeName, $dataDimensions);
     }
-
 
     /**
      * Updates parent and positiong properties of all records of current content type
@@ -689,7 +636,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->saveRecords($records);
     }
 
-
     public function deleteAllRecords()
     {
         if (!$this->writeConnection) {
@@ -702,14 +648,12 @@ class Repository implements FileManager, \JsonSerializable
         return $this->writeConnection->deleteAllRecords($contentTypeName, $dataDimensions);
     }
 
-
     public function getConfig($configTypeName)
     {
         $dataDimensions = $this->getCurrentDataDimensions();
 
         return $this->readConnection->getConfig($configTypeName, $dataDimensions);
     }
-
 
     public function saveConfig(Config $config)
     {
@@ -729,7 +673,6 @@ class Repository implements FileManager, \JsonSerializable
         return $result;
     }
 
-
     /**
      * @param string $path
      *
@@ -739,7 +682,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         return $this->getFileManager()->getFolder($path);
     }
-
 
     /**
      * @param $id
@@ -751,40 +693,33 @@ class Repository implements FileManager, \JsonSerializable
         return $this->getFileManager()->getFile($fileId);
     }
 
-
     public function getBinary(File $file)
     {
         return $this->getFileManager()->getBinary($file);
     }
-
 
     public function saveFile($fileId, $binary)
     {
         return $this->getFileManager()->saveFile($fileId, $binary);
     }
 
-
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
         return $this->getFileManager()->deleteFile($fileId, $deleteEmptyFolder);
     }
-
 
     public function createFolder($path)
     {
         return $this->getFileManager()->createFolder($path);
     }
 
-
     public function deleteFolder($path, $deleteIfNotEmpty = false)
     {
         return $this->getFileManager()->deleteFolder($path, $deleteIfNotEmpty);
     }
 
-
     public function registerRecordClassForContentType($contentTypeName, $classname)
     {
-
         if ($this->hasContentType($contentTypeName)) {
             $this->getRecordFactory()->registerRecordClassForContentType($contentTypeName, $classname);
 
@@ -797,16 +732,13 @@ class Repository implements FileManager, \JsonSerializable
         return false;
     }
 
-
     public function getRecordClassForContentType($contentTypeName)
     {
         return $this->getRecordFactory()->getRecordClassForContentType($contentTypeName);
     }
 
-
     public function registerRecordClassForConfigType($configTypeName, $classname)
     {
-
         if ($this->hasConfigType($configTypeName)) {
             $this->getRecordFactory()->registerRecordClassForConfigType($configTypeName, $classname);
 
@@ -819,12 +751,10 @@ class Repository implements FileManager, \JsonSerializable
         return false;
     }
 
-
     public function getRecordClassForConfigType($contentTypeName)
     {
         return $this->getRecordFactory()->getRecordClassForContentType($contentTypeName);
     }
-
 
     /**
      * @return UserInfo
@@ -840,7 +770,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->userInfo;
     }
 
-
     /**
      * @param UserInfo $userInfo
      */
@@ -848,7 +777,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         $this->userInfo = $userInfo;
     }
-
 
     /**
      * @param                     $recordId
@@ -869,7 +797,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->getRevisionsOfRecord($recordId, $contentTypeName, $dataDimensions);
     }
 
-
     /**
      * @param                     $configTypeName
      * @param DataDimensions|null $dataDimensions
@@ -887,7 +814,6 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->getRevisionsOfConfig($configTypeName, $dataDimensions);
     }
 
-
     public function getLastModifiedDate(
         $contentTypeName = null,
         $configTypeName = null,
@@ -904,12 +830,10 @@ class Repository implements FileManager, \JsonSerializable
         return $this->readConnection->getLastModifiedDate($contentTypeName, $configTypeName, $dataDimensions);
     }
 
-
     public function isWritable()
     {
         return (bool)$this->writeConnection;
     }
-
 
     public function isAdministrable()
     {
@@ -924,12 +848,10 @@ class Repository implements FileManager, \JsonSerializable
         return false;
     }
 
-
     public function supportsRevisions()
     {
         return $this->readConnection instanceof RevisionConnection;
     }
-
 
     public function jsonSerialize(): array
     {

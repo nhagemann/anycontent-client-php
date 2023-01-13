@@ -6,7 +6,6 @@ interface UniqueConnection
 {
     public function isUniqueConnection();
 
-
     /**
      * @param int $confidence nr of seconds not checking for any external changes
      *

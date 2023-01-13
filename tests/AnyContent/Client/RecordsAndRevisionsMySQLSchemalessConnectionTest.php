@@ -14,13 +14,11 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
     /** @var  Repository */
     public $repository;
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public static function setUpBeforeClass(): void
     {
-
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
@@ -58,13 +56,11 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public function setUp(): void
     {
-
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
@@ -84,17 +80,13 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testSupportsRevisions()
     {
-
         $this->assertTrue($this->repository->supportsRevisions());
     }
 
-
     public function testCreatingRecordRevisions()
     {
-
         $repository = $this->repository;
 
         $repository->selectContentType('profiles');
@@ -120,10 +112,8 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
         }
     }
 
-
     public function testCreatingConfigRevisions()
     {
-
         $repository = $this->repository;
 
         for ($i = 0; $i <= 4; $i++) {
@@ -146,7 +136,6 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
             $this->assertEquals($i--, $revision->getRevision());
         }
     }
-
 
     public function testDeleteRecords()
     {

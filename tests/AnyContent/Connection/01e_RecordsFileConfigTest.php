@@ -13,7 +13,6 @@ class RecordsFileConfigTest extends TestCase
     /** @var  RecordsFileReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
@@ -30,7 +29,6 @@ class RecordsFileConfigTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function setUp(): void
     {
         $configuration = new RecordsFileConfiguration();
@@ -43,7 +41,6 @@ class RecordsFileConfigTest extends TestCase
 
         $this->connection = $connection;
     }
-
 
     public function testConfigSameConnection()
     {
@@ -66,7 +63,6 @@ class RecordsFileConfigTest extends TestCase
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
     }
 
-
     public function testConfigNewConnection()
     {
         $connection = $this->connection;
@@ -77,7 +73,6 @@ class RecordsFileConfigTest extends TestCase
 
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
     }
-
 
     public function testViewsConfigSameConnection()
     {

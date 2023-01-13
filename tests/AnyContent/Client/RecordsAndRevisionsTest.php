@@ -15,7 +15,6 @@ class RepositoryRecordsAndRevisionsTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -32,8 +31,6 @@ class RepositoryRecordsAndRevisionsTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
-
     public function setUp(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -48,7 +45,6 @@ class RepositoryRecordsAndRevisionsTest extends TestCase
 
         $this->repository = new Repository('phpunit', $this->connection);
     }
-
 
     public function testSaveRecords()
     {
@@ -80,7 +76,6 @@ class RepositoryRecordsAndRevisionsTest extends TestCase
         $this->assertFalse($record);
     }
 
-
     public function testNewConnection()
     {
         $this->repository->selectContentType('example01');
@@ -97,9 +92,6 @@ class RepositoryRecordsAndRevisionsTest extends TestCase
         $this->assertCount(5, $records);
         $this->assertEquals(5, $this->repository->countRecords());
     }
-
-
-
 
     public function testDeleteRecords()
     {

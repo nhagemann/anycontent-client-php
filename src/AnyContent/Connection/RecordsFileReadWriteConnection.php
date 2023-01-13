@@ -23,7 +23,6 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         return array_pop($recordIds);
     }
 
-
     /**
      * @param Record[] $records
      *
@@ -79,7 +78,6 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         return [ ];
     }
 
-
     public function deleteRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
         if (!$dataDimensions) {
@@ -96,7 +94,6 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
 
         return false;
     }
-
 
     public function deleteRecords(array $recordsIds, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
@@ -133,7 +130,6 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         return $result;
     }
 
-
     public function deleteAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
         if (!$dataDimensions) {
@@ -154,7 +150,6 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         }
         throw new AnyContentClientException('Error when deleting records of content type ' . $contentTypeName);
     }
-
 
     public function saveConfig(Config $config, DataDimensions $dataDimensions = null)
     {
@@ -180,7 +175,6 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         }
         throw new AnyContentClientException('Error when saving record of config type ' . $configTypeName);
     }
-
 
     protected function writeData($fileName, $data)
     {

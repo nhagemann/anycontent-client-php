@@ -18,7 +18,6 @@ class FilteringTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -35,7 +34,6 @@ class FilteringTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public static function tearDownAfterClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -43,7 +41,6 @@ class FilteringTest extends TestCase
         $fs = new Filesystem();
         $fs->remove($target);
     }
-
 
     public function setUp(): void
     {
@@ -60,7 +57,6 @@ class FilteringTest extends TestCase
         $this->repository = new Repository('phpunit', $this->connection);
     }
 
-
     public function testSaveRecords()
     {
         $this->repository->selectContentType('example01');
@@ -70,18 +66,15 @@ class FilteringTest extends TestCase
         $id = $this->repository->saveRecord($record);
         $this->assertEquals(1, $id);
 
-
         $record = $this->repository->createRecord('New Record');
         $record->setProperty('source', 'b');
         $id = $this->repository->saveRecord($record);
         $this->assertEquals(2, $id);
 
-
         $record = $this->repository->createRecord('Differing Name');
         $record->setProperty('source', 'c');
         $id = $this->repository->saveRecord($record);
         $this->assertEquals(3, $id);
-
 
         $records = $this->repository->getRecords('name = New Record');
         $this->assertCount(2, $records);
@@ -93,10 +86,8 @@ class FilteringTest extends TestCase
         $records = $this->repository->getRecords($orFilter);
         $this->assertCount(3, $records);
 
-
         $records = $this->repository->getRecords('source > b');
         $this->assertCount(1, $records);
-
 
         $filter1 = new PropertyFilter('source > a');
         $filter2 = new PropertyFilter('name = Differing Name');
@@ -104,7 +95,6 @@ class FilteringTest extends TestCase
         $records = $this->repository->getRecords($andFilter);
         $this->assertCount(1, $records);
     }
-
 
 //
 //    public function testSimpleFilter()

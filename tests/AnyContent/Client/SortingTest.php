@@ -16,7 +16,6 @@ class SortingTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -33,7 +32,6 @@ class SortingTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function setUp(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -49,7 +47,6 @@ class SortingTest extends TestCase
         $this->repository = new Repository('phpunit', $this->connection);
     }
 
-
     public function testGetSortedRecords()
     {
         $this->repository->selectContentType('example01');
@@ -64,7 +61,6 @@ class SortingTest extends TestCase
         $records = $this->repository->getSortedRecords(0);
         $this->assertEquals([10, 9, 8, 7, 6, 5, 4, 3, 2, 1], array_keys($records));
     }
-
 
     public function testSortRecords()
     {
@@ -93,7 +89,6 @@ class SortingTest extends TestCase
         $records = $this->repository->getSortedRecords(10);
         $this->assertEquals([9, 8], array_keys($records));
     }
-
 
     public function testReverseSortRecords()
     {

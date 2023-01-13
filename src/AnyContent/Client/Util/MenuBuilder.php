@@ -14,7 +14,6 @@ class MenuBuilder
         return $repository->getSortedRecords($recordId, true, 0, 99);
     }
 
-
     /**
      * @param Repository $repository
      * @param $contentTypeName
@@ -24,13 +23,11 @@ class MenuBuilder
      */
     public static function getExpandedMenu(Repository $repository, $contentTypeName, $recordId, $options = [])
     {
-
         $path = self::getBreadcrumb($repository, $contentTypeName, $recordId);
 
         $repository->selectContentType($contentTypeName);
 
         $result = [];
-
 
         // Add all same level pages within path
 
@@ -50,7 +47,6 @@ class MenuBuilder
                     $expand = true;
                 }
             }
-
 
             if ($expand) {
                 $records = $repository->getSortedRecords($record->getParent(), false, 1);
@@ -74,7 +70,6 @@ class MenuBuilder
         foreach ($result as $record) {
             $record->setRepository($repository);
         }
-
 
         return RecordsSorter::sortRecords($result);
     }

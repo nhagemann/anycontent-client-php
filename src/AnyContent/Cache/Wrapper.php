@@ -13,12 +13,10 @@ class Wrapper extends CacheProvider
     protected $hit = 0;
     protected $miss = 0;
 
-
     public function __construct(CacheProvider $cacheProvider)
     {
         $this->setCacheProvider($cacheProvider);
     }
-
 
     /**
      * @return CacheProvider
@@ -28,7 +26,6 @@ class Wrapper extends CacheProvider
         return $this->cacheProvider;
     }
 
-
     /**
      * @param CacheProvider $cacheProvider
      */
@@ -37,13 +34,11 @@ class Wrapper extends CacheProvider
         $this->cacheProvider = $cacheProvider;
     }
 
-
     public function clearHitMissCounter()
     {
         $this->hit  = 0;
         $this->miss = 0;
     }
-
 
     /**
      * @return int
@@ -53,7 +48,6 @@ class Wrapper extends CacheProvider
         return $this->hit;
     }
 
-
     /**
      * @return int
      */
@@ -61,7 +55,6 @@ class Wrapper extends CacheProvider
     {
         return $this->miss;
     }
-
 
     /**
      * Fetches an entry from the cache.
@@ -91,7 +84,6 @@ class Wrapper extends CacheProvider
         return $data;
     }
 
-
     /**
      * Tests if an entry exists in the cache.
      *
@@ -101,7 +93,6 @@ class Wrapper extends CacheProvider
      */
     protected function doContains($id)
     {
-
         $md5Key = md5($id);
 
         $kvm = KVMLogger::instance('anycontent-cache');
@@ -121,7 +112,6 @@ class Wrapper extends CacheProvider
         return $hit;
     }
 
-
     /**
      * Puts data into the cache.
      *
@@ -139,7 +129,6 @@ class Wrapper extends CacheProvider
         return $this->getCacheProvider()->doSave($md5Key, $data, $lifeTime);
     }
 
-
     /**
      * Deletes a cache entry.
      *
@@ -154,7 +143,6 @@ class Wrapper extends CacheProvider
         return $this->getCacheProvider()->doDelete($md5Key);
     }
 
-
     /**
      * Flushes all cache entries.
      *
@@ -164,7 +152,6 @@ class Wrapper extends CacheProvider
     {
         return $this->getCacheProvider()->doFlush();
     }
-
 
     /**
      * Retrieves cached information from the data store.

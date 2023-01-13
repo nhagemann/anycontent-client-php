@@ -14,11 +14,8 @@ class CMDLCacheTest extends TestCase
     /** @var  CachingRepository */
     protected $repository;
 
-
-
     public function setUp(): void
     {
-
         $configuration = new RecordsFileConfiguration();
 
         $configuration->addContentType('profiles', __DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../resources/RecordsFileExample/profiles.json');
@@ -26,8 +23,6 @@ class CMDLCacheTest extends TestCase
         $connection = $configuration->createReadOnlyConnection();
 
         $repository = new CachingRepository('phpunit', $connection);
-
-
 
         $fs = new Filesystem();
 
@@ -42,8 +37,6 @@ class CMDLCacheTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
-
 
     public function testGetRecordWithoutCMDLCache()
     {

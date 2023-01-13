@@ -40,7 +40,6 @@ class ImageVersionCreator
 
     protected $cachedBinaries = array();
 
-
     /**
      * @param      $repository
      * @param      $basePath
@@ -60,14 +59,12 @@ class ImageVersionCreator
         }
     }
 
-
     public function setBasePathAndUrl($basePath, $baseUrl)
     {
         $this->basePath = $basePath;
 
         $this->baseUrl = $baseUrl;
     }
-
 
     /**
      * @return null
@@ -77,7 +74,6 @@ class ImageVersionCreator
         return $this->basePath;
     }
 
-
     /**
      * @return null
      */
@@ -86,19 +82,16 @@ class ImageVersionCreator
         return $this->baseUrl;
     }
 
-
     public function selectRepository($repository)
     {
         $this->repository     = $repository;
         $this->cachedBinaries = array();
     }
 
-
     public function getCurrentRepository()
     {
         return $this->repository;
     }
-
 
     /**
      * @param int $quality
@@ -108,7 +101,6 @@ class ImageVersionCreator
         $this->quality = $quality;
     }
 
-
     /**
      * @return int
      */
@@ -116,7 +108,6 @@ class ImageVersionCreator
     {
         return $this->quality;
     }
-
 
     /**
      * If the timestamp check is enabled, images won't get rebuild, if the modified date of the generated image
@@ -130,12 +121,10 @@ class ImageVersionCreator
         $this->timestampCheck = true;
     }
 
-
     public function disableTimestampCheck()
     {
         $this->timestampCheck = false;
     }
-
 
     /**
      * If you create more than one version of an image, you might turn on the (request scoped) binary cache, to avoid multiple fetching
@@ -151,13 +140,11 @@ class ImageVersionCreator
         $this->cachedBinaries = array();
     }
 
-
     public function disableBinaryCache()
     {
         $this->cacheBinaries  = false;
         $this->cachedBinaries = array();
     }
-
 
     /**
      * @return boolean
@@ -167,7 +154,6 @@ class ImageVersionCreator
         return $this->keepOriginalImageIfSizeIsTheSame;
     }
 
-
     /**
      * @param boolean $keepOriginalImageIfSizeIsTheSame
      */
@@ -175,7 +161,6 @@ class ImageVersionCreator
     {
         $this->keepOriginalImageIfSizeIsTheSame = $keepOriginalImageIfSizeIsTheSame;
     }
-
 
     /**
      * @param File   $file
@@ -242,7 +227,6 @@ class ImageVersionCreator
         return false;
     }
 
-
     /**
      * @param File   $file
      * @param string $urlType
@@ -305,7 +289,6 @@ class ImageVersionCreator
         return false;
     }
 
-
     /**
      * @param File   $file
      * @param string $urlType
@@ -324,7 +307,6 @@ class ImageVersionCreator
         $filename = null,
         $quality = null
     ) {
-
         if ($width != null && $height != null) {
             return $this->getResizedImage($file, $urlType, $width, $height, false, $filename, $quality);
         }
@@ -367,7 +349,6 @@ class ImageVersionCreator
 
         return $file;
     }
-
 
     /**
      * @param File   $file
@@ -456,7 +437,6 @@ class ImageVersionCreator
         return false;
     }
 
-
     public function getOriginalImage(File $file, $urlType = 'binary', $filename = null)
     {
         if ($this->repository) {
@@ -483,10 +463,8 @@ class ImageVersionCreator
         return false;
     }
 
-
     public function deleteRecentlyNotAccessedFiles($minutes = 1440, $path = null)
     {
-
         $fs     = new Filesystem();
         $finder = new Finder();
 
@@ -524,7 +502,6 @@ class ImageVersionCreator
         return $c;
     }
 
-
     protected function getBinary(File $file)
     {
         if ($this->cacheBinaries == true) {
@@ -539,7 +516,6 @@ class ImageVersionCreator
 
         return $binary;
     }
-
 
     protected function determineFileName($file, $width, $height, $mode, $filename = null)
     {
@@ -559,7 +535,6 @@ class ImageVersionCreator
         return $filename;
     }
 
-
     protected function determineQuality($quality = null)
     {
         if (!$quality) {
@@ -569,10 +544,8 @@ class ImageVersionCreator
         return $quality;
     }
 
-
     protected function mustBuildImage(File $file, $filename)
     {
-
         if ($this->timestampCheck == false) {
             return true;
         }
@@ -594,7 +567,6 @@ class ImageVersionCreator
 
         return false;
     }
-
 
     protected function keepOriginalImage($binary, $width, $height)
     {

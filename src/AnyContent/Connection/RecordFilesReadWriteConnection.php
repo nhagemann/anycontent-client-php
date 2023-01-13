@@ -13,7 +13,6 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 {
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null)
     {
-
         if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
@@ -52,10 +51,8 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         return $toBeSavedRecord->getID();
     }
 
-
     protected function getNextId($contentTypeName, $dataDimensions)
     {
-
         $allRecords = $this->getAllRecords($contentTypeName, $dataDimensions);
 
         $nextId = 1;
@@ -65,7 +62,6 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
         return $nextId;
     }
-
 
     /**
      * @param Record[] $records
@@ -87,10 +83,8 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         return $recordIds;
     }
 
-
     public function deleteRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-
         if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
@@ -111,7 +105,6 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         return false;
     }
 
-
     public function deleteRecords(array $recordsIds, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
         if (!$dataDimensions) {
@@ -130,7 +123,6 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
         return $recordIds;
     }
-
 
     public function deleteAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
@@ -152,7 +144,6 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
         return $recordIds;
     }
-
 
     public function saveConfig(Config $config, DataDimensions $dataDimensions = null)
     {
@@ -179,7 +170,6 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         throw new AnyContentClientException('Error when saving record of config type ' . $configTypeName);
     }
 
-
     protected function writeData($fileName, $data)
     {
         $fs = new Filesystem();
@@ -191,7 +181,6 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
         return file_put_contents($fileName, $data);
     }
-
 
     protected function deleteData($fileName)
     {

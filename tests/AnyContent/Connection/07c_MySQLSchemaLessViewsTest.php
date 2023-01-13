@@ -16,7 +16,6 @@ class MySQLSchemalessViewsTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
-
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
@@ -35,13 +34,11 @@ class MySQLSchemalessViewsTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public function setUp(): void
     {
-
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
@@ -58,7 +55,6 @@ class MySQLSchemalessViewsTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testDefinition()
     {
@@ -79,7 +75,6 @@ class MySQLSchemalessViewsTest extends TestCase
         $record->setProperty('c', 'valuec');
     }
 
-
     public function testSaveRecordDefaultView()
     {
         $connection = $this->connection;
@@ -96,7 +91,6 @@ class MySQLSchemalessViewsTest extends TestCase
 
         $this->assertEquals(1, $id);
     }
-
 
     public function testSaveRecordTestView()
     {
@@ -124,7 +118,6 @@ class MySQLSchemalessViewsTest extends TestCase
         $this->assertArrayHasKey('d', $record->getProperties());
         $this->assertArrayNotHasKey('a', $record->getProperties());
     }
-
 
     public function testGetRecordDifferentViews()
     {

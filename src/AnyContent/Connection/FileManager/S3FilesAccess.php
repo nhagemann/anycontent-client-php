@@ -36,7 +36,6 @@ class S3FilesAccess implements FileManager
 
     protected $publicUrl = false;
 
-
     /**
      * @return S3Client
      */
@@ -45,7 +44,6 @@ class S3FilesAccess implements FileManager
         if (!$this->client) {
             // Create an Amazon S3 client object
             $this->client = S3Client::factory(array( 'key' => $this->key, 'secret' => $this->secret ));
-
 
             if ($this->region) {
                 $this->client->setRegion($this->region);
@@ -66,15 +64,11 @@ class S3FilesAccess implements FileManager
             }
         }
 
-
-
         return $this->client;
     }
 
-
     public function __construct($key, $secret, $bucketName, $baseFolder = '', $region = false)
     {
-
         $this->filesystem = new Filesystem();
 
         $this->key = $key;
@@ -88,14 +82,12 @@ class S3FilesAccess implements FileManager
         $this->baseFolder = $baseFolder;
     }
 
-
     public function enableImageSizeCalculation()
     {
         $this->imagesize = true;
 
         return $this;
     }
-
 
     public function disableImageSizeCalculation()
     {
@@ -104,7 +96,6 @@ class S3FilesAccess implements FileManager
         return $this;
     }
 
-
     /**
      * @return boolean
      */
@@ -112,7 +103,6 @@ class S3FilesAccess implements FileManager
     {
         return $this->publicUrl;
     }
-
 
     /**
      * @param boolean $publicUrl
@@ -123,7 +113,6 @@ class S3FilesAccess implements FileManager
 
         return $this;
     }
-
 
     /**
      * @param string $path
@@ -144,7 +133,6 @@ class S3FilesAccess implements FileManager
 
         return false;
     }
-
 
     /**
      * @param $id
@@ -171,7 +159,6 @@ class S3FilesAccess implements FileManager
         return false;
     }
 
-
     public function getBinary(File $file)
     {
         $this->connect();
@@ -182,7 +169,6 @@ class S3FilesAccess implements FileManager
 
         return false;
     }
-
 
     public function saveFile($fileId, $binary)
     {
@@ -215,7 +201,6 @@ class S3FilesAccess implements FileManager
         return false;
     }
 
-
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
         $this->connect();
@@ -236,7 +221,6 @@ class S3FilesAccess implements FileManager
         return false;
     }
 
-
     public function createFolder($path)
     {
         $this->connect();
@@ -247,7 +231,6 @@ class S3FilesAccess implements FileManager
 
         return true;
     }
-
 
     public function deleteFolder($path, $deleteIfNotEmpty = false)
     {
@@ -274,7 +257,6 @@ class S3FilesAccess implements FileManager
 
         return false;
     }
-
 
     protected function listSubFolder($path)
     {
@@ -303,7 +285,6 @@ class S3FilesAccess implements FileManager
 
         return $folders;
     }
-
 
     protected function listFiles($path)
     {

@@ -12,7 +12,6 @@ class ANDFilter implements Filter
      */
     protected $terms;
 
-
     /**
      * @param array $terms
      */
@@ -20,7 +19,6 @@ class ANDFilter implements Filter
     {
         $this->terms = $terms;
     }
-
 
     public function match(Record $record)
     {
@@ -33,7 +31,6 @@ class ANDFilter implements Filter
 
         return true;
     }
-
 
     public function __toString()
     {

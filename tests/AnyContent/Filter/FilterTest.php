@@ -16,7 +16,6 @@ class FilterTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -30,7 +29,6 @@ class FilterTest extends TestCase
 
         $fs->mirror($source, $target);
     }
-
 
     public function setUp(): void
     {
@@ -47,7 +45,6 @@ class FilterTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testSimpleFilter()
     {
@@ -69,7 +66,6 @@ class FilterTest extends TestCase
         $filter = new PropertyFilter('name = New Record');
         $this->assertFalse($filter->match($record2));
     }
-
 
     public function testANDFilter()
     {
@@ -96,7 +92,6 @@ class FilterTest extends TestCase
         $this->assertFalse($andFilter->match($record2));
     }
 
-
     public function testORFilter()
     {
         $this->repository->selectContentType('example01');
@@ -122,7 +117,6 @@ class FilterTest extends TestCase
         $this->assertTrue($orFilter->match($record2));
     }
 
-
     public function testCombinedFilter()
     {
         $this->repository->selectContentType('example01');
@@ -144,7 +138,6 @@ class FilterTest extends TestCase
         $this->assertTrue($orFilter->match($record1));
         $this->assertTrue($orFilter->match($record2));
     }
-
 
     public function testDifferentFilters()
     {
@@ -177,7 +170,6 @@ class FilterTest extends TestCase
         $this->assertFalse($filter->match($record2));
     }
 
-
     public function testLikeFilter()
     {
         $this->repository->selectContentType('example01');
@@ -196,7 +188,6 @@ class FilterTest extends TestCase
         $this->assertFalse($filter->match($record2));
         $this->assertTrue($filter->match($record3));
     }
-
 
     public function testNumericalComparison()
     {
@@ -234,7 +225,6 @@ class FilterTest extends TestCase
         $this->assertEquals('(name = New Record AND source = a)', (string)$andFilter);
         $this->assertEquals('((name = New Record AND source = a) OR source = b)', (string)$orFilter);
     }
-
 
 //
 //    public function testSimpleFilter()

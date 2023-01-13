@@ -47,7 +47,6 @@ class CachingRepository extends Repository
 
     protected $lastModified = 0;
 
-
     /**
      * @return Wrapper | CacheProvider
      */
@@ -59,7 +58,6 @@ class CachingRepository extends Repository
 
         return $this->cacheProvider;
     }
-
 
     /**
      * @param CacheProvider $cacheProvider
@@ -85,7 +83,6 @@ class CachingRepository extends Repository
         }
     }
 
-
     public function selectExpirationCacheStrategy($duration = 300)
     {
         $this->cacheStrategy = self::CACHE_STRATEGY_EXPIRATION;
@@ -95,7 +92,6 @@ class CachingRepository extends Repository
             $this->enableCmdlCaching($this->cmdlCaching);
         }
     }
-
 
     public function selectLastModifiedCacheStrategy($duration = 300)
     {
@@ -107,19 +103,15 @@ class CachingRepository extends Repository
         }
     }
 
-
     public function hasLastModifiedCacheStrategy()
     {
         return $this->cacheStrategy == self::CACHE_STRATEGY_LASTMODIFIED ? true : false;
     }
 
-
     public function hasExpirationCacheStrategy()
     {
-
         return $this->cacheStrategy == self::CACHE_STRATEGY_EXPIRATION ? true : false;
     }
-
 
     /**
      * @return boolean
@@ -128,7 +120,6 @@ class CachingRepository extends Repository
     {
         return $this->cmdlCaching;
     }
-
 
     /**
      * Allow connection to cache CMDL definitions. Adjustable via duration if you're not sure how likely CMDL changes occur.
@@ -153,7 +144,6 @@ class CachingRepository extends Repository
         }
     }
 
-
     /**
      * @return boolean
      */
@@ -161,7 +151,6 @@ class CachingRepository extends Repository
     {
         return $this->singleContentRecordCaching;
     }
-
 
     public function enableSingleContentRecordCaching($duration = null)
     {
@@ -171,7 +160,6 @@ class CachingRepository extends Repository
         $this->singleContentRecordCaching = $duration;
     }
 
-
     /**
      * @return boolean
      */
@@ -179,7 +167,6 @@ class CachingRepository extends Repository
     {
         return $this->allContentRecordsCaching;
     }
-
 
     public function enableAllContentRecordsCaching($duration = null)
     {
@@ -189,7 +176,6 @@ class CachingRepository extends Repository
         $this->allContentRecordsCaching = $duration;
     }
 
-
     /**
      * @return boolean
      */
@@ -197,7 +183,6 @@ class CachingRepository extends Repository
     {
         return $this->contentQueryRecordsCaching;
     }
-
 
     public function enableContentQueryRecordsCaching($duration = null)
     {
@@ -207,10 +192,8 @@ class CachingRepository extends Repository
         $this->contentQueryRecordsCaching = $duration;
     }
 
-
     protected function createCacheKey($realm, array $params, $dataDimensions)
     {
-
         $cacheKey = '[' . $this->getName() . '][' . $realm . '][' . join(
             ';',
             $params
@@ -223,7 +206,6 @@ class CachingRepository extends Repository
         return $cacheKey;
     }
 
-
     protected function flushCacheBeforeChange()
     {
         if ($this->hasExpirationCacheStrategy()) {
@@ -232,7 +214,6 @@ class CachingRepository extends Repository
             $this->lastModified = $this->getLastModifiedDate();
         }
     }
-
 
     protected function flushCacheAfterChange()
     {
@@ -243,7 +224,6 @@ class CachingRepository extends Repository
         }
     }
 
-
     /**
      * @param $recordId
      *
@@ -251,7 +231,6 @@ class CachingRepository extends Repository
      */
     public function getRecord(?string $recordId, $dataDimensions = null)
     {
-
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
@@ -297,6 +276,7 @@ class CachingRepository extends Repository
      *
      * @return Record[]
      */
+
     /**
      * @param string|Filter $filter
      * @param int           $page
@@ -307,7 +287,6 @@ class CachingRepository extends Repository
      */
     public function getRecords($filter = '', $order = ['.id'], $page = 1, $count = null, $dataDimensions = null)
     {
-
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
@@ -364,7 +343,6 @@ class CachingRepository extends Repository
         return parent::getRecords($filter, $order, $page, $count, $dataDimensions);
     }
 
-
     protected function getAllRecords($dataDimensions = null)
     {
         if ($dataDimensions == null) {
@@ -410,12 +388,10 @@ class CachingRepository extends Repository
         return parent::getAllRecords($dataDimensions);
     }
 
-
     public function countRecords($filter = '')
     {
         return parent::countRecords($filter);
     }
-
 
     public function getSortedRecords($parentId, $includeParent = false, $depth = null, $height = 0)
     {
@@ -459,7 +435,6 @@ class CachingRepository extends Repository
         return parent::getSortedRecords($parentId, $includeParent, $depth, $height);
     }
 
-
     public function saveRecord(Record $record)
     {
         $this->flushCacheBeforeChange();
@@ -470,7 +445,6 @@ class CachingRepository extends Repository
 
         return $result;
     }
-
 
     public function saveRecords($records)
     {
@@ -483,7 +457,6 @@ class CachingRepository extends Repository
         return $result;
     }
 
-
     public function deleteRecord($recordId)
     {
         $this->flushCacheBeforeChange();
@@ -495,7 +468,6 @@ class CachingRepository extends Repository
         return $result;
     }
 
-
     public function deleteRecords($recordIds)
     {
         $this->flushCacheBeforeChange();
@@ -505,7 +477,6 @@ class CachingRepository extends Repository
 
         return $result;
     }
-
 
     /**
      * Updates parent and positiong properties of all records of current content type
@@ -522,7 +493,6 @@ class CachingRepository extends Repository
         return $result;
     }
 
-
     public function deleteAllRecords()
     {
         $this->flushCacheBeforeChange();
@@ -532,7 +502,6 @@ class CachingRepository extends Repository
 
         return $result;
     }
-
 
     public function getConfig($configTypeName)
     {
@@ -571,11 +540,9 @@ class CachingRepository extends Repository
             $this->getCacheProvider()->save($cacheKey, $data, $this->singleContentRecordCaching);
         }
 
-
         $config->setRepository($this);
         return $config;
     }
-
 
     public function saveConfig(Config $config)
     {
@@ -588,7 +555,6 @@ class CachingRepository extends Repository
         return $result;
     }
 
-
     /**
      * @param string $path
      *
@@ -598,7 +564,6 @@ class CachingRepository extends Repository
     {
         return parent::getFolder($path);
     }
-
 
     /**
      * @param $id
@@ -610,24 +575,20 @@ class CachingRepository extends Repository
         return parent::getFile($fileId);
     }
 
-
     public function saveFile($fileId, $binary)
     {
         return parent::saveFile($fileId, $binary);
     }
-
 
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
         return parent::deleteFile($fileId, $deleteEmptyFolder);
     }
 
-
     public function createFolder($path)
     {
         return parent::createFolder($path);
     }
-
 
     public function deleteFolder($path, $deleteIfNotEmpty = false)
     {

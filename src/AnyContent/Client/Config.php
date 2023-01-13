@@ -9,7 +9,6 @@ class Config extends AbstractRecord implements \JsonSerializable
 {
     protected ?DataTypeDefinition $dataTypeDefinition = null;
 
-
     public function __construct(ConfigTypeDefinition $configTypeDefinition, $view = 'default', $workspace = 'default', $language = 'default')
     {
         $this->dataTypeDefinition = $configTypeDefinition;
@@ -19,24 +18,20 @@ class Config extends AbstractRecord implements \JsonSerializable
         $this->view      = $view;
     }
 
-
     public function getDataType()
     {
         return 'config';
     }
-
 
     public function getConfigTypeName()
     {
         return $this->dataTypeDefinition->getName();
     }
 
-
     public function getConfigTypeDefinition(): ConfigTypeDefinition
     {
         return $this->dataTypeDefinition;
     }
-
 
     public function jsonSerialize(): array
     {

@@ -64,7 +64,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
     protected $cmdlCachingCheckLastModifiedDate = false;
 
-
     public function __construct(AbstractConfiguration $configuration)
     {
         $this->configuration = $configuration;
@@ -72,7 +71,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         $this->userInfo   = new UserInfo();
         $this->arrayCache = DoctrineProvider::wrap(new ArrayAdapter());
     }
-
 
     /**
      * gets called, when this connection is added to a repository
@@ -85,7 +83,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         $this->repository = $repository;
     }
 
-
     /**
      * @return AbstractConfiguration
      */
@@ -93,7 +90,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
     {
         return $this->configuration;
     }
-
 
     /**
      * @return Repository
@@ -107,7 +103,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this->repository;
     }
 
-
     /**
      * @param Repository $repository
      */
@@ -115,7 +110,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
     {
         $this->repository = $repository;
     }
-
 
     /**
      * @return bool
@@ -125,13 +119,11 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return (bool)$this->repository;
     }
 
-
     public function enableCMDLCaching($duration = 60, $checkLastModifiedDate = false)
     {
         $this->cmdlCaching                      = $duration;
         $this->cmdlCachingCheckLastModifiedDate = $checkLastModifiedDate;
     }
-
 
     public function getCacheProvider(): CacheProvider
     {
@@ -142,12 +134,10 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this->cacheProvider;
     }
 
-
     public function setCacheProvider(CacheProvider $cacheProvider)
     {
         $this->cacheProvider = $cacheProvider;
     }
-
 
     /**
      * @return CacheProvider
@@ -161,12 +151,10 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this->arrayCache;
     }
 
-
     public function getParser()
     {
         return new Parser();
     }
-
 
     /**
      * @param $contentTypeName
@@ -178,12 +166,10 @@ abstract class AbstractConnection implements ReadOnlyConnection
         throw new AnyContentClientException('Method getCMDLForContentType must be implemented.');
     }
 
-
     public function getCMDLForConfigType($configTypeName)
     {
         throw new AnyContentClientException('Method getCMDLForConfigType must be implemented.');
     }
-
 
     public function getRecordFactory()
     {
@@ -197,7 +183,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this->recordFactory;
     }
 
-
     public function getRecordClassForContentType($contentTypeName)
     {
         if ($this->hasRepository()) {
@@ -207,7 +192,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return 'AnyContent\Client\Record';
     }
 
-
     public function getRecordClassForConfigType($configTypeName)
     {
         if ($this->hasRepository()) {
@@ -216,7 +200,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
         return 'AnyContent\Client\Config';
     }
-
 
     /**
      * @param $contentTypeName
@@ -260,7 +243,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-
     /**
      * @param $configTypeName
      *
@@ -302,7 +284,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
-
     /**
      * @return array
      */
@@ -311,7 +292,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this->configuration->getContentTypeNames();
     }
 
-
     /**
      * @return array
      */
@@ -319,7 +299,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
     {
         return $this->configuration->getConfigTypeNames();
     }
-
 
     /**
      * @return array
@@ -338,7 +317,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $result;
     }
 
-
     /**
      * @return array
      */
@@ -356,7 +334,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $result;
     }
 
-
     /**
      * @return ContentTypeDefinition[]
      * @throws AnyContentClientException
@@ -371,7 +348,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
         return $contentTypes;
     }
-
 
     /**
      * @return ConfigTypeDefinition[]
@@ -388,7 +364,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $configTypes;
     }
 
-
     public function hasContentType($contentTypeName)
     {
         if (in_array($contentTypeName, $this->getContentTypeNames())) {
@@ -398,7 +373,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return false;
     }
 
-
     public function hasConfigType($configTypeName)
     {
         if (in_array($configTypeName, $this->getConfigTypeNames())) {
@@ -407,7 +381,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
         return false;
     }
-
 
     /**
      * @param $contentTypeName
@@ -425,7 +398,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this;
     }
 
-
     /**
      * @return ContentTypeDefinition
      * @throws AnyContentClientException
@@ -438,7 +410,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
         return $this->currentContentTypeDefinition;
     }
-
 
     /**
      * @return string
@@ -453,7 +424,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this->currentContentTypeName;
     }
 
-
     public function selectView($viewName)
     {
         $this->getCurrentDataDimensions()->setViewName($viewName);
@@ -461,14 +431,12 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this;
     }
 
-
     public function setDataDimensions(DataDimensions $dataDimensions)
     {
         $this->dataDimensions = $dataDimensions;
 
         return $this;
     }
-
 
     public function selectDataDimensions($workspace, $language = null, $timeshift = null)
     {
@@ -485,14 +453,12 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this;
     }
 
-
     public function selectWorkspace($workspace)
     {
         $this->getCurrentDataDimensions()->setWorkspace($workspace);
 
         return $this;
     }
-
 
     public function selectLanguage($language)
     {
@@ -501,7 +467,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this;
     }
 
-
     public function setTimeShift($timeshift)
     {
         $this->getCurrentDataDimensions()->setTimeShift($timeshift);
@@ -509,15 +474,12 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this;
     }
 
-
     public function resetDataDimensions()
     {
-
         $this->dataDimensions = new DataDimensions();
 
         return $this->dataDimensions;
     }
-
 
     public function getCurrentDataDimensions()
     {
@@ -528,12 +490,10 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $this->dataDimensions;
     }
 
-
     protected function hasStashedRecord($contentTypeName, $recordId, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Record')
     {
         return (bool)$this->getStashedRecord($contentTypeName, $recordId, $dataDimensions, $recordClass);
     }
-
 
     protected function getStashedRecord($contentTypeName, $recordId, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Record')
     {
@@ -549,7 +509,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return false;
     }
 
-
     protected function stashRecord(Record $record, DataDimensions $dataDimensions)
     {
         if (!$dataDimensions->hasRelativeTimeShift()) {
@@ -557,7 +516,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
             $this->recordsStash[$hash][$record->getID()] = $record;
         }
     }
-
 
     protected function unstashRecord($contentTypeName, $recordId, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Record')
     {
@@ -572,7 +530,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         }
     }
 
-
     protected function hasStashedAllRecords($contentTypeName, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Record')
     {
         if (!$dataDimensions->hasRelativeTimeShift()) {
@@ -585,10 +542,8 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return false;
     }
 
-
     protected function getStashedAllRecords($contentTypeName, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Record')
     {
-
         $hash = md5($contentTypeName . $dataDimensions . $recordClass);
 
         if ($this->hasStashedAllRecords($contentTypeName, $dataDimensions, $recordClass)) {
@@ -598,10 +553,8 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return false;
     }
 
-
     protected function stashAllRecords($records, DataDimensions $dataDimensions)
     {
-
         if (!$dataDimensions->hasRelativeTimeShift()) {
             if (count($records) > 0) {
                 /** @var Record $firstRecord */
@@ -620,7 +573,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         }
     }
 
-
     protected function unstashAllRecords($contentTypeName, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Record')
     {
         if (!$dataDimensions->hasRelativeTimeShift()) {
@@ -636,7 +588,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         }
     }
 
-
     protected function stashConfig(Config $config, DataDimensions $dataDimensions)
     {
         if (!$dataDimensions->hasRelativeTimeShift()) {
@@ -645,10 +596,8 @@ abstract class AbstractConnection implements ReadOnlyConnection
         }
     }
 
-
     protected function unstashConfig($configTypeName, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Config')
     {
-
         $tempDataDimensions = $dataDimensions;
         /* @phpcs:ignore */
         foreach (            $this->getConfigTypeDefinition($configTypeName)                      ->getViewDefinitions() as $viewDefinition
@@ -658,12 +607,10 @@ abstract class AbstractConnection implements ReadOnlyConnection
         }
     }
 
-
     protected function hasStashedConfig($configTypeName, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Config')
     {
         return (bool)$this->getStashedConfig($configTypeName, $dataDimensions, $recordClass);
     }
-
 
     protected function getStashedConfig($configTypeName, DataDimensions $dataDimensions, $recordClass = 'AnyContent\Client\Record')
     {
@@ -677,7 +624,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return false;
     }
 
-
     /**
      * @param $userInfo
      *
@@ -689,7 +635,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
         return $this;
     }
-
 
     /**
      * Make sure the returned record is a new instance an does only contain properties of it's
@@ -706,7 +651,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
         return $record;
     }
-
 
     protected function precalculateExportRecord(AbstractRecord $record, DataDimensions $dataDimensions)
     {
@@ -728,7 +672,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $precalculate;
     }
 
-
     protected function exportRecords($records, DataDimensions $dataDimensions)
     {
         $result = [ ];
@@ -739,7 +682,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $result;
     }
 
-
     /**
      * remove protected properties and execute @name annotation
      *
@@ -747,7 +689,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
      */
     protected function finalizeRecord(AbstractRecord $record, DataDimensions $dataDimensions)
     {
-
         if ($record instanceof Record) {
             // Apply @name annotation
             if ($record->getDataTypeDefinition()->hasNamingPattern()) {
@@ -767,12 +708,10 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $record;
     }
 
-
     public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
     {
         throw new AnyContentClientException('Method getLastModifiedDate must be implemented.');
     }
-
 
     /**
      * Check for last cmdl change within repository or for a distinct content/config type

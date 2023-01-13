@@ -18,7 +18,6 @@ class ParensParser
     // start of text-buffer
     protected $buffer_start = null;
 
-
     public function parse($string)
     {
         if (!$string) {
@@ -64,7 +63,6 @@ class ParensParser
 
         return $this->current;
     }
-
 
     protected function push()
     {

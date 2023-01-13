@@ -15,7 +15,6 @@ class GetFirstRecordTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -32,7 +31,6 @@ class GetFirstRecordTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public static function tearDownAfterClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -40,7 +38,6 @@ class GetFirstRecordTest extends TestCase
         $fs = new Filesystem();
         $fs->remove($target);
     }
-
 
     public function setUp(): void
     {
@@ -70,7 +67,6 @@ class GetFirstRecordTest extends TestCase
         $record->setProperty('source', 'b');
         $this->repository->saveRecord($record);
     }
-
 
     public function testRetrieve2Records()
     {

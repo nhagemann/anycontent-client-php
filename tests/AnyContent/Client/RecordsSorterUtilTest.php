@@ -16,7 +16,6 @@ class RecordsSorterUtilTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -33,7 +32,6 @@ class RecordsSorterUtilTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function setUp(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -48,7 +46,6 @@ class RecordsSorterUtilTest extends TestCase
 
         $this->repository = new Repository('phpunit', $this->connection);
     }
-
 
     public function testOrderRecords()
     {
@@ -103,7 +100,6 @@ class RecordsSorterUtilTest extends TestCase
         $records = RecordsSorter::orderRecords($records, ['.id-']);
         $this->assertEquals([10, 9, 8, 7, 6, 5, 4, 3, 2, 1], array_keys($records));
     }
-
 
     public function testSortByUserInfo()
     {
@@ -172,7 +168,6 @@ class RecordsSorterUtilTest extends TestCase
         $this->assertEquals([2, 1], array_keys($records));
     }
 
-
     public function testOrderPositionProperty()
     {
         $cmdl = 'name
@@ -200,7 +195,6 @@ class RecordsSorterUtilTest extends TestCase
         $records = RecordsSorter::orderRecords($records, ['position']);
         $this->assertEquals([6, 1, 2, 3, 4, 5], array_keys($records));
     }
-
 
     public function testSortingList()
     {
@@ -242,7 +236,6 @@ class RecordsSorterUtilTest extends TestCase
         $records = RecordsSorter::sortRecords($records);
         $this->assertEquals([2, 3, 4, 5, 1], array_keys($records));
     }
-
 
     public function testSortingTree()
     {

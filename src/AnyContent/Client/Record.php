@@ -32,7 +32,6 @@ class Record extends AbstractRecord implements \JsonSerializable
         return $this->id;
     }
 
-
     public function setId($id)
     {
         $this->id = $id;
@@ -40,18 +39,15 @@ class Record extends AbstractRecord implements \JsonSerializable
         return $this;
     }
 
-
     public function setName($value)
     {
         return $this->setProperty('name', $value);
     }
 
-
     public function getName()
     {
         return $this->getProperty('name');
     }
-
 
     public function getPosition()
     {
@@ -62,7 +58,6 @@ class Record extends AbstractRecord implements \JsonSerializable
         return null;
     }
 
-
     public function setPosition($value)
     {
         if ($this->getParent() === null) {
@@ -71,7 +66,6 @@ class Record extends AbstractRecord implements \JsonSerializable
 
         return $this->setProperty('position', $value);
     }
-
 
     public function getParent()
     {
@@ -82,12 +76,10 @@ class Record extends AbstractRecord implements \JsonSerializable
         return null;
     }
 
-
     public function setParent($value)
     {
         return $this->setProperty('parent', $value);
     }
-
 
     /**
      * @return null
@@ -97,7 +89,6 @@ class Record extends AbstractRecord implements \JsonSerializable
         return $this->level;
     }
 
-
     /**
      * @param null $level
      */
@@ -106,12 +97,10 @@ class Record extends AbstractRecord implements \JsonSerializable
         $this->level = $level;
     }
 
-
     public function getDataType()
     {
         return 'content';
     }
-
 
     /**
      * @deprecated
@@ -121,24 +110,20 @@ class Record extends AbstractRecord implements \JsonSerializable
         return $this->dataTypeDefinition->getName();
     }
 
-
     public function getContentTypeName()
     {
         return $this->dataTypeDefinition->getName();
     }
-
 
     public function getContentTypeDefinition(): ?ContentTypeDefinition
     {
         return $this->dataTypeDefinition;
     }
 
-
     public function getStatus()
     {
         return $this->getProperty('status');
     }
-
 
     public function getStatusLabel()
     {
@@ -152,12 +137,10 @@ class Record extends AbstractRecord implements \JsonSerializable
         return null;
     }
 
-
     public function getSubtype()
     {
         return $this->getProperty('subtype');
     }
-
 
     public function getSubtypeLabel()
     {
@@ -171,14 +154,12 @@ class Record extends AbstractRecord implements \JsonSerializable
         return null;
     }
 
-
     public function setCreationUserInfo(UserInfo $creationUserInfo)
     {
         $this->creationUserInfo = clone $creationUserInfo;
 
         return $this;
     }
-
 
     public function getCreationUserInfo()
     {
@@ -200,7 +181,6 @@ class Record extends AbstractRecord implements \JsonSerializable
     {
         $this->isADeletedRevision = $isADeletedRevision;
     }
-
 
     public function jsonSerialize(): array
     {

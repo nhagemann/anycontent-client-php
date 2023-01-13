@@ -13,7 +13,6 @@ class ContentArchiveConfigTest extends TestCase
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -27,7 +26,6 @@ class ContentArchiveConfigTest extends TestCase
 
         $fs->mirror($source, $target);
     }
-
 
     public function setUp(): void
     {
@@ -43,7 +41,6 @@ class ContentArchiveConfigTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testConfigSameConnection()
     {
@@ -66,7 +63,6 @@ class ContentArchiveConfigTest extends TestCase
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
     }
 
-
     public function testConfigNewConnection()
     {
         $connection = $this->connection;
@@ -77,7 +73,6 @@ class ContentArchiveConfigTest extends TestCase
 
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
     }
-
 
     public function testViewsConfigSameConnection()
     {

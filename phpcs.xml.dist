@@ -19,9 +19,9 @@
     <config name="testVersion" value="8.0"/>
     <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses"/>
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
-            <properties>
-                <property name="searchAnnotations" value="true"/>
-            </properties>
+        <properties>
+            <property name="searchAnnotations" value="true"/>
+        </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Commenting.UselessFunctionDocComment"/>
     <rule ref="SlevomatCodingStandard.Namespaces.UseDoesNotStartWithBackslash"/>
@@ -36,22 +36,15 @@
     <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
 
     <rule ref="Squiz.WhiteSpace.FunctionSpacing">
-            <properties>
-                <property name="spacing" value="1"/>
-                <property name="spacingBeforeFirst" value="0"/>
-                <property name="spacingAfterLast" value="0"/>
-            </properties>
-        </rule>
-        <rule ref="Squiz.WhiteSpace.FunctionOpeningBraceSpace" />
-        <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
-            <properties>
-                <!-- turned on by PSR2 -> turning back off -->
-                <property name="ignoreBlankLines" value="false"/>
-            </properties>
-        </rule>
-        <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace.EmptyLines">
-            <!-- turned off by PSR2 -> turning back on -->
-            <severity>5</severity>
-        </rule>
-
+        <properties>
+            <property name="spacing" value="1"/>
+            <property name="spacingBeforeFirst" value="0"/>
+            <property name="spacingAfterLast" value="0"/>
+        </properties>
+    </rule>
+    <rule ref="Squiz.WhiteSpace.FunctionOpeningBraceSpace"/>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace.EmptyLines">
+        <severity>5</severity>
+    </rule>
 </ruleset>

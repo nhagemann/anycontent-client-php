@@ -10,19 +10,16 @@ class Table implements \Iterator, \Countable
 
     protected $rows = array();
 
-
     public function __construct($columns = 1)
     {
         $this->columns = $columns;
     }
-
 
     public function addRow($values = array())
     {
         $values       = array_slice($values, 0, $this->columns);
         $this->rows[] = $values;
     }
-
 
     public function setRow($line, $values = array())
     {
@@ -36,7 +33,6 @@ class Table implements \Iterator, \Countable
         $values            = array_slice($values, 0, $this->columns);
         $this->rows[$line] = $values;
     }
-
 
     public function getCell($line, $column)
     {
@@ -61,42 +57,35 @@ class Table implements \Iterator, \Countable
         return $value;
     }
 
-
     public function rewind(): void
     {
         $this->position = 0;
     }
-
 
     public function current(): mixed
     {
         return $this->rows[$this->position];
     }
 
-
     public function key(): mixed
     {
         return $this->position;
     }
-
 
     public function next(): void
     {
         ++$this->position;
     }
 
-
     public function valid(): bool
     {
         return isset($this->rows[$this->position]);
     }
 
-
     public function count(): int
     {
         return count($this->rows);
     }
-
 
     public function getProperty()
     {

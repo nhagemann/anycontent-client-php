@@ -14,13 +14,11 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public static function setUpBeforeClass(): void
     {
-
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
@@ -37,13 +35,11 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public function setUp(): void
     {
-
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
@@ -60,7 +56,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testSaveRecordSameConnection()
     {
@@ -82,7 +77,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
         $this->assertEquals('Agency 51', $record->getProperty('name'));
     }
 
-
     public function testSaveRecordNewConnection()
     {
         $connection = $this->connection;
@@ -93,7 +87,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         $this->assertEquals('Agency 51', $record->getProperty('name'));
     }
-
 
     public function testAddRecord()
     {
@@ -108,7 +101,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
         $this->assertEquals(6, $record->getID());
         $this->assertEquals(6, $id);
     }
-
 
     public function testSaveRecordsSameConnection()
     {
@@ -130,7 +122,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
         $this->assertEquals(7, $connection->countRecords());
     }
 
-
     public function testSaveRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -139,7 +130,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(7, $connection->countRecords());
     }
-
 
     public function testDeleteRecord()
     {
@@ -158,7 +148,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
         $this->assertEquals(6, $connection->countRecords());
     }
 
-
     public function testDeleteRecordNewConnection()
     {
         $connection = $this->connection;
@@ -167,7 +156,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(6, $connection->countRecords());
     }
-
 
     public function testDeleteRecords()
     {
@@ -181,7 +169,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
         $this->assertEquals(5, $connection->countRecords());
     }
 
-
     public function testDeleteRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -190,7 +177,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(5, $connection->countRecords());
     }
-
 
     public function testDeleteAllRecords()
     {
@@ -204,7 +190,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
         $this->assertEquals(0, $connection->countRecords());
     }
 
-
     public function testDeleteAllRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -213,7 +198,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         $this->assertEquals(0, $connection->countRecords());
     }
-
 
     public function testProtectedProperties()
     {
@@ -235,7 +219,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         $this->assertEquals('', $record->getProperty('ranking'));
     }
-
 
     public function testOmmittedProperties()
     {
@@ -263,7 +246,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         $this->assertEquals('A', $record->getProperty('claim'));
     }
-
 
     public function testRevisionCounting()
     {

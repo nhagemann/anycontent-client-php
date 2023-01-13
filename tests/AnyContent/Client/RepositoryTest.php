@@ -12,7 +12,6 @@ class LanguagesAndWorkspacesText extends TestCase
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -26,7 +25,6 @@ class LanguagesAndWorkspacesText extends TestCase
 
         $fs->mirror($source, $target);
     }
-
 
     public function setUp(): void
     {
@@ -43,7 +41,6 @@ class LanguagesAndWorkspacesText extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testContentTypes()
     {
         $repository = new Repository('phpunit', $this->connection);
@@ -55,7 +52,6 @@ class LanguagesAndWorkspacesText extends TestCase
         $this->assertTrue($repository->hasContentType('example01'));
     }
 
-
     public function testConfigTypes()
     {
         $repository = new Repository('phpunit', $this->connection);
@@ -66,7 +62,6 @@ class LanguagesAndWorkspacesText extends TestCase
 
         $this->assertTrue($repository->hasConfigType('config1'));
     }
-
 
     public function testLastModified()
     {

@@ -13,7 +13,6 @@ class RecordsSorter
      */
     public static function orderRecords(array $records, $order)
     {
-
         if (!is_array($order)) {
             $order = [$order];
         }
@@ -37,7 +36,6 @@ class RecordsSorter
         }
 
         uasort($records, function (Record $a, Record $b) use ($instructions) {
-
             foreach ($instructions as $instruction) {
                 $property = $instruction['property'];
                 $order    = $instruction['order'];
@@ -105,7 +103,6 @@ class RecordsSorter
 
         return $records;
     }
-
 
     /**
      * @param Record[] $records

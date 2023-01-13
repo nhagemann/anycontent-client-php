@@ -12,7 +12,6 @@ class UserInfo implements \JsonSerializable
 
     protected $timestamp;
 
-
     public function __construct($username = '', $firstname = '', $lastname = '', $timestamp = null)
     {
         $this->setUsername($username);
@@ -21,7 +20,6 @@ class UserInfo implements \JsonSerializable
         $this->setTimestamp($timestamp);
     }
 
-
     public function setFirstname($firstname)
     {
         $this->firstname = $firstname;
@@ -29,12 +27,10 @@ class UserInfo implements \JsonSerializable
         return $this;
     }
 
-
     public function getFirstname()
     {
         return $this->firstname;
     }
-
 
     public function setLastname($lastname)
     {
@@ -43,12 +39,10 @@ class UserInfo implements \JsonSerializable
         return $this;
     }
 
-
     public function getLastname()
     {
         return $this->lastname;
     }
-
 
     public function setUsername($username)
     {
@@ -57,12 +51,10 @@ class UserInfo implements \JsonSerializable
         return $this;
     }
 
-
     public function getUsername()
     {
         return $this->username;
     }
-
 
     public function userNameIsAnEmailAddress()
     {
@@ -72,7 +64,6 @@ class UserInfo implements \JsonSerializable
             return false;
         }
     }
-
 
     public function getName()
     {
@@ -84,14 +75,12 @@ class UserInfo implements \JsonSerializable
         return $name;
     }
 
-
     public function setTimestampToNow()
     {
         $this->setTimestamp(time());
 
         return $this;
     }
-
 
     public function setTimestamp($timestamp)
     {
@@ -100,13 +89,10 @@ class UserInfo implements \JsonSerializable
         return $this;
     }
 
-
     public function getTimestamp()
     {
-
         return $this->timestamp;
     }
-
 
     public function jsonSerialize(): array
     {

@@ -15,7 +15,6 @@ class SequenceTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -32,7 +31,6 @@ class SequenceTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public static function tearDownAfterClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -40,7 +38,6 @@ class SequenceTest extends TestCase
         $fs = new Filesystem();
         $fs->remove($target);
     }
-
 
     public function setUp(): void
     {
@@ -57,7 +54,6 @@ class SequenceTest extends TestCase
         $this->repository = new Repository('phpunit', $this->connection);
     }
 
-
     public function testAccessSequence()
     {
         $this->repository->selectContentType('profiles');
@@ -71,7 +67,6 @@ class SequenceTest extends TestCase
         $this->assertEquals(0, count($sequence));
     }
 
-
     public function testWrongProperty()
     {
         $this->repository->selectContentType('profiles');
@@ -82,8 +77,6 @@ class SequenceTest extends TestCase
 
         new SequenceItem($record->getDataTypeDefinition(), 'wrong', 'test');
     }
-
-
 
     public function testAddItemWrongProperty()
     {
@@ -97,7 +90,6 @@ class SequenceTest extends TestCase
 
         $item->setProperty('xxxx', 'test');
     }
-
 
     public function testAddItem()
     {
@@ -116,7 +108,6 @@ class SequenceTest extends TestCase
         $sequence->addItem($item);
         $this->assertEquals(1, count($sequence));
     }
-
 
     public function testAddItems()
     {
@@ -142,7 +133,6 @@ class SequenceTest extends TestCase
         }
     }
 
-
     public function testCompatibility()
     {
         $this->repository->selectContentType('profiles');
@@ -164,7 +154,6 @@ class SequenceTest extends TestCase
 
         $this->assertEquals(5, $i);
     }
-
 
     public function testRefactoringIterator()
     {
@@ -191,7 +180,6 @@ class SequenceTest extends TestCase
         }
     }
 
-
     public function testEmptySequence()
     {
         $this->repository->selectContentType('profiles');
@@ -207,7 +195,6 @@ class SequenceTest extends TestCase
         $this->assertEquals(false, $sequence->getProperties());
         $this->assertEquals(false, $sequence->getProperty('standort_name'));
     }
-
 
     public function testPropertiesOfSequenceVsSequenceItem()
     {
@@ -240,7 +227,6 @@ class SequenceTest extends TestCase
         }
         $this->assertEquals(5, $i);
     }
-
 
     public function testSetSequenceProperty()
     {

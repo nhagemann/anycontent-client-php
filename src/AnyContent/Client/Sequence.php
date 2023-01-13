@@ -14,7 +14,6 @@ class Sequence implements \Iterator, \Countable
 
     protected $property;
 
-
     public function __construct(DataTypeDefinition $dataTypeDefinition, $property, $values = array())
     {
         $this->dataTypeDefinition = $dataTypeDefinition;
@@ -29,7 +28,6 @@ class Sequence implements \Iterator, \Countable
         }
     }
 
-
     public function getProperties()
     {
         if (isset($this->items[$this->position])) {
@@ -38,7 +36,6 @@ class Sequence implements \Iterator, \Countable
 
         return false;
     }
-
 
     public function getProperty($property, $default = null)
     {
@@ -60,24 +57,20 @@ class Sequence implements \Iterator, \Countable
         return false;
     }
 
-
     public function getContentType()
     {
         return $this->dataTypeDefinition->getName();
     }
-
 
     public function getDataType()
     {
         return $this->dataTypeDefinition->getName();
     }
 
-
     public function getItemType()
     {
         return $this->items[$this->position]['type'];
     }
-
 
     public function getConfigType()
     {
@@ -88,53 +81,44 @@ class Sequence implements \Iterator, \Countable
         }
     }
 
-
     public function rewind(): void
     {
         $this->position = 0;
     }
-
 
     /**
      * @return Sequence
      */
     public function current(): mixed
     {
-
         $item = new SequenceItem($this->dataTypeDefinition, $this->property, $this->items[$this->position]['type']);
         $item->setProperties($this->items[$this->position]['properties']);
 
         return $item;
     }
 
-
     public function key(): mixed
     {
         return $this->position;
     }
-
 
     public function next(): void
     {
         ++$this->position;
     }
 
-
     public function valid(): bool
     {
         return isset($this->items[$this->position]);
     }
-
 
     public function count(): int
     {
         return (count($this->items));
     }
 
-
     public function addItem(SequenceItem $item)
     {
-
         $this->items[count($this->items)] = array(
             'type' => $item->getItemType(),
             'properties' => $item->getProperties()
@@ -142,12 +126,10 @@ class Sequence implements \Iterator, \Countable
         $this->position = count($this->items);
     }
 
-
     public function getPosition()
     {
         return $this->position + 1;
     }
-
 
     public function __toString()
     {

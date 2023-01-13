@@ -94,7 +94,6 @@ trait Properties
 
     public function setProperty($property, $value)
     {
-
         $property = Util::generateValidIdentifier($property);
         if ($this->dataTypeDefinition->hasProperty($property, $this->view)) {
             $this->properties[$property] = (string)$value;

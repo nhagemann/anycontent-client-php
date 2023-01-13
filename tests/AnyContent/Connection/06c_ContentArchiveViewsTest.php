@@ -12,7 +12,6 @@ class ContentArchiveViewsTest extends TestCase
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -27,8 +26,6 @@ class ContentArchiveViewsTest extends TestCase
         $fs->mirror($source, $target);
     }
 
-
-
     public function setUp(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -41,11 +38,8 @@ class ContentArchiveViewsTest extends TestCase
 
         $this->connection = $connection;
 
-
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
-
 
     public function testDefinition()
     {
@@ -109,6 +103,7 @@ class ContentArchiveViewsTest extends TestCase
         $this->assertArrayHasKey('d', $record->getProperties());
         $this->assertArrayNotHasKey('a', $record->getProperties());
     }
+
 //
 //    public function testGetRecordDifferentViews()
 //    {

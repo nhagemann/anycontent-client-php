@@ -9,21 +9,17 @@ class RecordsFileHttpConfiguration extends AbstractConfiguration
 {
     protected $timeout = 30;
 
-
     public function addContentType($contentTypeName, $uriRecords, $urlCMDL)
     {
-
         $this->contentTypes[$contentTypeName] = ['uri' => $uriRecords, 'cmdl' => $urlCMDL];
 
         return $this;
     }
 
-
     public function createReadOnlyConnection()
     {
         return new RecordsFileHttpReadOnlyConnection($this);
     }
-
 
     public function getUriCMDLForContentType($contentTypeName)
     {
@@ -34,7 +30,6 @@ class RecordsFileHttpConfiguration extends AbstractConfiguration
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-
     public function getUriRecords($contentTypeName)
     {
         if ($this->hasContentType($contentTypeName)) {
@@ -44,7 +39,6 @@ class RecordsFileHttpConfiguration extends AbstractConfiguration
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-
     /**
      * @return int
      */
@@ -52,7 +46,6 @@ class RecordsFileHttpConfiguration extends AbstractConfiguration
     {
         return $this->timeout;
     }
-
 
     /**
      * @param int $timeout

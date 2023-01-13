@@ -23,13 +23,11 @@ class AdminTestMySQLSchemaless2Test extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public static function setUpBeforeClass(): void
     {
-
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
@@ -46,7 +44,6 @@ class AdminTestMySQLSchemaless2Test extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     /**
      * @throws \AnyContent\AnyContentClientException
@@ -70,7 +67,6 @@ class AdminTestMySQLSchemaless2Test extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testSetupAsExpected()
     {
         $connection = $this->connection;
@@ -84,11 +80,9 @@ class AdminTestMySQLSchemaless2Test extends TestCase
         $this->assertTrue($repository->isAdministrable());
     }
 
-
     public function testAddContentType()
     {
         $connection = $this->connection;
-
 
         $cmdl = 'Name';
 
@@ -98,7 +92,6 @@ class AdminTestMySQLSchemaless2Test extends TestCase
 
         $this->assertEquals($cmdl, $connection->getCMDLForContentType('neu'));
     }
-
 
     public function testDeleteContentType()
     {
@@ -111,7 +104,6 @@ class AdminTestMySQLSchemaless2Test extends TestCase
         $this->expectException('AnyContent\AnyContentClientException');
         $connection->getCMDLForContentType('neu');
     }
-
 
     public function testAddConfigType()
     {
@@ -127,7 +119,6 @@ class AdminTestMySQLSchemaless2Test extends TestCase
 
         $this->assertEquals($cmdl, $connection->getCMDLForConfigType('neu'));
     }
-
 
     public function testDeleteConfigType()
     {

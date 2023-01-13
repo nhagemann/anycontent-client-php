@@ -12,7 +12,6 @@ class DirectoryBasedFilesAccessWriteTest extends TestCase
     /** @var  DirectoryBasedFilesAccess */
     public $fileManager;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/files';
@@ -27,10 +26,8 @@ class DirectoryBasedFilesAccessWriteTest extends TestCase
         $fs->mirror($source, $target);
     }
 
-
     public function setUp(): void
     {
-
         $fileManager = new DirectoryBasedFilesAccess(__DIR__ . '/../../../tmp/files');
         $fileManager->enableImageSizeCalculation();
 
@@ -38,7 +35,6 @@ class DirectoryBasedFilesAccessWriteTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testSaveFiles()
     {
@@ -52,7 +48,6 @@ class DirectoryBasedFilesAccessWriteTest extends TestCase
         $file = $fileManager->getFile('Test/test.txt');
         $this->assertEquals('test', $fileManager->getBinary($file));
     }
-
 
     public function testCopyImage()
     {
@@ -69,7 +64,6 @@ class DirectoryBasedFilesAccessWriteTest extends TestCase
         $this->assertTrue($file->isImage());
     }
 
-
     public function testDeleteFile()
     {
         $fileManager = $this->fileManager;
@@ -81,7 +75,6 @@ class DirectoryBasedFilesAccessWriteTest extends TestCase
         $file = $fileManager->getFile('Test/test.jpg');
         $this->assertFalse($file);
     }
-
 
     public function testDeleteFolder()
     {
@@ -103,7 +96,6 @@ class DirectoryBasedFilesAccessWriteTest extends TestCase
         $folder = $fileManager->getFolder('Test');
         $this->assertFalse($folder);
     }
-
 
     public function testCreateAndDeleteFolder()
     {

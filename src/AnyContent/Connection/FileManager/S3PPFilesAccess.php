@@ -42,7 +42,6 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
         return $folder;
     }
 
-
     public function saveFile($fileId, $binary)
     {
         $client = $this->connect();
@@ -80,17 +79,14 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
         return false;
     }
 
-
     protected function isRootPath($path)
     {
-
         if ($path == '') {
             return true;
         }
 
         return false;
     }
-
 
     protected function isValidPath($path)
     {
@@ -104,10 +100,8 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
         return false;
     }
 
-
     protected function isPublicPath($path)
     {
-
         $tokens = explode('/', $path);
 
         if ($tokens[0] == 'Public') {
@@ -116,7 +110,6 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
 
         return false;
     }
-
 
     protected function listFiles($path)
     {

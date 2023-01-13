@@ -15,7 +15,6 @@ class LanguagesAndWorkspacesTest extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -29,10 +28,6 @@ class LanguagesAndWorkspacesTest extends TestCase
 
         $fs->mirror($source, $target);
     }
-
-
-
-
 
     public function setUp(): void
     {
@@ -50,7 +45,6 @@ class LanguagesAndWorkspacesTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testSaveRecords()
     {

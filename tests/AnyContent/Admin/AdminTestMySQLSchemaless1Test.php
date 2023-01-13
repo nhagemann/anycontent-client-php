@@ -24,13 +24,11 @@ class AdminTestMySQLSchemaless1Test extends TestCase
     /** @var  Repository */
     public $repository;
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public static function setUpBeforeClass(): void
     {
-
         $source = __DIR__ . '/../../resources/ContentArchiveExample1/cmdl';
         $target = __DIR__ . '/../../../tmp/MySqlSchemaLessCMDL';
 
@@ -60,7 +58,6 @@ class AdminTestMySQLSchemaless1Test extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
@@ -86,7 +83,6 @@ class AdminTestMySQLSchemaless1Test extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testSetupAsExpected()
     {
         $connection = $this->connection;
@@ -99,7 +95,6 @@ class AdminTestMySQLSchemaless1Test extends TestCase
         $this->assertTrue($repository->isWritable());
         $this->assertTrue($repository->isAdministrable());
     }
-
 
     public function testAddContentType()
     {
@@ -114,7 +109,6 @@ class AdminTestMySQLSchemaless1Test extends TestCase
         $this->assertEquals($cmdl, $connection->getCMDLForContentType('neu'));
     }
 
-
     public function testDeleteContentType()
     {
         $connection = $this->connection;
@@ -126,7 +120,6 @@ class AdminTestMySQLSchemaless1Test extends TestCase
         $this->expectException('AnyContent\AnyContentClientException');
         $connection->getCMDLForContentType('neu');
     }
-
 
     public function testAddConfigType()
     {
@@ -142,7 +135,6 @@ class AdminTestMySQLSchemaless1Test extends TestCase
 
         $this->assertEquals($cmdl, $connection->getCMDLForConfigType('neu'));
     }
-
 
     public function testDeleteConfigType()
     {

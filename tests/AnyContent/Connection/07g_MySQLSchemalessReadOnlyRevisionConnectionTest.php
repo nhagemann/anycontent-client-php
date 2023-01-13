@@ -12,13 +12,11 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public static function setUpBeforeClass(): void
     {
-
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
@@ -57,13 +55,11 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public function setUp(): void
     {
-
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
@@ -82,7 +78,6 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testCheckSetupRevision()
     {
         $connection = $this->connection;
@@ -97,7 +92,6 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
 
         $this->assertInstanceOf('AnyContent\Client\Record', $record);
     }
-
 
     public function testCreateAndFetchRecordRevisions()
     {
@@ -126,7 +120,6 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
         }
     }
 
-
     public function testTimeShiftIntoRecordRevision()
     {
         $connection = $this->connection;
@@ -143,7 +136,6 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
         }
     }
 
-
     public function testCheckSetupConfigRevision()
     {
         $connection = $this->connection;
@@ -154,7 +146,6 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
 
         $this->assertEquals(0, $config->getRevision());
     }
-
 
     public function testCreateAndFetchConfigRevisions()
     {
@@ -180,7 +171,6 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
             $this->assertEquals($i--, $revision->getRevision());
         }
     }
-
 
     public function testTimeShiftIntoConfigRevision()
     {

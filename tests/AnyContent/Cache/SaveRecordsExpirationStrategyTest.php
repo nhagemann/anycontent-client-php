@@ -34,10 +34,8 @@ class SaveRecordsExpirationStrategyTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function setUp(): void
     {
-
         $target = __DIR__ . '/../../../tmp/RecordsFileExample';
 
         $configuration = new RecordsFileConfiguration();
@@ -63,7 +61,6 @@ class SaveRecordsExpirationStrategyTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testChangeRecord()
     {
         $repository = $this->repository;
@@ -84,7 +81,6 @@ class SaveRecordsExpirationStrategyTest extends TestCase
         $this->assertEquals('UDG', $record->getName());
     }
 
-
     public function testChangedRecord()
     {
         $repository = $this->repository;
@@ -95,7 +91,6 @@ class SaveRecordsExpirationStrategyTest extends TestCase
         $record = $repository->getRecord(1);
         $this->assertEquals('UDG', $record->getName());
     }
-
 
     /**
      * Test showing the flaws of the full flash cache strategy

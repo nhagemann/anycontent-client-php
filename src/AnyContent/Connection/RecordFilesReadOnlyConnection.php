@@ -18,7 +18,6 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
         return $this->configuration;
     }
 
-
     /**
      * @return int
      * @throws AnyContentClientException
@@ -45,7 +44,6 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
 
         return 0;
     }
-
 
     /**
      * @param $recordId
@@ -88,7 +86,6 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
         return false;
     }
 
-
     /**
      * @param null $contentTypeName
      *
@@ -97,7 +94,6 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
      */
     protected function getAllMultiViewRecords($contentTypeName, DataDimensions $dataDimensions)
     {
-
         $folder = $this->getConfiguration()->getFolderNameRecords($contentTypeName, $dataDimensions);
 
         if (file_exists($folder)) {
@@ -119,7 +115,6 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
 
         return [ ];
     }
-
 
     public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
     {
@@ -148,9 +143,6 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
         return $t;
     }
 
-
-
-
     protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
     {
         $t      = 0;
@@ -178,7 +170,6 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
 
         return $t;
     }
-
 
     protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions)
     {

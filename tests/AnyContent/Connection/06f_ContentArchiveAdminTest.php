@@ -12,7 +12,6 @@ class ContentArchiveAdminTest extends TestCase
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
 
-
     public static function setUpBeforeClass(): void
     {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
@@ -26,7 +25,6 @@ class ContentArchiveAdminTest extends TestCase
 
         $fs->mirror($source, $target);
     }
-
 
     public function setUp(): void
     {
@@ -43,7 +41,6 @@ class ContentArchiveAdminTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testNrOfContentTypes()
     {
         $definitions = $this->connection->getContentTypeDefinitions();
@@ -56,7 +53,6 @@ class ContentArchiveAdminTest extends TestCase
 
         $this->assertCount(3, $definitions);
     }
-
 
     public function testChangedCMDLOfContentType()
     {
@@ -71,7 +67,6 @@ class ContentArchiveAdminTest extends TestCase
         $this->assertEquals('name = textfield', $cmdl);
     }
 
-
     public function testDeleteContentTypes()
     {
         $definitions = $this->connection->getContentTypeDefinitions();
@@ -84,7 +79,6 @@ class ContentArchiveAdminTest extends TestCase
 
         $this->assertCount(2, $definitions);
     }
-
 
     public function testNrOfConfigTypes()
     {
@@ -99,7 +93,6 @@ class ContentArchiveAdminTest extends TestCase
         $this->assertCount(2, $definitions);
     }
 
-
     public function testChangedCMDLOfConfigType()
     {
         $cmdl = $this->connection->getCMDLForConfigType('add');
@@ -112,7 +105,6 @@ class ContentArchiveAdminTest extends TestCase
 
         $this->assertEquals('name = textfield', $cmdl);
     }
-
 
     public function testDeleteConfigTypes()
     {

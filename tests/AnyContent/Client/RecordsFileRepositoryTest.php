@@ -19,8 +19,6 @@ class RecordsFileRepositoryTest extends TestCase
         $fs->copy(__DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../resources/RecordsFileExample/temp.cmdl', true);
     }
 
-
-
     public function setUp(): void
     {
         $configuration = new RecordsFileConfiguration();
@@ -33,8 +31,6 @@ class RecordsFileRepositoryTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
-
     public function testContentTypes()
     {
         $repository = new Repository('phpunit', $this->connection);
@@ -46,7 +42,6 @@ class RecordsFileRepositoryTest extends TestCase
         $this->assertTrue($repository->hasContentType('temp'));
     }
 
-
     public function testGetRecord()
     {
         $repository = new Repository('phpunit', $this->connection);
@@ -57,7 +52,6 @@ class RecordsFileRepositoryTest extends TestCase
 
         $this->assertEquals(1, $record->getID());
     }
-
 
     public function testGetRecords()
     {

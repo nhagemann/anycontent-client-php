@@ -27,10 +27,8 @@ class RecordFilesConfigTest extends TestCase
         $fs->mirror($source, $target);
     }
 
-
     public function setUp(): void
     {
-
         $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
 
         $configuration = new RecordFilesConfiguration();
@@ -39,15 +37,12 @@ class RecordFilesConfigTest extends TestCase
         $configuration->addContentType('test', $target . '/test.cmdl', $target . '/records/test');
         $configuration->addConfigType('config1', $target . '/config1.cmdl', $target . '/records/profiles/config1.json');
 
-
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
 
-
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testConfigSameConnection()
     {
@@ -70,7 +65,6 @@ class RecordFilesConfigTest extends TestCase
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
     }
 
-
     public function testConfigNewConnection()
     {
         $connection = $this->connection;
@@ -81,7 +75,6 @@ class RecordFilesConfigTest extends TestCase
 
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
     }
-
 
     public function testViewsConfigSameConnection()
     {

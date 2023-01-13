@@ -12,7 +12,6 @@ interface AdminConnection extends WriteConnection
      */
     public function saveContentTypeCMDL($contentTypeName, $cmdl);
 
-
     /**
      * @param $configTypeName
      * @param $cmdl
@@ -21,14 +20,12 @@ interface AdminConnection extends WriteConnection
      */
     public function saveConfigTypeCMDL($configTypeName, $cmdl);
 
-
     /**
      * @param $contentTypeName
      *
      * @return boolean
      */
     public function deleteContentTypeCMDL($contentTypeName);
-
 
     /**
      * @param $configTypeName

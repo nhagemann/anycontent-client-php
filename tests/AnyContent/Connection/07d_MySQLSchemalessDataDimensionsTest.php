@@ -13,13 +13,11 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public static function setUpBeforeClass(): void
     {
-
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
@@ -57,13 +55,11 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public function setUp(): void
     {
-
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
@@ -80,7 +76,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testSaveRecordSameConnection()
     {
@@ -100,7 +95,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
 
         $this->assertEquals('dmc', $record->getProperty('name'));
     }
-
 
     public function testWorkSpaceLive()
     {
@@ -127,7 +121,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $this->assertFalse($record);
     }
 
-
     public function testSaveRecordNewConnection()
     {
         $connection = $this->connection;
@@ -140,7 +133,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $this->assertEquals('live', $record->getWorkspace());
         $this->assertEquals('dmc', $record->getProperty('name'));
     }
-
 
     public function testAddRecord()
     {
@@ -155,7 +147,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $this->assertEquals(17, $record->getID());
         $this->assertEquals(17, $id);
     }
-
 
     public function testSaveRecordsSameConnection()
     {
@@ -177,7 +168,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $this->assertEquals(7, $connection->countRecords());
     }
 
-
     public function testSaveRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -190,7 +180,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
 
         $this->assertEquals(7, $connection->countRecords());
     }
-
 
     public function testDeleteRecord()
     {
@@ -209,7 +198,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $this->assertEquals(6, $connection->countRecords());
     }
 
-
     public function testDeleteRecordNewConnection()
     {
         $connection = $this->connection;
@@ -218,7 +206,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
 
         $this->assertEquals(6, $connection->countRecords());
     }
-
 
     public function testDeleteRecords()
     {
@@ -232,7 +219,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $this->assertEquals(5, $connection->countRecords());
     }
 
-
     public function testDeleteRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -241,7 +227,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
 
         $this->assertEquals(5, $connection->countRecords());
     }
-
 
     public function testDeleteAllRecords()
     {
@@ -255,7 +240,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $this->assertEquals(0, $connection->countRecords());
     }
 
-
     public function testDeleteAllRecordsNewConnection()
     {
         $connection = $this->connection;
@@ -264,7 +248,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
 
         $this->assertEquals(0, $connection->countRecords());
     }
-
 
     public function testSwitchLanguage()
     {

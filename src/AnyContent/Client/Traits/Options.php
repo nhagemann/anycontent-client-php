@@ -8,18 +8,15 @@ trait Options
 {
     protected $options = [ ];
 
-
     public function addOptions($options = [ ])
     {
         $this->options = array_merge($this->options, $options);
     }
 
-
     public function setOptions($options = [ ])
     {
         $this->options = $options;
     }
-
 
     public function hasOption($option)
     {
@@ -30,7 +27,6 @@ trait Options
         return false;
     }
 
-
     public function getOption($option, $default = null)
     {
         if (array_key_exists($option, $this->options)) {
@@ -40,7 +36,6 @@ trait Options
         return $default;
     }
 
-
     public function requireOption($option)
     {
         if ($this->hasOption($option)) {
@@ -48,7 +43,6 @@ trait Options
         }
         throw new AnyContentClientException('Missing required option ' . $option);
     }
-
 
     public function requireOptions($options)
     {

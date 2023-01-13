@@ -12,7 +12,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
     /** @var  RecordsFileReadOnlyConnection */
     public $connection;
 
-
     public function setUp(): void
     {
         $configuration = new RecordsFileConfiguration();
@@ -26,7 +25,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testContentTypeNotSelected()
     {
         KVMLogger::instance()->debug(__METHOD__);
@@ -36,7 +34,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
         $this->expectException('AnyContent\AnyContentClientException');
         $this->assertEquals(12, $connection->countRecords());
     }
-
 
     public function testContentTypeNames()
     {
@@ -48,7 +45,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
 
         $this->assertContains('profiles', $contentTypeNames);
     }
-
 
     public function testContentTypeDefinitions()
     {
@@ -64,7 +60,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
         $this->assertInstanceOf('CMDL\ContentTypeDefinition', $contentType);
     }
 
-
     public function testCountRecords()
     {
         KVMLogger::instance()->debug(__METHOD__);
@@ -75,7 +70,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
 
         $this->assertEquals(608, $connection->countRecords());
     }
-
 
     public function testGetRecord()
     {
@@ -91,7 +85,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
 
         $this->assertEquals('UDG United Digital Group', $record->getProperty('name'));
     }
-
 
     public function testGetRecords()
     {

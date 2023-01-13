@@ -19,7 +19,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return $this->configuration;
     }
 
-
     public function getCMDLForContentType($contentTypeName)
     {
         $fileName = $this->getConfiguration()->getUriCMDLForContentType($contentTypeName);
@@ -27,14 +26,12 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return $this->readCMDL($fileName);
     }
 
-
     public function getCMDLForConfigType($configTypeName)
     {
         $fileName = $this->getConfiguration()->getUriCMDLForConfigType($configTypeName);
 
         return $this->readCMDL($fileName);
     }
-
 
     /**
      * @return int
@@ -45,7 +42,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return count($this->getAllRecords($contentTypeName, $dataDimensions));
     }
 
-
     /**
      * @param null $contentTypeName
      *
@@ -54,7 +50,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
      */
     public function getAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
@@ -79,7 +74,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-
     /**
      * @param null $contentTypeName
      *
@@ -88,7 +82,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
      */
     protected function getAllMultiViewRecords($contentTypeName, DataDimensions $dataDimensions)
     {
-
         $data = $this->readRecords($this->getConfiguration()->getUriRecords($contentTypeName));
 
         if ($data) {
@@ -105,7 +98,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return [ ];
     }
 
-
     /**
      * @param $recordId
      *
@@ -113,7 +105,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
      */
     public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
     {
-
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
@@ -129,7 +120,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
         return false;
     }
-
 
     protected function getMultiViewRecord($recordId, $contentTypeName, DataDimensions $dataDimensions)
     {
@@ -151,7 +141,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return false;
     }
 
-
     protected function mergeExistingRecord(Record $record, DataDimensions $dataDimensions)
     {
         if ($record->getID() != '') {
@@ -172,7 +161,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return $record;
     }
 
-
     /**
      *
      * @return Config
@@ -185,7 +173,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
         return $this->exportRecord($this->getMultiViewConfig($configTypeName, $dataDimensions), $dataDimensions);
     }
-
 
     protected function getMultiViewConfig($configTypeName, DataDimensions $dataDimensions)
     {
@@ -210,7 +197,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return $config;
     }
 
-
     protected function mergeExistingConfig(Config $config, DataDimensions $dataDimensions)
     {
         $configTypeName = $config->getConfigTypeName();
@@ -231,12 +217,10 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return $config;
     }
 
-
     protected function fileExists($filename)
     {
         return file_exists($filename);
     }
-
 
     protected function readData($fileName)
     {
@@ -249,34 +233,28 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return false;
     }
 
-
     protected function readCMDL($filename)
     {
         return $this->readData($filename);
     }
-
 
     protected function readRecord($filename)
     {
         return $this->readData($filename);
     }
 
-
     protected function readConfig($filename)
     {
         return $this->readData($filename);
     }
-
 
     protected function readRecords($filename)
     {
         return $this->readData($filename);
     }
 
-
     public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
     {
-
         $t = 0;
 
         $configuration = $this->getConfiguration();
@@ -320,7 +298,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 
         return $t;
     }
-
 
     public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
     {

@@ -10,7 +10,6 @@ class Folder implements \JsonSerializable
 
     public function __construct($path, $data)
     {
-
         $path = trim($path, '/');
 
         $this->path = $path;

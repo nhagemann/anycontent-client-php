@@ -11,10 +11,8 @@ class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
     /** @var  DirectoryBasedFilesAccess */
     public $fileManager;
 
-
     public function setUp(): void
     {
-
         $fileManager = new DirectoryBasedFilesAccess(__DIR__ . '/../../resources/Files');
         $fileManager->enableImageSizeCalculation();
 
@@ -22,7 +20,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testGetFolder()
     {
@@ -45,7 +42,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
         $this->assertFalse($folder);
     }
 
-
     public function testGetFile()
     {
         $fileManager = $this->fileManager;
@@ -66,7 +62,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
         $this->assertFalse($file);
     }
 
-
     public function testUrl()
     {
         $fileManager = $this->fileManager->setPublicUrl('http://www.example.org');
@@ -79,7 +74,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
         $this->assertEquals('Music/c.txt', $file->getId());
         $this->assertEquals('http://www.example.org/Music/c.txt', $file->getUrl());
     }
-
 
     public function testImage()
     {
@@ -96,7 +90,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
         $file = $fileManager->getFile('Music/c.txt');
         $this->assertFalse($file->isImage());
     }
-
 
     public function testBinary()
     {

@@ -12,13 +12,11 @@ class MySQLSchemalessConnectionTest extends TestCase
     /** @var  MySQLSchemalessReadOnlyConnection */
     public $connection;
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public static function setUpBeforeClass(): void
     {
-
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
@@ -57,13 +55,11 @@ class MySQLSchemalessConnectionTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public function setUp(): void
     {
-
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
@@ -81,7 +77,6 @@ class MySQLSchemalessConnectionTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testContentTypeNotSelected()
     {
         $connection = $this->connection;
@@ -89,7 +84,6 @@ class MySQLSchemalessConnectionTest extends TestCase
         $this->expectException('AnyContent\AnyContentClientException');
         $this->assertEquals(12, $connection->countRecords());
     }
-
 
     public function testContentTypeNames()
     {
@@ -99,7 +93,6 @@ class MySQLSchemalessConnectionTest extends TestCase
 
         $this->assertContains('profiles', $contentTypeNames);
     }
-
 
     public function testContentTypeDefinitions()
     {
@@ -113,7 +106,6 @@ class MySQLSchemalessConnectionTest extends TestCase
         $this->assertInstanceOf('CMDL\ContentTypeDefinition', $contentType);
     }
 
-
     public function testCountRecords()
     {
         $connection = $this->connection;
@@ -122,7 +114,6 @@ class MySQLSchemalessConnectionTest extends TestCase
 
         $this->assertEquals(3, $connection->countRecords());
     }
-
 
     public function testGetRecord()
     {
@@ -136,7 +127,6 @@ class MySQLSchemalessConnectionTest extends TestCase
 
         $this->assertEquals('Agency 5', $record->getProperty('name'));
     }
-
 
     public function testGetRecords()
     {
@@ -155,7 +145,6 @@ class MySQLSchemalessConnectionTest extends TestCase
         }
     }
 
-
     public function testWorkspaces()
     {
         $connection = $this->connection;
@@ -168,7 +157,6 @@ class MySQLSchemalessConnectionTest extends TestCase
 
         $this->assertCount(2, $records);
     }
-
 
     public function testLastModified()
     {

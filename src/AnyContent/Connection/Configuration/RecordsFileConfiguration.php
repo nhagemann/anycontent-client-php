@@ -39,7 +39,6 @@ class RecordsFileConfiguration extends AbstractConfiguration
         return $this;
     }
 
-
     /**
      *
      * @return $this
@@ -62,7 +61,6 @@ class RecordsFileConfiguration extends AbstractConfiguration
         return $this;
     }
 
-
     public function getUriCMDLForContentType($contentTypeName)
     {
         if ($this->hasContentType($contentTypeName)) {
@@ -71,7 +69,6 @@ class RecordsFileConfiguration extends AbstractConfiguration
 
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
-
 
     public function getUriCMDLForConfigType($configTypeName)
     {
@@ -82,7 +79,6 @@ class RecordsFileConfiguration extends AbstractConfiguration
         throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
-
     public function getUriRecords($contentTypeName)
     {
         if ($this->hasContentType($contentTypeName)) {
@@ -91,7 +87,6 @@ class RecordsFileConfiguration extends AbstractConfiguration
 
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
-
 
     public function getUriConfig($configTypeName, DataDimensions $dataDimensions)
     {
@@ -106,7 +101,6 @@ class RecordsFileConfiguration extends AbstractConfiguration
     {
         return new RecordsFileReadOnlyConnection($this);
     }
-
 
     public function createReadWriteConnection()
     {

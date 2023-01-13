@@ -10,14 +10,12 @@ class TimeShifter
         return number_format(2147483647, 4, '.', '');
     }
 
-
     public static function getMaxTimeshift()
     {
         // roundabout 10 years, equals to 1.1.1980
 
         return number_format(315532800, 4, '.', '');
     }
-
 
     public static function getTimeshiftTimestamp($timeshift = 0)
     {

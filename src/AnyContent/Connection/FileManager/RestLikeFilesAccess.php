@@ -30,7 +30,6 @@ class RestLikeFilesAccess implements FileManager
         $this->configuration = $configuration;
     }
 
-
     /**
      * @return RestLikeConfiguration
      */
@@ -39,7 +38,6 @@ class RestLikeFilesAccess implements FileManager
         return $this->configuration;
     }
 
-
     /**
      * @param RestLikeConfiguration $configuration
      */
@@ -47,7 +45,6 @@ class RestLikeFilesAccess implements FileManager
     {
         $this->configuration = $configuration;
     }
-
 
     /**
      * @return Client
@@ -88,7 +85,6 @@ class RestLikeFilesAccess implements FileManager
         return $this->client;
     }
 
-
     /**
      * @return boolean
      */
@@ -96,7 +92,6 @@ class RestLikeFilesAccess implements FileManager
     {
         return $this->publicUrl;
     }
-
 
     /**
      * @param boolean $publicUrl
@@ -138,14 +133,12 @@ class RestLikeFilesAccess implements FileManager
                 }
                 $folder = new Folder($path, $json);
 
-
                 $this->folders[$path] = $folder;
             }
         }
 
         return $this->folders[$path];
     }
-
 
     public function getFile($fileId)
     {
@@ -160,7 +153,6 @@ class RestLikeFilesAccess implements FileManager
 
         return false;
     }
-
 
     public function getBinary(File $file)
     {
@@ -178,7 +170,6 @@ class RestLikeFilesAccess implements FileManager
         }
     }
 
-
     public function saveFile($fileId, $binary)
     {
         $this->folders = [];
@@ -189,7 +180,6 @@ class RestLikeFilesAccess implements FileManager
 
         return true;
     }
-
 
     public function deleteFile($fileId, $deleteEmptyFolder = true)
     {
@@ -207,7 +197,6 @@ class RestLikeFilesAccess implements FileManager
         return true;
     }
 
-
     public function createFolder($path)
     {
         $url = 'files/' . trim($path, '/');
@@ -215,7 +204,6 @@ class RestLikeFilesAccess implements FileManager
 
         return true;
     }
-
 
     public function deleteFolder($path, $deleteIfNotEmpty = false)
     {

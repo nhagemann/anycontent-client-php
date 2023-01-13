@@ -14,10 +14,8 @@ class AdjacentList2NestedSet
     protected $nestedSet = array();
     protected $level = 0;
 
-
     public function __construct($list)
     {
-
         $link      = array();
         $parentIds = array();
         foreach ($list as $record) {
@@ -39,10 +37,8 @@ class AdjacentList2NestedSet
         $this->traverse(0);
     }
 
-
     public function traverse($id)
     {
-
         $lft = $this->count;
         if ($id != 0) {
             $this->count++;
@@ -64,7 +60,6 @@ class AdjacentList2NestedSet
         }
     }
 
-
     public function getChildren($id)
     {
         if (array_key_exists($id, $this->links)) {
@@ -74,10 +69,8 @@ class AdjacentList2NestedSet
         }
     }
 
-
     public function getNestedSet()
     {
-
         asort($this->nestedSet);
 
         return $this->nestedSet;

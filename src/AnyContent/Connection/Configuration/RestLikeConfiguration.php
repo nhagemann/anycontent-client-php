@@ -12,7 +12,6 @@ class RestLikeConfiguration extends AbstractConfiguration
 
     protected $uri;
 
-
     /**
      * @return mixed
      */
@@ -24,7 +23,6 @@ class RestLikeConfiguration extends AbstractConfiguration
 
         return $this->uri;
     }
-
 
     /**
      * @param mixed $uri
@@ -40,10 +38,8 @@ class RestLikeConfiguration extends AbstractConfiguration
         $this->uri = $uri;
     }
 
-
     public function addContentTypes($contentTypeNames = false)
     {
-
         if ($contentTypeNames === false) {
             /** @var RestLikeBasicReadOnlyConnection $connection */
             $connection = $this->getConnection();
@@ -56,7 +52,6 @@ class RestLikeConfiguration extends AbstractConfiguration
 
         return $this;
     }
-
 
     public function addConfigTypes($configTypeNames = false)
     {
@@ -72,18 +67,15 @@ class RestLikeConfiguration extends AbstractConfiguration
         return $this;
     }
 
-
     public function createReadOnlyConnection()
     {
         return new RestLikeBasicReadOnlyConnection($this);
     }
 
-
     public function createReadWriteConnection()
     {
         return new  RestLikeBasicReadWriteConnection($this);
     }
-
 
     /**
      * @return int
@@ -92,7 +84,6 @@ class RestLikeConfiguration extends AbstractConfiguration
     {
         return $this->timeout;
     }
-
 
     /**
      * @param int $timeout

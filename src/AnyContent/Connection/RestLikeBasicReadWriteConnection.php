@@ -52,7 +52,6 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         return $response->json();
     }
 
-
     /**
      * @param Record[] $records
      *
@@ -61,7 +60,6 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
      */
     public function saveRecords(array $records, DataDimensions $dataDimensions = null)
     {
-
         if (count($records) > 0) {
             if (!$dataDimensions) {
                 $dataDimensions = $this->getCurrentDataDimensions();
@@ -102,7 +100,6 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         return [];
     }
 
-
     public function deleteRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
         if (!$dataDimensions) {
@@ -138,10 +135,8 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         return false;
     }
 
-
     public function deleteRecords(array $recordsIds, $contentTypeName = null, DataDimensions $dataDimensions = null)
     {
-
         if (!$dataDimensions) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
@@ -158,7 +153,6 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         return $recordIds;
     }
-
 
     public function deleteAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
     {
@@ -191,7 +185,6 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         return $response->json();
     }
-
 
     public function saveConfig(Config $config, DataDimensions $dataDimensions = null)
     {
@@ -279,7 +272,6 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
         return true;
     }
 
-
     /**
      * @param $configTypeName
      * @param $cmdl
@@ -315,7 +307,6 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
 
         return true;
     }
-
 
     /**
      * @param $contentTypeName
@@ -359,7 +350,6 @@ class RestLikeBasicReadWriteConnection extends RestLikeBasicReadOnlyConnection i
             return false;
         }
     }
-
 
     /**
      * @param $configTypeName

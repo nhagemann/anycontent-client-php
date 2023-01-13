@@ -13,13 +13,11 @@ class MySQLSchemalessConfigTest extends TestCase
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public static function setUpBeforeClass(): void
     {
-
         // drop & create database
         $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
@@ -29,13 +27,11 @@ class MySQLSchemalessConfigTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     /**
      * @throws \AnyContent\AnyContentClientException
      */
     public function setUp(): void
     {
-
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
@@ -53,7 +49,6 @@ class MySQLSchemalessConfigTest extends TestCase
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
-
 
     public function testConfigSameConnection()
     {
@@ -76,7 +71,6 @@ class MySQLSchemalessConfigTest extends TestCase
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
     }
 
-
     public function testConfigNewConnection()
     {
         $connection = $this->connection;
@@ -88,11 +82,9 @@ class MySQLSchemalessConfigTest extends TestCase
         $this->assertEquals('Frankfurt', $config->getProperty('city'));
     }
 
-
     public function testViewsConfigSameConnection()
     {
         $connection = $this->connection;
-
 
         $connection->selectView('test');
 

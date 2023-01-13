@@ -13,36 +13,30 @@ interface ReadOnlyConnection
      */
     public function getContentTypeNames();
 
-
     /**
      * @return string[]
      */
     public function getConfigTypeNames();
-
 
     /**
      * @return array[]
      */
     public function getContentTypeList();
 
-
     /**
      * @return array[]
      */
     public function getConfigTypeList();
-
 
     /**
      * @return ContentTypeDefinition[]
      */
     public function getContentTypeDefinitions();
 
-
     /**
      * @return ConfigTypeDefinition[]
      */
     public function getConfigTypeDefinitions();
-
 
     /**
      * @param $contentTypeName
@@ -51,14 +45,12 @@ interface ReadOnlyConnection
      */
     public function hasContentType($contentTypeName);
 
-
     /**
      * @param $contentTypeName
      *
      * @return mixed
      */
     public function hasConfigType($contentTypeName);
-
 
     /**
      * @param $contentTypeName
@@ -67,7 +59,6 @@ interface ReadOnlyConnection
      */
     public function selectContentType($contentTypeName);
 
-
     /**
      * @param $contentTypeName
      *
@@ -75,18 +66,15 @@ interface ReadOnlyConnection
      */
     public function getContentTypeDefinition($contentTypeName);
 
-
     /**
      * @return ContentTypeDefinition
      */
     public function getCurrentContentTypeDefinition();
 
-
     /**
      * @return string
      */
     public function getCurrentContentTypeName();
-
 
     /**
      * @param DataDimensions $dataDimensions
@@ -95,12 +83,10 @@ interface ReadOnlyConnection
      */
     public function setDataDimensions(DataDimensions $dataDimensions);
 
-
     /**
      * @return DataDimensions
      */
     public function getCurrentDataDimensions();
-
 
     /**
      * @param null $contentTypeName
@@ -109,14 +95,12 @@ interface ReadOnlyConnection
      */
     public function countRecords($contentTypeName = null, DataDimensions $dataDimensions = null);
 
-
     /**
      * @param null $contentTypeName
      *
      * @return Record[]
      */
     public function getAllRecords($contentTypeName = null, DataDimensions $dataDimensions = null);
-
 
     /**
      * @param $recordId
@@ -125,9 +109,7 @@ interface ReadOnlyConnection
      */
     public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null);
 
-
     public function getRecordClassForContentType($contentTypeName);
-
 
     /**
      *
@@ -135,36 +117,28 @@ interface ReadOnlyConnection
      */
     public function getConfig($configTypeName = null, DataDimensions $dataDimensions = null);
 
-
     public function getRecordClassForConfigType($configTypeName);
 
-
     public function apply(Repository $repository);
-
 
     /**
      * @return Repository
      */
     public function getRepository();
 
-
     /**
      * @param Repository $repository
      */
     public function setRepository($repository);
-
 
     /**
      * @return bool
      */
     public function hasRepository();
 
-
     public function setCacheProvider(CacheProvider $cacheProvider);
 
-
     public function enableCMDLCaching($duration = 60, $checkLastModifiedDate = false);
-
 
     /**
      * Check for last content/config or cmdl change within repository or for a distinct content/config type

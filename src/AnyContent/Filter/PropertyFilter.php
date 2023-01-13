@@ -11,7 +11,6 @@ class PropertyFilter implements Filter
 {
     protected $term;
 
-
     public function __construct($query)
     {
         $term = $this->parseTerm($query);
@@ -23,10 +22,8 @@ class PropertyFilter implements Filter
         }
     }
 
-
     public function match(Record $record)
     {
-
         $operator = $this->term['operator'];
         if ($this->term['property'] == '.id') {
             $recordValue = $record->getId();
@@ -66,7 +63,6 @@ class PropertyFilter implements Filter
         return false;
     }
 
-
     /**
      * http://stackoverflow.com/questions/4955433/php-multiple-delimiters-in-explode
      *
@@ -92,7 +88,6 @@ class PropertyFilter implements Filter
         return false;
     }
 
-
     protected function escape($s)
     {
 //        $s = str_replace('\\+', '&#43;', $s);
@@ -101,7 +96,6 @@ class PropertyFilter implements Filter
 
         return $s;
     }
-
 
     protected function decode($s)
     {
@@ -118,7 +112,6 @@ class PropertyFilter implements Filter
 
         return $s;
     }
-
 
     public function __toString()
     {
