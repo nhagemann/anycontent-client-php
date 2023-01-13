@@ -8,6 +8,8 @@ use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use KVMLogger\KVMLogger;
+use KVMLogger\LogMessage;
 
 class RestLikeBasicReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection, FilteringConnection
 {
@@ -45,29 +47,29 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
             $emitter = $client->getEmitter();
 
-//            $emitter->on('end', function (EndEvent $event) {
-//
-//                $kvm = KVMLogger::instance('anycontent-connection');
-//
-//                $message = new LogMessage();
-//                $message->addLogValue('method', $event->getRequest()->getMethod());
-//
-//                $response = $event->getResponse();
-//
-//                if ($response) {
-//                    $duration = (int)($event->getTransferInfo('total_time') * 1000);
-//
-//                    $message->addLogValue('code', $response->getStatusCode());
-//                    $message->addLogValue('duration', $duration);
-//                    $message->addLogValue('url', $response->getEffectiveUrl());
-//                    $kvm->debug($message);
-//                } else {
-//                    $message->addLogValue('url', $event->getRequest()->getUrl());
-//                    $message->addLogValue('exception', $event->getException()->getCode() . ': ' . $event->getException()
-//                            ->getMessage());
-//                    $kvm->error($message);
-//                }
-//            });
+            $emitter->on('end', function (EndEvent $event) {
+
+                $kvm = KVMLogger::instance('anycontent-connection');
+
+                $message = new LogMessage();
+                $message->addLogValue('method', $event->getRequest()->getMethod());
+
+                $response = $event->getResponse();
+
+                if ($response) {
+                    $duration = (int)($event->getTransferInfo('total_time') * 1000);
+
+                    $message->addLogValue('code', $response->getStatusCode());
+                    $message->addLogValue('duration', $duration);
+                    $message->addLogValue('url', $response->getEffectiveUrl());
+                    $kvm->debug($message);
+                } else {
+                    $message->addLogValue('url', $event->getRequest()->getUrl());
+                    $message->addLogValue('exception', $event->getException()->getCode() . ': ' . $event->getException()
+                            ->getMessage());
+                    $kvm->error($message);
+                }
+            });
         }
 
         return $this->client;
@@ -360,6 +362,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
                 // make sure config record does not have properties, that are not allowed for the current view (bugfix for old rest like services, that do not know config views)
                 $properties = $config->getProperties();
+                /* @phpcs:ignore */
                 foreach ($properties as $property => $value) {
                     if (!$config->getDataTypeDefinition()->hasProperty($property, $dataDimensions->getViewName())) {
                         $config->clearProperty($property);

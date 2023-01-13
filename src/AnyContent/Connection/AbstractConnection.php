@@ -625,9 +625,8 @@ abstract class AbstractConnection implements ReadOnlyConnection
     {
         if (!$dataDimensions->hasRelativeTimeShift()) {
             $tempDataDimensions = $dataDimensions;
-            foreach (
-                $this->getContentTypeDefinition($contentTypeName)
-                          ->getViewDefinitions() as $viewDefinition
+            /* @phpcs:ignore */
+            foreach (                $this->getContentTypeDefinition($contentTypeName)                          ->getViewDefinitions() as $viewDefinition
             ) { // make sure all eventually related views are deleted
                 $hash = md5($contentTypeName . $tempDataDimensions . $recordClass);
 
@@ -651,9 +650,8 @@ abstract class AbstractConnection implements ReadOnlyConnection
     {
 
         $tempDataDimensions = $dataDimensions;
-        foreach (
-            $this->getConfigTypeDefinition($configTypeName)
-                      ->getViewDefinitions() as $viewDefinition
+        /* @phpcs:ignore */
+        foreach (            $this->getConfigTypeDefinition($configTypeName)                      ->getViewDefinitions() as $viewDefinition
         ) { // make sure all eventually related views are deleted
             $hash = md5($configTypeName . $tempDataDimensions . $recordClass);
             unset($this->configStash[$hash]);

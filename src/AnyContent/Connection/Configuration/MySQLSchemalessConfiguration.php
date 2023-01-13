@@ -7,7 +7,9 @@ use AnyContent\Connection\AbstractConnection;
 use AnyContent\Connection\MySQLSchemalessReadOnlyConnection;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use AnyContent\Connection\Util\Database;
+use PDO;
 use Symfony\Component\Finder\Finder;
+use SplFileInfo;
 
 class MySQLSchemalessConfiguration extends AbstractConfiguration
 {
@@ -24,15 +26,15 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
     public function initDatabase($host, $dbName, $username, $password, $port = 3306)
     {
         // http://stackoverflow.com/questions/18683471/pdo-setting-pdomysql-attr-found-rows-fails
-        $pdo = new \PDO(
+        $pdo = new PDO(
             'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName,
             $username,
             $password,
-            array(\PDO::MYSQL_ATTR_FOUND_ROWS => true)
+            array(PDO::MYSQL_ATTR_FOUND_ROWS => true)
         );
 
-        $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $pdo->exec("SET NAMES utf8");
 

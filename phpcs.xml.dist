@@ -34,4 +34,24 @@
     <rule ref="SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement"/>
     <rule ref="SlevomatCodingStandard.Arrays.SingleLineArrayWhitespace"/>
     <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
+
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+            <properties>
+                <property name="spacing" value="1"/>
+                <property name="spacingBeforeFirst" value="0"/>
+                <property name="spacingAfterLast" value="0"/>
+            </properties>
+        </rule>
+        <rule ref="Squiz.WhiteSpace.FunctionOpeningBraceSpace" />
+        <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
+            <properties>
+                <!-- turned on by PSR2 -> turning back off -->
+                <property name="ignoreBlankLines" value="false"/>
+            </properties>
+        </rule>
+        <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace.EmptyLines">
+            <!-- turned off by PSR2 -> turning back on -->
+            <severity>5</severity>
+        </rule>
+
 </ruleset>
