@@ -8,8 +8,6 @@ use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use KVMLogger\KVMLogger;
-use KVMLogger\LogMessage;
 
 class RestLikeBasicReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection, FilteringConnection
 {
@@ -43,8 +41,8 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
 
             $this->client = $client;
 
-            $emitter = $client->getEmitter();
-
+//            $emitter = $client->getEmitter();
+//
 //            $emitter->on('end', function (EndEvent $event) {
 //                $kvm = KVMLogger::instance('anycontent-connection');
 //

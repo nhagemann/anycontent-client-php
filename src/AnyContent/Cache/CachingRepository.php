@@ -3,11 +3,16 @@
 namespace AnyContent\Cache;
 
 use AnyContent\Client\Config;
+use AnyContent\Client\File;
+use AnyContent\Client\Folder;
 use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Client\Util\RecordsSorter;
-use Doctrine\Common\Cache\Psr6\DoctrineProvider;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use AnyContent\Filter\Interfaces\Filter;
+use Doctrine\Common\Cache\Psr6\CacheAdapter;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\CacheItem;
 
 class CachingRepository extends Repository
 {
@@ -28,65 +33,36 @@ class CachingRepository extends Repository
 
     protected $duration = 300;
 
-    /** @var  CacheProvider */
-    protected $cacheProvider;
+    protected AdapterInterface $cacheAdapter;
 
     protected $cmdlCaching = false;
 
-    protected $singleContentRecordCaching = false;
+    protected $singleContentRecordCaching = true;
 
-    protected $allContentRecordsCaching = false;
+    protected $allContentRecordsCaching = true;
 
-    protected $contentQueryRecordsCaching = false;
-
-    protected $contentRecordsForwardCaching = false;
-
-    protected $configRecordCaching = false;
-
-    protected $filesCaching = false;
+    protected $contentQueryRecordsCaching = true;
 
     protected $lastModified = 0;
 
-    /**
-     * @return Wrapper | CacheProvider
-     */
-    public function getCacheProvider()
+    public function getCacheAdapter(): AdapterInterface
     {
-        if (!$this->cacheProvider) {
-            $this->cacheProvider = DoctrineProvider::wrap(new ArrayAdapter());
+        if (!isset($this->cacheAdapter)) {
+            $this->cacheAdapter = new FilesystemAdapter();
         }
-
-        return $this->cacheProvider;
+        return $this->cacheAdapter;
     }
 
-    /**
-     * @param CacheProvider $cacheProvider
-     */
-    public function setCacheProvider($cacheProvider)
+    public function setCacheAdapter(AdapterInterface $cacheAdapter): void
     {
-        $namespace = '[<>]' . rtrim($this->getName() . '|' . $cacheProvider->getNamespace(), '|') . '[<>]';
-
-//        $arrayCache = new ArrayCache();
-//
-//        $cacheChain = new ChainCache([$arrayCache, $cacheProvider]);
-//
-//        $cacheProvider = new Wrapper($cacheChain);
-
-        $cacheProvider->setNamespace($namespace);
-
-        $this->cacheProvider = $cacheProvider;
-
-        $this->readConnection->setCacheProvider($cacheProvider);
-
-        if ($this->writeConnection) {
-            $this->writeConnection->setCacheProvider($cacheProvider);
-        }
+        $this->cacheAdapter = $cacheAdapter;
     }
+
 
     public function selectExpirationCacheStrategy($duration = 300)
     {
         $this->cacheStrategy = self::CACHE_STRATEGY_EXPIRATION;
-        $this->duration      = $duration;
+        $this->duration = $duration;
 
         if ($this->isCmdlCaching()) { // reflect strategy change within cmdl caching
             $this->enableCmdlCaching($this->cmdlCaching);
@@ -96,7 +72,7 @@ class CachingRepository extends Repository
     public function selectLastModifiedCacheStrategy($duration = 300)
     {
         $this->cacheStrategy = self::CACHE_STRATEGY_LASTMODIFIED;
-        $this->duration      = $duration;
+        $this->duration = $duration;
 
         if ($this->isCmdlCaching()) { // reflect strategy change within cmdl caching
             $this->enableCmdlCaching($this->cmdlCaching);
@@ -160,6 +136,10 @@ class CachingRepository extends Repository
         $this->singleContentRecordCaching = $duration;
     }
 
+    public function disableSingleContentRecordCaching(): void{
+        $this->singleContentRecordCaching = false;
+    }
+
     /**
      * @return boolean
      */
@@ -174,6 +154,10 @@ class CachingRepository extends Repository
             $duration = $this->duration;
         }
         $this->allContentRecordsCaching = $duration;
+    }
+
+    public function disableAllContentsRecordsCaching(): void{
+        $this->allContentRecordsCaching = false;
     }
 
     /**
@@ -192,12 +176,18 @@ class CachingRepository extends Repository
         $this->contentQueryRecordsCaching = $duration;
     }
 
+    public function disableContentQueryRecordsCaching(): void{
+        $this->contentQueryRecordsCaching = false;
+    }
+
     protected function createCacheKey($realm, array $params, $dataDimensions)
     {
         $cacheKey = '[' . $this->getName() . '][' . $realm . '][' . join(
-            ';',
-            $params
-        ) . '][' . (string)$dataDimensions . ']';
+                ';',
+                $params
+            ) . '][' . (string)$dataDimensions . ']';
+
+        $cacheKey = str_replace(':', '>', $cacheKey);
 
         if ($this->hasLastModifiedCacheStrategy()) {
             $cacheKey = '[' . $this->getLastModifiedDate() . ']' . $cacheKey;
@@ -209,7 +199,7 @@ class CachingRepository extends Repository
     protected function flushCacheBeforeChange()
     {
         if ($this->hasExpirationCacheStrategy()) {
-            $this->getCacheProvider()->flushAll();
+            $this->getCacheAdapter()->clear();
         } else {
             $this->lastModified = $this->getLastModifiedDate();
         }
@@ -219,7 +209,7 @@ class CachingRepository extends Repository
     {
         if ($this->hasLastModifiedCacheStrategy()) {
             if ($this->lastModified == $this->getLastModifiedDate()) { // clear cache, if last modified date hasn't change, otherwise old values could be retrieved accidentially
-                $this->getCacheProvider()->flushAll();
+                $this->getCacheAdapter()->clear();
             }
         }
     }
@@ -242,12 +232,12 @@ class CachingRepository extends Repository
                 $dataDimensions
             );
 
-            $data = $this->getCacheProvider()->fetch($cacheKey);
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
 
-            if ($data) {
-                $data = json_decode($data, true);
+            if ($cacheItem->isHit()) {
+                $data = json_decode($cacheItem->get(), true);
                 $recordFactory = $this->getRecordFactory();
-                $record        = $recordFactory->createRecordFromJSON($this->getCurrentContentTypeDefinition(), $data);
+                $record = $recordFactory->createRecordFromJSON($this->getCurrentContentTypeDefinition(), $data);
 
                 $record->setLanguage($dataDimensions->getLanguage());
                 $record->setWorkspace($dataDimensions->getWorkspace());
@@ -263,7 +253,11 @@ class CachingRepository extends Repository
             if ($record) {
                 $data = json_encode($record);
 
-                $this->getCacheProvider()->save($cacheKey, $data, $this->singleContentRecordCaching);
+                $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+                $cacheItem->set($data);
+                $cacheItem->expiresAfter($this->duration);
+
+                $this->getCacheAdapter()->save($cacheItem);
             }
 
             return $record;
@@ -279,9 +273,9 @@ class CachingRepository extends Repository
 
     /**
      * @param string|Filter $filter
-     * @param int           $page
-     * @param null          $count
-     * @param string|Array  $order
+     * @param int $page
+     * @param null $count
+     * @param string|array $order
      *
      * @return Record[]
      */
@@ -311,12 +305,12 @@ class CachingRepository extends Repository
                 $dataDimensions
             );
 
-            $data = $this->getCacheProvider()->fetch($cacheKey);
-            if ($data) {
-                $data = json_decode($data, true);
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            if ($cacheItem->isHit()) {
+                $data = json_decode($cacheItem->get(), true);
 
                 $recordFactory = $this->getRecordFactory();
-                $records       = $recordFactory->createRecordsFromJSONRecordsArray(
+                $records = $recordFactory->createRecordsFromJSONRecordsArray(
                     $this->getCurrentContentTypeDefinition(),
                     $data
                 );
@@ -335,7 +329,10 @@ class CachingRepository extends Repository
 
             $data = json_encode($records);
 
-            $this->getCacheProvider()->save($cacheKey, $data, $this->contentQueryRecordsCaching);
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            $cacheItem->set($data);
+            $cacheItem->expiresAfter($this->duration);
+            $this->getCacheAdapter()->save($cacheItem);
 
             return $records;
         }
@@ -356,12 +353,12 @@ class CachingRepository extends Repository
                 $dataDimensions
             );
 
-            $data = $this->getCacheProvider()->fetch($cacheKey);
-            if ($data) {
-                $data = json_decode($data, true);
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            if ($cacheItem->isHit()) {
+                $data = json_decode($cacheItem->get(), true);
 
                 $recordFactory = $this->getRecordFactory();
-                $records       = $recordFactory->createRecordsFromJSONRecordsArray(
+                $records = $recordFactory->createRecordsFromJSONRecordsArray(
                     $this->getCurrentContentTypeDefinition(),
                     $data
                 );
@@ -380,7 +377,10 @@ class CachingRepository extends Repository
 
             $data = json_encode($records);
 
-            $this->getCacheProvider()->save($cacheKey, $data, $this->allContentRecordsCaching);
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            $cacheItem->set($data);
+            $cacheItem->expiresAfter($this->duration);
+            $this->getCacheAdapter()->save($cacheItem);
 
             return $records;
         }
@@ -404,12 +404,12 @@ class CachingRepository extends Repository
                 $dataDimensions
             );
 
-            $data = $this->getCacheProvider()->fetch($cacheKey);
-            if ($data) {
-                $data = json_decode($data, true);
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            if ($cacheItem->isHit()) {
+                $data = json_decode($cacheItem->get(), true);
 
                 $recordFactory = $this->getRecordFactory();
-                $records       = $recordFactory->createRecordsFromJSONRecordsArray(
+                $records = $recordFactory->createRecordsFromJSONRecordsArray(
                     $this->getCurrentContentTypeDefinition(),
                     $data
                 );
@@ -427,7 +427,10 @@ class CachingRepository extends Repository
 
             $data = json_encode($records);
 
-            $this->getCacheProvider()->save($cacheKey, $data, $this->contentQueryRecordsCaching);
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            $cacheItem->set($data);
+            $cacheItem->expiresAfter($this->duration);
+            $this->getCacheAdapter()->save($cacheItem);
 
             return $records;
         }
@@ -513,10 +516,9 @@ class CachingRepository extends Repository
             $dataDimensions
         );
 
-        $data = $this->getCacheProvider()->fetch($cacheKey);
-
-        if ($data) {
-            $data = json_decode($data, true);
+        $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+        if ($cacheItem->isHit()) {
+            $data = json_decode($cacheItem->get(), true);
 
             $recordFactory = $this->getRecordFactory();
 
@@ -537,7 +539,10 @@ class CachingRepository extends Repository
         if ($config) {
             $data = json_encode($config);
 
-            $this->getCacheProvider()->save($cacheKey, $data, $this->singleContentRecordCaching);
+            $cacheItem = $this->getCacheAdapter()->getItem($cacheKey);
+            $cacheItem->set($data);
+            $cacheItem->expiresAfter($this->duration);
+            $this->getCacheAdapter()->save($cacheItem);
         }
 
         $config->setRepository($this);
@@ -548,7 +553,7 @@ class CachingRepository extends Repository
     {
         $this->flushCacheBeforeChange();
 
-        $result =  parent::saveConfig($config);
+        $result = parent::saveConfig($config);
 
         $this->flushCacheAfterChange();
 

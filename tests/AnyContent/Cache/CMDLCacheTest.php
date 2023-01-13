@@ -29,9 +29,9 @@ class CMDLCacheTest extends TestCase
         $fs->remove(__DIR__ . '/../../../tmp/phpfilecache');
         $fs->mkdir(__DIR__ . '/../../../tmp/phpfilecache');
 
-        $cache = DoctrineProvider::wrap(new FilesystemAdapter('', 0, __DIR__ . '/../../../tmp/phpfilecache'));
+        //$cache = DoctrineProvider::wrap(new FilesystemAdapter('', 0, __DIR__ . '/../../../tmp/phpfilecache'));
 
-        $repository->setCacheProvider($cache);
+        //$repository->setCacheProvider($cache);
         $repository->selectLastModifiedCacheStrategy();
         $this->repository = $repository;
 
