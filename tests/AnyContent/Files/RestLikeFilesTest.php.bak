@@ -5,21 +5,18 @@ namespace AnyContent\Files;
 use AnyContent\Client\File;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\FileManager\RestLikeFilesAccess;
+use AnyContent\Connection\RestLikeBasicReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class RestLikeFilesTest extends TestCase
 {
-    /** @var  RestLikeBasicReadWriteConnection */
-    public $connection;
+    public RestLikeBasicReadWriteConnection $connection;
 
-    /**
-     * @var RestLikeFilesAccess
-     */
-    public $fileManager;
+    public RestLikeFilesAccess $fileManager;
 
-    private static $randomString1;
-    private static $randomString2;
+    private static string $randomString1;
+    private static string $randomString2;
 
 
     public static function setUpBeforeClass(): void

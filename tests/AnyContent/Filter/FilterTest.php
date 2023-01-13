@@ -10,8 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class FilterTest extends TestCase
 {
-    /** @var  ContentArchiveReadWriteConnection */
-    public $connection;
+    public ContentArchiveReadWriteConnection $connection;
 
     /** @var  Repository */
     public $repository;

@@ -3,40 +3,32 @@
 namespace AnyContent\Connection\Util;
 
 use KVMLogger\KVMLogger;
+use \PDO;
+use \PDOStatement;
 
 class Database
 {
-    /** @var  \PDO */
-    protected $pdo;
 
-    protected $queryCounter = 0;
+    protected PDO $pdo;
 
-    public function __construct(\PDO $pdo)
+    protected int $queryCounter = 0;
+
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
 
-    /**
-     * @return \PDO
-     */
-    public function getConnection()
+     public function getConnection(): PDO
     {
         return $this->pdo;
     }
 
 
-    /**
-     * @param       $sql
-     * @param array $params
-     *
-     * @return \PDOStatement
-     */
-    public function execute($sql, $params = array())
+    public function execute(string $sql, array $params = []): PDOStatement
     {
         $kvm = KVMLogger::instance('anycontent-database');
 
-        /** @var \PDO $db */
         $dbh = $this->getConnection();
 
         $stmt = $dbh->prepare($sql);
