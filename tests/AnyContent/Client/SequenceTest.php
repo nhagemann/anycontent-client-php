@@ -80,7 +80,7 @@ class SequenceTest extends TestCase
 
         $this->expectException('AnyContent\AnyContentClientException');
 
-        $item = new SequenceItem($record->getDataTypeDefinition(), 'wrong', 'test');
+        new SequenceItem($record->getDataTypeDefinition(), 'wrong', 'test');
     }
 
 
@@ -200,21 +200,16 @@ class SequenceTest extends TestCase
 
         $sequence = $record->getSequence('standorte');
 
+        $this->assertInstanceOf(Sequence::class, $sequence);
+        $this->assertInstanceOf(\Iterator::class, $sequence);
         $this->assertEquals(0, count($sequence));
-
-        $i = 0;
-        foreach ($sequence as $item) {
-            $i++;
-        }
 
         $this->assertEquals(false, $sequence->getProperties());
         $this->assertEquals(false, $sequence->getProperty('standort_name'));
-
-        $this->assertEquals(0, $i);
     }
 
 
-    public function testPropertiesOfSequenceVsSequenveItem()
+    public function testPropertiesOfSequenceVsSequenceItem()
     {
         $this->repository->selectContentType('profiles');
 

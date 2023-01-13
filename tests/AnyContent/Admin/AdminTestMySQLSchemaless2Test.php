@@ -4,6 +4,7 @@ namespace AnyContent\Admin;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
+use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -41,7 +42,7 @@ class AdminTestMySQLSchemaless2Test extends TestCase
         $configuration->setRepositoryName('phpunit');
         $configuration->addContentTypes();
 
-        $connection = $configuration->createReadWriteConnection();
+        $configuration->createReadWriteConnection();
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
@@ -116,7 +117,6 @@ class AdminTestMySQLSchemaless2Test extends TestCase
     {
         $connection = $this->connection;
 
-
         $cmdl = 'Name';
 
         $this->assertCount(0, $connection->getConfigTypeNames());
@@ -132,7 +132,6 @@ class AdminTestMySQLSchemaless2Test extends TestCase
     public function testDeleteConfigType()
     {
         $connection = $this->connection;
-
 
         $connection->deleteConfigTypeCMDL('neu');
 

@@ -26,15 +26,6 @@ class MySQLSchemalessConfigTest extends TestCase
         $pdo->exec('DROP DATABASE IF EXISTS phpunit');
         $pdo->exec('CREATE DATABASE phpunit');
 
-        $configuration = new MySQLSchemalessConfiguration();
-
-        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
-        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-        $configuration->setRepositoryName('phpunit');
-        $configuration->addContentTypes();
-
-        $connection = $configuration->createReadWriteConnection();
-
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
@@ -58,6 +49,7 @@ class MySQLSchemalessConfigTest extends TestCase
 
         $this->connection = $connection;
         $repository       = new Repository('phpunit', $connection);
+        $this->assertEquals($repository, $this->connection->getRepository());
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }

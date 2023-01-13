@@ -53,7 +53,7 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
         $record = $repository->createRecord('Agency 1', 1);
         $repository->saveRecord($record);
 
-        $record = $repository->createRecord('Agency 2', 2);
+        //$record = $repository->createRecord('Agency 2', 2);
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }

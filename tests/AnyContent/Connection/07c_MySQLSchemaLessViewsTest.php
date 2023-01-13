@@ -54,6 +54,7 @@ class MySQLSchemalessViewsTest extends TestCase
 
         $this->connection = $connection;
         $repository       = new Repository('phpunit', $connection);
+        $this->assertEquals($repository, $this->connection->getRepository());
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }

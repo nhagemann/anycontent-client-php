@@ -65,12 +65,14 @@ class AbstractRecordTest extends TestCase
 
         $record->setProperty('article', 0);
         $id = $this->repository->saveRecord($record);
+        $this->assertEquals(1, $id);
 
         $record = $this->repository->getRecord(1);
         $this->assertEquals('0', $record->getProperty('article', 'DEFAULT'));
 
         $record->setProperty('article', null);
         $id = $this->repository->saveRecord($record);
+        $this->assertEquals(1, $id);
 
         $record = $this->repository->getRecord(1);
         $this->assertEquals('DEFAULT', $record->getProperty('article', 'DEFAULT'));

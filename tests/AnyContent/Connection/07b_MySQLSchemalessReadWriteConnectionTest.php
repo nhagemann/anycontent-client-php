@@ -34,8 +34,6 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
         $configuration->setRepositoryName('phpunit');
         $configuration->addContentTypes();
 
-        $connection = $configuration->createReadWriteConnection();
-
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
@@ -58,6 +56,7 @@ class MySQLSchemalessReadWriteConnectionTest extends TestCase
 
         $this->connection = $connection;
         $repository       = new Repository('phpunit', $connection);
+        $this->assertEquals($repository, $this->connection->getRepository());
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }

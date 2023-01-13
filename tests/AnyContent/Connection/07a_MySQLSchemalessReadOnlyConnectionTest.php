@@ -75,7 +75,8 @@ class MySQLSchemalessConnectionTest extends TestCase
         $connection = $configuration->createReadOnlyConnection();
 
         $this->connection = $connection;
-        $repository       = new Repository('phpunit', $connection);
+        $repository = new Repository('phpunit', $connection);
+        $this->assertEquals($repository, $this->connection->getRepository());
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
@@ -115,8 +116,6 @@ class MySQLSchemalessConnectionTest extends TestCase
 
     public function testCountRecords()
     {
-        $connection = $this->connection;
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -173,8 +172,6 @@ class MySQLSchemalessConnectionTest extends TestCase
 
     public function testLastModified()
     {
-        $connection = $this->connection;
-
         $this->assertNotEquals(0, $this->connection->getLastModifiedDate());
     }
 }

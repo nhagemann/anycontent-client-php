@@ -4,6 +4,7 @@ namespace AnyContent\Admin;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
+use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -54,7 +55,7 @@ class AdminTestMySQLSchemaless1Test extends TestCase
         $configuration->setRepositoryName('phpunit');
         $configuration->addContentTypes();
 
-        $connection = $configuration->createReadWriteConnection();
+        $configuration->createReadWriteConnection();
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
