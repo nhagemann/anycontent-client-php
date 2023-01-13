@@ -47,7 +47,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
     public function getCMDLForContentType($contentTypeName)
     {
         if ($this->hasContentType($contentTypeName)) {
-            assert ( $this->getConfiguration() instanceof MySQLSchemalessConfiguration);
+            assert($this->getConfiguration() instanceof MySQLSchemalessConfiguration);
             if ($this->getConfiguration()->hasCMDLFolder()) {
                 $path = $this->getConfiguration()
                              ->getPathCMDLFolderForContentTypes() . '/' . $contentTypeName . '.cmdl';
@@ -75,7 +75,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
      */
     public function getCMDLForConfigType($configTypeName)
     {
-        assert ( $this->getConfiguration() instanceof MySQLSchemalessConfiguration);
+        assert($this->getConfiguration() instanceof MySQLSchemalessConfiguration);
         if ($this->getConfiguration()->hasConfigType($configTypeName)) {
             if ($this->getConfiguration()->hasCMDLFolder()) {
                 $path = $this->getConfiguration()
@@ -556,7 +556,7 @@ TEMPLATE_CONFIGTABLE;
     {
         $t = 0;
 
-        assert ( $this->getConfiguration() instanceof MySQLSchemalessConfiguration);
+        assert($this->getConfiguration() instanceof MySQLSchemalessConfiguration);
         if ($this->getConfiguration()->hasCMDLFolder()) {
             if ($contentTypeName == null && $configTypeName == null) {
                 foreach ($this->getConfiguration()->getContentTypeNames() as $contentTypeName) {

@@ -6,10 +6,6 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
-use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-use AnyContent\Connection\Configuration\RecordFilesConfiguration;
-use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use KVMLogger\KVMLogger;
 
@@ -17,7 +13,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
 {
     public function getCMDLForContentType($contentTypeName)
     {
-
 //        assert (
 //            $this->getConfiguration() instanceof RecordsFileConfiguration ||
 //            $this->getConfiguration() instanceof ContentArchiveConfiguration ||

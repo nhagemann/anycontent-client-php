@@ -6,7 +6,6 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use KVMLogger\KVMLogger;
@@ -15,7 +14,6 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implements ReadOnlyConnection
 {
-
     /**
      * @return int
      * @throws AnyContentClientException
@@ -29,7 +27,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        assert ( $this->getConfiguration() instanceof RecordFilesConfiguration||$this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
         $folder = $this->getConfiguration()->getFolderNameRecords($contentTypeName, $dataDimensions);
 
         $folder = realpath($folder);
@@ -60,7 +58,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        assert ( $this->getConfiguration() instanceof RecordFilesConfiguration||$this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $folder = $this->getConfiguration()->getFolderNameRecords($contentTypeName, $dataDimensions);
 
@@ -78,7 +76,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
                                ->createRecordFromJSON($definition, $data, $dataDimensions->getViewName(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage());
 
                 $record =  $this->exportRecord($record, $dataDimensions);
-                assert ($record instanceof Record);
+                assert($record instanceof Record);
                 return $record;
             }
         }
@@ -97,7 +95,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
      */
     protected function getAllMultiViewRecords($contentTypeName, DataDimensions $dataDimensions)
     {
-        assert ( $this->getConfiguration() instanceof RecordFilesConfiguration||$this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $folder = $this->getConfiguration()->getFolderNameRecords($contentTypeName, $dataDimensions);
 
@@ -129,7 +127,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
 
         $t = 0;
 
-        assert ( $this->getConfiguration() instanceof RecordFilesConfiguration||$this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $configuration = $this->getConfiguration();
 
@@ -153,7 +151,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
     protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
     {
         $t      = 0;
-        assert ( $this->getConfiguration() instanceof RecordFilesConfiguration||$this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $folder = $this->getConfiguration()->getFolderNameRecords($contentTypeName, $dataDimensions);
 
@@ -184,7 +182,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
     {
         $t = 0;
 
-        assert ( $this->getConfiguration() instanceof RecordFilesConfiguration||$this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $uri = $this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions);
         $t   = max((int)@filemtime($uri), $t);

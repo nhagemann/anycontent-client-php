@@ -3,8 +3,6 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
-use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\Interfaces\AdminConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use Symfony\Component\Filesystem\Filesystem;
@@ -12,12 +10,10 @@ use Symfony\Component\Finder\Finder;
 
 class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection implements ReadOnlyConnection, AdminConnection
 {
-
-
     protected function getNextId($contentTypeName, $dataDimensions)
     {
         $finder = new Finder();
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $path   = $this->getConfiguration()->getContentArchiveFolder() . '/data/content/' . $contentTypeName;
         $path   = realpath($path);
         if ($path) {
@@ -38,7 +34,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
     public function saveContentTypeCMDL($contentTypeName, $cmdl)
     {
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $uri = 'file://' . $this->getConfiguration()->getContentArchiveFolder() . '/cmdl/' . $contentTypeName . '.cmdl';
 
         $sf = new Filesystem();
@@ -46,7 +42,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
         $this->getCMDLCache()->clear();
 
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $this->getConfiguration()->apply($this);
 
         return true;
@@ -54,7 +50,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
     public function saveConfigTypeCMDL($configTypeName, $cmdl)
     {
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $uri = 'file://' . $this->getConfiguration()->getContentArchiveFolder() . '/cmdl/config/' . $configTypeName . '.cmdl';
 
         $sf = new Filesystem();
@@ -62,7 +58,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
         $this->getCMDLCache()->clear();
 
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $this->getConfiguration()->apply($this);
 
         return true;
@@ -70,7 +66,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
     public function deleteContentTypeCMDL($contentTypeName)
     {
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $uri = 'file://' . $this->getConfiguration()->getContentArchiveFolder() . '/cmdl/' . $contentTypeName . '.cmdl';
 
         $sf = new Filesystem();
@@ -78,7 +74,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
         $this->getCMDLCache()->clear();
 
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $this->getConfiguration()->apply($this);
 
         return true;
@@ -86,7 +82,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
     public function deleteConfigTypeCMDL($configTypeName)
     {
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $uri = 'file://' . $this->getConfiguration()->getContentArchiveFolder() . '/cmdl/config/' . $configTypeName . '.cmdl';
 
         $sf = new Filesystem();
@@ -94,7 +90,7 @@ class ContentArchiveReadWriteConnection extends RecordFilesReadWriteConnection i
 
         $this->getCMDLCache()->clear();
 
-        assert ( $this->getConfiguration() instanceof ContentArchiveConfiguration);
+        assert($this->getConfiguration() instanceof ContentArchiveConfiguration);
         $this->getConfiguration()->apply($this);
 
         return true;

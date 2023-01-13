@@ -345,7 +345,6 @@ TEMPLATE_UPDATETABLE;
 
             $finder2->files()->name('*.cmdl')->in($path);
 
-
             foreach ($finder2 as $file) {
                 $contentTypeName = $file->getBasename('.cmdl');
                 $cmdl = $file->getContents();
