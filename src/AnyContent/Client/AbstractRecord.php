@@ -21,6 +21,11 @@ abstract class AbstractRecord
 
     protected ?Repository $repository = null;
 
+    public function getDataType()
+    {
+        throw new \Exception('Method getDataType not implemented.');
+    }
+
     /**
      * Check if a property is allowed by definition
      *

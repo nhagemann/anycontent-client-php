@@ -2,6 +2,8 @@
 
 namespace AnyContent\Client\Util;
 
+use AnyContent\Client\Record;
+use AnyContent\Filter\Interfaces\Filter;
 use AnyContent\Filter\PropertyFilter;
 
 class RecordsFilter

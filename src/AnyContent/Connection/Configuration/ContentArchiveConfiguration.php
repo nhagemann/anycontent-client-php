@@ -7,6 +7,7 @@ use AnyContent\Client\DataDimensions;
 use AnyContent\Connection\AbstractConnection;
 use AnyContent\Connection\ContentArchiveReadOnlyConnection;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
+use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 class ContentArchiveConfiguration extends AbstractConfiguration
@@ -38,7 +39,7 @@ class ContentArchiveConfiguration extends AbstractConfiguration
         $finder->in($uri)->depth(0);
 
         /** @var SplFileInfo $file */
-        foreach ($finder->files('*.cmdl') as $file) {
+        foreach ($finder->files()->name('*.cmdl') as $file) {
             $contentTypeName = $file->getBasename('.cmdl');
 
             $this->contentTypes[$contentTypeName] = [ ];
@@ -52,7 +53,7 @@ class ContentArchiveConfiguration extends AbstractConfiguration
             $finder->in($uri)->depth(0);
 
             /** @var SplFileInfo $file */
-            foreach ($finder->files('*.cmdl') as $file) {
+            foreach ($finder->files()->name('*.cmdl') as $file) {
                 $configTypeName = $file->getBasename('.cmdl');
 
                 $this->configTypes[$configTypeName] = [ ];

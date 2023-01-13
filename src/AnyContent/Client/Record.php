@@ -3,8 +3,6 @@
 namespace AnyContent\Client;
 
 use CMDL\ContentTypeDefinition;
-use CMDL\DataTypeDefinition;
-use function PHPUnit\Framework\assertInstanceOf;
 
 class Record extends AbstractRecord implements \JsonSerializable
 {

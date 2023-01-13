@@ -2,8 +2,10 @@
 
 namespace AnyContent\Connection;
 
+use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\Interfaces\AdminConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
+use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 

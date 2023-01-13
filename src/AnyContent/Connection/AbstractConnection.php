@@ -12,6 +12,7 @@ use AnyContent\Client\Repository;
 use AnyContent\Client\UserInfo;
 use AnyContent\Connection\Configuration\AbstractConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
+use CMDL\ConfigTypeDefinition;
 use CMDL\ContentTypeDefinition;
 use CMDL\Parser;
 use CMDL\Util;
@@ -684,6 +685,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
     protected function finalizeRecord(AbstractRecord $record, DataDimensions $dataDimensions)
     {
         if ($record instanceof Record) {
+            assert($record->getDataTypeDefinition() instanceof ContentTypeDefinition);
             // Apply @name annotation
             if ($record->getDataTypeDefinition()->hasNamingPattern()) {
                 $record->setName(Util::applyNamingPattern($record->getProperties(), $record->getDataTypeDefinition()

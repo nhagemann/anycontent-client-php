@@ -3,6 +3,7 @@
 namespace AnyContent\Client\Util;
 
 use AnyContent\Client\File;
+use AnyContent\Client\Repository;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;

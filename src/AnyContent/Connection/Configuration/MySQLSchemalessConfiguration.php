@@ -170,7 +170,7 @@ TEMPLATE_UPDATETABLE;
                 $finder->in($uri)->depth(0);
 
                 /** @var SplFileInfo $file */
-                foreach ($finder->files('*.cmdl') as $file) {
+                foreach ($finder->files()->name('*.cmdl') as $file) {
                     $contentTypeName = $file->getBasename('.cmdl');
 
                     $this->contentTypes[$contentTypeName] = [];
@@ -217,7 +217,7 @@ TEMPLATE_UPDATETABLE;
                     $finder->in($uri)->depth(0);
 
                     /** @var SplFileInfo $file */
-                    foreach ($finder->files('*.cmdl') as $file) {
+                    foreach ($finder->files()->name('*.cmdl') as $file) {
                         $configTypeName = $file->getBasename('.cmdl');
 
                         $this->configTypes[$configTypeName] = [];
@@ -291,6 +291,8 @@ TEMPLATE_UPDATETABLE;
     {
         parent::apply($connection);
 
+        assert($connection instanceof MySQLSchemalessReadOnlyConnection || $connection instanceof MySQLSchemalessReadWriteConnection);
+
         $connection->setDatabase($this->getDatabase());
     }
 
@@ -345,7 +347,7 @@ TEMPLATE_UPDATETABLE;
 
             // transfer content types
 
-            $finder2->files('*.cmdl')->in($path);
+            $finder2->files()->name('*.cmdl')->in($path);
 
             /** @var SplFileInfo $file */
             foreach ($finder2 as $file) {
@@ -362,7 +364,7 @@ TEMPLATE_UPDATETABLE;
             if (file_exists($path . '/config')) {
                 $finder3 = new Finder();
                 $finder3->depth(0);
-                $finder3->files('*.cmdl')->in($path . '/config');
+                $finder3->files()->name('*.cmdl')->in($path . '/config');
 
                 /** @var SplFileInfo $file */
                 foreach ($finder3 as $file) {

@@ -12,6 +12,9 @@ use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use AnyContent\Connection\Interfaces\RevisionConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
+use CMDL\ConfigTypeDefinition;
+use CMDL\ContentTypeDefinition;
+use Hoa\Iterator\Filter;
 use KVMLogger\KVMLogger;
 
 class Repository implements FileManager, \JsonSerializable
@@ -78,42 +81,27 @@ class Repository implements FileManager, \JsonSerializable
         $this->fileManager = $fileManager;
     }
 
-    /**
-     * @return ReadOnlyConnection
-     */
-    public function getReadConnection()
+    public function getReadConnection(): ReadOnlyConnection
     {
         return $this->readConnection;
     }
 
-    /**
-     * @param ReadOnlyConnection $readConnection
-     */
-    public function setReadConnection($readConnection)
+    public function setReadConnection(ReadOnlyConnection $readConnection): void
     {
         $this->readConnection = $readConnection;
     }
 
-    /**
-     * @return
-     */
-    public function getWriteConnection()
+    public function getWriteConnection(): WriteConnection
     {
         return $this->writeConnection;
     }
 
-    /**
-     * @param boolean $writeConnection
-     */
-    public function setWriteConnection($writeConnection)
+    public function setWriteConnection(WriteConnection $writeConnection): void
     {
         $this->writeConnection = $writeConnection;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasFiles()
+    public function hasFiles(): bool
     {
         return (bool)$this->fileManager;
     }
@@ -259,12 +247,9 @@ class Repository implements FileManager, \JsonSerializable
     }
 
     /**
-     * @param null $contentTypeName
-     *
-     * @return ContentTypeDefinition
      * @throws AnyContentClientException
      */
-    public function getContentTypeDefinition($contentTypeName = null)
+    public function getContentTypeDefinition(?string $contentTypeName = null): ContentTypeDefinition
     {
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
@@ -274,12 +259,9 @@ class Repository implements FileManager, \JsonSerializable
     }
 
     /**
-     * @param $configTypeName
-     *
-     * @return ConfigTypeDefinition
      * @throws AnyContentClientException
      */
-    public function getConfigTypeDefinition($configTypeName)
+    public function getConfigTypeDefinition(string $configTypeName): ConfigTypeDefinition
     {
         return $this->readConnection->getConfigTypeDefinition($configTypeName);
     }
@@ -453,7 +435,7 @@ class Repository implements FileManager, \JsonSerializable
      * @param string|Filter $filter
      * @param int           $page
      * @param null          $count
-     * @param string|Array  $order
+     * @param string|array  $order
      *
      * @return Record[]
      */
@@ -781,7 +763,6 @@ class Repository implements FileManager, \JsonSerializable
     /**
      * @param                     $recordId
      * @param null                $contentTypeName
-     * @param DataDimensions|null $dataDimensions
      *
      * @return Record[]
      */
@@ -799,7 +780,6 @@ class Repository implements FileManager, \JsonSerializable
 
     /**
      * @param                     $configTypeName
-     * @param DataDimensions|null $dataDimensions
      *
      * @return Config[]
      */

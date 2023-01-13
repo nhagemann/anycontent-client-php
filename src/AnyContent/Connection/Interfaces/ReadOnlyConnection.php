@@ -43,6 +43,11 @@ interface ReadOnlyConnection
     public function getConfigTypeDefinitions();
 
     /**
+     * @return ConfigTypeDefinition
+     */
+    public function getConfigTypeDefinition($configTypeName);
+
+    /**
      * @param $contentTypeName
      *
      * @return mixed
