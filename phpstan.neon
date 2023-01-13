@@ -2,3 +2,5 @@
 parameters:
     excludePaths:
         - 'src/AnyContent/Connection/RecordsFileHTTPReadOnlyConnection.php'
+        - 'src/AnyContent/Connection/RestLikeBasicReadOnlyConnection.php'
+        - 'src/AnyContent/Connection/RestLikeBasicReadWriteConnection.php'

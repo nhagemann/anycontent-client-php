@@ -2,9 +2,13 @@
 
 namespace AnyContent\Connection;
 
+use AnyContent\AnyContentClientException;
+use AnyContent\Client\Config;
+use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use KVMLogger\KVMLoggerFactory;
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
@@ -18,7 +22,7 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         // drop & create database
-        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
+        $pdo = new PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
         $pdo->exec('DROP DATABASE IF EXISTS phpunit');
         $pdo->exec('CREATE DATABASE phpunit');
@@ -56,7 +60,7 @@ class MySQLSchemalessReadOnlyRevisionConnectionTest extends TestCase
     }
 
     /**
-     * @throws \AnyContent\AnyContentClientException
+     * @throws AnyContentClientException
      */
     public function setUp(): void
     {

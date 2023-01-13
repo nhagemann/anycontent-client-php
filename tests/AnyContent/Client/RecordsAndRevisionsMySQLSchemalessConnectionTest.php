@@ -144,7 +144,6 @@ class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCas
 
         $repository->selectContentType('profiles');
 
-        /** @var $record Record * */
         $records = $repository->getRecords();
 
         $this->assertCount(3, $records);
