@@ -3,12 +3,11 @@
 namespace AnyContent\Connection\Util;
 
 use KVMLogger\KVMLogger;
-use \PDO;
-use \PDOStatement;
+use PDO;
+use PDOStatement;
 
 class Database
 {
-
     protected PDO $pdo;
 
     protected int $queryCounter = 0;
@@ -19,7 +18,7 @@ class Database
     }
 
 
-     public function getConnection(): PDO
+    public function getConnection(): PDO
     {
         return $this->pdo;
     }

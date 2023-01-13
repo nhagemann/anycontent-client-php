@@ -7,10 +7,7 @@ use AnyContent\Client\Folder;
 use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\Interfaces\FileManager;
 use GuzzleHttp\Client;
-use GuzzleHttp\Event\EndEvent;
 use GuzzleHttp\Exception\ClientException;
-use KVMLogger\KVMLogger;
-use KVMLogger\LogMessage;
 
 class RestLikeFilesAccess implements FileManager
 {

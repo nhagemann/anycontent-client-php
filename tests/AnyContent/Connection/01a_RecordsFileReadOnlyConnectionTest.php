@@ -3,8 +3,8 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class RecordsFileReadOnlyConnectionTest extends TestCase

@@ -3,10 +3,10 @@
 namespace AnyContent\Connection;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
-use Symfony\Component\Filesystem\Filesystem;
+use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 class RecordsFileConfigTest extends TestCase
 {

@@ -5,10 +5,10 @@ namespace AnyContent\Connection\FileManager;
 use AnyContent\Client\File;
 use AnyContent\Client\Folder;
 use AnyContent\Connection\Interfaces\FileManager;
+use Aws\S3\S3Client;
 use Dflydev\ApacheMimeTypes\JsonRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Aws\S3\S3Client;
 
 class S3FilesAccess implements FileManager
 {

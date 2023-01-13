@@ -3,10 +3,10 @@
 namespace AnyContent\Connection\Configuration;
 
 use AnyContent\AnyContentClientException;
-use AnyContent\Connection\Util\Database;
 use AnyContent\Connection\AbstractConnection;
 use AnyContent\Connection\MySQLSchemalessReadOnlyConnection;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
+use AnyContent\Connection\Util\Database;
 use Symfony\Component\Finder\Finder;
 
 class MySQLSchemalessConfiguration extends AbstractConfiguration

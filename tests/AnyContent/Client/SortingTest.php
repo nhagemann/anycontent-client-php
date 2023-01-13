@@ -5,8 +5,8 @@ namespace AnyContent\Client;
 use AnyContent\Client\Util\MenuBuilder;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use KVMLogger\KVMLoggerFactory;
-use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 class SortingTest extends TestCase
 {

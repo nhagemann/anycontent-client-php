@@ -7,7 +7,6 @@ use AnyContent\Client\Traits\Properties;
 use CMDL\CMDLParserException;
 use CMDL\DataTypeDefinition;
 use CMDL\Util;
-use CMDL\ViewDefinition;
 
 class SequenceItem
 {

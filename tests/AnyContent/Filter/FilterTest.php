@@ -4,9 +4,10 @@ namespace AnyContent\Filter;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
-use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 class FilterTest extends TestCase
 {

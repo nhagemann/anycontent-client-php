@@ -4,10 +4,10 @@ namespace AnyContent\Connection;
 
 use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
-use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
-use Symfony\Component\Filesystem\Filesystem;
+use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 class ContentArchiveReadWriteConnectionTest extends TestCase
 {

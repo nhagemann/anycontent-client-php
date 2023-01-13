@@ -7,10 +7,7 @@ use AnyContent\Client\DataDimensions;
 use AnyContent\Connection\Interfaces\FilteringConnection;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use GuzzleHttp\Client;
-use GuzzleHttp\Event\EndEvent;
 use GuzzleHttp\Exception\ClientException;
-use KVMLogger\KVMLogger;
-use KVMLogger\LogMessage;
 
 class RestLikeBasicReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection, FilteringConnection
 {

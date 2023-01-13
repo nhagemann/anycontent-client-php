@@ -7,8 +7,8 @@ use AnyContent\Filter\ANDFilter;
 use AnyContent\Filter\ORFilter;
 use AnyContent\Filter\PropertyFilter;
 use KVMLogger\KVMLoggerFactory;
-use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 class FilteringTest extends TestCase
 {

@@ -4,8 +4,8 @@ namespace AnyContent\Connection;
 
 use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
 use KVMLogger\KVMLoggerFactory;
-use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 class DirectoryBasedFilesAccessWriteTest extends TestCase
 {

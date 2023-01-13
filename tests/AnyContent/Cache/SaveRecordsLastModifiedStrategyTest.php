@@ -5,9 +5,9 @@ namespace AnyContent\Cache;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use KVMLogger\KVMLoggerFactory;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Filesystem\Filesystem;
-use PHPUnit\Framework\TestCase;
 
 class SaveRecordsLastModifiedStategyTest extends TestCase
 {

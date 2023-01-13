@@ -64,7 +64,7 @@ class MenuBuilder
 
         // Add children
 
-        if ($id!==null) {
+        if ($id !== null) {
             $records = $repository->getSortedRecords($id, false, 1);
             foreach ($records as $record) {
                 $result[$record->getId()] = $record;

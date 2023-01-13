@@ -4,8 +4,8 @@ namespace AnyContent\Connection;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
-use KVMLogger\KVMLoggerFactory;
 use KVMLogger\KVMLogger;
+use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class MySQLSchemalessConfigTest extends TestCase
