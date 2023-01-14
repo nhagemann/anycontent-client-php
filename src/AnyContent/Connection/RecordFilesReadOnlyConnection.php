@@ -44,13 +44,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
         return 0;
     }
 
-    /**
-     * @param $recordId
-     *
-     * @return Record
-     * @throws AnyContentClientException
-     */
-    public function getRecord(int|string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
+    public function getRecord(int|string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null): Record|false
     {
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();

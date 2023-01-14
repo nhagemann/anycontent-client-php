@@ -9,7 +9,7 @@ use CMDL\DataTypeDefinition;
 
 class Config extends AbstractRecord implements \JsonSerializable
 {
-    protected ?DataTypeDefinition $dataTypeDefinition = null;
+    protected DataTypeDefinition $dataTypeDefinition;
 
     public function __construct(ConfigTypeDefinition $configTypeDefinition, $view = 'default', $workspace = 'default', $language = 'default')
     {
@@ -32,6 +32,7 @@ class Config extends AbstractRecord implements \JsonSerializable
 
     public function getConfigTypeDefinition(): ConfigTypeDefinition
     {
+        assert($this->dataTypeDefinition instanceof ConfigTypeDefinition);
         return $this->dataTypeDefinition;
     }
 

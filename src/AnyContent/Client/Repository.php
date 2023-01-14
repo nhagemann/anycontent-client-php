@@ -405,12 +405,7 @@ class Repository implements FileManager, \JsonSerializable
         return $record;
     }
 
-    /**
-     * @param      $recordId
-     *
-     * @return Record
-     */
-    public function getRecord(?int $recordId, $dataDimensions = null)
+    public function getRecord(?int $recordId, $dataDimensions = null): Record|false
     {
         if ($recordId === null) {
             return false;

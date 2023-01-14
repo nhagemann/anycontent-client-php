@@ -44,10 +44,7 @@ interface ReadOnlyConnection
      */
     public function getConfigTypeDefinitions();
 
-    /**
-     * @return ConfigTypeDefinition
-     */
-    public function getConfigTypeDefinition($configTypeName);
+    public function getConfigTypeDefinition(string $configTypeName): ConfigTypeDefinition;
 
     /**
      * @param $contentTypeName
@@ -70,12 +67,7 @@ interface ReadOnlyConnection
      */
     public function selectContentType($contentTypeName);
 
-    /**
-     * @param $contentTypeName
-     *
-     * @return ContentTypeDefinition
-     */
-    public function getContentTypeDefinition($contentTypeName);
+    public function getContentTypeDefinition(string $contentTypeName): ContentTypeDefinition;
 
     /**
      * @return ContentTypeDefinition

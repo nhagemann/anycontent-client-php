@@ -16,7 +16,7 @@ trait Properties
     protected string $workspace = 'default';
     protected string $language = 'default';
 
-    protected ?DataTypeDefinition $dataTypeDefinition;
+    protected DataTypeDefinition $dataTypeDefinition;
 
     public array $properties = [];
 

@@ -21,7 +21,7 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
 
     protected $pathCMDLFolderForConfigTypes = null;
 
-    protected $repositoryName = null;
+    protected ?string $repositoryName = null;
 
     public function initDatabase($host, $dbName, $username, $password, $port = 3306)
     {
@@ -54,10 +54,7 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
         }
     }
 
-    /**
-     * @return null
-     */
-    public function getRepositoryName()
+    public function getRepositoryName(): string
     {
         if (!$this->repositoryName) {
             throw new AnyContentClientException('Please provide repository name or set cmdl folder path.');

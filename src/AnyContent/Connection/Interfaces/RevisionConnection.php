@@ -15,15 +15,15 @@ interface RevisionConnection extends ReadOnlyConnection
      * @param null                $contentTypeName
      * @param DataDimensions|null $dataDimensions
      *
-     * @return Record[]
+     * @return Record[]|false
      */
-    public function getRevisionsOfRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null);
+    public function getRevisionsOfRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null): array|false;
 
     /**
      * @param                     $configTypeName
      * @param DataDimensions|null $dataDimensions
      *
-     * @return Config[]
+     * @return Config[]|false
      */
-    public function getRevisionsOfConfig($configTypeName, DataDimensions $dataDimensions = null);
+    public function getRevisionsOfConfig($configTypeName, DataDimensions $dataDimensions = null): array|false;
 }

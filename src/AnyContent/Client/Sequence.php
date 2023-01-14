@@ -88,10 +88,7 @@ class Sequence implements \Iterator, \Countable
         $this->position = 0;
     }
 
-    /**
-     * @return Sequence
-     */
-    public function current(): mixed
+    public function current(): SequenceItem
     {
         $item = new SequenceItem($this->dataTypeDefinition, $this->property, $this->items[$this->position]['type']);
         $item->setProperties($this->items[$this->position]['properties']);

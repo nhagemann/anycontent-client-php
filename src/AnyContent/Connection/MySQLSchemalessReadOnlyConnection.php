@@ -606,7 +606,7 @@ TEMPLATE_CONFIGTABLE;
         return $t;
     }
 
-    public function getRevisionsOfRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null)
+    public function getRevisionsOfRecord($recordId, $contentTypeName = null, DataDimensions $dataDimensions = null): array|false
     {
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
@@ -635,7 +635,7 @@ TEMPLATE_CONFIGTABLE;
         return false;
     }
 
-    public function getRevisionsOfConfig($configTypeName, DataDimensions $dataDimensions = null)
+    public function getRevisionsOfConfig($configTypeName, DataDimensions $dataDimensions = null): array|false
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();

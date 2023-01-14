@@ -67,12 +67,8 @@ class PropertyFilter implements Filter
 
     /**
      * http://stackoverflow.com/questions/4955433/php-multiple-delimiters-in-explode
-     *
-     * @param $query
-     *
-     * @return bool
      */
-    protected function parseTerm($query)
+    protected function parseTerm($query): array|false
     {
         $query = $this->escape($query);
 

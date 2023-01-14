@@ -114,8 +114,9 @@ class Record extends AbstractRecord implements \JsonSerializable
         return $this->dataTypeDefinition->getName();
     }
 
-    public function getContentTypeDefinition(): ?ContentTypeDefinition
+    public function getContentTypeDefinition(): ContentTypeDefinition
     {
+        assert($this->dataTypeDefinition instanceof ContentTypeDefinition);
         return $this->dataTypeDefinition;
     }
 

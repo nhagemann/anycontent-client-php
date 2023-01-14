@@ -216,12 +216,7 @@ class CachingRepository extends Repository
         }
     }
 
-    /**
-     * @param $recordId
-     *
-     * @return Record
-     */
-    public function getRecord(?int $recordId, $dataDimensions = null)
+    public function getRecord(?int $recordId, $dataDimensions = null): Record|false
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();

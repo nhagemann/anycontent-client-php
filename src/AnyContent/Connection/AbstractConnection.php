@@ -195,14 +195,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return 'AnyContent\Client\Config';
     }
 
-    /**
-     * @param $contentTypeName
-     *
-     * @return \CMDL\ConfigTypeDefinition|ContentTypeDefinition|\CMDL\DataTypeDefinition|null
-     * @throws AnyContentClientException
-     * @throws \CMDL\CMDLParserException
-     */
-    public function getContentTypeDefinition($contentTypeName)
+    public function getContentTypeDefinition(string $contentTypeName): ContentTypeDefinition
     {
         if ($this->getConfiguration()->hasContentType($contentTypeName)) {
             $cacheKey = '[cmdl][content][' . $contentTypeName . ']';
@@ -239,14 +232,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
         throw new AnyContentClientException('Unknown content type ' . $contentTypeName);
     }
 
-    /**
-     * @param $configTypeName
-     *
-     * @return \CMDL\ConfigTypeDefinition|ContentTypeDefinition|\CMDL\DataTypeDefinition|null
-     * @throws AnyContentClientException
-     * @throws \CMDL\CMDLParserException
-     */
-    public function getConfigTypeDefinition($configTypeName)
+    public function getConfigTypeDefinition(string $configTypeName): ConfigTypeDefinition
     {
         if ($this->getConfiguration()->hasConfigType($configTypeName)) {
             $cacheKey = '[cmdl][config][' . $configTypeName . ']';
@@ -335,7 +321,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
      * @return ContentTypeDefinition[]
      * @throws AnyContentClientException
      */
-    public function getContentTypeDefinitions()
+    public function getContentTypeDefinitions(): array
     {
         $contentTypes = [];
         foreach ($this->getConfiguration()->getContentTypeNames() as $contentTypeName) {
