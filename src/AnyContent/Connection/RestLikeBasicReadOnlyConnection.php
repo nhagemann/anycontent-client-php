@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Connection;
 
 use AnyContent\AnyContentClientException;
@@ -275,7 +277,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
      *
      * @return Record
      */
-    public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
+    public function getRecord(int|string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
     {
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();

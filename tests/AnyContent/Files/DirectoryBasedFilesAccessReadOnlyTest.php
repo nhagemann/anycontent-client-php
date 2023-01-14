@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\AnyContent\Connection;
 
 use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;

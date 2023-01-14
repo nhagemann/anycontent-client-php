@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Connection\Interfaces;
 
 use AnyContent\Client\Config;

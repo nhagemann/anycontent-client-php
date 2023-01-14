@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Cache;
 
 use AnyContent\Client\Config;
@@ -219,7 +221,7 @@ class CachingRepository extends Repository
      *
      * @return Record
      */
-    public function getRecord(?string $recordId, $dataDimensions = null)
+    public function getRecord(?int $recordId, $dataDimensions = null)
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();

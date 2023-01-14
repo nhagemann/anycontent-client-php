@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Client;
 
 class Table implements \Iterator, \Countable

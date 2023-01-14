@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\AnyContent\Admin;
 
 use AnyContent\Client\Repository;

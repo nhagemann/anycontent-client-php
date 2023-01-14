@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Connection\Interfaces;
 
 interface AdminConnection extends WriteConnection

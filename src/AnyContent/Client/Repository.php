@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Client;
 
 use AnyContent\AnyContentClientException;
@@ -408,7 +410,7 @@ class Repository implements FileManager, \JsonSerializable
      *
      * @return Record
      */
-    public function getRecord(?string $recordId, $dataDimensions = null)
+    public function getRecord(?int $recordId, $dataDimensions = null)
     {
         if ($recordId === null) {
             return false;

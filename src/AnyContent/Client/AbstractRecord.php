@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Client;
 
 use AnyContent\AnyContentClientException;
@@ -117,7 +119,7 @@ abstract class AbstractRecord
     {
         $properties = $this->getProperties();
         ksort($properties);
-        return md5(json_encode($properties, true));
+        return md5(json_encode($properties));
     }
 
     public function reduceProperties($viewName)

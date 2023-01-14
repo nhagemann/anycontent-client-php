@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\AnyContent\Connection\RecordsFile;
 
 use AnyContent\Client\Record;

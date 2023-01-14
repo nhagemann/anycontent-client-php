@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Connection\Interfaces;
 
 use AnyContent\Client\Config;
@@ -116,7 +118,7 @@ interface ReadOnlyConnection
      *
      * @return Record
      */
-    public function getRecord(string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null);
+    public function getRecord(int|string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null);
 
     public function getRecordClassForContentType($contentTypeName);
 

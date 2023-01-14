@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\AnyContent\Client;
 
 use AnyContent\Client\Config;
@@ -10,7 +12,7 @@ use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
-class RepositoryRecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCase
+class RecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCase
 {
     /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;

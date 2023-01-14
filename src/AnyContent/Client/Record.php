@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AnyContent\Client;
 
 use CMDL\ContentTypeDefinition;
@@ -29,7 +31,7 @@ class Record extends AbstractRecord implements \JsonSerializable
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(mixed $id)
     {
         $this->id = $id;
 
