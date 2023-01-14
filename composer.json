@@ -46,8 +46,8 @@
     "phpmd": "vendor/bin/phpmd src ansi phpmd.xml"
   },
   "autoload": {
-    "psr-0": {
-      "AnyContent": "src/"
+    "psr-4": {
+      "": "src/"
     }
   },
   "autoload-dev": {
