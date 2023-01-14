@@ -1,10 +1,13 @@
 <?php
 
-namespace AnyContent\Filter;
+namespace Tests\AnyContent\Filter;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
+use AnyContent\Filter\ANDFilter;
+use AnyContent\Filter\ORFilter;
+use AnyContent\Filter\PropertyFilter;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;

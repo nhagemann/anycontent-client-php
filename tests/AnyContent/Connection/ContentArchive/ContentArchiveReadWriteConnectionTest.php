@@ -1,9 +1,10 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace Tests\AnyContent\Connection\ContentArchive;
 
 use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLogger;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
@@ -16,8 +17,8 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
-        $source = __DIR__ . '/../../resources/ContentArchiveExample1';
+        $target = __DIR__ . '/../../../../../tmp/ExampleContentArchive';
+        $source = __DIR__ . '/../../../resources/ContentArchiveExample1';
 
         $fs = new Filesystem();
 
@@ -30,7 +31,7 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
     public function setUp(): void
     {
-        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
+        $target = __DIR__ . '/../../../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();
 
@@ -40,7 +41,7 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testSaveRecordSameConnection()

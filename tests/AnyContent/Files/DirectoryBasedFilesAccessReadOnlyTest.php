@@ -1,6 +1,6 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace Tests\AnyContent\Connection;
 
 use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
 use KVMLogger\KVMLoggerFactory;

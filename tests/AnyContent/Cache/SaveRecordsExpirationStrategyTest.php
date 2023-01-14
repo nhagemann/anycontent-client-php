@@ -1,7 +1,8 @@
 <?php
 
-namespace AnyContent\Cache;
+namespace Tests\AnyContent\Cache;
 
+use AnyContent\Cache\CachingRepository;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordsFileReadWriteConnection;

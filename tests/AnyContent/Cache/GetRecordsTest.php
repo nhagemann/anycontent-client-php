@@ -1,7 +1,8 @@
 <?php
 
-namespace AnyContent\Cache;
+namespace Tests\AnyContent\Cache;
 
+use AnyContent\Cache\CachingRepository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;

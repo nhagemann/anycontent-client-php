@@ -1,6 +1,6 @@
 <?php
 
-namespace AnyContent\Client;
+namespace Tests\AnyContent\Client;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;

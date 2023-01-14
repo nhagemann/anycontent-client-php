@@ -1,8 +1,9 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace Tests\AnyContent\Connection\ContentArchive;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -14,8 +15,8 @@ class ContentArchiveViewsTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
-        $source = __DIR__ . '/../../resources/ContentArchiveExample1';
+        $target = __DIR__ . '/../../../../../tmp/ExampleContentArchive';
+        $source = __DIR__ . '/../../../resources/ContentArchiveExample1';
 
         $fs = new Filesystem();
 
@@ -28,7 +29,7 @@ class ContentArchiveViewsTest extends TestCase
 
     public function setUp(): void
     {
-        $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
+        $target = __DIR__ . '/../../../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();
 
@@ -38,7 +39,7 @@ class ContentArchiveViewsTest extends TestCase
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testDefinition()

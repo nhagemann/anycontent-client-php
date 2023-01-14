@@ -4,3 +4,4 @@ parameters:
         - 'src/AnyContent/Connection/RecordsFileHTTPReadOnlyConnection.php'
         - 'src/AnyContent/Connection/RestLikeBasicReadOnlyConnection.php'
         - 'src/AnyContent/Connection/RestLikeBasicReadWriteConnection.php'
+        - 'src/AnyContent/Connection/FileManager/RestLikeFilesAccess.php'

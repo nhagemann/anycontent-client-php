@@ -1,6 +1,6 @@
 <?php
 
-namespace AnyContent\Files;
+namespace Tests\AnyContent\Files;
 
 use AnyContent\Client\File;
 use AnyContent\Connection\FileManager\S3FilesAccess;

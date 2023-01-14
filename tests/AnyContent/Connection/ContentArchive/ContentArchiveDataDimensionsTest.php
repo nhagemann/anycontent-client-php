@@ -1,9 +1,10 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace Tests\AnyContent\Connection\ContentArchive;
 
 use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -15,8 +16,8 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $target = __DIR__ . '/../../../tmp/TestContentArchive';
-        $source = __DIR__ . '/../../resources/ContentArchiveExample1';
+        $target = __DIR__ . '/../../../../../tmp/TestContentArchive';
+        $source = __DIR__ . '/../../../resources/ContentArchiveExample1';
 
         $fs = new Filesystem();
 
@@ -29,17 +30,17 @@ class ContentArchiveDataDimensionsTest extends TestCase
 
     public static function tearDownAfterClass(): void
     {
-        $target = __DIR__ . '/../../../tmp/TestContentArchive';
+        $target = __DIR__ . '/../../../../../tmp/TestContentArchive';
 
         $fs = new Filesystem();
         $fs->remove($target);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function setUp(): void
     {
-        $target = __DIR__ . '/../../../tmp/TestContentArchive';
+        $target = __DIR__ . '/../../../../../tmp/TestContentArchive';
 
         $configuration = new ContentArchiveConfiguration();
 

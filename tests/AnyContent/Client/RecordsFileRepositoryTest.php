@@ -1,7 +1,8 @@
 <?php
 
-namespace AnyContent\Client;
+namespace Tests\AnyContent\Client;
 
+use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordFilesReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;

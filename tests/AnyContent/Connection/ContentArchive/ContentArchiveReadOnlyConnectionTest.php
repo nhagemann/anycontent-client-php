@@ -1,12 +1,13 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace Tests\AnyContent\Connection\ContentArchive;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\ContentArchiveReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
-class ContentArchiveConnectionTest extends TestCase
+class ContentArchiveReadOnlyConnectionTest extends TestCase
 {
     /** @var  ContentArchiveReadOnlyConnection */
     public $connection;
@@ -15,13 +16,13 @@ class ContentArchiveConnectionTest extends TestCase
     {
         $configuration = new ContentArchiveConfiguration();
 
-        $configuration->setContentArchiveFolder(__DIR__ . '/../../resources/ContentArchiveExample1');
+        $configuration->setContentArchiveFolder(__DIR__ . '/../../../resources/ContentArchiveExample1');
 
         $connection = $configuration->createReadOnlyConnection();
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testContentTypeNotSelected()

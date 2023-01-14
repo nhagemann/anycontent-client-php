@@ -1,7 +1,8 @@
 <?php
 
-namespace AnyContent\Client;
+namespace Tests\AnyContent\Client;
 
+use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
@@ -14,7 +15,8 @@ class LanguagesAndWorkspacesTest extends TestCase
      */
     public $connection;
 
-    /** @var  Repository */
+    /** @var  Repository
+     */
     public $repository;
 
     public static function setUpBeforeClass(): void

@@ -1,8 +1,9 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace Tests\AnyContent\Connection;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
+use AnyContent\Connection\RecordsFileReadOnlyConnection;
 use KVMLogger\KVMLogger;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;

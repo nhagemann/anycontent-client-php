@@ -1,9 +1,10 @@
 <?php
 
-namespace AnyContent\Connection;
+namespace Tests\AnyContent\Connection;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
+use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLogger;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;

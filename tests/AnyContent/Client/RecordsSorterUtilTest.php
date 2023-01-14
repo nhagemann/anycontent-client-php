@@ -1,7 +1,10 @@
 <?php
 
-namespace AnyContent\Client;
+namespace Tests\AnyContent\Client;
 
+use AnyContent\Client\RecordFactory;
+use AnyContent\Client\Repository;
+use AnyContent\Client\UserInfo;
 use AnyContent\Client\Util\RecordsSorter;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;

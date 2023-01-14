@@ -1,6 +1,6 @@
 <?php
 
-namespace AnyContent\Admin;
+namespace Tests\AnyContent\Admin;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
