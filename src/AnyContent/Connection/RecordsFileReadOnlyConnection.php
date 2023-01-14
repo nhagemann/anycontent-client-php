@@ -18,11 +18,11 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
     public function getCMDLForContentType($contentTypeName)
     {
         // RecordsFileReadOnlyConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         $fileName = $this->getConfiguration()->getUriCMDLForContentType($contentTypeName);
@@ -33,11 +33,11 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
     public function getCMDLForConfigType($configTypeName)
     {
         // RecordsFileReadOnlyConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         $fileName = $this->getConfiguration()->getUriCMDLForConfigType($configTypeName);
@@ -71,11 +71,11 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         }
 
         // RecordsFileReadOnlyConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         if ($this->getConfiguration()->hasContentType($contentTypeName)) {
@@ -103,11 +103,11 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
     protected function getAllMultiViewRecords($contentTypeName, DataDimensions $dataDimensions)
     {
         // RecordsFileReadOnlyConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         $data = $this->readRecords($this->getConfiguration()->getUriRecords($contentTypeName));
@@ -207,11 +207,11 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         $definition = $this->getConfigTypeDefinition($configTypeName);
 
         // RecordsFileReadOnlyConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         $data = $this->readConfig($this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions));
@@ -294,11 +294,11 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         $t = 0;
 
         // RecordsFileReadOnlyConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         $configuration = $this->getConfiguration();
@@ -348,11 +348,11 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         $t = 0;
 
         // RecordsFileReadOnlyConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         $configuration = $this->getConfiguration();

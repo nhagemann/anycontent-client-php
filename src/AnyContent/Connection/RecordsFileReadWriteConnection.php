@@ -72,11 +72,11 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
             $data = json_encode(['records' => $allRecords], JSON_PRETTY_PRINT);
 
             // RecordsFileReadWriteConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-            assert (
+            assert(
                 $this->getConfiguration() instanceof RecordsFileConfiguration ||
                 $this->getConfiguration() instanceof RecordFilesConfiguration ||
                 $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-                $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+                $this->getConfiguration() instanceof RecordsFileHttpConfiguration
             );
 
             if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
@@ -132,11 +132,11 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
             $data = json_encode(['records' => $allRecords]);
 
             // RecordsFileReadWriteConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-            assert (
+            assert(
                 $this->getConfiguration() instanceof RecordsFileConfiguration ||
                 $this->getConfiguration() instanceof RecordFilesConfiguration ||
                 $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-                $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+                $this->getConfiguration() instanceof RecordsFileHttpConfiguration
             );
 
             if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
@@ -164,11 +164,11 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         $data = json_encode(['records' => [ ]]);
 
         // RecordsFileReadWriteConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
@@ -199,11 +199,11 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         $data = json_encode($mergedConfig, JSON_PRETTY_PRINT);
 
         // RecordsFileReadWriteConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
-        assert (
+        assert(
             $this->getConfiguration() instanceof RecordsFileConfiguration ||
             $this->getConfiguration() instanceof RecordFilesConfiguration ||
             $this->getConfiguration() instanceof ContentArchiveConfiguration ||
-            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            $this->getConfiguration() instanceof RecordsFileHttpConfiguration
         );
 
         if ($this->writeData($this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions), $data)) {
