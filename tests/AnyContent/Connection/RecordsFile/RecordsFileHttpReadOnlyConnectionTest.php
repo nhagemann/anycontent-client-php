@@ -1,28 +1,28 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\RecordsFile;
 
-use AnyContent\Connection\Configuration\RecordFilesConfiguration;
-use AnyContent\Connection\RecordFilesReadOnlyConnection;
+use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
+use AnyContent\Connection\RecordsFileHttpReadOnlyConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
-class RecordFilesReadOnlyConnectionTest extends TestCase
+class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 {
-    /** @var  RecordFilesReadOnlyConnection */
+    /** @var  RecordsFileHttpReadOnlyConnection */
     public $connection;
 
     public function setUp(): void
     {
-        $configuration = new RecordFilesConfiguration();
+        $configuration = new RecordsFileHttpConfiguration();
 
-        $configuration->addContentType('profiles', __DIR__ . '/../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../..//resources/RecordFilesExample/records/profiles');
+        $configuration->addContentType('profiles', 'https://s3-eu-west-1.amazonaws.com/backup01.contentbox.io/da08517dc866617a075c0c2d38c5fb95/profiles.default.default.json', 'https://s3-eu-west-1.amazonaws.com/backup01.contentbox.io/da08517dc866617a075c0c2d38c5fb95/profiles.cmdl');
 
         $connection = $configuration->createReadOnlyConnection();
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testContentTypeNotSelected()
@@ -60,7 +60,7 @@ class RecordFilesReadOnlyConnectionTest extends TestCase
 
         $connection->selectContentType('profiles');
 
-        $this->assertEquals(3, $connection->countRecords());
+        $this->assertEquals(608, $connection->countRecords());
     }
 
     public function testGetRecord()
@@ -69,11 +69,11 @@ class RecordFilesReadOnlyConnectionTest extends TestCase
 
         $connection->selectContentType('profiles');
 
-        $record = $connection->getRecord(5);
+        $record = $connection->getRecord(1);
 
         $this->assertInstanceOf('AnyContent\Client\Record', $record);
 
-        $this->assertEquals('dmc digital media center', $record->getProperty('name'));
+        $this->assertEquals('UDG United Digital Group', $record->getProperty('name'));
     }
 
     public function testGetRecords()
@@ -84,7 +84,7 @@ class RecordFilesReadOnlyConnectionTest extends TestCase
 
         $records = $connection->getAllRecords();
 
-        $this->assertCount(3, $records);
+        $this->assertCount(608, $records);
 
         foreach ($records as $record) {
             $id          = $record->getID();

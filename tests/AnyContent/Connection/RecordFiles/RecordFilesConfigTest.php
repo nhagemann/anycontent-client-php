@@ -1,54 +1,48 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\RecordFiles;
 
-use AnyContent\Client\Repository;
-use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
-use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
+use AnyContent\Connection\Configuration\RecordFilesConfiguration;
+use AnyContent\Connection\RecordFilesReadWriteConnection;
 use KVMLogger\KVMLogger;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
-class MySQLSchemalessConfigTest extends TestCase
+class RecordFilesConfigTest extends TestCase
 {
-    /** @var  MySQLSchemalessReadWriteConnection */
+    /** @var  RecordFilesReadWriteConnection */
     public $connection;
 
-    /**
-     * @throws \AnyContent\AnyContentClientException
-     */
     public static function setUpBeforeClass(): void
     {
-        // drop & create database
-        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
+        $source = __DIR__ . '/../../..//resources/RecordFilesExample';
+        $target = __DIR__ . '/../../../../../tmp/RecordFilesReadWriteConnection';
 
-        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
-        $pdo->exec('CREATE DATABASE phpunit');
+        $fs = new Filesystem();
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        if (file_exists($target)) {
+            $fs->remove($target);
+        }
+
+        $fs->mirror($source, $target);
     }
 
-    /**
-     * @throws \AnyContent\AnyContentClientException
-     */
     public function setUp(): void
     {
-        $configuration = new MySQLSchemalessConfiguration();
+        $target = __DIR__ . '/../../../../../tmp/RecordFilesReadWriteConnection';
 
-        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration = new RecordFilesConfiguration();
 
-        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
-        $configuration->setRepositoryName('phpunit');
-        $configuration->addContentTypes();
-        $configuration->addConfigTypes();
+        $configuration->addContentType('profiles', $target . '/profiles.cmdl', $target . '/records/profiles');
+        $configuration->addContentType('test', $target . '/test.cmdl', $target . '/records/test');
+        $configuration->addConfigType('config1', $target . '/config1.cmdl', $target . '/records/profiles/config1.json');
 
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
-        $repository       = new Repository('phpunit', $connection);
-        $this->assertEquals($repository, $this->connection->getRepository());
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testConfigSameConnection()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\MySQLSchemaless;
 
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
@@ -26,13 +26,13 @@ class MySQLSchemalessViewsTest extends TestCase
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
-        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setCMDLFolder(__DIR__ . '/../../../resources/ContentArchiveExample1/cmdl');
         $configuration->setRepositoryName('phpunit');
         $configuration->addContentTypes();
 
         $configuration->createReadWriteConnection();
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     /**
@@ -44,7 +44,7 @@ class MySQLSchemalessViewsTest extends TestCase
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
 
-        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setCMDLFolder(__DIR__ . '/../../../resources/ContentArchiveExample1/cmdl');
         $configuration->setRepositoryName('phpunit');
         $configuration->addContentTypes();
 
@@ -54,7 +54,7 @@ class MySQLSchemalessViewsTest extends TestCase
         $repository       = new Repository('phpunit', $connection);
         $this->assertEquals($repository, $this->connection->getRepository());
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testDefinition()

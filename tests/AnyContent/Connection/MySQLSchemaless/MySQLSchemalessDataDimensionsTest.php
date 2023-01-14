@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\MySQLSchemaless;
 
 use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
@@ -28,7 +28,7 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $configuration = new MySQLSchemalessConfiguration();
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
-        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setCMDLFolder(__DIR__ . '/../../../resources/ContentArchiveExample1/cmdl');
         $configuration->setRepositoryName('phpunit');
         $configuration->addContentTypes();
 
@@ -53,7 +53,7 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $record = $repository->createRecord('dmc digital media center', 5);
         $repository->saveRecord($record);
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     /**
@@ -65,7 +65,7 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
 
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
 
-        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setCMDLFolder(__DIR__ . '/../../../resources/ContentArchiveExample1/cmdl');
         $configuration->setRepositoryName('phpunit');
         $configuration->addContentTypes();
 
@@ -75,7 +75,7 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $repository       = new Repository('phpunit', $connection);
         $this->assertEquals($repository, $this->connection->getRepository());
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testSaveRecordSameConnection()

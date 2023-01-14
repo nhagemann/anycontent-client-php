@@ -1,32 +1,35 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\RecordsFile;
 
-use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
-use AnyContent\Connection\RecordsFileHttpReadOnlyConnection;
+use AnyContent\Connection\Configuration\RecordsFileConfiguration;
+use AnyContent\Connection\RecordsFileReadOnlyConnection;
+use KVMLogger\KVMLogger;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
-class RecordsFileHttpReadOnlyConnectionTest extends TestCase
+class RecordsFileReadOnlyConnectionTest extends TestCase
 {
-    /** @var  RecordsFileHttpReadOnlyConnection */
+    /** @var  RecordsFileReadOnlyConnection */
     public $connection;
 
     public function setUp(): void
     {
-        $configuration = new RecordsFileHttpConfiguration();
+        $configuration = new RecordsFileConfiguration();
 
-        $configuration->addContentType('profiles', 'https://s3-eu-west-1.amazonaws.com/backup01.contentbox.io/da08517dc866617a075c0c2d38c5fb95/profiles.default.default.json', 'https://s3-eu-west-1.amazonaws.com/backup01.contentbox.io/da08517dc866617a075c0c2d38c5fb95/profiles.cmdl');
+        $configuration->addContentType('profiles', __DIR__ . '/../../../resources/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../../resources/RecordsFileExample/profiles.json');
 
         $connection = $configuration->createReadOnlyConnection();
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testContentTypeNotSelected()
     {
+        KVMLogger::instance()->debug(__METHOD__);
+
         $connection = $this->connection;
 
         $this->expectException('AnyContent\AnyContentClientException');
@@ -35,6 +38,8 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 
     public function testContentTypeNames()
     {
+        KVMLogger::instance()->debug(__METHOD__);
+
         $connection = $this->connection;
 
         $contentTypeNames = $connection->getContentTypeNames();
@@ -44,6 +49,8 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 
     public function testContentTypeDefinitions()
     {
+        KVMLogger::instance()->debug(__METHOD__);
+
         $connection = $this->connection;
 
         $contentTypes = $connection->getContentTypeDefinitions();
@@ -56,6 +63,8 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 
     public function testCountRecords()
     {
+        KVMLogger::instance()->debug(__METHOD__);
+
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -65,6 +74,8 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 
     public function testGetRecord()
     {
+        KVMLogger::instance()->debug(__METHOD__);
+
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -78,6 +89,8 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
 
     public function testGetRecords()
     {
+        KVMLogger::instance()->debug(__METHOD__);
+
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -87,9 +100,9 @@ class RecordsFileHttpReadOnlyConnectionTest extends TestCase
         $this->assertCount(608, $records);
 
         foreach ($records as $record) {
-            $id          = $record->getID();
+            $id          = $record->getId();
             $fetchRecord = $connection->getRecord($id);
-            $this->assertEquals($id, $fetchRecord->getID());
+            $this->assertEquals($id, $fetchRecord->getId());
         }
     }
 

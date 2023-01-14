@@ -1,49 +1,61 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\MySQLSchemaless;
 
 use AnyContent\Client\Record;
-use AnyContent\Connection\Configuration\RecordFilesConfiguration;
-use AnyContent\Connection\RecordFilesReadWriteConnection;
+use AnyContent\Client\Repository;
+use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
+use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLogger;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
-class RecordFilesReadWriteConnectionTest extends TestCase
+class MySQLSchemalessReadWriteConnectionTest extends TestCase
 {
-    /** @var  RecordFilesReadWriteConnection
-     */
+    /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public static function setUpBeforeClass(): void
     {
-        $source = __DIR__ . '/../..//resources/RecordFilesExample';
-        $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
-        $fs = new Filesystem();
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
 
-        if (file_exists($target)) {
-            $fs->remove($target);
-        }
+        $configuration = new MySQLSchemalessConfiguration();
 
-        $fs->mirror($source, $target);
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+        $configuration->setCMDLFolder(__DIR__ . '/../../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public function setUp(): void
     {
-        $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
+        $configuration = new MySQLSchemalessConfiguration();
 
-        $configuration = new RecordFilesConfiguration();
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
 
-        $configuration->addContentType('profiles', $target . '/profiles.cmdl', $target . '/records/profiles');
-        $configuration->addContentType('test', $target . '/test.cmdl', $target . '/records/test');
+        $configuration->setCMDLFolder(__DIR__ . '/../../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
 
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
+        $repository       = new Repository('phpunit', $connection);
+        $this->assertEquals($repository, $this->connection->getRepository());
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testSaveRecordSameConnection()
@@ -52,17 +64,18 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $connection->selectContentType('profiles');
 
-        $record = $connection->getRecord(5);
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'Agency 5');
+        $record->setId(5);
 
-        $this->assertEquals('dmc digital media center', $record->getProperty('name'));
+        $this->assertEquals('Agency 5', $record->getProperty('name'));
 
-        $record->setProperty('name', 'dmc');
+        $record->setProperty('name', 'Agency 51');
 
         $connection->saveRecord($record);
 
         $record = $connection->getRecord(5);
 
-        $this->assertEquals('dmc', $record->getProperty('name'));
+        $this->assertEquals('Agency 51', $record->getProperty('name'));
     }
 
     public function testSaveRecordNewConnection()
@@ -73,7 +86,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $record = $connection->getRecord(5);
 
-        $this->assertEquals('dmc', $record->getProperty('name'));
+        $this->assertEquals('Agency 51', $record->getProperty('name'));
     }
 
     public function testAddRecord()
@@ -86,8 +99,8 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $id = $connection->saveRecord($record);
 
-        $this->assertEquals(17, $record->getID());
-        $this->assertEquals(17, $id);
+        $this->assertEquals(6, $record->getID());
+        $this->assertEquals(6, $id);
     }
 
     public function testSaveRecordsSameConnection()
@@ -96,9 +109,9 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $connection->selectContentType('profiles');
 
-        $this->assertEquals(4, $connection->countRecords());
+        $this->assertEquals(2, $connection->countRecords());
 
-        $records = [ ];
+        $records = [];
 
         for ($i = 1; $i <= 5; $i++) {
             $record    = new Record($connection->getCurrentContentTypeDefinition(), 'Test ' . $i);
@@ -107,7 +120,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $connection->saveRecords($records);
 
-        $this->assertEquals(9, $connection->countRecords());
+        $this->assertEquals(7, $connection->countRecords());
     }
 
     public function testSaveRecordsNewConnection()
@@ -116,7 +129,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $connection->selectContentType('profiles');
 
-        $this->assertEquals(9, $connection->countRecords());
+        $this->assertEquals(7, $connection->countRecords());
     }
 
     public function testDeleteRecord()
@@ -128,12 +141,12 @@ class RecordFilesReadWriteConnectionTest extends TestCase
         $result = $connection->deleteRecord(5);
 
         $this->assertEquals(5, $result);
-        $this->assertEquals(8, $connection->countRecords());
+        $this->assertEquals(6, $connection->countRecords());
 
         $result = $connection->deleteRecord(999);
 
         $this->assertEquals(false, $result);
-        $this->assertEquals(8, $connection->countRecords());
+        $this->assertEquals(6, $connection->countRecords());
     }
 
     public function testDeleteRecordNewConnection()
@@ -142,7 +155,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $connection->selectContentType('profiles');
 
-        $this->assertEquals(8, $connection->countRecords());
+        $this->assertEquals(6, $connection->countRecords());
     }
 
     public function testDeleteRecords()
@@ -154,7 +167,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
         $result = $connection->deleteRecords([6, 999]);
 
         $this->assertCount(1, $result);
-        $this->assertEquals(7, $connection->countRecords());
+        $this->assertEquals(5, $connection->countRecords());
     }
 
     public function testDeleteRecordsNewConnection()
@@ -163,7 +176,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $connection->selectContentType('profiles');
 
-        $this->assertEquals(7, $connection->countRecords());
+        $this->assertEquals(5, $connection->countRecords());
     }
 
     public function testDeleteAllRecords()
@@ -174,7 +187,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $result = $connection->deleteAllRecords();
 
-        $this->assertCount(7, $result);
+        $this->assertCount(5, $result);
         $this->assertEquals(0, $connection->countRecords());
     }
 
@@ -214,10 +227,6 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $connection = $this->connection;
 
-        if (!$connection) {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
-
         $connection->selectContentType('profiles');
 
         $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
@@ -237,6 +246,34 @@ class RecordFilesReadWriteConnectionTest extends TestCase
         $record = $connection->getRecord($id);
 
         $this->assertEquals('A', $record->getProperty('claim'));
+    }
+
+    public function testRevisionCounting()
+    {
+        KVMLogger::instance()->debug(__METHOD__);
+
+        $connection = $this->connection;
+
+        $connection->selectContentType('profiles');
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+
+        $record->setProperty('claim', 'A');
+        $id = $connection->saveRecord($record);
+
+        $record = $connection->getRecord($id);
+        $this->assertEquals(1, $record->getRevision());
+
+        $connection->deleteRecord($id);
+
+        $record = new Record($connection->getCurrentContentTypeDefinition(), 'test');
+
+        $record->setProperty('claim', 'A');
+        $record->setId($id);
+        $connection->saveRecord($record);
+
+        $record = $connection->getRecord($id);
+        $this->assertEquals(3, $record->getRevision());
     }
 
     public function testPartialUpdateRecord()
@@ -266,7 +303,7 @@ class RecordFilesReadWriteConnectionTest extends TestCase
 
         $record = $connection->getRecord($id);
         $properties = $record->getProperties();
-        $this->assertCount(3, $properties);
+        $this->assertCount(47, $properties);
 
         $this->assertEquals('https://www.facebook.com', $record->getProperty('facebook'));
         $record->setProperty('twitter', 'https://www.twitter.com');

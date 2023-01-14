@@ -1,23 +1,23 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\RecordsFile;
 
-use AnyContent\Connection\Configuration\RecordFilesConfiguration;
-use AnyContent\Connection\RecordFilesReadWriteConnection;
+use AnyContent\Connection\Configuration\RecordsFileConfiguration;
+use AnyContent\Connection\RecordsFileReadWriteConnection;
 use KVMLogger\KVMLogger;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class RecordFilesConfigTest extends TestCase
+class RecordsFileConfigTest extends TestCase
 {
-    /** @var  RecordFilesReadWriteConnection */
+    /** @var  RecordsFileReadWriteConnection */
     public $connection;
 
     public static function setUpBeforeClass(): void
     {
-        $source = __DIR__ . '/../..//resources/RecordFilesExample';
-        $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
+        $target = __DIR__ . '/../../../../../tmp/RecordsFileExample';
+        $source = __DIR__ . '/../../../resources/RecordsFileExample';
 
         $fs = new Filesystem();
 
@@ -26,23 +26,21 @@ class RecordFilesConfigTest extends TestCase
         }
 
         $fs->mirror($source, $target);
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function setUp(): void
     {
-        $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
+        $configuration = new RecordsFileConfiguration();
 
-        $configuration = new RecordFilesConfiguration();
-
-        $configuration->addContentType('profiles', $target . '/profiles.cmdl', $target . '/records/profiles');
-        $configuration->addContentType('test', $target . '/test.cmdl', $target . '/records/test');
-        $configuration->addConfigType('config1', $target . '/config1.cmdl', $target . '/records/profiles/config1.json');
+        $configuration->addContentType('profiles', __DIR__ . '/../../../../../tmp/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../../../../tmp/RecordsFileExample/profiles.json');
+        $configuration->addContentType('test', __DIR__ . '/../../../../../tmp/RecordsFileExample/test.cmdl', __DIR__ . '/../../../../../tmp/RecordsFileExample/test.json');
+        $configuration->addConfigType('config1', __DIR__ . '/../../../../../tmp/RecordsFileExample/config1.cmdl', __DIR__ . '/../../../../../tmp/RecordsFileExample/config1.json');
 
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testConfigSameConnection()

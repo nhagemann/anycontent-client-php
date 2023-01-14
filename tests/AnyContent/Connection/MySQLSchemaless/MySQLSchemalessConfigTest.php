@@ -1,46 +1,54 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\MySQLSchemaless;
 
-use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-use AnyContent\Connection\RecordsFileReadWriteConnection;
+use AnyContent\Client\Repository;
+use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
+use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
 use KVMLogger\KVMLogger;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
-class RecordsFileConfigTest extends TestCase
+class MySQLSchemalessConfigTest extends TestCase
 {
-    /** @var  RecordsFileReadWriteConnection */
+    /** @var  MySQLSchemalessReadWriteConnection */
     public $connection;
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public static function setUpBeforeClass(): void
     {
-        $target = __DIR__ . '/../../../tmp/RecordsFileExample';
-        $source = __DIR__ . '/../../resources/RecordsFileExample';
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
 
-        $fs = new Filesystem();
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
 
-        if (file_exists($target)) {
-            $fs->remove($target);
-        }
-
-        $fs->mirror($source, $target);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
+    /**
+     * @throws \AnyContent\AnyContentClientException
+     */
     public function setUp(): void
     {
-        $configuration = new RecordsFileConfiguration();
+        $configuration = new MySQLSchemalessConfiguration();
 
-        $configuration->addContentType('profiles', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.json');
-        $configuration->addContentType('test', __DIR__ . '/../../../tmp/RecordsFileExample/test.cmdl', __DIR__ . '/../../../tmp/RecordsFileExample/test.json');
-        $configuration->addConfigType('config1', __DIR__ . '/../../../tmp/RecordsFileExample/config1.cmdl', __DIR__ . '/../../../tmp/RecordsFileExample/config1.json');
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+
+        $configuration->setCMDLFolder(__DIR__ . '/../../../resources/ContentArchiveExample1/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
+        $configuration->addConfigTypes();
 
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
+        $repository       = new Repository('phpunit', $connection);
+        $this->assertEquals($repository, $this->connection->getRepository());
+
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testConfigSameConnection()

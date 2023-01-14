@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\RecordsFile;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordsFileReadWriteConnection;
@@ -15,8 +15,8 @@ class RecordsFileViewsTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $target = __DIR__ . '/../../../tmp/RecordsFileExample';
-        $source = __DIR__ . '/../../resources/RecordsFileExample';
+        $target = __DIR__ . '/../../../../../tmp/RecordsFileExample';
+        $source = __DIR__ . '/../../../resources/RecordsFileExample';
 
         $fs = new Filesystem();
 
@@ -31,14 +31,14 @@ class RecordsFileViewsTest extends TestCase
     {
         $configuration = new RecordsFileConfiguration();
 
-        $configuration->addContentType('profiles', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../../tmp/RecordsFileExample/profiles.json');
-        $configuration->addContentType('test', __DIR__ . '/../../../tmp/RecordsFileExample/test.cmdl', __DIR__ . '/../../../tmp/RecordsFileExample/test.json');
+        $configuration->addContentType('profiles', __DIR__ . '/../../../../../tmp/RecordsFileExample/profiles.cmdl', __DIR__ . '/../../../../../tmp/RecordsFileExample/profiles.json');
+        $configuration->addContentType('test', __DIR__ . '/../../../../../tmp/RecordsFileExample/test.cmdl', __DIR__ . '/../../../../../tmp/RecordsFileExample/test.json');
 
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testDefinition()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Connection\RecordFiles;
 
 use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\RecordFilesReadWriteConnection;
@@ -15,8 +15,8 @@ class RecordFilesViewsTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $source = __DIR__ . '/../..//resources/RecordFilesExample';
-        $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
+        $source = __DIR__ . '/../../..//resources/RecordFilesExample';
+        $target = __DIR__ . '/../../../../../tmp/RecordFilesReadWriteConnection';
 
         $fs = new Filesystem();
 
@@ -29,7 +29,7 @@ class RecordFilesViewsTest extends TestCase
 
     public function setUp(): void
     {
-        $target = __DIR__ . '/../../../tmp/RecordFilesReadWriteConnection';
+        $target = __DIR__ . '/../../../../../tmp/RecordFilesReadWriteConnection';
 
         $configuration = new RecordFilesConfiguration();
 
@@ -40,7 +40,7 @@ class RecordFilesViewsTest extends TestCase
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testDefinition()

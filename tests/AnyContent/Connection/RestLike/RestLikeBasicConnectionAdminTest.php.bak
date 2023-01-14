@@ -32,13 +32,13 @@ class RestLikeBasicConnectionAdminTest extends TestCase
         $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
         $configuration->setRepositoryName('phpunit');
 
-        $configuration->importCMDL(__DIR__ . '/../../resources/RestLikeBasicConnectionTests');
+        $configuration->importCMDL(__DIR__ . '/../../../resources/RestLikeBasicConnectionTests');
 
         $configuration->addContentTypes();
 
         $connection = $configuration->createReadWriteConnection();
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
 
@@ -55,7 +55,7 @@ class RestLikeBasicConnectionAdminTest extends TestCase
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
 
