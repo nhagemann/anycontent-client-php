@@ -264,19 +264,9 @@ class CachingRepository extends Repository
     }
 
     /**
-     *
      * @return Record[]
      */
-
-    /**
-     * @param string|Filter $filter
-     * @param int $page
-     * @param null $count
-     * @param string|array $order
-     *
-     * @return Record[]
-     */
-    public function getRecords($filter = '', $order = ['.id'], $page = 1, $count = null, $dataDimensions = null)
+    public function getRecords($filter = '', $order = ['.id'], int $page = 1, ?int $count = null, $dataDimensions = null): array
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();

@@ -21,38 +21,26 @@ use KVMLogger\KVMLogger;
 
 class Repository implements FileManager, \JsonSerializable
 {
-    /** @var  ReadOnlyConnection */
-    protected $readConnection;
+    protected ReadOnlyConnection $readConnection;
 
-    /** @var WriteConnection */
-    protected $writeConnection;
+    protected ?WriteConnection $writeConnection = null;
 
-    /** @var  FileManager */
-    protected $fileManager;
+    protected ?FileManager $fileManager = null;
 
-    /** @var DataDimensions */
-    protected $dataDimensions;
+    protected DataDimensions $dataDimensions;
 
-    /** @var  UserInfo */
-    protected $userInfo;
+    protected UserInfo $userInfo;
 
-    /**
-     * @var string identifier
-     */
-    protected $name;
+    /** identifier */
+    protected string $name;
 
-    /**
-     * @var string human readable title
-     */
-    protected $title;
+    /** human readable title */
+    protected string $title;
 
-    /**
-     * @var string url of repository
-     */
-    protected $publicUrl = null;
+    /** url of repository */
+    protected ?string $publicUrl = null;
 
-    /** @var  RecordFactory */
-    protected $recordFactory;
+    protected RecordFactory $recordFactory;
 
     public function __construct(
         $name,
@@ -358,7 +346,7 @@ class Repository implements FileManager, \JsonSerializable
 
     public function getCurrentDataDimensions($decoupled = false)
     {
-        if (!$this->dataDimensions) {
+        if (!isset($this->dataDimensions)) {
             $this->reset();
         }
 
@@ -374,7 +362,7 @@ class Repository implements FileManager, \JsonSerializable
      */
     public function getRecordFactory()
     {
-        if (!$this->recordFactory) {
+        if (!isset($this->recordFactory)) {
             $this->recordFactory = new RecordFactory(['validateProperties' => false]);
         }
 
@@ -429,14 +417,9 @@ class Repository implements FileManager, \JsonSerializable
      */
 
     /**
-     * @param string|Filter $filter
-     * @param int           $page
-     * @param null          $count
-     * @param string|array  $order
-     *
      * @return Record[]
      */
-    public function getRecords($filter = '', $order = ['.id'], $page = 1, $count = null, $dataDimensions = null)
+    public function getRecords($filter = '', $order = ['.id'], int $page = 1, ?int $count = null, $dataDimensions = null): array
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
