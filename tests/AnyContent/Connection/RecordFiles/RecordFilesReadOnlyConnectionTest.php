@@ -20,6 +20,8 @@ class RecordFilesReadOnlyConnectionTest extends TestCase
 
         $connection = $configuration->createReadOnlyConnection();
 
+        $this->assertInstanceOf(RecordFilesReadOnlyConnection::class,$connection);
+
         $this->connection = $connection;
 
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');

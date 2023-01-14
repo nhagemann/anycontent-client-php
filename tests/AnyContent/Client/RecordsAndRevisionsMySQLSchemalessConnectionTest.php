@@ -2,6 +2,8 @@
 
 namespace Tests\AnyContent\Client;
 
+use AnyContent\Client\Config;
+use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;

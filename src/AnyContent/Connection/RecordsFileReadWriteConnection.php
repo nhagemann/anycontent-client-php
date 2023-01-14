@@ -6,6 +6,10 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
+use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\Configuration\RecordFilesConfiguration;
+use AnyContent\Connection\Configuration\RecordsFileConfiguration;
+use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
 use AnyContent\Connection\Interfaces\WriteConnection;
 
 class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection implements WriteConnection
@@ -67,6 +71,14 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
 
             $data = json_encode(['records' => $allRecords], JSON_PRETTY_PRINT);
 
+            // RecordsFileReadWriteConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
+            assert (
+                $this->getConfiguration() instanceof RecordsFileConfiguration ||
+                $this->getConfiguration() instanceof RecordFilesConfiguration ||
+                $this->getConfiguration() instanceof ContentArchiveConfiguration ||
+                $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            );
+
             if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
                 $this->stashAllRecords($allRecords, $dataDimensions);
 
@@ -119,6 +131,14 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         if (count($result) > 0) {
             $data = json_encode(['records' => $allRecords]);
 
+            // RecordsFileReadWriteConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
+            assert (
+                $this->getConfiguration() instanceof RecordsFileConfiguration ||
+                $this->getConfiguration() instanceof RecordFilesConfiguration ||
+                $this->getConfiguration() instanceof ContentArchiveConfiguration ||
+                $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+            );
+
             if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
                 $this->stashAllRecords($allRecords, $dataDimensions);
 
@@ -142,6 +162,14 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         $allRecords = $this->getAllRecords($contentTypeName, $dataDimensions);
 
         $data = json_encode(['records' => [ ]]);
+
+        // RecordsFileReadWriteConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
+        assert (
+            $this->getConfiguration() instanceof RecordsFileConfiguration ||
+            $this->getConfiguration() instanceof RecordFilesConfiguration ||
+            $this->getConfiguration() instanceof ContentArchiveConfiguration ||
+            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+        );
 
         if ($this->writeData($this->getConfiguration()->getUriRecords($contentTypeName), $data)) {
             $this->unstashAllRecords($contentTypeName, $dataDimensions, $this->getRecordClassForContentType($this->getCurrentContentTypeName()));
@@ -169,6 +197,14 @@ class RecordsFileReadWriteConnection extends RecordsFileReadOnlyConnection imple
         $config->setLastChangeUserInfo($this->userInfo);
 
         $data = json_encode($mergedConfig, JSON_PRETTY_PRINT);
+
+        // RecordsFileReadWriteConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
+        assert (
+            $this->getConfiguration() instanceof RecordsFileConfiguration ||
+            $this->getConfiguration() instanceof RecordFilesConfiguration ||
+            $this->getConfiguration() instanceof ContentArchiveConfiguration ||
+            $this->getConfiguration()instanceOf RecordsFileHttpConfiguration
+        );
 
         if ($this->writeData($this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions), $data)) {
             return true;

@@ -13,7 +13,10 @@ RUN docker-php-ext-install pdo_mysql gd intl
 
 RUN docker-php-ext-configure gd
 
-RUN apt-get install zip unzip
+RUN apt-get install -y zip unzip
+
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
