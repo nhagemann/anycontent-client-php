@@ -6,6 +6,8 @@ use AnyContent\AnyContentClientException;
 use AnyContent\Client\Config;
 use AnyContent\Client\DataDimensions;
 use AnyContent\Client\Record;
+use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\Interfaces\WriteConnection;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -35,6 +37,8 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
 
         $toBeSavedRecord->setLastChangeUserInfo($this->userInfo);
         $record->setLastChangeUserInfo($this->userInfo);
+
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $filename = $this->getConfiguration()
                          ->getFolderNameRecords($toBeSavedRecord->getContentTypeName(), $dataDimensions);
@@ -91,6 +95,8 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         if (!$contentTypeName) {
             $contentTypeName = $this->getCurrentContentTypeName();
         }
+
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $filename = realpath($this->getConfiguration()
                                   ->getFolderNameRecords($contentTypeName, $dataDimensions));
@@ -163,6 +169,8 @@ class RecordFilesReadWriteConnection extends RecordFilesReadOnlyConnection imple
         $config->setLastChangeUserInfo($this->userInfo);
 
         $data = json_encode($mergedConfig, JSON_PRETTY_PRINT);
+
+        assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         if ($this->writeData($this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions), $data)) {
             return true;
