@@ -2,18 +2,19 @@
 
 namespace Tests\AnyContent\Client;
 
+use AnyContent\Client\Record;
+use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use CMDL\Parser;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 class CustomRecordClassTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
-
 
     public static function setUpBeforeClass(): void
     {
@@ -29,8 +30,8 @@ class CustomRecordClassTest extends TestCase
         $fs->mirror($source, $target);
     }
 
-
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         $target = __DIR__ . '/../../../tmp/ExampleContentArchive';
 
         $configuration = new ContentArchiveConfiguration();
@@ -44,10 +45,8 @@ class CustomRecordClassTest extends TestCase
         KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
-
     public function testSaveRecords()
     {
-
         $cmdl = $this->connection->getCMDLForContentType('example01');
 
         $contentTypeDefinition = Parser::parseCMDLString($cmdl);
@@ -63,7 +62,6 @@ class CustomRecordClassTest extends TestCase
             $this->assertEquals($i, $id);
         }
     }
-
 
     public function testGetRecords()
     {
@@ -83,36 +81,34 @@ class CustomRecordClassTest extends TestCase
             $this->assertEquals('Test ' . $i, $record->getProperty('article'));
         }
 
-        $repository->registerRecordClassForContentType('example01', 'AnyContent\Client\AlternateRecordClass');
+        $repository->registerRecordClassForContentType('example01', 'Tests\AnyContent\Client\CustomRecordClassTest\AlternateRecordClass');
 
         $records = $repository->getRecords();
 
         $i = 0;
         foreach ($records as $id => $record) {
             $i++;
-            $this->assertInstanceOf('AnyContent\Client\AlternateRecordClass', $record);
+            $this->assertInstanceOf('Tests\AnyContent\Client\CustomRecordClassTest\AlternateRecordClass', $record);
             $this->assertEquals($i, $id);
             $this->assertEquals('New Record ' . $i, $record->getName());
             $this->assertEquals('Test ' . $i, $record->getProperty('article'));
         }
     }
 
-
     public function testGetConfig()
     {
         $repository = new Repository('phpunit', $this->connection);
 
-        $repository->registerRecordClassForConfigType('config1', 'AnyContent\Client\AlternateConfigRecordClass');
+        $repository->registerRecordClassForConfigType('config1', 'Tests\AnyContent\Client\CustomRecordClassTest\AlternateConfigClass');
 
         $config = $repository->getConfig('config1');
 
-        $this->assertInstanceOf('AnyContent\Client\AlternateConfigRecordClass', $config);
+        $this->assertInstanceOf('Tests\AnyContent\Client\CustomRecordClassTest\AlternateConfigClass', $config);
 
         $config->setProperty('city', 'Hamburg');
 
         $repository->saveConfig($config);
     }
-
 
     public function testGetConfigNewConnection()
     {
@@ -124,29 +120,12 @@ class CustomRecordClassTest extends TestCase
 
         $this->assertEquals('Hamburg', $config->getProperty('city'));
 
-        $repository->registerRecordClassForConfigType('config1', 'AnyContent\Client\AlternateConfigRecordClass');
+        $repository->registerRecordClassForConfigType('config1', 'Tests\AnyContent\Client\CustomRecordClassTest\AlternateConfigClass');
 
         $config = $repository->getConfig('config1');
 
-        $this->assertInstanceOf('AnyContent\Client\AlternateConfigRecordClass', $config);
+        $this->assertInstanceOf('Tests\AnyContent\Client\CustomRecordClassTest\AlternateConfigClass', $config);
 
         $config->setProperty('city', 'Hamburg');
-    }
-}
-
-
-class AlternateRecordClass extends Record
-{
-    public function getArticle()
-    {
-        return $this->getProperty('article');
-    }
-}
-
-class AlternateConfigRecordClass extends Config
-{
-    public function getCity()
-    {
-        return $this->getProperty('city');
     }
 }

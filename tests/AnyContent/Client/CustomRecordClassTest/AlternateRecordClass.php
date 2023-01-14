@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\AnyContent\Connection;
+namespace Tests\AnyContent\Client\CustomRecordClassTest;
 
 use AnyContent\Client\Record;
 
