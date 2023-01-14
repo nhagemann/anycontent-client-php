@@ -14,9 +14,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class RecordFilesReadWriteConnectionTest extends TestCase
 {
-    /** @var  RecordFilesReadWriteConnection
-     */
-    public $connection;
+    public RecordFilesReadWriteConnection $connection;
 
     public static function setUpBeforeClass(): void
     {
@@ -215,10 +213,6 @@ class RecordFilesReadWriteConnectionTest extends TestCase
         KVMLogger::instance()->debug(__METHOD__);
 
         $connection = $this->connection;
-
-        if (!$connection) {
-            $this->markTestSkipped('MySQL credentials missing.');
-        }
 
         $connection->selectContentType('profiles');
 

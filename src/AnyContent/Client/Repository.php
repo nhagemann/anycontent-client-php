@@ -16,7 +16,6 @@ use AnyContent\Connection\Interfaces\RevisionConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
 use CMDL\ConfigTypeDefinition;
 use CMDL\ContentTypeDefinition;
-use Hoa\Iterator\Filter;
 use KVMLogger\KVMLogger;
 
 class Repository implements FileManager, \JsonSerializable
@@ -59,8 +58,6 @@ class Repository implements FileManager, \JsonSerializable
                 $this->writeConnection = $writeConnection;
 
                 $this->writeConnection->apply($this);
-            } else {
-                throw new AnyContentClientException('Given connection is not a write connection');
             }
         } elseif ($readConnection instanceof WriteConnection) {
             $this->writeConnection = $readConnection;
@@ -96,10 +93,7 @@ class Repository implements FileManager, \JsonSerializable
         return (bool)$this->fileManager;
     }
 
-    /**
-     * @return FileManager
-     */
-    public function getFileManager()
+    public function getFileManager(): ?FileManager
     {
         return $this->fileManager;
     }

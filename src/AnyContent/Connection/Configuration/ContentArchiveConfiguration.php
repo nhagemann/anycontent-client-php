@@ -27,7 +27,7 @@ class ContentArchiveConfiguration extends AbstractConfiguration
         return $this->path;
     }
 
-    public function apply(AbstractConnection $connection)
+    public function apply(AbstractConnection $connection): void
     {
         $this->contentTypes = [];
         $this->configTypes = [];

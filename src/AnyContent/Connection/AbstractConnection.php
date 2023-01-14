@@ -23,45 +23,36 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 abstract class AbstractConnection implements ReadOnlyConnection
 {
-    protected $precalculations = [];
+    protected array $precalculations = [];
 
-    /**
-     * @var AbstractConfiguration
-     */
-    protected $configuration;
+    protected AbstractConfiguration $configuration;
 
     /** @var  ContentTypeDefinition[] */
-    protected $contentTypeDefinitions = [];
+    protected array $contentTypeDefinitions = [];
 
-    protected $currentContentTypeName = null;
+    protected ?string $currentContentTypeName = null;
 
-    /** @var  ContentTypeDefinition */
-    protected $currentContentTypeDefinition = null;
+    protected ?ContentTypeDefinition $currentContentTypeDefinition = null;
 
-    /** @var DataDimensions */
-    protected $dataDimensions;
+    protected ?DataDimensions $dataDimensions = null;
 
-    /** @var  RecordFactory */
-    protected $recordFactory;
+    protected ?RecordFactory $recordFactory = null;
 
-    /** @var  UserInfo */
-    protected $userInfo;
+    protected UserInfo $userInfo;
 
-    protected $recordsStash = [];
+    protected array $recordsStash = [];
 
-    protected $configStash = [];
+    protected array $configStash = [];
 
-    protected $hasStashedAllRecords = [];
+    protected array $hasStashedAllRecords = [];
 
-    /** @var  Repository */
-    protected $repository;
-
+    protected ?Repository $repository = null;
 
     protected AdapterInterface $cacheAdapter;
 
-    protected $cmdlCaching = false;
+    protected bool|int $cmdlCaching = false;
 
-    protected $cmdlCachingCheckLastModifiedDate = false;
+    protected bool $cmdlCachingCheckLastModifiedDate = false;
 
     public function __construct(AbstractConfiguration $configuration)
     {

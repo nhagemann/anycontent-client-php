@@ -10,7 +10,6 @@ use AnyContent\Client\Folder;
 use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Client\Util\RecordsSorter;
-use AnyContent\Filter\Interfaces\Filter;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 

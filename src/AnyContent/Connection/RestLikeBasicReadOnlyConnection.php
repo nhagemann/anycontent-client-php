@@ -168,12 +168,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
-    /**
-     * @param null $contentTypeName
-     *
-     * @return int
-     */
-    public function countRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
+    public function countRecords(?string $contentTypeName = null, ?DataDimensions $dataDimensions = null): int
     {
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();
@@ -272,12 +267,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             ->createRecordsFromJSONRecordsArray($this->getContentTypeDefinition($contentTypeName), $json['records']);
     }
 
-    /**
-     * @param $recordId
-     *
-     * @return Record
-     */
-    public function getRecord(int|string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null)
+    public function getRecord(int|string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null): Record|false
     {
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();

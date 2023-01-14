@@ -38,22 +38,16 @@ class PropertyFilter implements Filter
         switch ($operator) {
             case '=':
                 return ($recordValue == $conditionValue);
-                break;
             case '>':
                 return ($recordValue > $conditionValue);
-                break;
             case '<':
                 return ($recordValue < $conditionValue);
-                break;
             case '>=':
                 return ($recordValue >= $conditionValue);
-                break;
             case '<=':
                 return ($recordValue <= $conditionValue);
-                break;
             case '!=':
                 return ($recordValue != $conditionValue);
-                break;
             case '*=':
                 $p = strpos($recordValue, $conditionValue);
                 if ($p !== false) {

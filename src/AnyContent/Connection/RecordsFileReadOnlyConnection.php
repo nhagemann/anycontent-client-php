@@ -47,11 +47,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return $this->readCMDL($fileName);
     }
 
-    /**
-     * @return int
-     * @throws AnyContentClientException
-     */
-    public function countRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
+    public function countRecords(?string $contentTypeName = null, ?DataDimensions $dataDimensions = null): int
     {
         return count($this->getAllRecords($contentTypeName, $dataDimensions));
     }

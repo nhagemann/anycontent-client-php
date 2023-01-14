@@ -16,11 +16,7 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implements ReadOnlyConnection
 {
-    /**
-     * @return int
-     * @throws AnyContentClientException
-     */
-    public function countRecords($contentTypeName = null, DataDimensions $dataDimensions = null)
+    public function countRecords(?string $contentTypeName = null, ?DataDimensions $dataDimensions = null): int
     {
         if ($contentTypeName == null) {
             $contentTypeName = $this->getCurrentContentTypeName();

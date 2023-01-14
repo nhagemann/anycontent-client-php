@@ -91,12 +91,7 @@ interface ReadOnlyConnection
      */
     public function getCurrentDataDimensions();
 
-    /**
-     * @param null $contentTypeName
-     *
-     * @return int
-     */
-    public function countRecords($contentTypeName = null, DataDimensions $dataDimensions = null);
+    public function countRecords(?string $contentTypeName = null, ?DataDimensions $dataDimensions = null): int;
 
     /**
      * @param null $contentTypeName
@@ -110,7 +105,7 @@ interface ReadOnlyConnection
      *
      * @return Record
      */
-    public function getRecord(int|string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null);
+    public function getRecord(int|string $recordId, ?string $contentTypeName = null, ?DataDimensions $dataDimensions = null): Record|false;
 
     public function getRecordClassForContentType($contentTypeName);
 

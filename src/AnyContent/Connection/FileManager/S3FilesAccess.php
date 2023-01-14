@@ -14,13 +14,9 @@ use Symfony\Component\Finder\Finder;
 
 class S3FilesAccess implements FileManager
 {
-    /** @var S3Client */
-    protected $client;
+    protected ?S3Client $client = null;
 
-    /**
-     * @var Filesystem null
-     */
-    protected $filesystem = null;
+    protected ?Filesystem $filesystem = null;
 
     protected $scheme = null;
 

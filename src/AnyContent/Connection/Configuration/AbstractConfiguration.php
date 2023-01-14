@@ -9,42 +9,38 @@ use AnyContent\Connection\AbstractConnection;
 
 class AbstractConfiguration
 {
-    protected $contentTypes = [ ];
+    protected array $contentTypes = [ ];
 
-    protected $configTypes = [ ];
+    protected array $configTypes = [ ];
 
-    /** @var  AbstractConnection */
-    protected $connection;
+    protected ?AbstractConnection $connection = null;
 
-    public function hasContentType($contentTypeName)
+    public function hasContentType($contentTypeName): bool
     {
         return array_key_exists($contentTypeName, $this->contentTypes);
     }
 
-    public function getContentTypeNames()
+    public function getContentTypeNames(): array
     {
         return array_keys($this->contentTypes);
     }
 
-    public function hasConfigType($configTypeName)
+    public function hasConfigType($configTypeName): bool
     {
         return array_key_exists($configTypeName, $this->configTypes);
     }
 
-    public function getConfigTypeNames()
+    public function getConfigTypeNames(): array
     {
         return array_keys($this->configTypes);
     }
 
-    public function apply(AbstractConnection $connection)
+    public function apply(AbstractConnection $connection): void
     {
         $this->connection = $connection;
     }
 
-    /**
-     * @return AbstractConnection
-     */
-    protected function getConnection()
+    protected function getConnection(): AbstractConnection
     {
         if (!$this->connection) {
             throw new AnyContentClientException('You need to create a connection first.');

@@ -14,12 +14,11 @@ use Symfony\Component\Finder\Finder;
 
 class MySQLSchemalessConfiguration extends AbstractConfiguration
 {
-    /** @var  Database */
-    protected $database;
+    protected ?Database $database;
 
-    protected $pathCMDLFolderForContentTypes = null;
+    protected ?string $pathCMDLFolderForContentTypes = null;
 
-    protected $pathCMDLFolderForConfigTypes = null;
+    protected ?string $pathCMDLFolderForConfigTypes = null;
 
     protected ?string $repositoryName = null;
 
@@ -246,18 +245,12 @@ TEMPLATE_UPDATETABLE;
         unset($this->configTypes[$configTypeName]);
     }
 
-    /**
-     * @return Database
-     */
-    public function getDatabase()
+    public function getDatabase(): ?Database
     {
         return $this->database;
     }
 
-    /**
-     * @param Database $database
-     */
-    public function setDatabase($database)
+    public function setDatabase(Database $database): void
     {
         $this->database = $database;
     }
@@ -267,23 +260,17 @@ TEMPLATE_UPDATETABLE;
         return (bool)($this->pathCMDLFolderForContentTypes || $this->pathCMDLFolderForConfigTypes);
     }
 
-    /**
-     * @return null
-     */
     public function getPathCMDLFolderForContentTypes()
     {
         return $this->pathCMDLFolderForContentTypes;
     }
 
-    /**
-     * @return null
-     */
     public function getPathCMDLFolderForConfigTypes()
     {
         return $this->pathCMDLFolderForConfigTypes;
     }
 
-    public function apply(AbstractConnection $connection)
+    public function apply(AbstractConnection $connection): void
     {
         parent::apply($connection);
 
