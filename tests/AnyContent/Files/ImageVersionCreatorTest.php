@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\AnyContent\Files;
 
@@ -6,9 +8,8 @@ use AnyContent\Client\Repository;
 use AnyContent\Client\Util\ImageVersionCreator;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
-use AnyContent\Connection\Interfaces\FileManager;
+use GdImage;
 use KVMLogger\KVMLoggerFactory;
-use KVMLogger\KVMLogger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -24,7 +25,6 @@ class ImageVersionCreatorTest extends TestCase
     protected $imageVersionCreator;
 
     protected $basePath;
-
 
     public function setUp(): void
     {
@@ -70,6 +70,25 @@ class ImageVersionCreatorTest extends TestCase
         $fs->mkdir($this->basePath);
     }
 
+    public function testGDPresent(): void
+    {
+        $info = gd_info();
+
+        $types = ['GIF Read Support', 'GIF Create Support', 'JPEG Support', 'PNG Support', 'WebP Support'];
+
+        foreach ($types as $type) {
+            $this->assertTrue($info[$type], sprintf('%s not activated.', $type));
+        }
+
+        $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
+            . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
+            . 'EX4IJTRkb7lobNUStXsB0jIXIAMSsQnWlsV+wULF4Avk9fLq2r'
+            . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
+        $data = base64_decode($data);
+
+        $image = imagecreatefromstring($data);
+        $this->assertInstanceOf(GdImage::class, $image);
+    }
 
     public function testDefaultImage()
     {
@@ -85,7 +104,6 @@ class ImageVersionCreatorTest extends TestCase
         $file = $fileManager->getFile('Music/c.txt');
         $this->assertFalse($file->isImage());
     }
-
 
     public function testDefaultResize()
     {
@@ -107,7 +125,6 @@ class ImageVersionCreatorTest extends TestCase
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_100x100c.jpg'));
     }
 
-
     public function testDistinctResize()
     {
         $fileManager = $this->fileManager;
@@ -127,7 +144,6 @@ class ImageVersionCreatorTest extends TestCase
 
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256c.jpg'));
     }
-
 
     public function testDistinctResizeKeepOriginalImage()
     {
@@ -150,10 +166,8 @@ class ImageVersionCreatorTest extends TestCase
         $this->assertEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256c.jpg'));
     }
 
-
     public function testGetFittingImage()
     {
-
         $fileManager = $this->fileManager;
 
         $file = $fileManager->getFile('len_std.jpg');
@@ -171,7 +185,6 @@ class ImageVersionCreatorTest extends TestCase
 
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_512x256f.jpg'));
     }
-
 
     public function testGetFittingImageKeepOriginal()
     {
@@ -194,10 +207,8 @@ class ImageVersionCreatorTest extends TestCase
         $this->assertEquals($file->getSize(), filesize($this->basePath . '/len_std_512x256f.jpg'));
     }
 
-
     public function testResizeImageNoCrop()
     {
-
         $fileManager = $this->fileManager;
 
         $file = $fileManager->getFile('len_std.jpg');
@@ -215,7 +226,6 @@ class ImageVersionCreatorTest extends TestCase
 
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256r.jpg'));
     }
-
 
     public function testResizeImageNoCropKeepOriginal()
     {
@@ -238,10 +248,8 @@ class ImageVersionCreatorTest extends TestCase
         $this->assertEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256r.jpg'));
     }
 
-
     public function testScaleImage()
     {
-
         $fileManager = $this->fileManager;
 
         $file = $fileManager->getFile('len_std.jpg');
@@ -260,10 +268,8 @@ class ImageVersionCreatorTest extends TestCase
         $this->assertNotEquals($file->getSize(), filesize($this->basePath . '/len_std_256x256s.jpg'));
     }
 
-
     public function testScaleImageKeepOriginal()
     {
-
         $this->imageVersionCreator->setKeepOriginalImageIfSizeIsTheSame(true);
 
         $fileManager = $this->fileManager;

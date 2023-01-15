@@ -31,7 +31,8 @@
     "aws/aws-sdk-php": "~2.8",
     "dflydev/apache-mime-types": "~1.0",
     "slevomat/coding-standard": "^8.7",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-gd": "*"
   },
   "scripts": {
     "phpunit" : "vendor/bin/phpunit",
