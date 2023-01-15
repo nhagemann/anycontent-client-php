@@ -53,7 +53,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
     }
 
     /**
-     * @param null $contentTypeName
+     * @param $contentTypeName
      *
      * @return Record[]
      * @throws AnyContentClientException
@@ -93,12 +93,10 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
     }
 
     /**
-     * @param null $contentTypeName
-     *
      * @return Record[]
      * @throws AnyContentClientException
      */
-    protected function getAllMultiViewRecords($contentTypeName, DataDimensions $dataDimensions)
+    protected function getAllMultiViewRecords(string $contentTypeName, DataDimensions $dataDimensions): array
     {
         // RecordsFileReadOnlyConnection is extended by connections of type RecordFiles, ContentArchive and RecordsFileHTTP
         assert(
@@ -282,7 +280,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return $this->readData($filename);
     }
 
-    public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
     {
         $t = 0;
 
@@ -333,7 +331,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             $t = max((int)@filemtime($uri), $t);
         }
 
-        return $t;
+        return (string)$t;
     }
 
     public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)

@@ -89,7 +89,7 @@ class Record extends AbstractRecord implements \JsonSerializable
     }
 
     /**
-     * @param null $level
+     * @param $level
      */
     public function setLevel($level)
     {

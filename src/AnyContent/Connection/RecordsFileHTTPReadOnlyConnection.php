@@ -33,9 +33,9 @@ class RecordsFileHttpReadOnlyConnection extends RecordsFileReadOnlyConnection im
         return $response->getBody();
     }
 
-    public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
     {
         //@upgrade
-        return time();
+        return (string)time();
     }
 }

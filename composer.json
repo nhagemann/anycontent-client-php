@@ -42,6 +42,7 @@
     "phpstan3": "vendor/bin/phpstan --memory-limit=-1 analyze --level 3 src tests",
     "phpstan4": "vendor/bin/phpstan --memory-limit=-1 analyze --level 4 src tests",
     "phpstan5": "vendor/bin/phpstan --memory-limit=-1 analyze --level 5 src tests",
+    "phpstan6": "vendor/bin/phpstan --memory-limit=-1 analyze --level 6 src tests",
     "phpstan": "vendor/bin/phpstan --memory-limit=-1 analyze --level max src tests",
     "phpmd": "vendor/bin/phpmd src ansi phpmd.xml"
   },

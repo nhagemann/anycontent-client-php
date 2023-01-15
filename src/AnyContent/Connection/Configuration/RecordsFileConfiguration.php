@@ -16,7 +16,7 @@ class RecordsFileConfiguration extends AbstractConfiguration
     /**
      * @param      $filenameRecords
      * @param      $filenameCMDL
-     * @param null $contentTypeName
+     * @param $contentTypeName
      *
      * @return $this
      * @throws AnyContentClientException

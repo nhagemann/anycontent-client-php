@@ -188,7 +188,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
     }
 
     /**
-     * @param null $contentTypeName
+     * @param $contentTypeName
      *
      * @return Record[]
      */
@@ -354,7 +354,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
-    public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
@@ -378,7 +378,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             return $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions);
         }
 
-        return $t;
+        return (string)$t;
     }
 
     protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)

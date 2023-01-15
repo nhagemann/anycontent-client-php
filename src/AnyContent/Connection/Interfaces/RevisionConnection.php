@@ -12,7 +12,7 @@ interface RevisionConnection extends ReadOnlyConnection
 {
     /**
      * @param                     $recordId
-     * @param null                $contentTypeName
+     * @param                $contentTypeName
      * @param DataDimensions|null $dataDimensions
      *
      * @return Record[]|false

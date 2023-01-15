@@ -99,6 +99,6 @@ class RecordFilesReadOnlyConnectionTest extends TestCase
 
     public function testLastModified()
     {
-        $this->assertIsInt($this->connection->getLastModifiedDate());
+        $this->assertIsString($this->connection->getLastModifiedDate());
     }
 }

@@ -35,7 +35,7 @@ interface WriteConnection extends ReadOnlyConnection
 
     /**
      * @param                     $recordId
-     * @param null                $contentTypeName
+     * @param                $contentTypeName
      * @param DataDimensions|null $dataDimensions
      *
      * @return int|bool
@@ -44,7 +44,7 @@ interface WriteConnection extends ReadOnlyConnection
 
     /**
      * @param array               $recordIds
-     * @param null                $contentTypeName
+     * @param                $contentTypeName
      * @param DataDimensions|null $dataDimensions
      *
      * @return int[]

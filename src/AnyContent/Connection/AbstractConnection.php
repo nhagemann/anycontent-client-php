@@ -683,7 +683,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $record;
     }
 
-    public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
     {
         throw new AnyContentClientException('Method getLastModifiedDate must be implemented.');
     }
@@ -691,8 +691,8 @@ abstract class AbstractConnection implements ReadOnlyConnection
     /**
      * Check for last cmdl change within repository or for a distinct content/config type
      *
-     * @param null $contentTypeName
-     * @param null $configTypeName
+     * @param $contentTypeName
+     * @param $configTypeName
      */
     public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
     {

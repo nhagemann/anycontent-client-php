@@ -63,7 +63,7 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
     }
 
     /**
-     * @param null $repositoryName
+     * @param $repositoryName
      */
     public function setRepositoryName($repositoryName)
     {

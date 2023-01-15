@@ -94,7 +94,7 @@ interface ReadOnlyConnection
     public function countRecords(?string $contentTypeName = null, ?DataDimensions $dataDimensions = null): int;
 
     /**
-     * @param null $contentTypeName
+     * @param $contentTypeName
      *
      * @return Record[]
      */
@@ -140,17 +140,14 @@ interface ReadOnlyConnection
 
     /**
      * Check for last content/config or cmdl change within repository or for a distinct content/config type
-     *
-     * @param null $contentTypeName
-     * @param null $configTypeName
      */
-    public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null);
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string;
 
     /**
      * Check for last cmdl change within repository or for a distinct content/config type
      *
-     * @param null $contentTypeName
-     * @param null $configTypeName
+     * @param $contentTypeName
+     * @param $configTypeName
      */
     public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null);
 }

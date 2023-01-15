@@ -457,7 +457,7 @@ class Repository implements FileManager, \JsonSerializable
      * @param                $filter
      * @param                $order
      * @param int            $page
-     * @param null           $count
+     * @param           $count
      * @param DataDimensions $dataDimensions
      *
      * @return bool|Record
@@ -736,7 +736,7 @@ class Repository implements FileManager, \JsonSerializable
 
     /**
      * @param                     $recordId
-     * @param null                $contentTypeName
+     * @param                $contentTypeName
      *
      * @return Record[]
      */

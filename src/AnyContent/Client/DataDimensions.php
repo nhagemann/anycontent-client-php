@@ -25,7 +25,7 @@ class DataDimensions
     }
 
     /**
-     * @param null $viewName
+     * @param $viewName
      */
     public function setViewName($viewName)
     {
@@ -41,7 +41,7 @@ class DataDimensions
     }
 
     /**
-     * @param null $workspace
+     * @param $workspace
      */
     public function setWorkspace($workspace)
     {
@@ -57,7 +57,7 @@ class DataDimensions
     }
 
     /**
-     * @param null $language
+     * @param $language
      */
     public function setLanguage($language)
     {
@@ -73,7 +73,7 @@ class DataDimensions
     }
 
     /**
-     * @param null $timeShift
+     * @param $timeShift
      */
     public function setTimeShift($timeShift)
     {

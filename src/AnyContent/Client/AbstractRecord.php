@@ -32,7 +32,7 @@ abstract class AbstractRecord
      * Check if a property is allowed by definition
      *
      * @param      $property
-     * @param null $viewName
+     * @param $viewName
      *
      * @return bool
      */

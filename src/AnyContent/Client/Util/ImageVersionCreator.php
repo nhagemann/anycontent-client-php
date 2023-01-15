@@ -169,9 +169,9 @@ class ImageVersionCreator
      * @param File   $file
      * @param string $urlType
      * @param int    $width
-     * @param null   $height
-     * @param null   $filename
-     * @param null   $quality
+     * @param   $height
+     * @param   $filename
+     * @param   $quality
      *
      * @return File|bool
      */
@@ -234,10 +234,10 @@ class ImageVersionCreator
      * @param File   $file
      * @param string $urlType
      * @param int    $width
-     * @param null   $height
+     * @param   $height
      * @param bool   $crop
-     * @param null   $filename
-     * @param null   $quality
+     * @param   $filename
+     * @param   $quality
      *
      * @return File|bool
      */
@@ -295,10 +295,10 @@ class ImageVersionCreator
     /**
      * @param File   $file
      * @param string $urlType
-     * @param null   $width
-     * @param null   $height
-     * @param null   $filename
-     * @param null   $quality
+     * @param   $width
+     * @param   $height
+     * @param   $filename
+     * @param   $quality
      *
      * @return File|bool
      */
@@ -357,9 +357,9 @@ class ImageVersionCreator
      * @param File   $file
      * @param string $urlType
      * @param int    $width
-     * @param null   $height
-     * @param null   $filename
-     * @param null   $quality
+     * @param   $height
+     * @param   $filename
+     * @param   $quality
      *
      * @return File|bool
      */

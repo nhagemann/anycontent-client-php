@@ -80,12 +80,10 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
     }
 
     /**
-     * @param null $contentTypeName
-     *
      * @return Record[]
      * @throws AnyContentClientException
      */
-    protected function getAllMultiViewRecords($contentTypeName, DataDimensions $dataDimensions)
+    protected function getAllMultiViewRecords(string $contentTypeName, DataDimensions $dataDimensions): array
     {
         assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
@@ -111,13 +109,13 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
         return [ ];
     }
 
-    public function getLastModifiedDate($contentTypeName = null, $configTypeName = null, DataDimensions $dataDimensions = null)
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $t = 0;
+        $t = '0';
 
         assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
@@ -137,7 +135,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             return $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions);
         }
 
-        return $t;
+        return (string)$t;
     }
 
     protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
@@ -156,10 +154,9 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             );
 
             $iterator = $finder->getIterator();
-            //$file     = reset($iterator);
             $file     = $iterator->current();
 
-            if ($file) {
+            if ($file instanceof SplFileInfo) {
                 $t = max($t, (int)$file->getMTime());
             }
         }
