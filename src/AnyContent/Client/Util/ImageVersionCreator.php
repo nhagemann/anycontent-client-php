@@ -24,32 +24,26 @@ use Symfony\Component\Finder\Finder;
  */
 class ImageVersionCreator
 {
-    /**
-     * @var Repository
-     */
-    protected $repository = null;
+    protected Repository $repository;
 
-    protected $basePath = null;
+    protected string $basePath;
 
-    protected $baseUrl = null;
+    protected string $baseUrl;
 
-    protected $quality = 75;
+    protected int $quality = 75;
 
-    protected $timestampCheck = true;
+    protected bool $timestampCheck = true;
 
-    protected $keepOriginalImageIfSizeIsTheSame = false;
+    protected bool $keepOriginalImageIfSizeIsTheSame = false;
 
-    protected $cacheBinaries = false;
+    protected bool $cacheBinaries = false;
 
-    protected $cachedBinaries = array();
+    protected array $cachedBinaries = [];
 
     /**
-     * @param      $repository
-     * @param      $basePath
-     * @param      $baseUrl
-     * @param      $quality 0-100, default is 75
+     * @param $quality 0-100, default is 75
      */
-    public function __construct($repository, $basePath, $baseUrl, $quality = null)
+    public function __construct(Repository $repository, string $basePath, string $baseUrl, int $quality = null)
     {
         $this->selectRepository($repository);
 
@@ -62,52 +56,40 @@ class ImageVersionCreator
         }
     }
 
-    public function setBasePathAndUrl($basePath, $baseUrl)
+    public function setBasePathAndUrl(string $basePath, string $baseUrl)
     {
         $this->basePath = $basePath;
 
         $this->baseUrl = $baseUrl;
     }
 
-    /**
-     * @return null
-     */
-    public function getBasePath()
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
 
-    /**
-     * @return null
-     */
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }
 
-    public function selectRepository($repository)
+    public function selectRepository(Repository $repository)
     {
-        $this->repository     = $repository;
-        $this->cachedBinaries = array();
+        $this->repository = $repository;
+        $this->cachedBinaries = [];
     }
 
-    public function getCurrentRepository()
+    public function getCurrentRepository(): Repository
     {
         return $this->repository;
     }
 
-    /**
-     * @param int $quality
-     */
-    public function setQuality($quality)
+    public function setQuality(int $quality)
     {
         $this->quality = $quality;
     }
 
-    /**
-     * @return int
-     */
-    public function getQuality()
+    public function getQuality(): int
     {
         return $this->quality;
     }
@@ -139,36 +121,30 @@ class ImageVersionCreator
      */
     public function enableBinaryCache()
     {
-        $this->cacheBinaries  = true;
-        $this->cachedBinaries = array();
+        $this->cacheBinaries = true;
+        $this->cachedBinaries = [];
     }
 
     public function disableBinaryCache()
     {
-        $this->cacheBinaries  = false;
-        $this->cachedBinaries = array();
+        $this->cacheBinaries = false;
+        $this->cachedBinaries = [];
     }
 
-    /**
-     * @return boolean
-     */
-    public function isKeepOriginalImageIfSizeIsTheSame()
+    public function isKeepOriginalImageIfSizeIsTheSame(): bool
     {
         return $this->keepOriginalImageIfSizeIsTheSame;
     }
 
-    /**
-     * @param boolean $keepOriginalImageIfSizeIsTheSame
-     */
-    public function setKeepOriginalImageIfSizeIsTheSame($keepOriginalImageIfSizeIsTheSame)
+    public function setKeepOriginalImageIfSizeIsTheSame(bool $keepOriginalImageIfSizeIsTheSame): void
     {
         $this->keepOriginalImageIfSizeIsTheSame = $keepOriginalImageIfSizeIsTheSame;
     }
 
     /**
-     * @param File   $file
+     * @param File $file
      * @param string $urlType
-     * @param int    $width
+     * @param int $width
      * @param   $height
      * @param   $filename
      * @param   $quality
@@ -186,56 +162,55 @@ class ImageVersionCreator
         if ($height == null) {
             $height = $width;
         }
-        if ($this->repository) {
-            if ($file->isImage()) {
-                $filename = $this->determineFileName($file, $width, $height, 'f', $filename);
 
-                if ($this->mustBuildImage($file, $filename)) {
-                    $binary = $this->getBinary($file);
+        if ($file->isImage()) {
+            $filename = $this->determineFileName($file, $width, $height, 'f', $filename);
 
-                    if ($binary) {
-                        $imagine = new Imagine();
-                        $image   = $imagine->load($binary);
+            if ($this->mustBuildImage($file, $filename)) {
+                $binary = $this->getBinary($file);
 
-                        $size  = $image->getSize();
-                        $ratio = $size->getWidth() / $size->getHeight();
+                if ($binary) {
+                    $imagine = new Imagine();
+                    $image = $imagine->load($binary);
 
-                        if ($ratio > $width / $height) {
-                            $size = $size->widen($width);
-                        } else {
-                            $size = $size->heighten($height);
-                        }
+                    $size = $image->getSize();
+                    $ratio = $size->getWidth() / $size->getHeight();
 
-                        if ($this->keepOriginalImage($binary, $size->getWidth(), $size->getHeight())) {
-                            return $this->getOriginalImage($file, $urlType, $filename);
-                        }
-
-                        $image->resize($size);
-
-                        $quality = $this->determineQuality($quality);
-                        $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                    if ($ratio > $width / $height) {
+                        $size = $size->widen($width);
                     } else {
-                        return false;
+                        $size = $size->heighten($height);
                     }
+
+                    if ($this->keepOriginalImage($binary, $size->getWidth(), $size->getHeight())) {
+                        return $this->getOriginalImage($file, $urlType, $filename);
+                    }
+
+                    $image->resize($size);
+
+                    $quality = $this->determineQuality($quality);
+                    $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                } else {
+                    return false;
                 }
-
-                $url = $this->baseUrl . '/' . $filename;
-
-                $file->addUrl($urlType, $url);
-
-                return $file;
             }
+
+            $url = $this->baseUrl . '/' . $filename;
+
+            $file->addUrl($urlType, $url);
+
+            return $file;
         }
 
         return false;
     }
 
     /**
-     * @param File   $file
+     * @param File $file
      * @param string $urlType
-     * @param int    $width
+     * @param int $width
      * @param   $height
-     * @param bool   $crop
+     * @param bool $crop
      * @param   $filename
      * @param   $quality
      *
@@ -258,42 +233,40 @@ class ImageVersionCreator
             $height = $width;
         }
 
-        if ($this->repository) {
-            if ($file->isImage()) {
-                $filename = $this->determineFileName($file, $width, $height, 'r', $filename);
+        if ($file->isImage()) {
+            $filename = $this->determineFileName($file, $width, $height, 'r', $filename);
 
-                if ($this->mustBuildImage($file, $filename)) {
-                    $binary = $this->getBinary($file);
+            if ($this->mustBuildImage($file, $filename)) {
+                $binary = $this->getBinary($file);
 
-                    if ($this->keepOriginalImage($binary, $width, $height)) {
-                        return $this->getOriginalImage($file, $urlType, $filename);
-                    }
-
-                    if ($binary) {
-                        $imagine = new Imagine();
-                        $image   = $imagine->load($binary);
-
-                        $image->resize(new Box($width, $height));
-
-                        $quality = $this->determineQuality($quality);
-                        $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
-                    } else {
-                        return false;
-                    }
+                if ($this->keepOriginalImage($binary, $width, $height)) {
+                    return $this->getOriginalImage($file, $urlType, $filename);
                 }
 
-                $url = $this->baseUrl . '/' . $filename;
-                $file->addUrl($urlType, $url);
+                if ($binary) {
+                    $imagine = new Imagine();
+                    $image = $imagine->load($binary);
 
-                return $file;
+                    $image->resize(new Box($width, $height));
+
+                    $quality = $this->determineQuality($quality);
+                    $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                } else {
+                    return false;
+                }
             }
+
+            $url = $this->baseUrl . '/' . $filename;
+            $file->addUrl($urlType, $url);
+
+            return $file;
         }
 
         return false;
     }
 
     /**
-     * @param File   $file
+     * @param File $file
      * @param string $urlType
      * @param   $width
      * @param   $height
@@ -319,9 +292,9 @@ class ImageVersionCreator
 
             if ($binary) {
                 $imagine = new Imagine();
-                $image   = $imagine->load($binary);
+                $image = $imagine->load($binary);
 
-                $size  = $image->getSize();
+                $size = $image->getSize();
                 $ratio = $size->getWidth() / $size->getHeight();
 
                 if ($width == null) {
@@ -354,9 +327,9 @@ class ImageVersionCreator
     }
 
     /**
-     * @param File   $file
+     * @param File $file
      * @param string $urlType
-     * @param int    $width
+     * @param int $width
      * @param   $height
      * @param   $filename
      * @param   $quality
@@ -375,66 +348,64 @@ class ImageVersionCreator
             $height = $width;
         }
 
-        if ($this->repository) {
-            if ($file->isImage()) {
-                $filename = $this->determineFileName($file, $width, $height, 'c', $filename);
+        if ($file->isImage()) {
+            $filename = $this->determineFileName($file, $width, $height, 'c', $filename);
 
-                if ($this->mustBuildImage($file, $filename)) {
-                    $binary = $this->getBinary($file);
+            if ($this->mustBuildImage($file, $filename)) {
+                $binary = $this->getBinary($file);
 
-                    if ($this->keepOriginalImage($binary, $width, $height)) {
-                        return $this->getOriginalImage($file, $urlType, $filename);
-                    }
-
-                    if ($binary) {
-                        $imagine = new Imagine();
-                        $image   = $imagine->load($binary);
-
-                        $size = $image->getSize();
-
-                        $ratioOriginal = $size->getWidth() / $size->getHeight();
-
-                        if ($ratioOriginal > ($width / $height)) {
-                            // create image that has the desired height and an oversize width to crop from
-                            $y = $height;
-                            $x = $size->getWidth() * ($y / $size->getHeight());
-
-                            $size = new Box($x, $y);
-
-                            $image->resize($size);
-
-                            $start = (int)(($x - $width) / 2);
-
-                            $upperLeft = new Point($start, 0);
-
-                            $image->crop($upperLeft, new Box($width, $height));
-                        } else {
-                            // create image that has the desired width and an oversize height to crop from
-                            $x = $width;
-                            $y = $size->getHeight() * ($x / $size->getWidth());
-
-                            $size = new Box($x, $y);
-                            $image->resize($size);
-
-                            $start = (int)(($y - $height) / 2);
-
-                            $upperLeft = new Point(0, $start);
-
-                            $image->crop($upperLeft, new Box($width, $height));
-                        }
-
-                        $quality = $this->determineQuality($quality);
-                        $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
-                    } else {
-                        return false;
-                    }
+                if ($this->keepOriginalImage($binary, $width, $height)) {
+                    return $this->getOriginalImage($file, $urlType, $filename);
                 }
 
-                $url = $this->baseUrl . '/' . $filename;
-                $file->addUrl($urlType, $url);
+                if ($binary) {
+                    $imagine = new Imagine();
+                    $image = $imagine->load($binary);
 
-                return $file;
+                    $size = $image->getSize();
+
+                    $ratioOriginal = $size->getWidth() / $size->getHeight();
+
+                    if ($ratioOriginal > ($width / $height)) {
+                        // create image that has the desired height and an oversize width to crop from
+                        $y = $height;
+                        $x = $size->getWidth() * ($y / $size->getHeight());
+
+                        $size = new Box($x, $y);
+
+                        $image->resize($size);
+
+                        $start = (int)(($x - $width) / 2);
+
+                        $upperLeft = new Point($start, 0);
+
+                        $image->crop($upperLeft, new Box($width, $height));
+                    } else {
+                        // create image that has the desired width and an oversize height to crop from
+                        $x = $width;
+                        $y = $size->getHeight() * ($x / $size->getWidth());
+
+                        $size = new Box($x, $y);
+                        $image->resize($size);
+
+                        $start = (int)(($y - $height) / 2);
+
+                        $upperLeft = new Point(0, $start);
+
+                        $image->crop($upperLeft, new Box($width, $height));
+                    }
+
+                    $quality = $this->determineQuality($quality);
+                    $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                } else {
+                    return false;
+                }
             }
+
+            $url = $this->baseUrl . '/' . $filename;
+            $file->addUrl($urlType, $url);
+
+            return $file;
         }
 
         return false;
@@ -442,25 +413,23 @@ class ImageVersionCreator
 
     public function getOriginalImage(File $file, $urlType = 'binary', $filename = null)
     {
-        if ($this->repository) {
-            if ($file->isImage()) {
-                $filename = $this->determineFileName($file, null, null, 'o', $filename);
+        if ($file->isImage()) {
+            $filename = $this->determineFileName($file, null, null, 'o', $filename);
 
-                if ($this->mustBuildImage($file, $filename)) {
-                    $binary = $this->getBinary($file);
+            if ($this->mustBuildImage($file, $filename)) {
+                $binary = $this->getBinary($file);
 
-                    if ($binary) {
-                        file_put_contents($this->basePath . '/' . $filename, $binary);
-                    } else {
-                        return false;
-                    }
+                if ($binary) {
+                    file_put_contents($this->basePath . '/' . $filename, $binary);
+                } else {
+                    return false;
                 }
-
-                $url = $this->baseUrl . '/' . $filename;
-                $file->addUrl($urlType, $url);
-
-                return $file;
             }
+
+            $url = $this->baseUrl . '/' . $filename;
+            $file->addUrl($urlType, $url);
+
+            return $file;
         }
 
         return false;
@@ -468,7 +437,7 @@ class ImageVersionCreator
 
     public function deleteRecentlyNotAccessedFiles($minutes = 1440, $path = null)
     {
-        $fs     = new Filesystem();
+        $fs = new Filesystem();
         $finder = new Finder();
 
         if ($path == null) {
@@ -511,7 +480,7 @@ class ImageVersionCreator
             if (array_key_exists($file->getId(), $this->cachedBinaries)) {
                 return $this->cachedBinaries[$file->getId()];
             }
-            $binary                               = $this->repository->getBinary($file);
+            $binary = $this->repository->getBinary($file);
             $this->cachedBinaries[$file->getId()] = $binary;
         } else {
             $binary = $this->repository->getBinary($file);
@@ -531,7 +500,7 @@ class ImageVersionCreator
             }
         }
 
-        $fs   = new Filesystem();
+        $fs = new Filesystem();
         $info = pathinfo($this->basePath . '/' . $filename);
         $fs->mkdir($info['dirname']);
 
