@@ -274,7 +274,7 @@ TEMPLATE_UPDATETABLE;
     {
         parent::apply($connection);
 
-        assert($connection instanceof MySQLSchemalessReadOnlyConnection || $connection instanceof MySQLSchemalessReadWriteConnection);
+        assert($connection instanceof MySQLSchemalessReadOnlyConnection);
 
         $connection->setDatabase($this->getDatabase());
     }
