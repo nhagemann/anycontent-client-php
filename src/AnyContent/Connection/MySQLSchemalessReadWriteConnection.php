@@ -59,22 +59,18 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
                 $values['revision'] = $values['revision'] + 1;
                 $record->setRevision($values['revision']);
                 $mode = 'update';
-            }
+            } else {
+                // Check for a deleted revision
+                $sql = 'SELECT MAX(revision) AS maxrevision FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND deleted = 1';
 
-            // Check for a deleted revision
-            $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ? AND workspace = ? AND language = ? AND deleted = 1 AND validfrom_timestamp <= ? AND validuntil_timestamp > ?';
+                $row = $this->getDatabase()
+                    ->fetchOneSQL($sql, [
+                        $record->getId(),
+                        $dataDimensions->getWorkspace(),
+                        $dataDimensions->getLanguage(),
+                    ]);
 
-            $rows = $this->getDatabase()
-                         ->fetchAllSQL($sql, [
-                             $record->getId(),
-                             $dataDimensions->getWorkspace(),
-                             $dataDimensions->getLanguage(),
-                             $timestamp,
-                             $timestamp,
-                         ]);
-            if (count($rows) == 1) {
-                $row                = reset($rows);
-                $values['revision'] = $row['revision'] + 1;
+                $values['revision'] = $row['maxrevision'] + 1;
                 $record->setRevision($values['revision']);
             }
         }

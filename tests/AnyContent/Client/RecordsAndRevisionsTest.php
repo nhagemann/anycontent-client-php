@@ -162,11 +162,11 @@ class RecordsAndRevisionsTest extends TestCase
         $this->assertEquals(1, $id);
         $this->assertEquals(7, $record->getRevision());
 
-//        $this->assertEquals(1,$repository->deleteRecord(1));
-//        $record = $repository->createRecord('New Record 1');
-//        $record->setId(1);
-//        $id = $repository->saveRecord($record);
-//        $this->assertEquals(1, $id);
-//        $this->assertEquals(9,$record->getRevision());
+        $this->assertEquals(1, $repository->deleteRecord(1));
+        $record = $repository->createRecord('New Record 1');
+        $record->setId(1);
+        $id = $repository->saveRecord($record);
+        $this->assertEquals(1, $id);
+        $this->assertEquals(9, $record->getRevision());
     }
 }
