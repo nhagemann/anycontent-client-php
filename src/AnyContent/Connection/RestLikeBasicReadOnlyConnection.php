@@ -354,7 +354,7 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
         throw new AnyContentClientException('Unknown config type ' . $configTypeName);
     }
 
-    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): float
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
@@ -378,10 +378,10 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             return $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions);
         }
 
-        return (string)$t;
+        return (float)$t;
     }
 
-    protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
+    protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions): float
     {
         $t = 0;
 
@@ -395,10 +395,10 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             $t = max($t, $info['content'][$contentTypeName]['lastchange_cmdl']);
         }
 
-        return $t;
+        return (float)$t;
     }
 
-    protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions)
+    protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions): float
     {
         $t = 0;
 
@@ -412,10 +412,10 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             $t = max($t, $info['config'][$configTypeName]['lastchange_cmdl']);
         }
 
-        return $t;
+        return (float)$t;
     }
 
-    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
+    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null): float
     {
         $t = 0;
 
@@ -445,6 +445,6 @@ class RestLikeBasicReadOnlyConnection extends AbstractConnection implements Read
             }
         }
 
-        return $t;
+        return (float)$t;
     }
 }

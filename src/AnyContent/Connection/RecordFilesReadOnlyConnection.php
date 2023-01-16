@@ -65,16 +65,16 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
                 $definition = $this->getContentTypeDefinition($contentTypeName);
 
                 $record = $this->getRecordFactory()
-                               ->createRecordFromJSON($definition, $data, $dataDimensions->getViewName(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage());
+                    ->createRecordFromJSON($definition, $data, $dataDimensions->getViewName(), $dataDimensions->getWorkspace(), $dataDimensions->getLanguage());
 
-                $record =  $this->exportRecord($record, $dataDimensions);
+                $record = $this->exportRecord($record, $dataDimensions);
                 assert($record instanceof Record);
                 return $record;
             }
         }
 
         KVMLogger::instance('anycontent-connection')
-                 ->info('Record ' . $recordId . ' not found for content type ' . $this->getCurrentContentTypeName());
+            ->info('Record ' . $recordId . ' not found for content type ' . $this->getCurrentContentTypeName());
 
         return false;
     }
@@ -93,7 +93,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             $finder = new Finder();
             $finder->in($folder)->depth(0);
 
-            $data = [ ];
+            $data = [];
 
             /** @var SplFileInfo $file */
             foreach ($finder->files()->name('*.json') as $file) {
@@ -103,19 +103,19 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             $definition = $this->getContentTypeDefinition($contentTypeName);
 
             return $this->getRecordFactory()
-                            ->createRecordsFromJSONRecordsArray($definition, $data);
+                ->createRecordsFromJSONRecordsArray($definition, $data);
         }
 
-        return [ ];
+        return [];
     }
 
-    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): float
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $t = '0';
+        $t = 0;
 
         assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
@@ -135,12 +135,12 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             return $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions);
         }
 
-        return (string)$t;
+        return (float)$t;
     }
 
-    protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions)
+    protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions): float
     {
-        $t      = 0;
+        $t = 0;
         assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $folder = $this->getConfiguration()->getFolderNameRecords($contentTypeName, $dataDimensions);
@@ -154,7 +154,7 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
             );
 
             $iterator = $finder->getIterator();
-            $file     = $iterator->current();
+            $file = $iterator->current();
 
             if ($file instanceof SplFileInfo) {
                 $t = max($t, (int)$file->getMTime());
@@ -162,23 +162,23 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
         }
 
         $uri = $this->getConfiguration()->getUriCMDLForContentType($contentTypeName);
-        $t   = max((int)@filemtime($uri), $t);
+        $t = max((int)@filemtime($uri), $t);
 
-        return $t;
+        return (float)$t;
     }
 
-    protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions)
+    protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions): float
     {
         $t = 0;
 
         assert($this->getConfiguration() instanceof RecordFilesConfiguration || $this->getConfiguration() instanceof ContentArchiveConfiguration);
 
         $uri = $this->getConfiguration()->getUriConfig($configTypeName, $dataDimensions);
-        $t   = max((int)@filemtime($uri), $t);
+        $t = max((int)@filemtime($uri), $t);
 
         $uri = $this->getConfiguration()->getUriCMDLForConfigType($configTypeName);
-        $t   = max((int)@filemtime($uri), $t);
+        $t = max((int)@filemtime($uri), $t);
 
-        return $t;
+        return (float)$t;
     }
 }

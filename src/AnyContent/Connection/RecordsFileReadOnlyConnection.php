@@ -280,7 +280,7 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         return $this->readData($filename);
     }
 
-    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): float
     {
         $t = 0;
 
@@ -331,10 +331,10 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             $t = max((int)@filemtime($uri), $t);
         }
 
-        return (string)$t;
+        return (float)$t;
     }
 
-    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)
+    public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null): float
     {
         $t = 0;
 
@@ -369,6 +369,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             $t = max((int)@filemtime($uri), $t);
         }
 
-        return $t;
+        return (float)$t;
     }
 }

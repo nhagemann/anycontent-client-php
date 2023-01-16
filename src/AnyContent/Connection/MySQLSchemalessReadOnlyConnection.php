@@ -490,13 +490,13 @@ TEMPLATE_CONFIGTABLE;
         return $config;
     }
 
-    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): float
     {
         if ($dataDimensions == null) {
             $dataDimensions = $this->getCurrentDataDimensions();
         }
 
-        $t = '0';
+        $t = 0;
 
         if ($contentTypeName == null && $configTypeName == null) {
             $sql = 'SELECT MAX(lastchange_timestamp) AS T FROM _update_ WHERE workspace = ? AND language = ? ';
@@ -513,10 +513,10 @@ TEMPLATE_CONFIGTABLE;
             return $this->getLastModifedDateForConfigType($configTypeName, $dataDimensions);
         }
 
-        return $t;
+        return (float)$t;
     }
 
-    protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions): string
+    protected function getLastModifedDateForContentType($contentTypeName, DataDimensions $dataDimensions): float
     {
         $sql = 'SELECT lastchange_timestamp AS T FROM _update_ WHERE data_type = "content" AND name = ? AND workspace = ? AND language = ?';
 
@@ -527,10 +527,10 @@ TEMPLATE_CONFIGTABLE;
 
         $t = max($this->getCMDLLastModifiedDate($contentTypeName, null), $t);
 
-        return (string)$t;
+        return (float)$t;
     }
 
-    protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions): string
+    protected function getLastModifedDateForConfigType($configTypeName, DataDimensions $dataDimensions): float
     {
         $sql = 'SELECT lastchange_timestamp AS T FROM _update_ WHERE data_type = "config" AND name = ? AND workspace = ? AND language = ?';
 
@@ -541,7 +541,7 @@ TEMPLATE_CONFIGTABLE;
 
         $t = max($this->getCMDLLastModifiedDate(null, $configTypeName), $t);
 
-        return (string)$t;
+        return (float)$t;
     }
 
     public function getCMDLLastModifiedDate($contentTypeName = null, $configTypeName = null)

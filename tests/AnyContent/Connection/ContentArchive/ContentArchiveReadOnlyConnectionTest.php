@@ -110,6 +110,6 @@ class ContentArchiveReadOnlyConnectionTest extends TestCase
 
     public function testLastModified()
     {
-        $this->assertIsString($this->connection->getLastModifiedDate());
+        $this->assertIsFloat($this->connection->getLastModifiedDate());
     }
 }

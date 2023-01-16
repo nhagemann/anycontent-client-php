@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\AnyContent\Client;
 
+use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
+use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class RepositoryRecordsAndRevisionsTest extends TestCase
+class RecordsAndRevisionsTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
@@ -80,58 +82,91 @@ class RepositoryRecordsAndRevisionsTest extends TestCase
         $this->assertFalse($record);
     }
 
-    public function testNewConnection()
+    public function testRestartRevisionCountingInContentArchiveConnection()
     {
         $this->repository->selectContentType('example01');
+        $this->repository->deleteAllRecords();
 
-        $record = $this->repository->getRecord(1);
-        $this->assertEquals(5, $record->getRevision());
-
-        $this->assertEquals('example01', $record->getContentTypeName());
-        $this->assertEquals(1, $record->getID());
-        $this->assertEquals('New Record 1 - Revision 5', $record->getName());
-        $this->assertEquals('Test 1', $record->getProperty('article'));
+        for ($i = 1; $i <= 5; $i++) {
+            $record = $this->repository->createRecord('New Record ' . $i);
+            $record->setProperty('article', 'Test ' . $i);
+            $record->setId(1);
+            $id = $this->repository->saveRecord($record);
+            $this->assertEquals(1, $id);
+            $this->assertEquals($i, $record->getRevision());
+        }
 
         $records = $this->repository->getRecords();
-        $this->assertCount(5, $records);
-        $this->assertEquals(5, $this->repository->countRecords());
+
+        $this->assertCount(1, $records);
+
+        $record = $this->repository->getRecord(1);
+        $this->assertInstanceOf(Record::class, $record);
+        $this->assertEquals(5, $record->getRevision());
+
+        $this->assertEquals(1, $this->repository->deleteRecord(1));
+
+        $record = $this->repository->createRecord('New Record 1');
+        $record->setId(1);
+        $id = $this->repository->saveRecord($record);
+        $this->assertEquals(1, $id);
+        $this->assertEquals(1, $record->getRevision());
     }
 
-    public function testDeleteRecords()
+    public function testContinueRevisionCountingInMySQLSchemaLessConnection()
     {
-//        $cmdl = $this->client->getCMDL('example01');
-//
-//        $contentTypeDefinition = Parser::parseCMDLString($cmdl);
-//        $contentTypeDefinition->setName('example01');
-//
-//        /** @var $record Record * */
-//        $records = $this->client->getRecords($contentTypeDefinition);
-//
-//        $this->assertCount(5,$records);
-//
-//        $t1 = $this->client->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName());
-//
-//        $this->assertFalse($this->client->deleteRecord($contentTypeDefinition,99));
-//        $this->assertTrue($this->client->deleteRecord($contentTypeDefinition,5));
-//
-//        $t2 = $this->client->getLastContentTypeChangeTimestamp($contentTypeDefinition->getName());
-//
-//        $this->assertNotEquals($t1,$t2);
-//
-//        /** @var $record Record * */
-//        $records = $this->client->getRecords($contentTypeDefinition);
-//
-//        $this->assertCount(4,$records);
-//
-//        $record = new Record($contentTypeDefinition, 'New Record 5');
-//        $record->setProperty('article', 'Test 5 ');
-//        $record->setId(5);
-//        $id = $this->client->saveRecord($record);
-//        $this->assertEquals(5, $id);
-//
-//        /** @var $record Record * */
-//        $records = $this->client->getRecords($contentTypeDefinition);
-//
-//        $this->assertCount(5,$records);
+        // drop & create database
+        $pdo = new \PDO('mysql:host=anycontent-client-phpunit-mysql;port=3306;charset=utf8', 'root', 'root');
+
+        $pdo->exec('DROP DATABASE IF EXISTS phpunit');
+        $pdo->exec('CREATE DATABASE phpunit');
+
+        $configuration = new MySQLSchemalessConfiguration();
+
+        $configuration->initDatabase('anycontent-client-phpunit-mysql', 'phpunit', 'root', 'root');
+
+        $configuration->setCMDLFolder(__DIR__ . '/../../resources/ContentArchiveExample2/cmdl');
+        $configuration->setRepositoryName('phpunit');
+        $configuration->addContentTypes();
+        $configuration->addConfigTypes();
+
+        $connection = $configuration->createReadWriteConnection();
+
+        $repository       = new Repository('phpunit', $connection);
+        $this->assertEquals($repository, $connection->getRepository());
+
+        $repository->selectContentType('example01');
+        $repository->deleteAllRecords();
+
+        for ($i = 1; $i <= 5; $i++) {
+            $record = $repository->createRecord('New Record ' . $i);
+            $record->setProperty('article', 'Test ' . $i);
+            $record->setId(1);
+            $id = $repository->saveRecord($record);
+            $this->assertEquals(1, $id);
+            $this->assertEquals($i, $record->getRevision());
+        }
+
+        $records = $repository->getRecords();
+
+        $this->assertCount(1, $records);
+
+        $record = $repository->getRecord(1);
+        $this->assertInstanceOf(Record::class, $record);
+        $this->assertEquals(5, $record->getRevision());
+
+        $this->assertEquals(1, $repository->deleteRecord(1));
+        $record = $repository->createRecord('New Record 1');
+        $record->setId(1);
+        $id = $repository->saveRecord($record);
+        $this->assertEquals(1, $id);
+        $this->assertEquals(7, $record->getRevision());
+
+//        $this->assertEquals(1,$repository->deleteRecord(1));
+//        $record = $repository->createRecord('New Record 1');
+//        $record->setId(1);
+//        $id = $repository->saveRecord($record);
+//        $this->assertEquals(1, $id);
+//        $this->assertEquals(9,$record->getRevision());
     }
 }

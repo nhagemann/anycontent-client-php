@@ -683,7 +683,7 @@ abstract class AbstractConnection implements ReadOnlyConnection
         return $record;
     }
 
-    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): float
     {
         throw new AnyContentClientException('Method getLastModifiedDate must be implemented.');
     }

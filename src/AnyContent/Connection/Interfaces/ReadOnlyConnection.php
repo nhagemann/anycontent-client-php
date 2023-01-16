@@ -141,7 +141,7 @@ interface ReadOnlyConnection
     /**
      * Check for last content/config or cmdl change within repository or for a distinct content/config type
      */
-    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): string;
+    public function getLastModifiedDate(string $contentTypeName = null, string $configTypeName = null, DataDimensions $dataDimensions = null): float;
 
     /**
      * Check for last cmdl change within repository or for a distinct content/config type
