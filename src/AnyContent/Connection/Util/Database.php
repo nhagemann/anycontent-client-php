@@ -149,7 +149,7 @@ class Database
             $value = '[#' . $value . '#]';
         }
 
-        return preg_replace($keys, $params, $sql, 1, $count);
+        return preg_replace($keys, $params, $sql, 1);
     }
 
     /**

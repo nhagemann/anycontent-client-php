@@ -6,6 +6,7 @@ namespace AnyContent\Client;
 
 use AnyContent\AnyContentClientException;
 use AnyContent\Client\Traits\Properties;
+use Exception;
 
 abstract class AbstractRecord
 {
@@ -25,7 +26,7 @@ abstract class AbstractRecord
 
     public function getDataType()
     {
-        throw new \Exception('Method getDataType not implemented.');
+        throw new Exception('Method getDataType not implemented.');
     }
 
     /**

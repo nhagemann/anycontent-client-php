@@ -15,6 +15,7 @@ use AnyContent\Connection\Interfaces\ReadOnlyConnection;
 use AnyContent\Connection\Interfaces\RevisionConnection;
 use AnyContent\Connection\Util\Database;
 use CMDL\Util;
+use Exception;
 use KVMLogger\KVMLogger;
 
 class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection, RevisionConnection
@@ -106,7 +107,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
         $tableName = $repository->getName() . '$' . $contentTypeName;
 
         if ($tableName != Util::generateValidIdentifier($repository->getName()) . '$' . Util::generateValidIdentifier($contentTypeName)) {
-            throw new \Exception('Invalid repository and/or content type name(s).');
+            throw new Exception('Invalid repository and/or content type name(s).');
         }
 
         if ($ensureContentTypeTableIsUpToDate == true) {

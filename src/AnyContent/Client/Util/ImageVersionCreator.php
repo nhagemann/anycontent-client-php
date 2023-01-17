@@ -9,12 +9,13 @@ use AnyContent\Client\Repository;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
+use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
  *
- * This class is responsible for creating image versions/copies of AnyContent Images and storing them as
+ * This class is responsible for creating image versions/copies of AnyContent images and storing them as
  * local files in a to be defined folder ($basePath). This should be a public accessible web folder ($baseUrl).
  *
  * The main methods are getFittingImage(), getResizedImage() and getOriginalImage(). All of them expect a File object
@@ -527,7 +528,7 @@ class ImageVersionCreator
             return true;
         }
 
-        $info = new \SplFileInfo($this->basePath . '/' . $filename);
+        $info = new SplFileInfo($this->basePath . '/' . $filename);
 
         if ($file->getTimestampLastChange() > $info->getCTime()) {
             return true;

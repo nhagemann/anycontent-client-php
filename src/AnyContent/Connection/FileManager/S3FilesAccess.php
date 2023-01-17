@@ -9,6 +9,7 @@ use AnyContent\Client\Folder;
 use AnyContent\Connection\Interfaces\FileManager;
 use Aws\S3\S3Client;
 use Dflydev\ApacheMimeTypes\JsonRepository;
+use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -58,7 +59,7 @@ class S3FilesAccess implements FileManager
                     $this->filesystem->mkdir($this->scheme);
                 }
             } else {
-                throw new \Exception('Bucket ' . $this->bucketName . ' missing.');
+                throw new Exception('Bucket ' . $this->bucketName . ' missing.');
             }
         }
 
