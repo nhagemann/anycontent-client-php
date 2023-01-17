@@ -12,7 +12,7 @@ use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class LanguagesAndWorkspacesText extends TestCase
+class RepositoryTest extends TestCase
 {
     /** @var  ContentArchiveReadWriteConnection */
     public $connection;
@@ -70,6 +70,8 @@ class LanguagesAndWorkspacesText extends TestCase
 
     public function testLastModified()
     {
+        $repository = new Repository('phpunit', $this->connection);
+        $this->assertIsFloat($repository->getLastModifiedDate());
     }
 
     public function testRecordCanAccessRepository()

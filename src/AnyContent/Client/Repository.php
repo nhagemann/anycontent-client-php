@@ -148,18 +148,12 @@ class Repository implements FileManager, \JsonSerializable
         return (bool)$this->getPublicUrl();
     }
 
-    /**
-     * @return string
-     */
-    public function getPublicUrl()
+    public function getPublicUrl(): string
     {
         return $this->publicUrl;
     }
 
-    /**
-     * @param string $publicUrl
-     */
-    public function setPublicUrl($publicUrl)
+    public function setPublicUrl(string $publicUrl)
     {
         $this->publicUrl = $publicUrl;
     }

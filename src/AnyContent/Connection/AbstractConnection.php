@@ -658,8 +658,6 @@ abstract class AbstractConnection implements ReadOnlyConnection
 
     /**
      * remove protected properties and execute @name annotation
-     *
-     * @param Record $record
      */
     protected function finalizeRecord(AbstractRecord $record, DataDimensions $dataDimensions)
     {

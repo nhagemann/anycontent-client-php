@@ -87,18 +87,12 @@ class RestLikeFilesAccess implements FileManager
         return $this->client;
     }
 
-    /**
-     * @return boolean
-     */
-    public function getPublicUrl()
+    public function getPublicUrl(): string
     {
         return $this->publicUrl;
     }
 
-    /**
-     * @param boolean $publicUrl
-     */
-    public function setPublicUrl($publicUrl)
+    public function setPublicUrl(string $publicUrl)
     {
         $this->publicUrl = rtrim($publicUrl, '/');
 
