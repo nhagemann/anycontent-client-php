@@ -14,7 +14,7 @@
   "require": {
     "php": ">=8.0",
     "nhagemann/cmdl-parser-php": "dev-analyze-for-robert",
-    "psr/log": "1.*",
+    "psr/log": "1.*|2.*|3.*",
     "symfony/filesystem": "4.*|5.*|6.*",
     "symfony/finder": "4.*|5.*|6.*",
     "guzzlehttp/guzzle": "^7.5",
