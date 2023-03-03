@@ -31,7 +31,7 @@ class PropertyFilter implements Filter
             $recordValue = $record->getId();
         } else {
             $property = Util::generateValidIdentifier($this->term['property']);
-            $recordValue = strtolower($record->getProperty($property));
+            $recordValue = strtolower((string)$record->getProperty($property));
         }
         $conditionValue = strtolower($this->term['value']);
 
