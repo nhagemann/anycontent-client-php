@@ -190,7 +190,7 @@ class DirectoryBasedFilesAccess implements FileManager
     public function listSubFolder($path)
     {
         $path    = trim($path, '/');
-        $folders = array();
+        $folders = [];
         $finder  = new Finder();
 
         $finder->depth(0);
@@ -213,7 +213,7 @@ class DirectoryBasedFilesAccess implements FileManager
     {
         $path = trim($path, '/');
 
-        $files  = array();
+        $files  = [];
         $finder = new Finder();
 
         $finder->depth('==0');
@@ -222,17 +222,17 @@ class DirectoryBasedFilesAccess implements FileManager
             /* @var $file \SplFileInfo */
             foreach ($finder->in($this->baseFolder . '/' . $path) as $file) {
                 if (!$file->isDir()) {
-                    $item                         = array();
+                    $item                         = [];
                     $item['id']                   = trim($path . '/' . $file->getFilename(), '/');
                     $item['name']                 = $file->getFilename();
-                    $item['urls']                 = array();
+                    $item['urls']                 = [];
                     $item['type']                 = 'binary';
                     $item['size']                 = $file->getSize();
                     $item['timestamp_lastchange'] = $file->getMTime();
 
                     $extension = strtolower($extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION)); // To be compatible with some older PHP 5.3 versions
 
-                    if (in_array($extension, array('gif', 'png', 'jpg', 'jpeg'))) {
+                    if (in_array($extension, ['gif', 'png', 'jpg', 'jpeg'])) {
                         $item['type'] = 'image';
 
                         if ($this->imagesize == true) {

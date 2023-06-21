@@ -12,11 +12,11 @@ class Sequence implements \Iterator, \Countable
 
     protected $dataTypeDefinition = null;
 
-    protected $items = array();
+    protected $items = [];
 
     protected $property;
 
-    public function __construct(DataTypeDefinition $dataTypeDefinition, $property, $values = array())
+    public function __construct(DataTypeDefinition $dataTypeDefinition, $property, $values = [])
     {
         $this->dataTypeDefinition = $dataTypeDefinition;
 
@@ -25,7 +25,7 @@ class Sequence implements \Iterator, \Countable
         $i = 0;
         if (is_array($values)) {
             foreach ($values as $item) {
-                $this->items[$i++] = array('type' => key($item), 'properties' => array_shift($item));
+                $this->items[$i++] = ['type' => key($item), 'properties' => array_shift($item)];
             }
         }
     }
@@ -118,10 +118,10 @@ class Sequence implements \Iterator, \Countable
 
     public function addItem(SequenceItem $item)
     {
-        $this->items[count($this->items)] = array(
+        $this->items[count($this->items)] = [
             'type' => $item->getItemType(),
             'properties' => $item->getProperties(),
-        );
+        ];
         $this->position = count($this->items);
     }
 

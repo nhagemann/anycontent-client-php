@@ -69,7 +69,7 @@ class PropertyFilter implements Filter
         $match = preg_match("/([^>=|<=|!=|>|<|=|\*=)]*)(>=|<=|!=|>|<|=|\*=)(.*)/", $query, $matches);
 
         if ($match) {
-            $term = array();
+            $term = [];
             $term['property'] = trim($matches[1]);
             $term['operator'] = trim($matches[2]);
             $term['value'] = $this->decode(trim(($matches[3])));

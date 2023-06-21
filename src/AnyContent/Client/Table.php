@@ -10,20 +10,20 @@ class Table implements \Iterator, \Countable
 
     protected $columns = null;
 
-    protected $rows = array();
+    protected $rows = [];
 
     public function __construct($columns = 1)
     {
         $this->columns = $columns;
     }
 
-    public function addRow($values = array())
+    public function addRow($values = [])
     {
         $values       = array_slice($values, 0, $this->columns);
         $this->rows[] = $values;
     }
 
-    public function setRow($line, $values = array())
+    public function setRow($line, $values = [])
     {
         if ($line > count($this->rows)) {
             return false;

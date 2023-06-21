@@ -129,7 +129,7 @@ class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements Re
         $sql = 'Show Tables Like ?';
 
         $stmt = $this->getDatabase()->getConnection()->prepare($sql);
-        $stmt->execute(array($tableName));
+        $stmt->execute([$tableName]);
 
         if ($stmt->rowCount() == 0) {
             $sql = <<< TEMPLATE_CONTENTTABLE
@@ -190,13 +190,13 @@ TEMPLATE_CONTENTTABLE;
 
         $fields = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
-        $properties = array();
+        $properties = [];
 
         foreach ($contentTypeDefinition->getProperties() as $property) {
             $properties[] = 'property_' . $property;
         }
 
-        $newfields = array();
+        $newfields = [];
         foreach (array_diff($properties, $fields) as $field) {
             $newfields[] = 'ADD COLUMN `' . $field . '` LONGTEXT';
         }
@@ -247,7 +247,7 @@ TEMPLATE_CONTENTTABLE;
         $sql = 'Show Tables Like ?';
 
         $stmt = $this->getDatabase()->getConnection()->prepare($sql);
-        $stmt->execute(array($tableName));
+        $stmt->execute([$tableName]);
 
         if ($stmt->rowCount() == 0) {
             $sql = <<< TEMPLATE_CONFIGTABLE

@@ -107,7 +107,7 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
             // invalidate current revision
 
             $sql = 'UPDATE ' . $tableName . ' SET validuntil_timestamp = ? WHERE id = ? AND workspace = ? AND language = ? AND deleted = 0 AND validfrom_timestamp <=? AND validuntil_timestamp >?';
-            $params   = array();
+            $params   = [];
             $params[] = $timeshiftTimestamp;
             $params[] = $record->getId();
             $params[] = $dataDimensions->getWorkspace();

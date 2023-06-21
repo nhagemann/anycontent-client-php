@@ -10,21 +10,21 @@ namespace AnyContent\Client\Util;
  */
 class AdjacentList2NestedSet
 {
-    protected $links = array();
-    protected $parentIds = array();
+    protected $links = [];
+    protected $parentIds = [];
     protected $count = 1;
-    protected $nestedSet = array();
+    protected $nestedSet = [];
     protected $level = 0;
 
     public function __construct($list)
     {
-        $link      = array();
-        $parentIds = array();
+        $link      = [];
+        $parentIds = [];
         foreach ($list as $record) {
             $parent = $record['parentId'];
             $child  = $record['id'];
             if (!array_key_exists($parent, $link)) {
-                $link[$parent] = array();
+                $link[$parent] = [];
             }
             $link[$parent][]   = $child;
             $parentIds[$child] = $parent;
@@ -33,7 +33,7 @@ class AdjacentList2NestedSet
         $this->parentIds = $parentIds;
         $this->count     = 1;
         $this->links     = $link;
-        $this->nestedSet = array();
+        $this->nestedSet = [];
         $this->level     = 0;
 
         $this->traverse(0);
@@ -58,7 +58,7 @@ class AdjacentList2NestedSet
         $this->count++;
 
         if ($id != 0) {
-            $this->nestedSet[$id] = array('left' => $lft, 'right' => $rgt, 'level' => $this->level, 'parentId' => $this->parentIds[$id]);
+            $this->nestedSet[$id] = ['left' => $lft, 'right' => $rgt, 'level' => $this->level, 'parentId' => $this->parentIds[$id]];
         }
     }
 

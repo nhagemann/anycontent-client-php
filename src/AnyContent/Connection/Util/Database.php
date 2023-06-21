@@ -69,7 +69,7 @@ class Database
         return $this->execute($sql, $values);
     }
 
-    public function fetchOne($tableName, $where = array())
+    public function fetchOne($tableName, $where = [])
     {
         $sql = 'SELECT * FROM `' . $tableName;
         $sql .= '` WHERE `' . join('` = ? AND `', array_keys($where)) . '` = ?';
@@ -80,14 +80,14 @@ class Database
         return $stmt->fetch();
     }
 
-    public function fetchOneSQL($sql, $params = array())
+    public function fetchOneSQL($sql, $params = [])
     {
         $stmt = $this->execute($sql, $params);
 
         return $stmt->fetch();
     }
 
-    public function fetchColumn($tableName, $column, $where = array())
+    public function fetchColumn($tableName, $column, $where = [])
     {
         $sql = 'SELECT * FROM `' . $tableName;
         $sql .= '` WHERE `' . join('` = ? AND `', array_keys($where)) . '` = ?';
@@ -98,14 +98,14 @@ class Database
         return $stmt->fetchColumn($column);
     }
 
-    public function fetchColumnSQL($sql, $column, $params = array())
+    public function fetchColumnSQL($sql, $column, $params = [])
     {
         $stmt = $this->execute($sql, $params);
 
         return $stmt->fetchColumn($column);
     }
 
-    public function fetchAll($tableName, $where = array())
+    public function fetchAll($tableName, $where = [])
     {
         $sql = 'SELECT * FROM `' . $tableName;
         $sql .= '` WHERE `' . join('` = ? AND , `', array_keys($where)) . '` = ?';
@@ -116,7 +116,7 @@ class Database
         return $stmt->fetchAll();
     }
 
-    public function fetchAllSQL($sql, $params = array())
+    public function fetchAllSQL($sql, $params = [])
     {
         $stmt = $this->execute($sql, $params);
 
@@ -126,9 +126,9 @@ class Database
     /**
      * http://stackoverflow.com/questions/210564/getting-raw-sql-query-string-from-\PDO-prepared-statements
      */
-    public function debugQuery($sql, $params = array())
+    public function debugQuery($sql, $params = [])
     {
-        $keys = array();
+        $keys = [];
 
         # build a regular expression for each parameter
         foreach ($params as $key => &$value) {

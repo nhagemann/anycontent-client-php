@@ -65,13 +65,13 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
             }
 
             try {
-                $client->putObject(array(
+                $client->putObject([
                                        'Bucket'      => $this->bucketName,
                                        'Key'         => $this->baseFolder . '/' . $fileId,
                                        'Body'        => $binary,
                                        'ACL'         => $acl,
                                        'ContentType' => $contentType,
-                                   ));
+                                   ]);
 
                 return true;
             } catch (\Exception $e) {
@@ -95,7 +95,7 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
         $path   = trim($path, '/');
         $tokens = explode('/', $path);
 
-        if (in_array($tokens[0], array('Public', 'Protected'))) {
+        if (in_array($tokens[0], ['Public', 'Protected'])) {
             return true;
         }
 

@@ -7,8 +7,8 @@ namespace AnyContent\Client;
 class Folder implements \JsonSerializable
 {
     protected $path;
-    protected $files = array();
-    protected $subFolders = array();
+    protected $files = [];
+    protected $subFolders = [];
 
     public function __construct($path, $data)
     {

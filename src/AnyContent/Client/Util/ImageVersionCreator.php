@@ -190,7 +190,7 @@ class ImageVersionCreator
                     $image->resize($size);
 
                     $quality = $this->determineQuality($quality);
-                    $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                    $image->save($this->basePath . '/' . $filename, ['quality' => $quality]);
                 } else {
                     return false;
                 }
@@ -251,7 +251,7 @@ class ImageVersionCreator
                     $image->resize(new Box($width, $height));
 
                     $quality = $this->determineQuality($quality);
-                    $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                    $image->save($this->basePath . '/' . $filename, ['quality' => $quality]);
                 } else {
                     return false;
                 }
@@ -313,7 +313,7 @@ class ImageVersionCreator
                     $image->resize(new Box($width, $height));
 
                     $quality = $this->determineQuality($quality);
-                    $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                    $image->save($this->basePath . '/' . $filename, ['quality' => $quality]);
                 }
             } else {
                 return false;
@@ -397,7 +397,7 @@ class ImageVersionCreator
                     }
 
                     $quality = $this->determineQuality($quality);
-                    $image->save($this->basePath . '/' . $filename, array('quality' => $quality));
+                    $image->save($this->basePath . '/' . $filename, ['quality' => $quality]);
                 } else {
                     return false;
                 }

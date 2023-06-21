@@ -18,9 +18,9 @@ class RecordFactory
 
     protected $options = ['validateProperties' => true];
 
-    protected $contentRecordClassMap = array();
+    protected $contentRecordClassMap = [];
 
-    protected $configRecordClassMap = array();
+    protected $configRecordClassMap = [];
 
     public static function instance($options = [ ]): RecordFactory
     {

@@ -67,7 +67,7 @@ trait Properties
         $values = json_decode($this->getProperty($property), true);
 
         if (!is_array($values)) {
-            $values = array();
+            $values = [];
         }
 
         $formElementDefinition = $this->dataTypeDefinition->getViewDefinition($this->view)
@@ -91,7 +91,7 @@ trait Properties
             return explode(',', $value);
         }
 
-        return array();
+        return [];
     }
 
     public function setProperty($property, $value)
@@ -118,7 +118,7 @@ trait Properties
         $values = json_decode((string)$this->getProperty($property), true);
 
         if (!is_array($values)) {
-            $values = array();
+            $values = [];
         }
 
         return new Sequence($this->dataTypeDefinition, $property, $values);

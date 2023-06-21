@@ -29,7 +29,7 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
             'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName,
             $username,
             $password,
-            array(PDO::MYSQL_ATTR_FOUND_ROWS => true)
+            [PDO::MYSQL_ATTR_FOUND_ROWS => true]
         );
 
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -75,7 +75,7 @@ class MySQLSchemalessConfiguration extends AbstractConfiguration
         $sql = 'SHOW TABLES LIKE ?';
 
         $stmt = $this->getDatabase()->getConnection()->prepare($sql);
-        $stmt->execute(array('_cmdl_'));
+        $stmt->execute(['_cmdl_']);
 
         if ($stmt->rowCount() == 0) {
             $sql = <<< TEMPLATE_CMDLTABLE

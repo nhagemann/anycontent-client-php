@@ -42,7 +42,7 @@ class S3FilesAccess implements FileManager
     {
         if (!$this->client) {
             // Create an Amazon S3 client object
-            $this->client = S3Client::factory(array('key' => $this->key, 'secret' => $this->secret));
+            $this->client = S3Client::factory(['key' => $this->key, 'secret' => $this->secret]);
 
             if ($this->region) {
                 $this->client->setRegion($this->region);
@@ -178,13 +178,13 @@ class S3FilesAccess implements FileManager
                 $contentType = 'binary/octet-stream';
             }
             try {
-                $client->putObject(array(
+                $client->putObject([
                                        'Bucket'      => $this->bucketName,
                                        'Key'         => $this->baseFolder . '/' . $fileId,
                                        'Body'        => $binary,
                                        'ACL'         => 'public-read',
                                        'ContentType' => $contentType,
-                                   ));
+                                   ]);
 
                 return true;
             } catch (\Exception $e) {
@@ -260,7 +260,7 @@ class S3FilesAccess implements FileManager
         } else {
             $path = $this->scheme;
         }
-        $folders = array();
+        $folders = [];
         $finder  = new Finder();
 
         $finder->depth('==0');
@@ -289,7 +289,7 @@ class S3FilesAccess implements FileManager
             $dir = $this->scheme;
         }
 
-        $files  = array();
+        $files  = [];
         $finder = new Finder();
 
         $finder->depth('==0');
@@ -298,16 +298,16 @@ class S3FilesAccess implements FileManager
             /* @var $file \SplFileInfo */
             foreach ($finder->in($dir) as $file) {
                 if (!$file->isDir()) {
-                    $item         = array();
+                    $item         = [];
                     $item['id']   = trim($path . '/' . $file->getFilename(), '/');
                     $item['name'] = $file->getFilename();
-                    $item['urls'] = array();
+                    $item['urls'] = [];
                     $item['type'] = 'binary';
                     $item['size'] = $file->getSize();
 
                     $extension = strtolower($extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION)); // To be compatible with some older PHP 5.3 versions
 
-                    if (in_array($extension, array('gif', 'png', 'jpg', 'jpeg'))) {
+                    if (in_array($extension, ['gif', 'png', 'jpg', 'jpeg'])) {
                         $item['type'] = 'image';
                         if ($this->imagesize == true) {
                             $content = $file->getContents();

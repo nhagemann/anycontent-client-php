@@ -34,6 +34,7 @@
     <rule ref="SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement"/>
     <rule ref="SlevomatCodingStandard.Arrays.SingleLineArrayWhitespace"/>
     <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
     <rule ref="Squiz.WhiteSpace.FunctionSpacing">
         <properties>

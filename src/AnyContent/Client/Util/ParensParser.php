@@ -24,14 +24,14 @@ class ParensParser
     {
         if (!$string) {
             // no string, no data
-            return array();
+            return [];
         }
         if ($string[0] == '(') {
             // killer outer parens, as they're unnecessary
             $string = substr($string, 1, -1);
         }
-        $this->current = array();
-        $this->stack   = array();
+        $this->current = [];
+        $this->stack   = [];
         $this->string  = $string;
         $this->length  = strlen($this->string);
         // look at each character
@@ -41,7 +41,7 @@ class ParensParser
                     $this->push();
                     // push current scope to the stack an begin a new scope
                     array_push($this->stack, $this->current);
-                    $this->current = array();
+                    $this->current = [];
                     break;
                 case ')':
                     $this->push();
