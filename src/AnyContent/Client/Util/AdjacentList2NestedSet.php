@@ -58,7 +58,7 @@ class AdjacentList2NestedSet
         $this->count++;
 
         if ($id != 0) {
-            $this->nestedSet[$id] = array( 'left' => $lft, 'right' => $rgt, 'level' => $this->level, 'parentId' => $this->parentIds[$id] );
+            $this->nestedSet[$id] = array('left' => $lft, 'right' => $rgt, 'level' => $this->level, 'parentId' => $this->parentIds[$id]);
         }
     }
 

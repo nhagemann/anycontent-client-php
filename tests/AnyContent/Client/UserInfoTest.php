@@ -8,7 +8,6 @@ use AnyContent\Client\Repository;
 use AnyContent\Client\UserInfo;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -47,8 +46,6 @@ class UserInfoTest extends TestCase
         $this->connection = $connection;
 
         $this->repository = new Repository('phpunit', $this->connection);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testUserInfo()

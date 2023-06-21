@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\AnyContent\Connection;
 
 use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
@@ -19,8 +18,6 @@ class DirectoryBasedFilesAccessReadOnlyTest extends TestCase
         $fileManager->enableImageSizeCalculation();
 
         $this->fileManager = $fileManager;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testGetFolder()

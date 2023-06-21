@@ -6,8 +6,6 @@ namespace Tests\AnyContent\Connection\RecordFiles;
 
 use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\RecordFilesReadWriteConnection;
-use KVMLogger\KVMLogger;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -43,8 +41,6 @@ class RecordFilesConfigTest extends TestCase
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testConfigSameConnection()
@@ -112,8 +108,6 @@ class RecordFilesConfigTest extends TestCase
 
     public function testProtectedProperties()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $config = $connection->getConfig('config1');

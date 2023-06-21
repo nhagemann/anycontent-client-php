@@ -42,7 +42,7 @@ class RestLikeFilesTest extends TestCase
             $fileManager       = new RestLikeFilesAccess($configuration);
             $this->fileManager = $fileManager;
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+
         }
     }
 

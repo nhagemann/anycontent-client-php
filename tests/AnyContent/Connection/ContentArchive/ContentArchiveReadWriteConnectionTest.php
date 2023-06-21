@@ -7,8 +7,6 @@ namespace Tests\AnyContent\Connection\ContentArchive;
 use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-use KVMLogger\KVMLogger;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -42,8 +40,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testSaveRecordSameConnection()
@@ -189,8 +185,6 @@ class ContentArchiveReadWriteConnectionTest extends TestCase
 
     public function testProtectedProperties()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');

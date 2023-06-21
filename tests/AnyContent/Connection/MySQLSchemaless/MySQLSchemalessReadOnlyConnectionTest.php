@@ -7,7 +7,6 @@ namespace Tests\AnyContent\Connection\MySQLSchemaless;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\MySQLSchemalessReadOnlyConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class MySQLSchemalessConnectionTest extends TestCase
@@ -54,8 +53,6 @@ class MySQLSchemalessConnectionTest extends TestCase
 
         $record = $repository->createRecord('Agency 2', 2);
         $repository->saveRecord($record);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     /**
@@ -76,8 +73,6 @@ class MySQLSchemalessConnectionTest extends TestCase
         $this->connection = $connection;
         $repository = new Repository('phpunit', $connection);
         $this->assertEquals($repository, $this->connection->getRepository());
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testContentTypeNotSelected()

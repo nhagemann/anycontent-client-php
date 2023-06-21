@@ -7,8 +7,6 @@ namespace Tests\AnyContent\Connection\MySQLSchemaless;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
-use KVMLogger\KVMLogger;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class MySQLSchemalessConfigTest extends TestCase
@@ -26,8 +24,6 @@ class MySQLSchemalessConfigTest extends TestCase
 
         $pdo->exec('DROP DATABASE IF EXISTS phpunit');
         $pdo->exec('CREATE DATABASE phpunit');
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     /**
@@ -49,8 +45,6 @@ class MySQLSchemalessConfigTest extends TestCase
         $this->connection = $connection;
         $repository       = new Repository('phpunit', $connection);
         $this->assertEquals($repository, $this->connection->getRepository());
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testConfigSameConnection()
@@ -118,8 +112,6 @@ class MySQLSchemalessConfigTest extends TestCase
 
     public function testProtectedProperties()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $config = $connection->getConfig('config1');

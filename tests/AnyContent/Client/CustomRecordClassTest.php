@@ -9,7 +9,6 @@ use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use CMDL\Parser;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -43,8 +42,6 @@ class CustomRecordClassTest extends TestCase
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testSaveRecords()

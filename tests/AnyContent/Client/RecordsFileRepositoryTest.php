@@ -7,7 +7,6 @@ namespace Tests\AnyContent\Client;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordFilesReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -32,7 +31,6 @@ class RecordsFileRepositoryTest extends TestCase
         $connection = $configuration->createReadWriteConnection();
 
         $this->connection = $connection;
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testContentTypes()

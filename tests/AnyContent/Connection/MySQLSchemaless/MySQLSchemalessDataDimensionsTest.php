@@ -8,7 +8,6 @@ use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class MySQLSchemalessDataDimensionsTest extends TestCase
@@ -54,8 +53,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
 
         $record = $repository->createRecord('dmc digital media center', 5);
         $repository->saveRecord($record);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     /**
@@ -76,8 +73,6 @@ class MySQLSchemalessDataDimensionsTest extends TestCase
         $this->connection = $connection;
         $repository       = new Repository('phpunit', $connection);
         $this->assertEquals($repository, $this->connection->getRepository());
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testSaveRecordSameConnection()

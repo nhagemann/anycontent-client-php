@@ -42,7 +42,7 @@ class S3FilesAccess implements FileManager
     {
         if (!$this->client) {
             // Create an Amazon S3 client object
-            $this->client = S3Client::factory(array( 'key' => $this->key, 'secret' => $this->secret ));
+            $this->client = S3Client::factory(array('key' => $this->key, 'secret' => $this->secret));
 
             if ($this->region) {
                 $this->client->setRegion($this->region);
@@ -183,7 +183,7 @@ class S3FilesAccess implements FileManager
                                        'Key'         => $this->baseFolder . '/' . $fileId,
                                        'Body'        => $binary,
                                        'ACL'         => 'public-read',
-                                       'ContentType' => $contentType
+                                       'ContentType' => $contentType,
                                    ));
 
                 return true;
@@ -307,7 +307,7 @@ class S3FilesAccess implements FileManager
 
                     $extension = strtolower($extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION)); // To be compatible with some older PHP 5.3 versions
 
-                    if (in_array($extension, array( 'gif', 'png', 'jpg', 'jpeg' ))) {
+                    if (in_array($extension, array('gif', 'png', 'jpg', 'jpeg'))) {
                         $item['type'] = 'image';
                         if ($this->imagesize == true) {
                             $content = $file->getContents();

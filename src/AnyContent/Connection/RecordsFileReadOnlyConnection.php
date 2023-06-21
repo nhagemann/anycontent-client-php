@@ -13,7 +13,6 @@ use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\Configuration\RecordsFileHttpConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
-use KVMLogger\KVMLogger;
 
 class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection
 {
@@ -134,9 +133,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             return $records[$recordId];
         }
 
-        KVMLogger::instance('anycontent-connection')
-                 ->info('Record ' . $recordId . ' not found for content type ' . $this->getCurrentContentTypeName());
-
         return false;
     }
 
@@ -153,9 +149,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         if (array_key_exists($recordId, $records)) {
             return $records[$recordId];
         }
-
-        KVMLogger::instance('anycontent')
-                 ->info('Record ' . $recordId . ' not found for content type ' . $this->getCurrentContentTypeName());
 
         return false;
     }
@@ -216,9 +209,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
             }
         } else {
             $config = $this->getRecordFactory()->createConfig($definition);
-
-            KVMLogger::instance('anycontent-connection')
-                     ->info('Config ' . $configTypeName . ' not found');
         }
 
         return $config;
@@ -254,9 +244,6 @@ class RecordsFileReadOnlyConnection extends AbstractConnection implements ReadOn
         if ($this->fileExists($fileName)) {
             return file_get_contents($fileName);
         }
-
-        KVMLogger::instance('anycontent-connection')->warning('Could not open file ' . $fileName);
-
         return false;
     }
 

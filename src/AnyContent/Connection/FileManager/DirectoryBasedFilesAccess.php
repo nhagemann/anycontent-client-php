@@ -232,7 +232,7 @@ class DirectoryBasedFilesAccess implements FileManager
 
                     $extension = strtolower($extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION)); // To be compatible with some older PHP 5.3 versions
 
-                    if (in_array($extension, array( 'gif', 'png', 'jpg', 'jpeg' ))) {
+                    if (in_array($extension, array('gif', 'png', 'jpg', 'jpeg'))) {
                         $item['type'] = 'image';
 
                         if ($this->imagesize == true) {

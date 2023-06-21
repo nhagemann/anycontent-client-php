@@ -16,7 +16,6 @@ use AnyContent\Connection\Interfaces\RevisionConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
 use CMDL\ConfigTypeDefinition;
 use CMDL\ContentTypeDefinition;
-use KVMLogger\KVMLogger;
 
 class Repository implements FileManager, \JsonSerializable
 {
@@ -503,12 +502,7 @@ class Repository implements FileManager, \JsonSerializable
 
         $this->writeConnection->setUserInfo($this->getCurrentUserInfo());
 
-        $result = $this->writeConnection->saveRecord($record, $dataDimensions);
-
-        KVMLogger::instance('anycontent-repository')
-                 ->info('Saving record ' . $record->getId() . ' for content type ' . $record->getContentTypeName());
-
-        return $result;
+        return $this->writeConnection->saveRecord($record, $dataDimensions);
     }
 
     public function saveRecords($records)
@@ -521,15 +515,7 @@ class Repository implements FileManager, \JsonSerializable
 
         $this->writeConnection->setUserInfo($this->getCurrentUserInfo());
 
-        $result = $this->writeConnection->saveRecords($records, $dataDimensions);
-
-        if (count($records) > 0) {
-            $record = reset($records);
-            KVMLogger::instance('anycontent-repository')
-                     ->info('Saving ' . count($records) . ' records of content type ' . $record->getContentTypeName());
-        }
-
-        return $result;
+        return $this->writeConnection->saveRecords($records, $dataDimensions);
     }
 
     public function deleteRecord($recordId)
@@ -615,12 +601,7 @@ class Repository implements FileManager, \JsonSerializable
 
         $this->writeConnection->setUserInfo($this->getCurrentUserInfo());
 
-        $result = $this->writeConnection->saveConfig($config, $dataDimensions);
-
-        KVMLogger::instance('anycontent-repository')
-                 ->info('Saving config ' . $config->getConfigTypeName());
-
-        return $result;
+        return $this->writeConnection->saveConfig($config, $dataDimensions);
     }
 
     /**
@@ -673,9 +654,6 @@ class Repository implements FileManager, \JsonSerializable
         if ($this->hasContentType($contentTypeName)) {
             $this->getRecordFactory()->registerRecordClassForContentType($contentTypeName, $classname);
 
-            KVMLogger::instance('anycontent-repository')
-                     ->info('Custom record class ' . $classname . ' for content type ' . $contentTypeName);
-
             return true;
         }
 
@@ -691,9 +669,6 @@ class Repository implements FileManager, \JsonSerializable
     {
         if ($this->hasConfigType($configTypeName)) {
             $this->getRecordFactory()->registerRecordClassForConfigType($configTypeName, $classname);
-
-            KVMLogger::instance('anycontent-repository')
-                     ->info('Custom record class ' . $classname . ' for config type ' . $configTypeName);
 
             return true;
         }

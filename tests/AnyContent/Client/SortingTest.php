@@ -8,7 +8,6 @@ use AnyContent\Client\Repository;
 use AnyContent\Client\Util\MenuBuilder;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -32,8 +31,6 @@ class SortingTest extends TestCase
         }
 
         $fs->mirror($source, $target);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function setUp(): void

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AnyContent\Connection\Util;
 
-use KVMLogger\KVMLogger;
 use PDO;
 use PDOStatement;
 
@@ -26,19 +25,11 @@ class Database
 
     public function execute(string $sql, array $params = []): PDOStatement
     {
-        $kvm = KVMLogger::instance('anycontent-database');
-
         $dbh = $this->getConnection();
 
         $stmt = $dbh->prepare($sql);
 
-        $kvm->startStopWatch('anycontent-query-execution-time');
-
         $stmt->execute($params);
-
-        $duration = $kvm->getDuration('anycontent-query-execution-time');
-        $message  = $kvm->createLogMessage($this->debugQuery($sql, $params), ['duration' => $duration]);
-        $kvm->debug($message);
 
         $this->queryCounter++;
 

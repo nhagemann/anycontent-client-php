@@ -120,7 +120,7 @@ class Sequence implements \Iterator, \Countable
     {
         $this->items[count($this->items)] = array(
             'type' => $item->getItemType(),
-            'properties' => $item->getProperties()
+            'properties' => $item->getProperties(),
         );
         $this->position = count($this->items);
     }

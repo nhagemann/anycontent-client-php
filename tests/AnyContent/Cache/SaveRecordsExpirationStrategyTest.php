@@ -8,7 +8,6 @@ use AnyContent\Cache\CachingRepository;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordsFileReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -32,8 +31,6 @@ class SaveRecordsExpirationStrategyTest extends TestCase
         }
 
         $fs->mirror($source, $target);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function setUp(): void
@@ -59,8 +56,6 @@ class SaveRecordsExpirationStrategyTest extends TestCase
 
         //$repository->setCacheProvider($cache);
         $this->repository = $repository;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testChangeRecord()

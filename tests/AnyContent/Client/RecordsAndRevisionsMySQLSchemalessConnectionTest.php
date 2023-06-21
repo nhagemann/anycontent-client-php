@@ -9,7 +9,6 @@ use AnyContent\Client\Record;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class RecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCase
@@ -56,10 +55,6 @@ class RecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCase
 
         $record = $repository->createRecord('Agency 1', 1);
         $repository->saveRecord($record);
-
-        //$record = $repository->createRecord('Agency 2', 2);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     /**
@@ -82,8 +77,6 @@ class RecordsAndRevisionsMySQLSchemalessConnectionTest extends TestCase
         $repository       = new Repository('phpunit', $connection);
 
         $this->repository = $repository;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testSupportsRevisions()

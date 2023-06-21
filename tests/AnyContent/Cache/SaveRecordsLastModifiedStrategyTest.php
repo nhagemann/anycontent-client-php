@@ -7,7 +7,6 @@ namespace Tests\AnyContent\Cache;
 use AnyContent\Cache\CachingRepository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordsFileReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -31,8 +30,6 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
         }
 
         $fs->mirror($source, $target);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function setUp(): void
@@ -57,8 +54,6 @@ class SaveRecordsLastModifiedStategyTest extends TestCase
         //$cache = DoctrineProvider::wrap(new FilesystemAdapter('', 0, __DIR__ . '/../../../tmp/phpfilecache'));
         //$repository->setCacheProvider($cache);
         $this->repository = $repository;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testChangeRecord()

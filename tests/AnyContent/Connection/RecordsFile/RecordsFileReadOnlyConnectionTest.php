@@ -6,8 +6,6 @@ namespace Tests\AnyContent\Connection\RecordsFile;
 
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordsFileReadOnlyConnection;
-use KVMLogger\KVMLogger;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class RecordsFileReadOnlyConnectionTest extends TestCase
@@ -24,14 +22,10 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
         $connection = $configuration->createReadOnlyConnection();
 
         $this->connection = $connection;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testContentTypeNotSelected()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $this->expectException('AnyContent\AnyContentClientException');
@@ -40,8 +34,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
 
     public function testContentTypeNames()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $contentTypeNames = $connection->getContentTypeNames();
@@ -51,8 +43,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
 
     public function testContentTypeDefinitions()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $contentTypes = $connection->getContentTypeDefinitions();
@@ -65,8 +55,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
 
     public function testCountRecords()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -76,8 +64,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
 
     public function testGetRecord()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -91,8 +77,6 @@ class RecordsFileReadOnlyConnectionTest extends TestCase
 
     public function testGetRecords()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');

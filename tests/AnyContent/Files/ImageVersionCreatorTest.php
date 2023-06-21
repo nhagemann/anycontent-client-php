@@ -9,7 +9,6 @@ use AnyContent\Client\Util\ImageVersionCreator;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
 use GdImage;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -48,8 +47,6 @@ class ImageVersionCreatorTest extends TestCase
         $fileManager->enableImageSizeCalculation();
 
         $repository->setFileManager($fileManager);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
 
         $imageVersionCreator = new ImageVersionCreator(
             $repository,

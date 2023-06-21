@@ -10,7 +10,6 @@ use AnyContent\Connection\ContentArchiveReadWriteConnection;
 use AnyContent\Filter\ANDFilter;
 use AnyContent\Filter\ORFilter;
 use AnyContent\Filter\PropertyFilter;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -47,8 +46,6 @@ class FilterTest extends TestCase
 
         $this->connection = $connection;
         $this->repository = new Repository('phpunit', $connection);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testSimpleFilter()

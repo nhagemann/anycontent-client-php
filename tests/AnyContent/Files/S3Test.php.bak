@@ -31,7 +31,7 @@ class S3Test extends TestCase
             $fileManager       = new S3FilesAccess(S3_KEY, S3_SECRET, S3_BUCKET, S3_BASEPATH, S3_REGION);
             $this->fileManager = $fileManager;
 
-            KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+
         }
     }
 

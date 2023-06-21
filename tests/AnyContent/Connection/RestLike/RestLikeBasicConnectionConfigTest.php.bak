@@ -42,7 +42,7 @@ class RestLikeBasicConnectionConfigTest extends TestCase
 
         $connection = $configuration->createReadWriteConnection();
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
+
     }
 
 
@@ -59,7 +59,7 @@ class RestLikeBasicConnectionConfigTest extends TestCase
 
         $this->connection = $connection;
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
+
     }
 
 
@@ -131,7 +131,7 @@ class RestLikeBasicConnectionConfigTest extends TestCase
 
     public function testProtectedProperties()
     {
-        KVMLogger::instance()->debug(__METHOD__);
+
 
         $connection = $this->connection;
 

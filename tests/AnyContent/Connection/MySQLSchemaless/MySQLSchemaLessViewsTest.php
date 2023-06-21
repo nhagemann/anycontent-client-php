@@ -7,7 +7,6 @@ namespace Tests\AnyContent\Connection\MySQLSchemaless;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\MySQLSchemalessReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class MySQLSchemalessViewsTest extends TestCase
@@ -33,8 +32,6 @@ class MySQLSchemalessViewsTest extends TestCase
         $configuration->addContentTypes();
 
         $configuration->createReadWriteConnection();
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     /**
@@ -55,8 +52,6 @@ class MySQLSchemalessViewsTest extends TestCase
         $this->connection = $connection;
         $repository       = new Repository('phpunit', $connection);
         $this->assertEquals($repository, $this->connection->getRepository());
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testDefinition()

@@ -10,7 +10,6 @@ use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\Interfaces\ReadOnlyConnection;
-use KVMLogger\KVMLogger;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -72,9 +71,6 @@ class RecordFilesReadOnlyConnection extends RecordsFileReadOnlyConnection implem
                 return $record;
             }
         }
-
-        KVMLogger::instance('anycontent-connection')
-            ->info('Record ' . $recordId . ' not found for content type ' . $this->getCurrentContentTypeName());
 
         return false;
     }

@@ -6,7 +6,6 @@ namespace Tests\AnyContent\Connection\ContentArchive;
 
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadOnlyConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class ContentArchiveReadOnlyConnectionTest extends TestCase
@@ -23,8 +22,6 @@ class ContentArchiveReadOnlyConnectionTest extends TestCase
         $connection = $configuration->createReadOnlyConnection();
 
         $this->connection = $connection;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testContentTypeNotSelected()

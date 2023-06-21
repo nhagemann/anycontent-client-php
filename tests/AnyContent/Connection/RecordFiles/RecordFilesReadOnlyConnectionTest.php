@@ -6,7 +6,6 @@ namespace Tests\AnyContent\Connection\RecordFiles;
 
 use AnyContent\Connection\Configuration\RecordFilesConfiguration;
 use AnyContent\Connection\RecordFilesReadOnlyConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 
 class RecordFilesReadOnlyConnectionTest extends TestCase
@@ -25,8 +24,6 @@ class RecordFilesReadOnlyConnectionTest extends TestCase
         $this->assertInstanceOf(RecordFilesReadOnlyConnection::class, $connection);
 
         $this->connection = $connection;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function testContentTypeNotSelected()

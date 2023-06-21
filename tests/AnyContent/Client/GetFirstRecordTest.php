@@ -7,7 +7,6 @@ namespace Tests\AnyContent\Client;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -31,8 +30,6 @@ class GetFirstRecordTest extends TestCase
         }
 
         $fs->mirror($source, $target);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public static function tearDownAfterClass(): void

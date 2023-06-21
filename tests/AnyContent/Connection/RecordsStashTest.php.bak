@@ -28,7 +28,7 @@ class RecordStashTest extends TestCase
         $this->connection = $connection;
 
 
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
+
     }
 
 

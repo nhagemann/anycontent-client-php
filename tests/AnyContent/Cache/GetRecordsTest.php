@@ -6,7 +6,6 @@ namespace Tests\AnyContent\Cache;
 
 use AnyContent\Cache\CachingRepository;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -35,8 +34,6 @@ class GetRecordsTest extends TestCase
 
         //$repository->setCacheProvider($cache);
         $this->repository = $repository;
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testGetRecords()

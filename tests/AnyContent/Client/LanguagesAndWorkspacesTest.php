@@ -7,7 +7,6 @@ namespace Tests\AnyContent\Client;
 use AnyContent\Client\Repository;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\ContentArchiveReadWriteConnection;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -48,8 +47,6 @@ class LanguagesAndWorkspacesTest extends TestCase
         $this->connection = $connection;
 
         $this->repository = new Repository('phpunit', $this->connection);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../tmp');
     }
 
     public function testSaveRecords()

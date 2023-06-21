@@ -70,7 +70,7 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
                                        'Key'         => $this->baseFolder . '/' . $fileId,
                                        'Body'        => $binary,
                                        'ACL'         => $acl,
-                                       'ContentType' => $contentType
+                                       'ContentType' => $contentType,
                                    ));
 
                 return true;
@@ -95,7 +95,7 @@ class S3PPFilesAccess extends S3FilesAccess implements FileManager
         $path   = trim($path, '/');
         $tokens = explode('/', $path);
 
-        if (in_array($tokens[0], array( 'Public', 'Protected' ))) {
+        if (in_array($tokens[0], array('Public', 'Protected'))) {
             return true;
         }
 

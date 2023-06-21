@@ -7,8 +7,6 @@ namespace Tests\AnyContent\Connection\RecordsFile;
 use AnyContent\Client\Record;
 use AnyContent\Connection\Configuration\RecordsFileConfiguration;
 use AnyContent\Connection\RecordsFileReadWriteConnection;
-use KVMLogger\KVMLogger;
-use KVMLogger\KVMLoggerFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -29,8 +27,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
         }
 
         $fs->mirror($source, $target);
-
-        KVMLoggerFactory::createWithKLogger(__DIR__ . '/../../../../../tmp');
     }
 
     public function setUp(): void
@@ -47,8 +43,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testSaveRecordSameConnection()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -68,8 +62,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testSaveRecordNewConnection()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -81,8 +73,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testAddRecord()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -97,8 +87,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testSaveRecordsSameConnection()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -119,8 +107,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testSaveRecordsNewConnection()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -130,8 +116,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testDeleteRecord()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -149,8 +133,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testDeleteRecordNewConnection()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -160,8 +142,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testDeleteRecords()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -174,8 +154,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testDeleteRecordsNewConnection()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -185,8 +163,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testDeleteAllRecords()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -199,8 +175,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testDeleteAllRecordsNewConnection()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');
@@ -210,8 +184,6 @@ class RecordsFileReadWriteConnectionTest extends TestCase
 
     public function testProtectedProperties()
     {
-        KVMLogger::instance()->debug(__METHOD__);
-
         $connection = $this->connection;
 
         $connection->selectContentType('profiles');

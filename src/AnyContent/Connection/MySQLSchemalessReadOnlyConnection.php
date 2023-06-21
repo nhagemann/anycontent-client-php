@@ -16,7 +16,6 @@ use AnyContent\Connection\Interfaces\RevisionConnection;
 use AnyContent\Connection\Util\Database;
 use CMDL\Util;
 use Exception;
-use KVMLogger\KVMLogger;
 
 class MySQLSchemalessReadOnlyConnection extends AbstractConnection implements ReadOnlyConnection, RevisionConnection
 {
@@ -457,9 +456,6 @@ TEMPLATE_CONFIGTABLE;
         } else {
             $definition = $this->getConfigTypeDefinition($configTypeName);
             $config     = $this->getRecordFactory()->createConfig($definition);
-
-            KVMLogger::instance('anycontent-connection')
-                     ->info('Config ' . $configTypeName . ' not found');
         }
 
         return $config;
