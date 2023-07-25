@@ -26,7 +26,7 @@ class DirectoryBasedFilesAccess implements FileManager
 
     protected $folders = [];
 
-    public function __construct($baseFolder, ?string $baseUrl)
+    public function __construct($baseFolder, ?string $baseUrl = null)
     {
         $this->baseFolder = $baseFolder;
         $this->filesystem = new Filesystem();
