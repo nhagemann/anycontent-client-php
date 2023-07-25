@@ -37,7 +37,7 @@ interface FileManager
 
     public function deleteFolder($path, $deleteIfNotEmpty = false);
 
-    public function getPublicUrl(): string;
+    public function getPublicUrl(): ?string;
 
     public function setPublicUrl(string $publicUrl);
 }

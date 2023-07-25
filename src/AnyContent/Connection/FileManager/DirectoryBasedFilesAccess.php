@@ -21,12 +21,12 @@ class DirectoryBasedFilesAccess implements FileManager
 
     protected $imagesize = false;
 
-    protected $publicUrl = false;
+    protected ?string $publicUrl = null;
 
 
     protected $folders = [];
 
-    public function __construct($baseFolder, $baseUrl = false)
+    public function __construct($baseFolder, ?string $baseUrl)
     {
         $this->baseFolder = $baseFolder;
         $this->filesystem = new Filesystem();
@@ -50,7 +50,7 @@ class DirectoryBasedFilesAccess implements FileManager
         return $this;
     }
 
-    public function getPublicUrl(): string
+    public function getPublicUrl(): ?string
     {
         return $this->publicUrl;
     }
