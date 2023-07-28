@@ -23,10 +23,6 @@ interface FileManager
      */
     public function getFile($fileId);
 
-    /**
-     * @param File $file
-     * @return File|bool
-     */
     public function getBinary(File $file);
 
     public function saveFile($fileId, $binary);
