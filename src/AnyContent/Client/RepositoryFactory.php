@@ -9,9 +9,7 @@ use AnyContent\Cache\CachingRepository;
 use AnyContent\Client\Traits\Options;
 use AnyContent\Connection\Configuration\ContentArchiveConfiguration;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
-use AnyContent\Connection\Configuration\RestLikeConfiguration;
 use AnyContent\Connection\FileManager\DirectoryBasedFilesAccess;
-use AnyContent\Connection\FileManager\RestLikeFilesAccess;
 
 class RepositoryFactory
 {
@@ -23,11 +21,6 @@ class RepositoryFactory
      * Example:
      *
      *  repos_name_1:
-     *    type: restlike
-     *    url: http://acrs.company.com/1/repos_name_1
-     *    files: http://assets.company.com
-     *
-     *  repos_name_2:
      *    type: mysqlschemaless
      *    host:       127.0.0.1
      *    dbname:     anycontent
@@ -35,7 +28,7 @@ class RepositoryFactory
      *    password:   password
      *    cmdl: /var/www/cmdl (or leave empty for reading cmdl from database)
      *
-     *   repos_name_3:
+     *   repos_name_2:
      *      type: archive
      *      folder: /var/www/repos/name_3
      *      files: true
@@ -43,13 +36,6 @@ class RepositoryFactory
      * Additionally you can specify a distinct filemanager
      *
      *   repos_name_2:
-     *      ...
-     *      filemanager:
-     *        type: restlike
-     *        repository_url: http://acrs.company.com/1/repos_name_1
-     *        files_url: http://assets.company.com
-     *
-     *   repos_name_3:
      *      ...
      *      filemanager:
      *        type: directory
@@ -90,32 +76,6 @@ class RepositoryFactory
             );
         }
 
-        if ($this->getOption('type') == 'restlike') {
-            if (!$this->hasOption('url')) {
-                throw new AnyContentClientException('Invalid config array. Could not find mandatory key url for repository named ' . $name);
-            }
-
-            $options = [];
-
-            if ($this->hasOption('contenttypes')) {
-                $options['contenttypes'] = $this->getOption('contenttypes');
-            }
-
-            if ($this->hasOption('configtypes')) {
-                $options['configtypes'] = $this->getOption('configtypes');
-            }
-
-            $files = $this->getOption('files', true);
-
-            $repository = $this->createRestLikeRepository(
-                $name,
-                $this->getOption('url'),
-                $options,
-                $cache,
-                $files
-            );
-        }
-
         if ($this->getOption('type') == 'mysqlschemaless') {
             $this->requireOptions(['host', 'dbname', 'user', 'password']);
 
@@ -136,13 +96,6 @@ class RepositoryFactory
                 $this->options = $this->getOption('filemanager');
 
                 $fileManager = null;
-
-                if ($this->getOption('type') == 'restlike') {
-                    $this->requireOption('repository_url');
-                    $configuration = new RestLikeConfiguration();
-                    $configuration->setUri($this->getOption('repository_url'));
-                    $fileManager = new RestLikeFilesAccess($configuration);
-                }
 
                 if ($this->getOption('type') == 'directory') {
                     $this->requireOption('path');
@@ -239,46 +192,6 @@ class RepositoryFactory
             $this->getOption('title', null),
             $cache
         );
-    }
-
-    public function createRestLikeRepository($name, $baseUrl, $options = [], $cache = true, $files = true)
-    {
-        $this->options = $options;
-
-        $configuration = new RestLikeConfiguration();
-        $configuration->setUri($baseUrl);
-        $connection = $configuration->createReadWriteConnection();
-
-        $contentTypeNames = false;
-        if ($this->hasOption('contenttypes')) {
-            $contentTypeNames = $this->getOption('contenttypes');
-        }
-
-        $configuration->addContentTypes($contentTypeNames);
-
-        $configTypeNames = false;
-        if ($this->hasOption('configtypes')) {
-            $configTypeNames = $this->getOption('configtypes');
-        }
-        $configuration->addConfigTypes($configTypeNames);
-
-        $fileManager = null;
-
-        if ($files) {
-            $fileManager = new RestLikeFilesAccess($configuration);
-        }
-
-        $repository = $this->createRepository(
-            $name,
-            $connection,
-            $fileManager,
-            $this->getOption('title', null),
-            $cache
-        );
-
-        $repository->setPublicUrl($baseUrl);
-
-        return $repository;
     }
 
     protected function createRepository($name, $connection, $fileManager, $title, $cache)

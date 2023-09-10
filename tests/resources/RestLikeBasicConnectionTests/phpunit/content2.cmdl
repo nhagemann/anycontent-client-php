@@ -1,3 +1,0 @@
-firstname = textfield*
-lastname
-@name "{{lastname}}, {{firstname}}"
