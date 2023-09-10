@@ -11,9 +11,13 @@ use AnyContent\Client\Record;
 use AnyContent\Client\Util\TimeShifter;
 use AnyContent\Connection\Configuration\MySQLSchemalessConfiguration;
 use AnyContent\Connection\Interfaces\AdminConnection;
+use AnyContent\Connection\Interfaces\RevisionWriteConnection;
 use AnyContent\Connection\Interfaces\WriteConnection;
+use CMDL\ConfigTypeDefinition;
+use CMDL\ContentTypeDefinition;
+use DateTimeInterface;
 
-class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnection implements WriteConnection, AdminConnection
+class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnection implements WriteConnection, AdminConnection, RevisionWriteConnection
 {
     public function saveRecord(Record $record, DataDimensions $dataDimensions = null)
     {
@@ -489,5 +493,30 @@ class MySQLSchemalessReadWriteConnection extends MySQLSchemalessReadOnlyConnecti
         $this->getCMDLCache()->clear();
 
         return true;
+    }
+
+    public function truncateContentTypeRevisions(ContentTypeDefinition $contentTypeDefinition, DateTimeInterface $endDate): void
+    {
+        assert($this->getConfiguration() instanceof MySQLSchemalessConfiguration);
+
+        $tableName = $this->getContentTypeTableName($contentTypeDefinition->getName());
+        $this->getDatabase()->execute(
+            'DELETE FROM ' . $tableName . ' WHERE validuntil_timestamp <> "2147483647.0000" AND  validuntil_timestamp < ?',
+            [(string)$endDate->getTimestamp() . '.0000']
+        );
+    }
+
+    public function truncateConfigTypeRevisions(ConfigTypeDefinition $configTypeDefinition, DateTimeInterface $endDate): void
+    {
+        assert($this->getConfiguration() instanceof MySQLSchemalessConfiguration);
+
+        $tableName = $this->getConfigTypeTableName(true);
+        $this->getDatabase()->execute(
+            'DELETE FROM ' . $tableName . ' WHERE id = ? AND validuntil_timestamp <> "2147483647.0000" AND  validuntil_timestamp < ?',
+            [
+                $configTypeDefinition->getName(),
+                (string)$endDate->getTimestamp() . '.0000',
+            ]
+        );
     }
 }
