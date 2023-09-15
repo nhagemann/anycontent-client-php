@@ -1,6 +1,6 @@
 {
   "name": "nhagemann/anycontent-php",
-  "description": "Client library to work with AnyContent repositories. Provides connectors for different repository types (file based, MySQL, restlike).",
+  "description": "Client library to work with AnyContent repositories. Provides connectors for different repository types (file based, MySQL).",
   "type": "library",
   "homepage": "http://www.nilshagemann.de",
   "license": "MIT",
