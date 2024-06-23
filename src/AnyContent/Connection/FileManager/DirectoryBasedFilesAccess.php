@@ -236,15 +236,9 @@ class DirectoryBasedFilesAccess implements FileManager
                         $item['type'] = 'image';
 
                         if ($this->imagesize == true) {
-                            $content = $file->getContents();
-
-                            if (function_exists('imagecreatefromstring')) {
-                                $image = @imagecreatefromstring($content);
-                                if ($image) {
-                                    $item['width']  = imagesx($image);
-                                    $item['height'] = imagesy($image);
-                                }
-                            }
+                            $imageSize = getimagesize($this->baseFolder . '/' . $item['id']);
+                            $item['width'] = $imageSize[0];
+                            $item['height'] = $imageSize[1];
                         }
                     }
 
